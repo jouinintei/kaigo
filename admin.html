@@ -510,6 +510,41 @@
     await putFile("images/" + name, b64encode(buf), "画像追加: " + name);
   }
 
+  // どんな画像(iPhoneのHEIC写真など)でも、ブラウザで確実に表示できる
+  // PNG/JPEGに変換し、大きすぎる写真は縮小する
+  async function toWebImage(file) {
+    let source = null;
+    try { source = await createImageBitmap(file); } catch (e) {}
+    if (!source) {
+      source = await new Promise((res, rej) => {
+        const im = new Image();
+        im.onload = () => res(im);
+        im.onerror = () => rej(new Error("この画像は読み込めない形式です。スクリーンショットで撮り直すか、PNG/JPEGにしてから投稿してください"));
+        im.src = URL.createObjectURL(file);
+      });
+    }
+    const w = source.width || source.naturalWidth;
+    const h = source.height || source.naturalHeight;
+    const scale = Math.min(1, 2200 / Math.max(w, h));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(w * scale));
+    canvas.height = Math.max(1, Math.round(h * scale));
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+    const isPhoto = /jpe?g|heic|heif/i.test((file.type || "") + (file.name || ""));
+    const type = isPhoto ? "image/jpeg" : "image/png";
+    const blob = await new Promise(res => canvas.toBlob(res, type, 0.85));
+    if (!blob) throw new Error("画像の変換に失敗しました");
+    return { blob: blob, ext: isPhoto ? ".jpg" : ".png" };
+  }
+  let upSeq = 0;
+  function autoName(ext) {
+    upSeq++;
+    return "up_" + Date.now() + "_" + upSeq + ext;
+  }
+
   // ==========================================================
   //  接続設定
   // ==========================================================
@@ -814,16 +849,19 @@
     try {
       let done = 0;
       for (const it of newItems) {
+        st.textContent = "画像を変換中... (" + (done + 1) + "/" + newItems.length + ")";
+        const conv = await toWebImage(it.blob);
         st.textContent = "アップロード中... (" + (done + 1) + "/" + newItems.length + ")";
-        const name = await uniqueFileName(it.origName);
-        await uploadImage(it.blob, name);
+        const name = await uniqueFileName(autoName(conv.ext));
+        await uploadImage(conv.blob, name);
         const entry = { season: it.season, genre: it.genre, title: it.title, diff: it.diff, file: name };
         if (it.kind === "脳トレ" || it.kind === "カレンダー") entry.kind = it.kind;
         if (it.month) entry.month = it.month;
         if (it.year && it.kind === "カレンダー") entry.year = it.year;
         if (it.answerBlob) {
-          const ansName = await uniqueFileName(it.answerName);
-          await uploadImage(it.answerBlob, ansName);
+          const ansConv = await toWebImage(it.answerBlob);
+          const ansName = await uniqueFileName(autoName(ansConv.ext));
+          await uploadImage(ansConv.blob, ansName);
           entry.answer = ansName;
         }
         entries.push(entry);
@@ -1005,8 +1043,9 @@
         if (!f) return;
         try {
           listStatus("答えをアップロード中...");
-          const ansName = await uniqueFileName(f.name);
-          await uploadImage(f, ansName);
+          const conv = await toWebImage(f);
+          const ansName = await uniqueFileName(autoName(conv.ext));
+          await uploadImage(conv.blob, ansName);
           e.answer = ansName;
           await saveDataJs("答え追加: " + e.title);
           renderList();
