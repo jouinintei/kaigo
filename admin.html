@@ -389,7 +389,12 @@
   let dataSha = null;     // data.js の版札 (更新に必要)
   let newItems = [];
   let listKind = "塗り絵";
-  const DEFAULT_GENRES = ["花", "動物", "食べ物", "行事", "風景", "風物詩", "ことわざ", "漢字", "言葉遊び"];
+  // 種類ごとのジャンル候補 (登録済みのものも自動で加わります)
+  const GENRES_BY_KIND = {
+    "塗り絵": ["花", "動物", "食べ物", "行事", "風景", "風物詩"],
+    "脳トレ": ["ことわざ", "漢字", "言葉遊び", "計算", "間違い探し", "クイズ"],
+    "カレンダー": []
+  };
 
   function apiUrl(path) {
     return "https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/contents/" + path;
@@ -558,30 +563,39 @@
   // ==========================================================
   //  投稿フォーム (共通部品は従来の管理ページと同じ)
   // ==========================================================
-  function currentGenres() {
-    const g = DEFAULT_GENRES.slice();
-    entries.forEach(e => { if (e.genre && !g.includes(e.genre)) g.push(e.genre); });
+  function kindName(v) { return (v === "脳トレ" || v === "カレンダー") ? v : "塗り絵"; }
+  // 種類に合わせたジャンル一覧 (kindを省くと全種類まとめて)
+  function currentGenres(kind) {
+    let g;
+    if (kind === undefined || kind === "") {
+      g = GENRES_BY_KIND["塗り絵"].concat(GENRES_BY_KIND["脳トレ"]);
+      entries.forEach(e => { if (e.genre && !g.includes(e.genre)) g.push(e.genre); });
+    } else {
+      const k = kindName(kind);
+      g = (GENRES_BY_KIND[k] || []).slice();
+      entries.forEach(e => {
+        if (kindName(e.kind) === k && e.genre && !g.includes(e.genre)) g.push(e.genre);
+      });
+    }
     return g;
   }
   function buildGenreOptions() {
-    const dl = document.getElementById("genreList");
-    dl.innerHTML = "";
     const bulk = document.getElementById("bulkGenre");
+    const kindSel = document.getElementById("bulkKind").value;
+    const keep = bulk.value;
     bulk.innerHTML = '<option value="">ジャンルを選ぶ</option>';
-    currentGenres().forEach(g => {
-      const o = document.createElement("option");
-      o.value = g;
-      dl.appendChild(o);
+    currentGenres(kindSel === "" ? undefined : kindSel).forEach(g => {
       const o2 = document.createElement("option");
       o2.textContent = g;
       bulk.appendChild(o2);
     });
+    if ([...bulk.options].some(o => o.value === keep)) bulk.value = keep;
   }
-  function kindName(v) { return (v === "脳トレ" || v === "カレンダー") ? v : "塗り絵"; }
-  function makeGenreSelect(value, onChange) {
+  document.getElementById("bulkKind").addEventListener("change", buildGenreOptions);
+  function makeGenreSelect(value, onChange, kind) {
     const wrap = document.createElement("span");
     const sel = document.createElement("select");
-    const opts = currentGenres();
+    const opts = currentGenres(kind);
     if (value && !opts.includes(value)) opts.push(value);
     const addOpt = (v, label) => {
       const o = document.createElement("option");
@@ -712,13 +726,18 @@
       tdTitle.appendChild(inp);
 
       const tdKind = document.createElement("td");
-      tdKind.appendChild(makeKindSelect(it.kind, v => it.kind = v));
+      tdKind.appendChild(makeKindSelect(it.kind, v => {
+        it.kind = v;
+        // 種類が変わったら、その種類にないジャンルはリセット
+        if (it.genre && !currentGenres(v).includes(it.genre)) it.genre = "";
+        renderNew();
+      }));
 
       const tdSeason = document.createElement("td");
       tdSeason.appendChild(makeSeasonSelect(it.season, v => it.season = v));
 
       const tdGenre = document.createElement("td");
-      tdGenre.appendChild(makeGenreSelect(it.genre, v => it.genre = v));
+      tdGenre.appendChild(makeGenreSelect(it.genre, v => it.genre = v, it.kind));
 
       const tdDiff = document.createElement("td");
       tdDiff.appendChild(makeDiffSelect(it.diff, v => it.diff = v));
@@ -864,7 +883,8 @@
 
     const body = document.getElementById("listBody");
     body.innerHTML = "";
-    for (let i = 0; i < entries.length; i++) {
+    // 新しく投稿したものほど上に表示
+    for (let i = entries.length - 1; i >= 0; i--) {
       const e = entries[i];
       const eKind = kindName(e.kind);
       if (eKind !== listKind) continue;
@@ -910,14 +930,24 @@
       ti.oninput = () => { pend.title = ti.value; markDirty(); };
       tdTitle.appendChild(ti);
 
+      const tdGenre = document.createElement("td");
+      const renderGenreCell = () => {
+        tdGenre.innerHTML = "";
+        tdGenre.appendChild(makeGenreSelect(pend.genre, v => { pend.genre = v; markDirty(); }, pend.kind));
+      };
+
       const tdKind = document.createElement("td");
-      tdKind.appendChild(makeKindSelect(pend.kind, v => { pend.kind = v; markDirty(); }));
+      tdKind.appendChild(makeKindSelect(pend.kind, v => {
+        pend.kind = v;
+        if (pend.genre && !currentGenres(v).includes(pend.genre)) pend.genre = "";
+        renderGenreCell();
+        markDirty();
+      }));
 
       const tdSeason = document.createElement("td");
       tdSeason.appendChild(makeSeasonSelect(pend.season, v => { pend.season = v; markDirty(); }, true));
 
-      const tdGenre = document.createElement("td");
-      tdGenre.appendChild(makeGenreSelect(pend.genre, v => { pend.genre = v; markDirty(); }));
+      renderGenreCell();
 
       const tdDiff = document.createElement("td");
       tdDiff.appendChild(makeDiffSelect(pend.diff, v => { pend.diff = v; markDirty(); }, eKind !== "カレンダー"));
