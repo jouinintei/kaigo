@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>介護のレクプリ 管理ページ(フォルダ版)</title>
+<style>
+  :root {
+    --bg: #faf6ef;
+    --card: #ffffff;
+    --ink: #3a3a3a;
+    --accent: #e8833a;
+    --accent-soft: #fbe3cf;
+    --line: #e5ddd0;
+    --ok: #4a9b6e;
+    --ng: #c05a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Maru Gothic ProN", "BIZ UDGothic", "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    padding-bottom: 80px;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 3px solid var(--accent);
+    padding: 18px 24px;
+    text-align: center;
+  }
+  header h1 { font-size: 24px; letter-spacing: 3px; color: var(--accent); }
+  header p { font-size: 14px; color: #8a8477; margin-top: 2px; }
+  header a { color: var(--accent); }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+    margin-top: 18px;
+  }
+  .panel h2 {
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .hint { font-size: 14px; color: #8a8477; }
+
+  button, select, input {
+    font-family: inherit;
+    font-size: 15px;
+  }
+  .big-btn {
+    display: inline-block;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+  }
+  .big-btn:hover { background: #d3722c; }
+  .big-btn.green { background: var(--ok); }
+  .big-btn.green:hover { background: #3f8a5f; }
+  .big-btn:disabled { background: #ccc5b8; cursor: default; }
+
+  .status { margin-top: 10px; font-size: 15px; font-weight: bold; }
+  .status.ok { color: var(--ok); }
+  .status.ng { color: var(--ng); }
+
+  /* ドロップゾーン */
+  .drop {
+    border: 3px dashed var(--line);
+    border-radius: 12px;
+    padding: 34px 20px;
+    text-align: center;
+    color: #a09a8c;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all .15s;
+    margin-top: 12px;
+  }
+  .drop.over, .drop:hover { border-color: var(--accent); background: #fdf4ea; color: var(--accent); }
+
+  /* 一括設定 */
+  .bulk {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 14px;
+    padding: 12px;
+    background: #f6f1e7;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .bulk select { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; }
+  .bulk button {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #8a8477;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  /* 追加リスト・既存リスト */
+  table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+  th, td {
+    text-align: left;
+    padding: 8px 8px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14.5px;
+    vertical-align: middle;
+  }
+  th { color: #8a8477; font-size: 13px; }
+  td img.pv {
+    width: 90px;
+    aspect-ratio: 297/210;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  td input[type=text] {
+    width: 100%;
+    padding: 7px 9px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  td select { padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; }
+  .del-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #f0e3e3;
+    color: var(--ng);
+    cursor: pointer;
+  }
+  .del-btn:hover { background: var(--ng); color: #fff; }
+  .upd-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #e2ece5;
+    color: var(--ok);
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 6px;
+  }
+  .upd-btn:hover { background: var(--ok); color: #fff; }
+  .upd-btn.dirty {
+    background: var(--ok);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(74,155,110,.25);
+  }
+  .mini-btn {
+    display: block;
+    padding: 4px 10px;
+    margin-top: 5px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #faf7f0;
+    color: #6b6455;
+    cursor: pointer;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .mini-btn:hover { border-color: var(--accent); color: var(--accent); }
+  td img.pv-ans {
+    width: 60px;
+    aspect-ratio: 297/210;
+    object-fit: contain;
+    background: #fff;
+    border: 2px solid var(--ok);
+    border-radius: 6px;
+    display: block;
+    margin-top: 4px;
+  }
+  .ans-label { font-size: 11px; color: var(--ok); font-weight: bold; }
+
+  .list-tabs { display: flex; gap: 8px; margin: 10px 0 4px; }
+  .ltab {
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 9px 24px;
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: #8a8477;
+    cursor: pointer;
+  }
+  .ltab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .missing { color: var(--ng); font-weight: bold; }
+
+  .savebar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,.95);
+    border-top: 2px solid var(--line);
+    padding: 12px 20px;
+    text-align: center;
+    display: none;
+  }
+  .savebar.show { display: block; }
+
+  .notsupported {
+    background: #f7e3e3;
+    border: 1px solid #e0b9b9;
+    color: #8a3f3f;
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 18px;
+    display: none;
+  }
+
+  /* ---- パスワード入口 ---- */
+  #lockScreen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .lock-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 5px solid var(--accent);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    padding: 36px 34px 32px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  .lock-box h2 { font-size: 22px; color: var(--accent); margin-bottom: 4px; }
+  .lock-box p { font-size: 14px; color: #8a8477; margin-bottom: 20px; }
+  .lock-box input {
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 4px;
+    width: 100%;
+    padding: 11px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .lock-box input:focus { outline: none; border-color: var(--accent); }
+  .lock-error { color: var(--ng); font-size: 14px; margin-top: 12px; min-height: 20px; font-weight: bold; }
+  body.locked > *:not(#lockScreen) { display: none !important; }
+
+  /* ---- スマホ向け調整 ---- */
+  @media (max-width: 600px) {
+    .wrap { padding: 12px; }
+    .panel { padding: 16px 12px; }
+    table { display: block; overflow-x: auto; white-space: nowrap; }
+    td input[type=text] { min-width: 120px; }
+  }
+</style>
+</head>
+<body class="locked">
+
+<div id="lockScreen">
+  <div class="lock-box">
+    <h2>管理ページ</h2>
+    <p>パスワードを入力してください</p>
+    <input type="password" id="pwInput" autocomplete="off">
+    <button class="big-btn" id="pwBtn" style="width:100%">開く</button>
+    <div class="lock-error" id="pwError"></div>
+  </div>
+</div>
+
+<header>
+  <h1>管理ページ</h1>
+  <p>フォルダ版(PC専用の予備) | <a href="index.html">← ギャラリーに戻る</a></p>
+</header>
+
+<div class="wrap">
+
+  <div class="notsupported" id="notSupported">
+    このブラウザは管理ページのフォルダ機能に対応していません。
+    <b>Google Chrome</b> または <b>Microsoft Edge</b> で開いてください。
+  </div>
+
+  <div class="panel" id="stepConnect">
+    <h2>1. フォルダを選ぶ</h2>
+    <p class="hint">
+      最初に、このギャラリーのフォルダ(index.htmlが入っているフォルダ)を選んでください。<br>
+      「変更を保存しますか?」と聞かれたら「変更を保存」を押してください。
+    </p>
+    <p style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
+      <button class="big-btn" id="pickBtn">📂 フォルダを選ぶ</button>
+      <button class="big-btn green" id="reuseBtn" style="display:none">↩ 前回のフォルダを使う</button>
+    </p>
+    <div class="status" id="pickStatus"></div>
+  </div>
+
+  <div class="panel" id="stepAdd" style="display:none">
+    <h2>2. 塗り絵を追加する</h2>
+    <p class="hint">画像をここにドラッグ&ドロップするか、クリックして選んでください(複数まとめてOK)。<br>
+    ファイル名が「ひまわり 初級.png」のようになっていると、お題と難しさを自動で読み取ります。</p>
+    <div class="drop" id="dropZone">ここに画像をドロップ / クリックで選択</div>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+
+    <div class="bulk" id="bulkBar" style="display:none">
+      まとめて設定:
+      <select id="bulkKind">
+        <option value="">種類を選ぶ</option>
+        <option>塗り絵</option><option>脳トレ</option>
+      </select>
+      <select id="bulkSeason">
+        <option value="">季節を選ぶ</option>
+        <option>春</option><option>夏</option><option>秋</option><option>冬</option><option>通年</option>
+      </select>
+      <select id="bulkGenre"><option value="">ジャンルを選ぶ</option></select>
+      <select id="bulkDiff">
+        <option value="">難しさを選ぶ</option>
+        <option>初級</option><option>中級</option><option>上級</option>
+      </select>
+      <button id="bulkApply">全部に適用</button>
+    </div>
+
+    <table id="newTable" style="display:none">
+      <thead><tr><th>画像</th><th style="width:22%">お題</th><th>種類</th><th>季節</th><th>ジャンル</th><th>難しさ</th><th></th></tr></thead>
+      <tbody id="newBody"></tbody>
+    </table>
+  </div>
+
+  <div class="panel" id="stepList" style="display:none">
+    <h2>3. 登録済みの一覧 <span class="status ok" id="listStatus" style="font-size:14px; font-weight:normal"></span></h2>
+    <p class="hint">お題・種類・季節・ジャンル(風物詩/風景など)・難しさをこの場で書きかえて、
+    その行の「更新」ボタンを押すと保存されます(変更があると更新ボタンが緑に光ります)。<br>
+    「削除」で一覧から外せます(画像ファイル自体は消えません)。ギャラリー側は開き直す(🔄 更新ボタン)と反映されます。<br>
+    「答えを設定」を押すと答えの画像を選べて、同じカードにセットされます(脳トレの問題・答えのペアに)。</p>
+    <div class="list-tabs">
+      <button class="ltab active" id="ltabNurie">塗り絵</button>
+      <button class="ltab" id="ltabNoutore">脳トレ</button>
+      <button class="ltab" id="ltabCal">カレンダー</button>
+    </div>
+    <table>
+      <thead><tr><th>画像</th><th>お題</th><th>種類</th><th>季節</th><th>ジャンル</th><th>難しさ</th><th></th></tr></thead>
+      <tbody id="listBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="savebar" id="saveBar">
+  <button class="big-btn green" id="saveBtn">💾 追加した塗り絵を保存する</button>
+  <span class="status" id="saveStatus" style="margin-left:12px"></span>
+</div>
+
+<datalist id="genreList"></datalist>
+
+<script>
+(function () {
+  // ==========================================================
+  //  管理ページのパスワード
+  //  下の "" の中を書きかえると変更できます。
+  //  ("" を空っぽにするとパスワード画面なしになります)
+  // ==========================================================
+  const ADMIN_PASSWORD = "1234";
+
+  // ---- パスワード入口 ----
+  (function () {
+    const lock = document.getElementById("lockScreen");
+    function unlock() {
+      document.body.classList.remove("locked");
+      lock.style.display = "none";
+      try { sessionStorage.setItem("nurie_admin_unlocked", "1"); } catch (e) {}
+    }
+    function tryPw() {
+      if (document.getElementById("pwInput").value === ADMIN_PASSWORD) { unlock(); }
+      else {
+        document.getElementById("pwError").textContent = "パスワードがちがいます";
+        document.getElementById("pwInput").value = "";
+        document.getElementById("pwInput").focus();
+      }
+    }
+    let done = false;
+    try { done = sessionStorage.getItem("nurie_admin_unlocked") === "1"; } catch (e) {}
+    if (!ADMIN_PASSWORD || done) { unlock(); return; }
+    document.getElementById("pwBtn").onclick = tryPw;
+    document.getElementById("pwInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") tryPw();
+    });
+    setTimeout(() => document.getElementById("pwInput").focus(), 100);
+  })();
+
+  const DEFAULT_GENRES = ["花", "動物", "食べ物", "行事", "風景", "風物詩", "ことわざ"];
+  let dirHandle = null;
+  let imagesHandle = null;
+  let entries = [];      // 登録済み
+  let newItems = [];     // これから追加する分
+  let listKind = "塗り絵";  // 一覧の表示切り替え
+
+  // ---- 対応チェック ----
+  if (!window.showDirectoryPicker) {
+    document.getElementById("notSupported").style.display = "block";
+    document.getElementById("pickBtn").disabled = true;
+  }
+
+  // ---- data.js の読み書き ----
+  async function readDataJs() {
+    const fh = await dirHandle.getFileHandle("data.js");
+    const text = await (await fh.getFile()).text();
+    const w = {};
+    try { new Function("window", text)(w); } catch (e) { throw new Error("data.jsが読み取れません: " + e.message); }
+    return w.NURIE_LIST || [];
+  }
+  function esc(s) { return String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"'); }
+  function genDataJs() {
+    let s = "// ============================================================\n";
+    s += "//  塗り絵・脳トレの登録リスト\n";
+    s += "//  ※ このファイルは管理ページ(admin.html)から自動で更新されます。\n";
+    s += "//    メモ帳で直接編集してもOKです。書き方:\n";
+    s += '//    { season: "季節", genre: "ジャンル", title: "お題", diff: "初級/中級/上級", file: "ファイル名" },\n';
+    s += '//    脳トレのページに載せるものは行の先頭に kind: "脳トレ", を足します\n';
+    s += "// ============================================================\n\n";
+    s += "window.NURIE_LIST = [\n";
+    entries.forEach(e => {
+      s += '  { ' +
+           (e.kind ? 'kind: "' + esc(e.kind) + '", ' : "") +
+           (e.year ? 'year: ' + parseInt(e.year, 10) + ', ' : "") +
+           (e.month ? 'month: ' + parseInt(e.month, 10) + ', ' : "") +
+           'season: "' + esc(e.season) + '", ' +
+           (e.genre ? 'genre: "' + esc(e.genre) + '", ' : "") +
+           'title: "' + esc(e.title) + '", ' +
+           (e.diff ? 'diff: "' + esc(e.diff) + '", ' : "") +
+           'file: "' + esc(e.file) + '"' +
+           (e.answer ? ', answer: "' + esc(e.answer) + '"' : "") +
+           ' },\n';
+    });
+    s += "];\n";
+    return s;
+  }
+  async function writeDataJs() {
+    const fh = await dirHandle.getFileHandle("data.js", { create: true });
+    const w = await fh.createWritable();
+    await w.write(genDataJs());
+    await w.close();
+  }
+
+  // ---- 前回フォルダの記憶 (IndexedDB) ----
+  function idbOpen() {
+    return new Promise((res, rej) => {
+      const r = indexedDB.open("nurie_admin", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("kv");
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async function idbSet(k, v) {
+    const db = await idbOpen();
+    return new Promise((res, rej) => {
+      const tx = db.transaction("kv", "readwrite");
+      tx.objectStore("kv").put(v, k);
+      tx.oncomplete = () => res();
+      tx.onerror = () => rej(tx.error);
+    });
+  }
+  async function idbGet(k) {
+    const db = await idbOpen();
+    return new Promise((res, rej) => {
+      const rq = db.transaction("kv").objectStore("kv").get(k);
+      rq.onsuccess = () => res(rq.result);
+      rq.onerror = () => rej(rq.error);
+    });
+  }
+
+  // ---- フォルダ選択 ----
+  async function useDir() {
+    const st = document.getElementById("pickStatus");
+    try {
+      await dirHandle.getFileHandle("data.js");
+      imagesHandle = await dirHandle.getDirectoryHandle("images");
+    } catch (e) {
+      st.className = "status ng";
+      st.textContent = "このフォルダにはギャラリーが見つかりません。index.htmlが入っているフォルダを選んでください。";
+      dirHandle = null;
+      return;
+    }
+    entries = await readDataJs();
+    st.className = "status ok";
+    st.textContent = "✓ 読み込みました(現在 " + entries.length + " 枚 登録されています)";
+    document.getElementById("stepAdd").style.display = "block";
+    document.getElementById("stepList").style.display = "block";
+    buildGenreOptions();
+    renderList();
+    try { await idbSet("dir", dirHandle); } catch (e) {}
+  }
+
+  document.getElementById("pickBtn").onclick = async () => {
+    const st = document.getElementById("pickStatus");
+    try {
+      dirHandle = await window.showDirectoryPicker({ mode: "readwrite" });
+      await useDir();
+    } catch (e) {
+      if (e.name !== "AbortError") {
+        st.className = "status ng";
+        st.textContent = "フォルダを開けませんでした: " + e.message;
+      }
+    }
+  };
+
+  // 前回のフォルダがあればワンクリックボタンを表示
+  (async () => {
+    try {
+      const h = await idbGet("dir");
+      if (!h) return;
+      const btn = document.getElementById("reuseBtn");
+      btn.style.display = "inline-block";
+      btn.onclick = async () => {
+        const st = document.getElementById("pickStatus");
+        try {
+          const perm = await h.requestPermission({ mode: "readwrite" });
+          if (perm !== "granted") {
+            st.className = "status ng";
+            st.textContent = "アクセスが許可されませんでした。「フォルダを選ぶ」から選び直してください。";
+            return;
+          }
+          dirHandle = h;
+          await useDir();
+        } catch (e) {
+          st.className = "status ng";
+          st.textContent = "前回のフォルダを開けませんでした(移動・削除された可能性があります)。「フォルダを選ぶ」から選び直してください。";
+        }
+      };
+    } catch (e) {}
+  })();
+
+  function currentGenres() {
+    const g = [];
+    DEFAULT_GENRES.forEach(x => g.push(x));
+    entries.forEach(e => { if (e.genre && !g.includes(e.genre)) g.push(e.genre); });
+    return g;
+  }
+  function buildGenreOptions() {
+    const dl = document.getElementById("genreList");
+    dl.innerHTML = "";
+    const bulk = document.getElementById("bulkGenre");
+    bulk.innerHTML = '<option value="">ジャンルを選ぶ</option>';
+    currentGenres().forEach(g => {
+      const o = document.createElement("option");
+      o.value = g;
+      dl.appendChild(o);
+      const o2 = document.createElement("option");
+      o2.textContent = g;
+      bulk.appendChild(o2);
+    });
+  }
+
+  // ---- ファイル追加 ----
+  const drop = document.getElementById("dropZone");
+  const fileInput = document.getElementById("fileInput");
+  drop.onclick = () => fileInput.click();
+  drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+  drop.ondragleave = () => drop.classList.remove("over");
+  drop.ondrop = e => {
+    e.preventDefault();
+    drop.classList.remove("over");
+    addFiles(e.dataTransfer.files);
+  };
+  fileInput.onchange = () => { addFiles(fileInput.files); fileInput.value = ""; };
+
+  function guess(name) {
+    const base = name.replace(/\.[^.]+$/, "");
+    const parts = base.replace(/　/g, " ").trim().split(/\s+/);
+    let diff = "";
+    let title = base;
+    if (parts.length >= 2 && ["初級", "中級", "上級"].includes(parts[parts.length - 1])) {
+      diff = parts[parts.length - 1];
+      title = parts.slice(0, -1).join(" ");
+    }
+    return { title: title, diff: diff };
+  }
+
+  function addFiles(files) {
+    for (const f of files) {
+      if (!f.type.startsWith("image/")) continue;
+      const g = guess(f.name);
+      newItems.push({
+        blob: f,
+        origName: f.name,
+        title: g.title,
+        kind: "塗り絵",
+        season: "",
+        genre: "",
+        diff: g.diff,
+        url: URL.createObjectURL(f)
+      });
+    }
+    renderNew();
+  }
+
+  function makeSeasonSelect(value, onChange, noEmpty) {
+    const sel = document.createElement("select");
+    (noEmpty ? ["春", "夏", "秋", "冬", "通年"] : ["", "春", "夏", "秋", "冬", "通年"]).forEach(s => {
+      const o = document.createElement("option");
+      o.value = s;
+      o.textContent = s === "" ? "選ぶ" : s;
+      sel.appendChild(o);
+    });
+    sel.value = value;
+    sel.onchange = () => onChange(sel.value);
+    return sel;
+  }
+  // ジャンルは選択式 (「＋新しいジャンル…」で自由入力もできる)
+  function makeGenreSelect(value, onChange) {
+    const wrap = document.createElement("span");
+    const sel = document.createElement("select");
+    const opts = currentGenres();
+    if (value && !opts.includes(value)) opts.push(value);
+    const addOpt = (v, label) => {
+      const o = document.createElement("option");
+      o.value = v;
+      o.textContent = label || v;
+      sel.appendChild(o);
+    };
+    addOpt("", "(なし)");
+    opts.forEach(g => addOpt(g));
+    addOpt("__new__", "＋新しいジャンル…");
+    sel.value = value || "";
+    sel.onchange = () => {
+      if (sel.value === "__new__") {
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.placeholder = "新しいジャンル名";
+        wrap.replaceChild(inp, sel);
+        inp.focus();
+        inp.oninput = () => onChange(inp.value.trim());
+      } else {
+        onChange(sel.value);
+      }
+    };
+    wrap.appendChild(sel);
+    return wrap;
+  }
+
+  function kindName(v) {
+    return (v === "脳トレ" || v === "カレンダー") ? v : "塗り絵";
+  }
+  function makeKindSelect(value, onChange) {
+    const sel = document.createElement("select");
+    ["塗り絵", "脳トレ", "カレンダー"].forEach(s => {
+      const o = document.createElement("option");
+      o.value = s;
+      o.textContent = s;
+      sel.appendChild(o);
+    });
+    sel.value = kindName(value);
+    sel.onchange = () => onChange(sel.value);
+    return sel;
+  }
+  function makeDiffSelect(value, onChange, noEmpty) {
+    const sel = document.createElement("select");
+    (noEmpty ? ["初級", "中級", "上級"] : ["", "初級", "中級", "上級"]).forEach(s => {
+      const o = document.createElement("option");
+      o.value = s;
+      o.textContent = s === "" ? "選ぶ" : s;
+      sel.appendChild(o);
+    });
+    sel.value = value;
+    sel.onchange = () => onChange(sel.value);
+    return sel;
+  }
+
+  function renderNew() {
+    const table = document.getElementById("newTable");
+    const body = document.getElementById("newBody");
+    const bulk = document.getElementById("bulkBar");
+    body.innerHTML = "";
+    table.style.display = newItems.length ? "table" : "none";
+    bulk.style.display = newItems.length ? "flex" : "none";
+    document.getElementById("saveBar").classList.toggle("show", newItems.length > 0);
+
+    newItems.forEach((it, i) => {
+      const tr = document.createElement("tr");
+
+      const tdImg = document.createElement("td");
+      const img = document.createElement("img");
+      img.className = "pv";
+      img.src = it.url;
+      tdImg.appendChild(img);
+
+      const tdTitle = document.createElement("td");
+      const inp = document.createElement("input");
+      inp.type = "text";
+      inp.value = it.title;
+      inp.oninput = () => it.title = inp.value;
+      tdTitle.appendChild(inp);
+
+      const tdKind = document.createElement("td");
+      tdKind.appendChild(makeKindSelect(it.kind, v => it.kind = v));
+
+      const tdSeason = document.createElement("td");
+      tdSeason.appendChild(makeSeasonSelect(it.season, v => it.season = v));
+
+      const tdGenre = document.createElement("td");
+      tdGenre.appendChild(makeGenreSelect(it.genre, v => it.genre = v));
+
+      const tdDiff = document.createElement("td");
+      tdDiff.appendChild(makeDiffSelect(it.diff, v => it.diff = v));
+
+      const tdDel = document.createElement("td");
+      const del = document.createElement("button");
+      del.className = "del-btn";
+      del.textContent = "外す";
+      del.onclick = () => { newItems.splice(i, 1); renderNew(); };
+      tdDel.appendChild(del);
+      // 答え画像の選択
+      const af = document.createElement("input");
+      af.type = "file";
+      af.accept = "image/*";
+      af.style.display = "none";
+      af.onchange = () => {
+        if (af.files[0]) {
+          it.answerBlob = af.files[0];
+          it.answerName = af.files[0].name;
+          renderNew();
+        }
+      };
+      const ab = document.createElement("button");
+      ab.className = "mini-btn";
+      ab.textContent = it.answerName ? "答え: あり ✓" : "答えを設定";
+      ab.title = it.answerName || "答えの画像を選ぶ";
+      ab.onclick = () => af.click();
+      tdDel.appendChild(ab);
+      tdDel.appendChild(af);
+
+      tr.appendChild(tdImg);
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdKind);
+      tr.appendChild(tdSeason);
+      tr.appendChild(tdGenre);
+      tr.appendChild(tdDiff);
+      tr.appendChild(tdDel);
+      body.appendChild(tr);
+    });
+  }
+
+  // ---- 一括設定 ----
+  document.getElementById("bulkApply").onclick = () => {
+    const k = document.getElementById("bulkKind").value;
+    const s = document.getElementById("bulkSeason").value;
+    const g = document.getElementById("bulkGenre").value;
+    const d = document.getElementById("bulkDiff").value;
+    newItems.forEach(it => {
+      if (k) it.kind = k;
+      if (s) it.season = s;
+      if (g) it.genre = g;
+      if (d) it.diff = d;
+    });
+    renderNew();
+  };
+
+  // ---- 保存 ----
+  async function uniqueFileName(name) {
+    const existsIn = async (n) => {
+      try { await imagesHandle.getFileHandle(n); return true; }
+      catch (e) { return false; }
+    };
+    if (!(await existsIn(name)) && !entries.some(e => e.file === name)) return name;
+    const dot = name.lastIndexOf(".");
+    const stem = dot >= 0 ? name.slice(0, dot) : name;
+    const ext = dot >= 0 ? name.slice(dot) : "";
+    let i = 2;
+    while ((await existsIn(stem + "_" + i + ext)) || entries.some(e => e.file === stem + "_" + i + ext)) i++;
+    return stem + "_" + i + ext;
+  }
+
+  document.getElementById("saveBtn").onclick = async () => {
+    const st = document.getElementById("saveStatus");
+    // 入力チェック (カレンダーはお題だけでOK)
+    for (const it of newItems) {
+      if (it.kind === "カレンダー") {
+        if (!it.title) {
+          st.className = "status ng";
+          st.textContent = "お題が空欄のものがあります";
+          return;
+        }
+        if (!it.season) it.season = "通年";
+        // タイトルから年月を読み取る (例: 「2026年10月カレンダー」「10月カレンダー」)
+        const m = String(it.title).match(/(\d{1,2})月/);
+        if (m) it.month = parseInt(m[1], 10);
+        const y = String(it.title).match(/(20\d{2})年/);
+        it.year = y ? parseInt(y[1], 10) : new Date().getFullYear();
+      } else if (!it.title || !it.season || !it.diff) {
+        st.className = "status ng";
+        st.textContent = "お題・季節・難しさが空欄のものがあります";
+        return;
+      }
+    }
+    st.className = "status";
+    st.textContent = "保存中...";
+    try {
+      for (const it of newItems) {
+        const name = await uniqueFileName(it.origName);
+        const fh = await imagesHandle.getFileHandle(name, { create: true });
+        const w = await fh.createWritable();
+        await w.write(await it.blob.arrayBuffer());
+        await w.close();
+        const entry = { season: it.season, genre: it.genre, title: it.title, diff: it.diff, file: name };
+        if (it.kind === "脳トレ" || it.kind === "カレンダー") entry.kind = it.kind;
+        if (it.month) entry.month = it.month;
+        if (it.year) entry.year = it.year;
+        if (it.answerBlob) {
+          const ansName = await uniqueFileName(it.answerName);
+          const afh = await imagesHandle.getFileHandle(ansName, { create: true });
+          const aw = await afh.createWritable();
+          await aw.write(await it.answerBlob.arrayBuffer());
+          await aw.close();
+          entry.answer = ansName;
+        }
+        entries.push(entry);
+      }
+      await writeDataJs();
+      const n = newItems.length;
+      newItems.forEach(it => URL.revokeObjectURL(it.url));
+      newItems = [];
+      renderNew();
+      renderList();
+      buildGenreOptions();
+      st.className = "status ok";
+      st.textContent = "";
+      alertOk(n + " 枚 追加しました!ギャラリーを開き直すと表示されます。");
+    } catch (e) {
+      st.className = "status ng";
+      st.textContent = "保存できませんでした: " + e.message;
+    }
+  };
+
+  function alertOk(msg) {
+    const st = document.getElementById("pickStatus");
+    st.className = "status ok";
+    st.textContent = "✓ " + msg + "(現在 " + entries.length + " 枚)";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // ---- 既存一覧 (その場で編集可) ----
+  let listStatusTimer = null;
+  function listStatus(msg, isError) {
+    const el = document.getElementById("listStatus");
+    el.className = "status " + (isError ? "ng" : "ok");
+    el.textContent = msg;
+    if (listStatusTimer) clearTimeout(listStatusTimer);
+    if (!isError) listStatusTimer = setTimeout(() => { el.textContent = ""; }, 2500);
+  }
+  // 一覧の塗り絵/脳トレ/カレンダー切り替え
+  document.getElementById("ltabNurie").onclick = () => { listKind = "塗り絵"; renderList(); };
+  document.getElementById("ltabNoutore").onclick = () => { listKind = "脳トレ"; renderList(); };
+  document.getElementById("ltabCal").onclick = () => { listKind = "カレンダー"; renderList(); };
+
+  async function renderList() {
+    const counts = { "塗り絵": 0, "脳トレ": 0, "カレンダー": 0 };
+    entries.forEach(e => counts[kindName(e.kind)]++);
+    const tabs = [
+      ["ltabNurie", "塗り絵"], ["ltabNoutore", "脳トレ"], ["ltabCal", "カレンダー"]
+    ];
+    tabs.forEach(([id, k]) => {
+      const t = document.getElementById(id);
+      t.textContent = k + " (" + counts[k] + ")";
+      t.classList.toggle("active", listKind === k);
+    });
+
+    const body = document.getElementById("listBody");
+    body.innerHTML = "";
+    for (let i = 0; i < entries.length; i++) {
+      const e = entries[i];
+      const eKind = kindName(e.kind);
+      if (eKind !== listKind) continue;
+      const tr = document.createElement("tr");
+
+      // 編集内容はいったんここに貯めて、「更新」ボタンで保存する
+      const pend = {
+        title: e.title,
+        kind: kindName(e.kind),
+        season: e.season,
+        genre: e.genre || "",
+        diff: e.diff || ""
+      };
+
+      const tdImg = document.createElement("td");
+      const img = document.createElement("img");
+      img.className = "pv";
+      try {
+        const fh = await imagesHandle.getFileHandle(e.file);
+        img.src = URL.createObjectURL(await fh.getFile());
+      } catch (err) {
+        tdImg.innerHTML = '<span class="missing">画像なし</span>';
+      }
+      if (img.src) tdImg.appendChild(img);
+      // 答え画像のプレビュー
+      if (e.answer) {
+        const lab = document.createElement("div");
+        lab.className = "ans-label";
+        lab.textContent = "▼答え";
+        tdImg.appendChild(lab);
+        const aimg = document.createElement("img");
+        aimg.className = "pv-ans";
+        try {
+          const afh = await imagesHandle.getFileHandle(e.answer);
+          aimg.src = URL.createObjectURL(await afh.getFile());
+          tdImg.appendChild(aimg);
+        } catch (err) {
+          const miss = document.createElement("span");
+          miss.className = "missing";
+          miss.textContent = "答え画像なし";
+          tdImg.appendChild(miss);
+        }
+      }
+
+      const updBtn = document.createElement("button");
+      updBtn.className = "upd-btn";
+      updBtn.textContent = "更新";
+      const markDirty = () => { updBtn.classList.add("dirty"); };
+
+      const tdTitle = document.createElement("td");
+      const ti = document.createElement("input");
+      ti.type = "text";
+      ti.value = pend.title;
+      ti.oninput = () => { pend.title = ti.value; markDirty(); };
+      tdTitle.appendChild(ti);
+
+      const tdKind = document.createElement("td");
+      tdKind.appendChild(makeKindSelect(pend.kind, v => { pend.kind = v; markDirty(); }));
+
+      const tdSeason = document.createElement("td");
+      tdSeason.appendChild(makeSeasonSelect(pend.season, v => { pend.season = v; markDirty(); }, true));
+
+      const tdGenre = document.createElement("td");
+      tdGenre.appendChild(makeGenreSelect(pend.genre, v => { pend.genre = v; markDirty(); }));
+
+      const tdDiff = document.createElement("td");
+      tdDiff.appendChild(makeDiffSelect(pend.diff, v => { pend.diff = v; markDirty(); }, eKind !== "カレンダー"));
+
+      const tdOps = document.createElement("td");
+      updBtn.onclick = async () => {
+        if (!pend.title.trim()) { listStatus("お題が空欄です", true); return; }
+        e.title = pend.title.trim();
+        e.season = pend.season;
+        e.genre = pend.genre.trim();
+        if (pend.diff) e.diff = pend.diff; else delete e.diff;
+        if (pend.kind === "塗り絵") delete e.kind; else e.kind = pend.kind;
+        // カレンダーはお題から年月を読み取り直す (例: 「2026年11月カレンダー」)
+        if (pend.kind === "カレンダー") {
+          const m = e.title.match(/(\d{1,2})月/);
+          if (m) e.month = parseInt(m[1], 10);
+          const y = e.title.match(/(20\d{2})年/);
+          if (y) e.year = parseInt(y[1], 10);
+          else if (!e.year) e.year = new Date().getFullYear();
+        } else {
+          delete e.month;
+          delete e.year;
+        }
+        try {
+          await writeDataJs();
+          buildGenreOptions();
+          updBtn.classList.remove("dirty");
+          listStatus("✓ 「" + e.title + "」を更新して保存しました");
+        } catch (err) {
+          listStatus("保存できませんでした: " + err.message, true);
+        }
+      };
+      const del = document.createElement("button");
+      del.className = "del-btn";
+      del.textContent = "削除";
+      del.onclick = async () => {
+        if (!window.confirm("「" + e.title + "(" + e.diff + ")」を一覧から削除しますか?")) return;
+        entries.splice(i, 1);
+        await writeDataJs();
+        renderList();
+        alertOk("削除して保存しました。");
+      };
+      tdOps.appendChild(updBtn);
+      tdOps.appendChild(del);
+      // 答えの設定・差し替え・解除
+      const ansInput = document.createElement("input");
+      ansInput.type = "file";
+      ansInput.accept = "image/*";
+      ansInput.style.display = "none";
+      ansInput.onchange = async () => {
+        const f = ansInput.files[0];
+        if (!f) return;
+        try {
+          const ansName = await uniqueFileName(f.name);
+          const afh = await imagesHandle.getFileHandle(ansName, { create: true });
+          const aw = await afh.createWritable();
+          await aw.write(await f.arrayBuffer());
+          await aw.close();
+          e.answer = ansName;
+          await writeDataJs();
+          renderList();
+          listStatus("✓ 「" + e.title + "」に答えをセットしました");
+        } catch (err) {
+          listStatus("答えを保存できませんでした: " + err.message, true);
+        }
+      };
+      const ansBtn = document.createElement("button");
+      ansBtn.className = "mini-btn";
+      ansBtn.textContent = e.answer ? "答えを差し替え" : "答えを設定";
+      ansBtn.onclick = () => ansInput.click();
+      tdOps.appendChild(ansBtn);
+      tdOps.appendChild(ansInput);
+      if (e.answer) {
+        const ansOff = document.createElement("button");
+        ansOff.className = "mini-btn";
+        ansOff.textContent = "答えを外す";
+        ansOff.onclick = async () => {
+          if (!window.confirm("「" + e.title + "」の答えを外しますか?(画像ファイルは残ります)")) return;
+          delete e.answer;
+          await writeDataJs();
+          renderList();
+          listStatus("✓ 答えを外しました");
+        };
+        tdOps.appendChild(ansOff);
+      }
+
+      tr.appendChild(tdImg);
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdKind);
+      tr.appendChild(tdSeason);
+      tr.appendChild(tdGenre);
+      tr.appendChild(tdDiff);
+      tr.appendChild(tdOps);
+      body.appendChild(tr);
+    }
+  }
+})();
+</script>
+</body>
+</html>

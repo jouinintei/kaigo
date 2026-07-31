@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>介護のレクプリ 管理ページ</title>
+<style>
+  :root {
+    --bg: #faf6ef;
+    --card: #ffffff;
+    --ink: #3a3a3a;
+    --accent: #e8833a;
+    --accent-soft: #fbe3cf;
+    --line: #e5ddd0;
+    --ok: #4a9b6e;
+    --ng: #c05a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Maru Gothic ProN", "BIZ UDGothic", "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    padding-bottom: 90px;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 3px solid var(--accent);
+    padding: 18px 24px;
+    text-align: center;
+  }
+  header h1 { font-size: 24px; letter-spacing: 3px; color: var(--accent); }
+  header p { font-size: 14px; color: #8a8477; margin-top: 2px; }
+  header a { color: var(--accent); }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+    margin-top: 18px;
+  }
+  .panel h2 { font-size: 18px; color: var(--accent); margin-bottom: 10px; }
+  .hint { font-size: 14px; color: #8a8477; }
+
+  button, select, input { font-family: inherit; font-size: 15px; }
+  .big-btn {
+    display: inline-block;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+  }
+  .big-btn:hover { background: #d3722c; }
+  .big-btn.green { background: var(--ok); }
+  .big-btn.green:hover { background: #3f8a5f; }
+  .big-btn:disabled { background: #ccc5b8; cursor: default; }
+
+  .status { margin-top: 10px; font-size: 15px; font-weight: bold; }
+  .status.ok { color: var(--ok); }
+  .status.ng { color: var(--ng); }
+
+  .cfg-grid { display: grid; grid-template-columns: 130px 1fr; gap: 10px; align-items: center; margin-top: 12px; max-width: 560px; }
+  .cfg-grid label { font-size: 14px; font-weight: bold; color: #8a8477; }
+  .cfg-grid input {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  .drop {
+    border: 3px dashed var(--line);
+    border-radius: 12px;
+    padding: 34px 20px;
+    text-align: center;
+    color: #a09a8c;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all .15s;
+    margin-top: 12px;
+  }
+  .drop.over, .drop:hover { border-color: var(--accent); background: #fdf4ea; color: var(--accent); }
+
+  .bulk {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 14px;
+    padding: 12px;
+    background: #f6f1e7;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .bulk select { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; }
+  .bulk button {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #8a8477;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+  th, td {
+    text-align: left;
+    padding: 8px 8px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14.5px;
+    vertical-align: middle;
+  }
+  th { color: #8a8477; font-size: 13px; }
+  td img.pv {
+    width: 90px;
+    aspect-ratio: 297/210;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  td img.pv-ans {
+    width: 60px;
+    aspect-ratio: 297/210;
+    object-fit: contain;
+    background: #fff;
+    border: 2px solid var(--ok);
+    border-radius: 6px;
+    display: block;
+    margin-top: 4px;
+  }
+  .ans-label { font-size: 11px; color: var(--ok); font-weight: bold; }
+  td input[type=text] {
+    width: 100%;
+    padding: 7px 9px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  td select { padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; }
+  .del-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #f0e3e3;
+    color: var(--ng);
+    cursor: pointer;
+  }
+  .del-btn:hover { background: var(--ng); color: #fff; }
+  .upd-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #e2ece5;
+    color: var(--ok);
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 6px;
+  }
+  .upd-btn:hover { background: var(--ok); color: #fff; }
+  .upd-btn.dirty {
+    background: var(--ok);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(74,155,110,.25);
+  }
+  .mini-btn {
+    display: block;
+    padding: 4px 10px;
+    margin-top: 5px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #faf7f0;
+    color: #6b6455;
+    cursor: pointer;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .mini-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .list-tabs { display: flex; gap: 8px; margin: 10px 0 4px; flex-wrap: wrap; }
+  .ltab {
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 9px 24px;
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: #8a8477;
+    cursor: pointer;
+  }
+  .ltab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .savebar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,.95);
+    border-top: 2px solid var(--line);
+    padding: 12px 20px;
+    text-align: center;
+    display: none;
+    z-index: 50;
+  }
+  .savebar.show { display: block; }
+
+  /* ---- パスワード入口 ---- */
+  #lockScreen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .lock-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 5px solid var(--accent);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    padding: 36px 34px 32px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  .lock-box h2 { font-size: 22px; color: var(--accent); margin-bottom: 4px; }
+  .lock-box p { font-size: 14px; color: #8a8477; margin-bottom: 20px; }
+  .lock-box input {
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 4px;
+    width: 100%;
+    padding: 11px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .lock-box input:focus { outline: none; border-color: var(--accent); }
+  .lock-error { color: var(--ng); font-size: 14px; margin-top: 12px; min-height: 20px; font-weight: bold; }
+  body.locked > *:not(#lockScreen) { display: none !important; }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 12px; }
+    .panel { padding: 16px 12px; }
+    table { display: block; overflow-x: auto; white-space: nowrap; }
+    td input[type=text] { min-width: 130px; }
+    .cfg-grid { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
+</head>
+<body class="locked">
+
+<div id="lockScreen">
+  <div class="lock-box">
+    <h2>管理ページ</h2>
+    <p>パスワードを入力してください</p>
+    <input type="password" id="pwInput" autocomplete="off">
+    <button class="big-btn" id="pwBtn" style="width:100%">開く</button>
+    <div class="lock-error" id="pwError"></div>
+  </div>
+</div>
+
+<header>
+  <h1>管理ページ</h1>
+  <p>スマホ・PCどこからでも投稿できます | <a href="index.html">← ギャラリーに戻る</a></p>
+</header>
+
+<div class="wrap">
+
+  <div class="panel" id="stepCfg">
+    <h2>1. 接続設定 <span class="status" id="cfgStatus" style="font-size:14px"></span></h2>
+    <p class="hint">
+      初回だけ、GitHubの情報を入力してください(この端末に記憶され、次回からは自動でつながります)。<br>
+      設定のしかたは同梱の「スマホ投稿の設定手順.txt」を見てください。
+    </p>
+    <div class="cfg-grid">
+      <label>ユーザー名</label><input type="text" id="cfgOwner" placeholder="例: saito-rekupuri">
+      <label>リポジトリ名</label><input type="text" id="cfgRepo" placeholder="例: kaigo-no-rekupuri">
+      <label>トークン</label><input type="password" id="cfgToken" placeholder="github_pat_ で始まる合鍵">
+    </div>
+    <p style="margin-top:14px">
+      <button class="big-btn" id="cfgBtn">接続する</button>
+    </p>
+  </div>
+
+  <div class="panel" id="stepAdd" style="display:none">
+    <h2>2. 投稿する</h2>
+    <p class="hint">画像を選んでください(複数まとめてOK。スマホなら写真から選べます)。<br>
+    ファイル名が「ひまわり 初級.png」のようになっていると、お題と難しさを自動で読み取ります。</p>
+    <div class="drop" id="dropZone">ここを押して画像を選ぶ(ドラッグ&ドロップもOK)</div>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+
+    <div class="bulk" id="bulkBar" style="display:none">
+      まとめて設定:
+      <select id="bulkKind">
+        <option value="">種類を選ぶ</option>
+        <option>塗り絵</option><option>脳トレ</option><option>カレンダー</option>
+      </select>
+      <select id="bulkSeason">
+        <option value="">季節を選ぶ</option>
+        <option>春</option><option>夏</option><option>秋</option><option>冬</option><option>通年</option>
+      </select>
+      <select id="bulkGenre"><option value="">ジャンルを選ぶ</option></select>
+      <select id="bulkDiff">
+        <option value="">難しさを選ぶ</option>
+        <option>初級</option><option>中級</option><option>上級</option>
+      </select>
+      <button id="bulkApply">全部に適用</button>
+    </div>
+
+    <table id="newTable" style="display:none">
+      <thead><tr><th>画像</th><th style="width:22%">お題</th><th>種類</th><th>季節</th><th>ジャンル</th><th>難しさ</th><th></th></tr></thead>
+      <tbody id="newBody"></tbody>
+    </table>
+  </div>
+
+  <div class="panel" id="stepList" style="display:none">
+    <h2>3. 登録済みの一覧 <span class="status ok" id="listStatus" style="font-size:14px; font-weight:normal"></span></h2>
+    <p class="hint">書きかえたら、その行の「更新」を押すと保存されます(変更があると更新ボタンが緑に光ります)。<br>
+    「答えを設定」で問題と答えをセットにできます。投稿・更新は1〜2分ほどでサイトに反映されます。</p>
+    <div class="list-tabs">
+      <button class="ltab active" id="ltabNurie">塗り絵</button>
+      <button class="ltab" id="ltabNoutore">脳トレ</button>
+      <button class="ltab" id="ltabCal">カレンダー</button>
+    </div>
+    <table>
+      <thead><tr><th>画像</th><th>お題</th><th>種類</th><th>季節</th><th>ジャンル</th><th>難しさ</th><th></th></tr></thead>
+      <tbody id="listBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="savebar" id="saveBar">
+  <button class="big-btn green" id="saveBtn">📤 投稿する</button>
+  <span class="status" id="saveStatus" style="margin-left:12px"></span>
+</div>
+
+<datalist id="genreList"></datalist>
+
+<script>
+(function () {
+  // ==========================================================
+  //  管理ページのパスワード ("" にすると画面なし)
+  // ==========================================================
+  const ADMIN_PASSWORD = "1234";
+
+  (function () {
+    const lock = document.getElementById("lockScreen");
+    function unlock() {
+      document.body.classList.remove("locked");
+      lock.style.display = "none";
+      try { sessionStorage.setItem("nurie_admin_unlocked", "1"); } catch (e) {}
+    }
+    function tryPw() {
+      if (document.getElementById("pwInput").value === ADMIN_PASSWORD) { unlock(); }
+      else {
+        document.getElementById("pwError").textContent = "パスワードがちがいます";
+        document.getElementById("pwInput").value = "";
+        document.getElementById("pwInput").focus();
+      }
+    }
+    let done = false;
+    try { done = sessionStorage.getItem("nurie_admin_unlocked") === "1"; } catch (e) {}
+    if (!ADMIN_PASSWORD || done) { unlock(); return; }
+    document.getElementById("pwBtn").onclick = tryPw;
+    document.getElementById("pwInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") tryPw();
+    });
+    setTimeout(() => document.getElementById("pwInput").focus(), 100);
+  })();
+
+  // ==========================================================
+  //  GitHub 連携 (投稿の保存先)
+  // ==========================================================
+  const CFG_KEY = "rekupuri_github_cfg";
+  const BRANCH = "main";
+  let cfg = null;         // { owner, repo, token }
+  let entries = [];
+  let dataSha = null;     // data.js の版札 (更新に必要)
+  let newItems = [];
+  let listKind = "塗り絵";
+  const DEFAULT_GENRES = ["花", "動物", "食べ物", "行事", "風景", "風物詩", "ことわざ", "漢字", "言葉遊び"];
+
+  function apiUrl(path) {
+    return "https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/contents/" + path;
+  }
+  async function gh(path, options) {
+    const opt = options || {};
+    opt.headers = Object.assign({
+      "Authorization": "Bearer " + cfg.token,
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    }, opt.headers || {});
+    const res = await fetch(apiUrl(path) + (opt.method ? "" : "?ref=" + BRANCH + "&t=" + Date.now()), opt);
+    if (!res.ok && res.status !== 404) {
+      const body = await res.text();
+      throw new Error("GitHub " + res.status + ": " + body.slice(0, 200));
+    }
+    return res;
+  }
+  // UTF-8 と base64 の変換
+  function b64encode(bytes) {
+    let bin = "";
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return btoa(bin);
+  }
+  function b64decodeText(b64) {
+    const bin = atob(b64.replace(/\n/g, ""));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder("utf-8").decode(bytes);
+  }
+  async function getFile(path) {
+    const res = await gh(path);
+    if (res.status === 404) return null;
+    return await res.json();  // { content, sha, ... }
+  }
+  async function putFile(path, base64Content, message, sha) {
+    const body = { message: message, content: base64Content, branch: BRANCH };
+    if (sha) body.sha = sha;
+    const res = await gh(path, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    if (res.status === 404 || !res.ok) {
+      throw new Error("保存に失敗しました (" + res.status + ")");
+    }
+    return await res.json();
+  }
+
+  // ---- data.js の読み書き ----
+  async function loadData() {
+    const f = await getFile("data.js");
+    if (!f) throw new Error("data.js が見つかりません(リポジトリ名を確認してください)");
+    dataSha = f.sha;
+    const text = b64decodeText(f.content);
+    const w = {};
+    new Function("window", text)(w);
+    entries = w.NURIE_LIST || [];
+  }
+  function esc(s) { return String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"'); }
+  function genDataJs() {
+    let s = "// ============================================================\n";
+    s += "//  塗り絵・脳トレ・カレンダーの登録リスト\n";
+    s += "//  ※ このファイルは管理ページ(admin.html)から自動で更新されます。\n";
+    s += "// ============================================================\n\n";
+    s += "window.NURIE_LIST = [\n";
+    entries.forEach(e => {
+      s += '  { ' +
+           (e.kind ? 'kind: "' + esc(e.kind) + '", ' : "") +
+           (e.year ? 'year: ' + parseInt(e.year, 10) + ', ' : "") +
+           (e.month ? 'month: ' + parseInt(e.month, 10) + ', ' : "") +
+           'season: "' + esc(e.season) + '", ' +
+           (e.genre ? 'genre: "' + esc(e.genre) + '", ' : "") +
+           'title: "' + esc(e.title) + '", ' +
+           (e.diff ? 'diff: "' + esc(e.diff) + '", ' : "") +
+           'file: "' + esc(e.file) + '"' +
+           (e.answer ? ', answer: "' + esc(e.answer) + '"' : "") +
+           ' },\n';
+    });
+    s += "];\n";
+    return s;
+  }
+  async function saveDataJs(message) {
+    const bytes = new TextEncoder().encode(genDataJs());
+    try {
+      const r = await putFile("data.js", b64encode(bytes), message, dataSha);
+      dataSha = r.content.sha;
+    } catch (e) {
+      // 版ズレのときは読み直して1回だけ再挑戦
+      await loadData();
+      throw new Error("他の端末での更新と重なりました。ページを確認してもう一度お試しください");
+    }
+  }
+  async function uniqueFileName(name) {
+    const safe = name.replace(/[^\w.\-ぁ-んァ-ヶ一-龠ー()]/g, "_");
+    const exists = async (n) => {
+      if (entries.some(e => e.file === n || e.answer === n)) return true;
+      return (await getFile("images/" + n)) !== null;
+    };
+    if (!(await exists(safe))) return safe;
+    const dot = safe.lastIndexOf(".");
+    const stem = dot >= 0 ? safe.slice(0, dot) : safe;
+    const ext = dot >= 0 ? safe.slice(dot) : "";
+    let i = 2;
+    while (await exists(stem + "_" + i + ext)) i++;
+    return stem + "_" + i + ext;
+  }
+  async function uploadImage(file, name) {
+    const buf = new Uint8Array(await file.arrayBuffer());
+    await putFile("images/" + name, b64encode(buf), "画像追加: " + name);
+  }
+
+  // ==========================================================
+  //  接続設定
+  // ==========================================================
+  function loadCfg() {
+    try { return JSON.parse(localStorage.getItem(CFG_KEY)); } catch (e) { return null; }
+  }
+  async function connect() {
+    const st = document.getElementById("cfgStatus");
+    st.className = "status";
+    st.textContent = "接続中...";
+    try {
+      await loadData();
+      try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch (e) {}
+      st.className = "status ok";
+      st.textContent = "✓ 接続しました(現在 " + entries.length + " 枚)";
+      document.getElementById("stepAdd").style.display = "block";
+      document.getElementById("stepList").style.display = "block";
+      buildGenreOptions();
+      renderList();
+    } catch (e) {
+      st.className = "status ng";
+      st.textContent = "接続できません: " + e.message;
+    }
+  }
+  document.getElementById("cfgBtn").onclick = () => {
+    cfg = {
+      owner: document.getElementById("cfgOwner").value.trim(),
+      repo: document.getElementById("cfgRepo").value.trim(),
+      token: document.getElementById("cfgToken").value.trim()
+    };
+    if (!cfg.owner || !cfg.repo || !cfg.token) {
+      const st = document.getElementById("cfgStatus");
+      st.className = "status ng";
+      st.textContent = "3つとも入力してください";
+      return;
+    }
+    connect();
+  };
+  // 保存済み設定があれば自動接続
+  (function () {
+    const saved = loadCfg();
+    if (saved && saved.owner && saved.repo && saved.token) {
+      cfg = saved;
+      document.getElementById("cfgOwner").value = saved.owner;
+      document.getElementById("cfgRepo").value = saved.repo;
+      document.getElementById("cfgToken").value = saved.token;
+      connect();
+    }
+  })();
+
+  // ==========================================================
+  //  投稿フォーム (共通部品は従来の管理ページと同じ)
+  // ==========================================================
+  function currentGenres() {
+    const g = DEFAULT_GENRES.slice();
+    entries.forEach(e => { if (e.genre && !g.includes(e.genre)) g.push(e.genre); });
+    return g;
+  }
+  function buildGenreOptions() {
+    const dl = document.getElementById("genreList");
+    dl.innerHTML = "";
+    const bulk = document.getElementById("bulkGenre");
+    bulk.innerHTML = '<option value="">ジャンルを選ぶ</option>';
+    currentGenres().forEach(g => {
+      const o = document.createElement("option");
+      o.value = g;
+      dl.appendChild(o);
+      const o2 = document.createElement("option");
+      o2.textContent = g;
+      bulk.appendChild(o2);
+    });
+  }
+  function kindName(v) { return (v === "脳トレ" || v === "カレンダー") ? v : "塗り絵"; }
+  function makeGenreSelect(value, onChange) {
+    const wrap = document.createElement("span");
+    const sel = document.createElement("select");
+    const opts = currentGenres();
+    if (value && !opts.includes(value)) opts.push(value);
+    const addOpt = (v, label) => {
+      const o = document.createElement("option");
+      o.value = v;
+      o.textContent = label || v;
+      sel.appendChild(o);
+    };
+    addOpt("", "(なし)");
+    opts.forEach(g => addOpt(g));
+    addOpt("__new__", "＋新しいジャンル…");
+    sel.value = value || "";
+    sel.onchange = () => {
+      if (sel.value === "__new__") {
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.placeholder = "新しいジャンル名";
+        wrap.replaceChild(inp, sel);
+        inp.focus();
+        inp.oninput = () => onChange(inp.value.trim());
+      } else {
+        onChange(sel.value);
+      }
+    };
+    wrap.appendChild(sel);
+    return wrap;
+  }
+  function makeKindSelect(value, onChange) {
+    const sel = document.createElement("select");
+    ["塗り絵", "脳トレ", "カレンダー"].forEach(s => {
+      const o = document.createElement("option");
+      o.value = s;
+      o.textContent = s;
+      sel.appendChild(o);
+    });
+    sel.value = kindName(value);
+    sel.onchange = () => onChange(sel.value);
+    return sel;
+  }
+  function makeSeasonSelect(value, onChange, noEmpty) {
+    const sel = document.createElement("select");
+    (noEmpty ? ["春", "夏", "秋", "冬", "通年"] : ["", "春", "夏", "秋", "冬", "通年"]).forEach(s => {
+      const o = document.createElement("option");
+      o.value = s;
+      o.textContent = s === "" ? "選ぶ" : s;
+      sel.appendChild(o);
+    });
+    sel.value = value;
+    sel.onchange = () => onChange(sel.value);
+    return sel;
+  }
+  function makeDiffSelect(value, onChange, noEmpty) {
+    const sel = document.createElement("select");
+    (noEmpty ? ["初級", "中級", "上級"] : ["", "初級", "中級", "上級"]).forEach(s => {
+      const o = document.createElement("option");
+      o.value = s;
+      o.textContent = s === "" ? "選ぶ" : s;
+      sel.appendChild(o);
+    });
+    sel.value = value;
+    sel.onchange = () => onChange(sel.value);
+    return sel;
+  }
+
+  const drop = document.getElementById("dropZone");
+  const fileInput = document.getElementById("fileInput");
+  drop.onclick = () => fileInput.click();
+  drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+  drop.ondragleave = () => drop.classList.remove("over");
+  drop.ondrop = e => {
+    e.preventDefault();
+    drop.classList.remove("over");
+    addFiles(e.dataTransfer.files);
+  };
+  fileInput.onchange = () => { addFiles(fileInput.files); fileInput.value = ""; };
+
+  function guess(name) {
+    const base = name.replace(/\.[^.]+$/, "");
+    const parts = base.replace(/　/g, " ").trim().split(/\s+/);
+    let diff = "";
+    let title = base;
+    if (parts.length >= 2 && ["初級", "中級", "上級"].includes(parts[parts.length - 1])) {
+      diff = parts[parts.length - 1];
+      title = parts.slice(0, -1).join(" ");
+    }
+    return { title: title, diff: diff };
+  }
+  function addFiles(files) {
+    for (const f of files) {
+      if (!f.type.startsWith("image/")) continue;
+      const g = guess(f.name);
+      newItems.push({
+        blob: f,
+        origName: f.name,
+        title: g.title,
+        kind: "塗り絵",
+        season: "",
+        genre: "",
+        diff: g.diff,
+        url: URL.createObjectURL(f)
+      });
+    }
+    renderNew();
+  }
+
+  function renderNew() {
+    const table = document.getElementById("newTable");
+    const body = document.getElementById("newBody");
+    const bulk = document.getElementById("bulkBar");
+    body.innerHTML = "";
+    table.style.display = newItems.length ? "table" : "none";
+    bulk.style.display = newItems.length ? "flex" : "none";
+    document.getElementById("saveBar").classList.toggle("show", newItems.length > 0);
+
+    newItems.forEach((it, i) => {
+      const tr = document.createElement("tr");
+
+      const tdImg = document.createElement("td");
+      const img = document.createElement("img");
+      img.className = "pv";
+      img.src = it.url;
+      tdImg.appendChild(img);
+
+      const tdTitle = document.createElement("td");
+      const inp = document.createElement("input");
+      inp.type = "text";
+      inp.value = it.title;
+      inp.oninput = () => it.title = inp.value;
+      tdTitle.appendChild(inp);
+
+      const tdKind = document.createElement("td");
+      tdKind.appendChild(makeKindSelect(it.kind, v => it.kind = v));
+
+      const tdSeason = document.createElement("td");
+      tdSeason.appendChild(makeSeasonSelect(it.season, v => it.season = v));
+
+      const tdGenre = document.createElement("td");
+      tdGenre.appendChild(makeGenreSelect(it.genre, v => it.genre = v));
+
+      const tdDiff = document.createElement("td");
+      tdDiff.appendChild(makeDiffSelect(it.diff, v => it.diff = v));
+
+      const tdDel = document.createElement("td");
+      const del = document.createElement("button");
+      del.className = "del-btn";
+      del.textContent = "外す";
+      del.onclick = () => { newItems.splice(i, 1); renderNew(); };
+      tdDel.appendChild(del);
+      const af = document.createElement("input");
+      af.type = "file";
+      af.accept = "image/*";
+      af.style.display = "none";
+      af.onchange = () => {
+        if (af.files[0]) {
+          it.answerBlob = af.files[0];
+          it.answerName = af.files[0].name;
+          renderNew();
+        }
+      };
+      const ab = document.createElement("button");
+      ab.className = "mini-btn";
+      ab.textContent = it.answerName ? "答え: あり ✓" : "答えを設定";
+      ab.onclick = () => af.click();
+      tdDel.appendChild(ab);
+      tdDel.appendChild(af);
+
+      tr.appendChild(tdImg);
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdKind);
+      tr.appendChild(tdSeason);
+      tr.appendChild(tdGenre);
+      tr.appendChild(tdDiff);
+      tr.appendChild(tdDel);
+      body.appendChild(tr);
+    });
+  }
+
+  document.getElementById("bulkApply").onclick = () => {
+    const k = document.getElementById("bulkKind").value;
+    const s = document.getElementById("bulkSeason").value;
+    const g = document.getElementById("bulkGenre").value;
+    const d = document.getElementById("bulkDiff").value;
+    newItems.forEach(it => {
+      if (k) it.kind = k;
+      if (s) it.season = s;
+      if (g) it.genre = g;
+      if (d) it.diff = d;
+    });
+    renderNew();
+  };
+
+  // ---- 投稿 ----
+  document.getElementById("saveBtn").onclick = async () => {
+    const st = document.getElementById("saveStatus");
+    for (const it of newItems) {
+      if (it.kind === "カレンダー") {
+        if (!it.title) { st.className = "status ng"; st.textContent = "お題が空欄のものがあります"; return; }
+        if (!it.season) it.season = "通年";
+        const m = String(it.title).match(/(\d{1,2})月/);
+        if (m) it.month = parseInt(m[1], 10);
+        const y = String(it.title).match(/(20\d{2})年/);
+        it.year = y ? parseInt(y[1], 10) : new Date().getFullYear();
+      } else if (!it.title || !it.season || !it.diff) {
+        st.className = "status ng";
+        st.textContent = "お題・季節・難しさが空欄のものがあります";
+        return;
+      }
+    }
+    const btn = document.getElementById("saveBtn");
+    btn.disabled = true;
+    st.className = "status";
+    try {
+      let done = 0;
+      for (const it of newItems) {
+        st.textContent = "アップロード中... (" + (done + 1) + "/" + newItems.length + ")";
+        const name = await uniqueFileName(it.origName);
+        await uploadImage(it.blob, name);
+        const entry = { season: it.season, genre: it.genre, title: it.title, diff: it.diff, file: name };
+        if (it.kind === "脳トレ" || it.kind === "カレンダー") entry.kind = it.kind;
+        if (it.month) entry.month = it.month;
+        if (it.year && it.kind === "カレンダー") entry.year = it.year;
+        if (it.answerBlob) {
+          const ansName = await uniqueFileName(it.answerName);
+          await uploadImage(it.answerBlob, ansName);
+          entry.answer = ansName;
+        }
+        entries.push(entry);
+        done++;
+      }
+      st.textContent = "登録リストを更新中...";
+      await saveDataJs("投稿: " + done + "枚追加");
+      const n = newItems.length;
+      newItems.forEach(it => URL.revokeObjectURL(it.url));
+      newItems = [];
+      renderNew();
+      renderList();
+      buildGenreOptions();
+      st.className = "status ok";
+      st.textContent = "";
+      const cs = document.getElementById("cfgStatus");
+      cs.className = "status ok";
+      cs.textContent = "✓ " + n + " 枚 投稿しました!1〜2分でサイトに反映されます(現在 " + entries.length + " 枚)";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (e) {
+      st.className = "status ng";
+      st.textContent = "投稿できませんでした: " + e.message;
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  // ==========================================================
+  //  登録済み一覧
+  // ==========================================================
+  let listStatusTimer = null;
+  function listStatus(msg, isError) {
+    const el = document.getElementById("listStatus");
+    el.className = "status " + (isError ? "ng" : "ok");
+    el.textContent = msg;
+    if (listStatusTimer) clearTimeout(listStatusTimer);
+    if (!isError) listStatusTimer = setTimeout(() => { el.textContent = ""; }, 4000);
+  }
+
+  document.getElementById("ltabNurie").onclick = () => { listKind = "塗り絵"; renderList(); };
+  document.getElementById("ltabNoutore").onclick = () => { listKind = "脳トレ"; renderList(); };
+  document.getElementById("ltabCal").onclick = () => { listKind = "カレンダー"; renderList(); };
+
+  function imgSrc(file) {
+    // 同じサイトの images フォルダから表示 (反映前の新規分は出ないことがあります)
+    return "images/" + file;
+  }
+
+  function renderList() {
+    const counts = { "塗り絵": 0, "脳トレ": 0, "カレンダー": 0 };
+    entries.forEach(e => counts[kindName(e.kind)]++);
+    [["ltabNurie", "塗り絵"], ["ltabNoutore", "脳トレ"], ["ltabCal", "カレンダー"]].forEach(([id, k]) => {
+      const t = document.getElementById(id);
+      t.textContent = k + " (" + counts[k] + ")";
+      t.classList.toggle("active", listKind === k);
+    });
+
+    const body = document.getElementById("listBody");
+    body.innerHTML = "";
+    for (let i = 0; i < entries.length; i++) {
+      const e = entries[i];
+      const eKind = kindName(e.kind);
+      if (eKind !== listKind) continue;
+      const tr = document.createElement("tr");
+
+      const pend = {
+        title: e.title,
+        kind: eKind,
+        season: e.season,
+        genre: e.genre || "",
+        diff: e.diff || ""
+      };
+
+      const tdImg = document.createElement("td");
+      const img = document.createElement("img");
+      img.className = "pv";
+      img.loading = "lazy";
+      img.src = imgSrc(e.file);
+      img.onerror = () => { img.style.display = "none"; };
+      tdImg.appendChild(img);
+      if (e.answer) {
+        const lab = document.createElement("div");
+        lab.className = "ans-label";
+        lab.textContent = "▼答え";
+        tdImg.appendChild(lab);
+        const aimg = document.createElement("img");
+        aimg.className = "pv-ans";
+        aimg.loading = "lazy";
+        aimg.src = imgSrc(e.answer);
+        aimg.onerror = () => { aimg.style.display = "none"; };
+        tdImg.appendChild(aimg);
+      }
+
+      const updBtn = document.createElement("button");
+      updBtn.className = "upd-btn";
+      updBtn.textContent = "更新";
+      const markDirty = () => { updBtn.classList.add("dirty"); };
+
+      const tdTitle = document.createElement("td");
+      const ti = document.createElement("input");
+      ti.type = "text";
+      ti.value = pend.title;
+      ti.oninput = () => { pend.title = ti.value; markDirty(); };
+      tdTitle.appendChild(ti);
+
+      const tdKind = document.createElement("td");
+      tdKind.appendChild(makeKindSelect(pend.kind, v => { pend.kind = v; markDirty(); }));
+
+      const tdSeason = document.createElement("td");
+      tdSeason.appendChild(makeSeasonSelect(pend.season, v => { pend.season = v; markDirty(); }, true));
+
+      const tdGenre = document.createElement("td");
+      tdGenre.appendChild(makeGenreSelect(pend.genre, v => { pend.genre = v; markDirty(); }));
+
+      const tdDiff = document.createElement("td");
+      tdDiff.appendChild(makeDiffSelect(pend.diff, v => { pend.diff = v; markDirty(); }, eKind !== "カレンダー"));
+
+      const tdOps = document.createElement("td");
+      updBtn.onclick = async () => {
+        if (!pend.title.trim()) { listStatus("お題が空欄です", true); return; }
+        e.title = pend.title.trim();
+        e.season = pend.season;
+        e.genre = pend.genre.trim();
+        if (pend.diff) e.diff = pend.diff; else delete e.diff;
+        if (pend.kind === "塗り絵") delete e.kind; else e.kind = pend.kind;
+        if (pend.kind === "カレンダー") {
+          const m = e.title.match(/(\d{1,2})月/);
+          if (m) e.month = parseInt(m[1], 10);
+          const y = e.title.match(/(20\d{2})年/);
+          if (y) e.year = parseInt(y[1], 10);
+          else if (!e.year) e.year = new Date().getFullYear();
+        } else {
+          delete e.month;
+          delete e.year;
+        }
+        try {
+          await saveDataJs("更新: " + e.title);
+          buildGenreOptions();
+          updBtn.classList.remove("dirty");
+          listStatus("✓ 「" + e.title + "」を更新しました(1〜2分で反映)");
+        } catch (err) {
+          listStatus(err.message, true);
+        }
+      };
+      const del = document.createElement("button");
+      del.className = "del-btn";
+      del.textContent = "削除";
+      del.onclick = async () => {
+        if (!window.confirm("「" + e.title + "」を一覧から削除しますか?")) return;
+        entries.splice(i, 1);
+        try {
+          await saveDataJs("削除: " + e.title);
+          renderList();
+          listStatus("✓ 削除しました(1〜2分で反映)");
+        } catch (err) {
+          listStatus(err.message, true);
+        }
+      };
+      tdOps.appendChild(updBtn);
+      tdOps.appendChild(del);
+
+      const ansInput = document.createElement("input");
+      ansInput.type = "file";
+      ansInput.accept = "image/*";
+      ansInput.style.display = "none";
+      ansInput.onchange = async () => {
+        const f = ansInput.files[0];
+        if (!f) return;
+        try {
+          listStatus("答えをアップロード中...");
+          const ansName = await uniqueFileName(f.name);
+          await uploadImage(f, ansName);
+          e.answer = ansName;
+          await saveDataJs("答え追加: " + e.title);
+          renderList();
+          listStatus("✓ 「" + e.title + "」に答えをセットしました(1〜2分で反映)");
+        } catch (err) {
+          listStatus(err.message, true);
+        }
+      };
+      const ansBtn = document.createElement("button");
+      ansBtn.className = "mini-btn";
+      ansBtn.textContent = e.answer ? "答えを差し替え" : "答えを設定";
+      ansBtn.onclick = () => ansInput.click();
+      tdOps.appendChild(ansBtn);
+      tdOps.appendChild(ansInput);
+      if (e.answer) {
+        const ansOff = document.createElement("button");
+        ansOff.className = "mini-btn";
+        ansOff.textContent = "答えを外す";
+        ansOff.onclick = async () => {
+          if (!window.confirm("「" + e.title + "」の答えを外しますか?")) return;
+          delete e.answer;
+          try {
+            await saveDataJs("答え解除: " + e.title);
+            renderList();
+            listStatus("✓ 答えを外しました");
+          } catch (err) {
+            listStatus(err.message, true);
+          }
+        };
+        tdOps.appendChild(ansOff);
+      }
+
+      tr.appendChild(tdImg);
+      tr.appendChild(tdTitle);
+      tr.appendChild(tdKind);
+      tr.appendChild(tdSeason);
+      tr.appendChild(tdGenre);
+      tr.appendChild(tdDiff);
+      tr.appendChild(tdOps);
+      body.appendChild(tr);
+    }
+  }
+})();
+</script>
+</body>
+</html>
