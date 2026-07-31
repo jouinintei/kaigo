@@ -95,5 +95,5 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 9, season: "通年", title: "9月カレンダー", file: "calendar_2026_09.png" },
   { kind: "カレンダー", year: 2026, month: 9, season: "通年", title: "9月カレンダー(貼り付け用)", file: "calendar_2026_09_blank.png" },
   { kind: "カレンダー", year: 2026, month: 10, season: "通年", title: "10月カレンダー(貼り付け用)", file: "calendar_2026_10_blank.png" },
-  { kind: "カレンダー", year: 2026, season: "春", genre: "動物", title: "IMG_3177", diff: "上級", file: "IMG_3177.png" },
+  { season: "春", genre: "動物", title: "IMG_3177", diff: "上級", file: "IMG_3177.png" },
 ];
