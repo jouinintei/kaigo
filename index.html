@@ -42,6 +42,20 @@
     font-size: 15px;
     font-weight: bold;
   }
+  .apply-btn {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #e8630a;
+    background: #fff;
+    border: 2px solid #e8630a;
+    border-radius: 999px;
+    padding: 7px 16px;
+    cursor: pointer;
+  }
+  .apply-btn:hover { background: #fff3e8; }
   .admin-link {
     position: absolute;
     top: 14px;
@@ -432,6 +446,7 @@
     header { padding: 40px 12px 0; }
     .private-badge { top: 10px; left: 12px; font-size: 13px; }
     .admin-link { top: 8px; right: 12px; font-size: 12px; padding: 4px 10px; }
+    .apply-btn { top: 8px; right: 12px; font-size: 12px; padding: 5px 12px; }
     .reload-btn { top: 8px; right: 128px; font-size: 12px; padding: 4px 10px; }
     header h1 img { max-width: 82%; }
     header p { font-size: 13px; }
@@ -504,6 +519,7 @@
 
 <header>
   <div class="private-badge">非公開中</div>
+  <button class="apply-btn" id="tabApply">💌 会員申請</button>
   <h1><img src="logo.png" alt="介護のレクプリ" style="max-width:min(88%,480px); height:auto; vertical-align:middle"></h1>
   <p>お好みの画像を選んで印刷できます。</p>
   <div class="tabs">
@@ -511,7 +527,6 @@
     <button class="tab active" id="tabList">塗り絵を選ぶ</button>
     <button class="tab fav-tab" id="tabFav">★ お気に入り</button>
     <button class="tab" id="tabMember">🔒 会員専用</button>
-    <button class="tab" id="tabApply">💌 会員申請</button>
   </div>
 </header>
 
