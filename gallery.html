@@ -648,13 +648,13 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     } catch (e) { return "err"; }
   }
 
-  const FORCE_SERIES = ["難読漢字", "ことわざ穴埋め", "並び替えクイズ", "ことばさがし"];
+  // 脳トレのシリーズ名 = 題名の頭の言葉(最初の空白・カッコの前まで)
+  // 例: 「虫食い算 その3」「難読漢字(魚へん)」「ことばさがし くだもの」
+  //   → 「虫食い算」「難読漢字」「ことばさがし」
   function seriesBase(t) {
-    const s = String(t);
-    for (const f of FORCE_SERIES) {
-      if (s !== f && s.indexOf(f) === 0) return f;
-    }
-    return s.replace(/\s*その\d+(\s*[((][^))]*[))])?$/, "");
+    const s = String(t).replace(/\s*その\d+(\s*[((][^))]*[))])?$/, "");
+    const m = s.match(/^[^\s　((]+/);
+    return m ? m[0] : s;
   }
   function seriesNum(t) {
     const m = String(t).match(/その(\d+)(?:\s*[((][^))]*[))])?$/);
@@ -922,7 +922,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 
     const seriesCounts = {};
     let seriesGrouped = false;
-    if (page === "list" || page === "noutore" || page === "member") {
+    // シリーズにまとめるのは脳トレだけ (塗り絵はすべて単独で表示)
+    const useSeries = (page === "noutore") ||
+      (page === "member" && memberKind === "脳トレ");
+    if (useSeries) {
       if (seriesView) {
         all = all.filter(n => seriesBase(n.title) === seriesView)
                  .slice().sort((a, b) =>
