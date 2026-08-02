@@ -518,7 +518,6 @@
 <body>
 
 <header>
-  <div class="private-badge">非公開中</div>
   <button class="apply-btn" id="tabApply">💌 会員申請</button>
   <h1><img src="logo.png" alt="介護のレクプリ" style="max-width:min(88%,480px); height:auto; vertical-align:middle"></h1>
   <p>お好みの画像を選んで印刷できます。</p>
@@ -832,7 +831,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const tm = document.getElementById("tabMember");
     tm.style.display = hasMember ? "" : "none";
     tm.classList.toggle("active", page === "member");
-    document.getElementById("tabApply").style.display = hasMember ? "none" : "";
     const tf = document.getElementById("tabFav");
     tf.classList.toggle("active", page === "fav");
     tf.textContent = "★ お気に入り" + (nFav ? " (" + nFav + ")" : "");
