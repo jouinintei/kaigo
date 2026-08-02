@@ -665,12 +665,20 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       bar.appendChild(wrap);
     };
 
-    addSelect("季節:", seasons, selSeason, v => { selSeason = v; render(); });
-    if (genres.length) {
-      addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
+    if (page === "noutore") {
+      // 脳トレはジャンルだけで選ぶ
+      selSeason = selDiff = selUsed = null;
+      if (genres.length) {
+        addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
+      }
+    } else {
+      addSelect("季節:", seasons, selSeason, v => { selSeason = v; render(); });
+      if (genres.length) {
+        addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
+      }
+      addSelect("難しさ:", diffs, selDiff, v => { selDiff = v; render(); });
+      addSelect("使用状況:", useds, selUsed, v => { selUsed = v; render(); });
     }
-    addSelect("難しさ:", diffs, selDiff, v => { selDiff = v; render(); });
-    addSelect("使用状況:", useds, selUsed, v => { selUsed = v; render(); });
 
     if (selSeason || selGenre || selDiff || selUsed) {
       const r = document.createElement("button");
