@@ -99,6 +99,31 @@
     margin-bottom: 14px;
   }
   p.txt { font-size: 16px; margin-bottom: 12px; }
+  .contact { display: flex; flex-direction: column; gap: 10px; max-width: 640px; }
+  .contact textarea, .contact input {
+    font-family: inherit;
+    font-size: 16px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .contact textarea { resize: vertical; }
+  .contact button {
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 12px 0;
+    border: none;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    max-width: 220px;
+  }
+  .contact button:disabled { opacity: 0.5; cursor: default; }
+  .cmsg { font-size: 15px; color: #4a9b6e; font-weight: bold; }
   ol.howto { margin: 6px 0 0 22px; font-size: 16px; }
   ol.howto li { margin-bottom: 8px; }
   footer {
@@ -165,6 +190,17 @@
   <p class="txt" id="newTxt"></p>
 </section>
 
+<section>
+  <h2>お問い合わせ・要望</h2>
+  <p class="txt">「こんな塗り絵がほしい」「ここが使いづらい」など、ご意見・ご要望をお気軽にお送りください。</p>
+  <div class="contact">
+    <textarea id="cText" rows="5" maxlength="1000" placeholder="内容をご記入ください"></textarea>
+    <input id="cFrom" type="text" maxlength="100" placeholder="お名前・ご連絡先(任意・空欄でもOK)">
+    <button id="cSend">送信する</button>
+    <div id="cMsg" class="cmsg"></div>
+  </div>
+</section>
+
 <footer>
   © 介護のレクプリ
 </footer>
@@ -193,6 +229,41 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("newTxt").textContent =
       "今月は " + monthCount + " 枚の素材を追加しました。";
   }
+  const btn = document.getElementById("cSend");
+  btn.onclick = async () => {
+    const text = document.getElementById("cText").value.trim();
+    const from = document.getElementById("cFrom").value.trim();
+    const msg = document.getElementById("cMsg");
+    if (!text) {
+      msg.style.color = "#c05a5a";
+      msg.textContent = "内容をご記入ください";
+      return;
+    }
+    btn.disabled = true;
+    msg.style.color = "#8a8477";
+    msg.textContent = "送信中...";
+    try {
+      const r = await fetch("api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: text, from: from })
+      });
+      if (r.ok) {
+        document.getElementById("cText").value = "";
+        document.getElementById("cFrom").value = "";
+        msg.style.color = "#4a9b6e";
+        msg.textContent = "送信しました。ありがとうございます!";
+      } else {
+        btn.disabled = false;
+        msg.style.color = "#c05a5a";
+        msg.textContent = "送信できませんでした。時間をおいてもう一度お試しください";
+      }
+    } catch (e) {
+      btn.disabled = false;
+      msg.style.color = "#c05a5a";
+      msg.textContent = "通信できませんでした。電波の良いところでもう一度お試しください";
+    }
+  };
 })();
 </script>
 </body>
