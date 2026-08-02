@@ -90,7 +90,6 @@
   }
   header p { font-size: 15px; color: #8a8477; margin-top: 4px; }
 
-  /* ---- ページ切り替えタブ ---- */
   .tabs {
     display: flex;
     justify-content: center;
@@ -391,7 +390,6 @@
     padding-bottom: 30px;
   }
 
-  /* ---- 拡大表示 ---- */
   #lightbox {
     display: none;
     position: fixed;
@@ -441,7 +439,6 @@
   .lb-close:hover { background: #e0d8c6; }
   .thumb img { cursor: zoom-in; }
 
-  /* ---- スマホ向け調整 ---- */
   @media (max-width: 600px) {
     header { padding: 40px 12px 0; }
     .private-badge { top: 10px; left: 12px; font-size: 13px; }
@@ -490,7 +487,6 @@
     .lb-title { font-size: 16px; width: 100%; text-align: center; margin: 0; }
   }
 
-  /* ---- 保存後の案内トースト ---- */
   #toast {
     position: fixed;
     left: 50%;
@@ -554,21 +550,18 @@
 <div id="toast"></div>
 
 <script>
-// data.js(登録リスト)は毎回最新版を読み込む(ブラウザに古い内容が残るのを防ぐ)
 document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 </script>
 <script>
 (function () {
-  // 新しく追加したもの(リストの下に書かれたもの)ほど上に表示する
   const list = (window.NURIE_LIST || []).slice().reverse();
-  let page = "list";            // "noutore" | "list" | "fav"
-  let selSeason = null;         // null = 指定なし
+  let page = "list";
+  let selSeason = null;
   let selGenre = null;
   let selDiff = null;
   let selUsed = null;
-  let seriesView = null;        // 「◯◯ シリーズ」を開いているとき、そのシリーズ名
+  let seriesView = null;
 
-  // ===== 会員専用 (サーバー側でパスワード照合・画像配信) =====
   const MEMBER_KEY = "nurie_member_v1";
   function isMemberUnlocked() {
     try { return localStorage.getItem(MEMBER_KEY) === "yes"; } catch (e) { return false; }
@@ -592,12 +585,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     }
     return false;
   }
-  // 会員画像はサーバーの配達係(member-img)経由で読む
   function imgPath(n, file) {
     return (n && n.member ? "member-img/" : "images/") + file;
   }
 
-  // 「虫食い算 その3」→「虫食い算」のようにシリーズ名を取り出す
   function seriesBase(t) {
     return String(t).replace(/\s*その\d+$/, "");
   }
@@ -605,9 +596,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const m = String(t).match(/その(\d+)$/);
     return m ? parseInt(m[1], 10) : 1;
   }
-  let curPage = 1;              // ページ番号
-  const PER_PAGE = 9;           // 1ページの表示枚数
-  let calMonth = null;          // カレンダーで選択中の月 (例: "2026-8")
+  let curPage = 1;
+  const PER_PAGE = 9;
+  let calMonth = null;
 
   function calKey(n) { return (n.year || 0) + "-" + (n.month || 0); }
   function calLabel(n) { return (n.year ? n.year + "年" : "") + (n.month ? n.month + "月" : "その他"); }
@@ -626,7 +617,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (page === "calendar") return "カレンダー";
     return "塗り絵";
   }
-  let memberKind = "塗り絵";     // 会員ページ内の種類切り替え
+  let memberKind = "塗り絵";
   function kindSubset() {
     if (page === "member") {
       return list.filter(n => n.member && kindOf(n) === memberKind);
@@ -634,7 +625,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     return list.filter(n => kindOf(n) === pageKind());
   }
 
-  // ---- 保存領域 (このPCのブラウザ) ----
   const STORE_KEY = "nurie_history_v1";
   const FAV_KEY = "nurie_fav_v1";
   function loadJSON(key, fallback) {
@@ -645,7 +635,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {}
   }
 
-  // ---- 使用履歴 ----
   const loadHist = () => loadJSON(STORE_KEY, {});
   function today() {
     const d = new Date();
@@ -668,7 +657,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
   function isUsed(file) { return !!loadHist()[file]; }
 
-  // ---- お気に入り ----
   const loadFav = () => loadJSON(FAV_KEY, []);
   function isFav(file) { return loadFav().includes(file); }
   function toggleFav(file) {
@@ -679,7 +667,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     render();
   }
 
-  // ---- 絞り込み (プルダウン) ----
   function buildToolbar() {
     const bar = document.getElementById("toolbar");
     bar.innerHTML = "";
@@ -690,7 +677,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       lbl.style.fontSize = "18px";
       lbl.textContent = "🔒 会員専用";
       bar.appendChild(lbl);
-      // 会員素材にある種類だけ切り替えボタンを出す
       const kindsAvail = ["塗り絵", "脳トレ", "カレンダー"].filter(k =>
         list.some(n => n.member && kindOf(n) === k));
       if (kindsAvail.length && !kindsAvail.includes(memberKind)) memberKind = kindsAvail[0];
@@ -771,7 +757,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const genreOnly = (page === "noutore") ||
       (page === "member" && memberKind !== "塗り絵");
     if (genreOnly) {
-      // 脳トレ(と会員の脳トレ・カレンダー)はジャンルだけで選ぶ
       selSeason = selDiff = selUsed = null;
       if (genres.length) {
         addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
@@ -792,7 +777,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       r.onclick = () => { selSeason = selGenre = selDiff = selUsed = null; seriesView = null; curPage = 1; render(); };
       bar.appendChild(r);
     }
-    // 塗り絵ページにカレンダーコーナーへの入口
     if (page === "list" && list.some(n => kindOf(n) === "カレンダー")) {
       const c = document.createElement("button");
       c.className = "cal-btn";
@@ -821,9 +805,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
        (selUsed === "未使用" && !isUsed(n.file))));
   }
 
-  // ---- 一覧表示 ----
   function render() {
-    // タブ
     const nFav = loadFav().length;
     document.getElementById("tabNoutore").classList.toggle("active", page === "noutore");
     document.getElementById("tabList").classList.toggle("active", page === "list");
@@ -841,7 +823,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
 
-    // カレンダー: 月の一覧を表示 (月を押すとその月のカレンダーが出る)
     if (page === "calendar" && !calMonth) {
       const months = [];
       kindSubset().forEach(n => {
@@ -869,7 +850,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 
     let all = currentShown();
 
-    // シリーズ(「その2」「その3」…)をまとめる
     const seriesCounts = {};
     let seriesGrouped = false;
     if (page === "list" || page === "noutore" || page === "member") {
@@ -893,7 +873,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       }
     }
 
-    // ページ割り(9枚ずつ)
     const totalPages = Math.max(1, Math.ceil(all.length / PER_PAGE));
     if (curPage > totalPages) curPage = totalPages;
     if (curPage < 1) curPage = 1;
@@ -921,7 +900,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const sBase = seriesBase(n.title);
       const sCount = seriesGrouped ? (seriesCounts[sBase] || 1) : 1;
       if (sCount > 1) {
-        // シリーズまとめカード(押すと一覧が開く)
         const card = document.createElement("div");
         card.className = "card";
         const openSeries = () => {
@@ -1012,7 +990,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
           '<span class="tag kind">カレンダー</span>' +
           (n.month ? '<span class="tag">' + n.month + '月</span>' : '');
       } else if (kindOf(n) === "脳トレ") {
-        // 脳トレは季節・難しさを出さない
         tags.innerHTML =
           (n.member ? '<span class="tag" style="background:#f3e2c0;color:#8a6410">🔒会員</span>' : '') +
           '<span class="tag kind">脳トレ</span>' +
@@ -1084,7 +1061,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     return n.title + " 答え" + d + n.answer.substring(n.answer.lastIndexOf("."));
   }
 
-  // ---- ページ送り ----
   function renderPager(totalPages) {
     const pager = document.getElementById("pager");
     pager.innerHTML = "";
@@ -1113,7 +1089,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     pager.appendChild(next);
   }
 
-  // ---- 拡大表示 ----
   const lb = document.getElementById("lightbox");
   let lbCurrent = null;
   let lbShowingAnswer = false;
@@ -1157,7 +1132,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     setTimeout(render, 100);
   };
 
-  // ---- 保存後の案内トースト ----
   let toastTimer = null;
   function showToast(msg) {
     const t = document.getElementById("toast");
@@ -1167,8 +1141,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     toastTimer = setTimeout(() => t.classList.remove("show"), 5000);
   }
 
-  // ---- まとめて保存 (お気に入りページ) ----
-  // 保存先フォルダを一度選ぶと、その中の「介護のレクプリ」フォルダに直接保存する
   const FOLDER_NAME = "介護のレクプリ";
 
   function idbOpen(name) {
@@ -1203,7 +1175,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     } catch (e) { return false; }
   }
 
-  // 画像の中身を取得 (Web公開時はfetch、ローカルではギャラリーのフォルダから読む)
   let siteImagesCache = null;
   async function getImageBlob(file, member) {
     try {
@@ -1228,7 +1199,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     return await fh.getFile();
   }
 
-  // 従来方式 (連続ダウンロード) — 非対応ブラウザ用
   function bulkDownloadFallback(shown) {
     shown.forEach((n, i) => {
       setTimeout(() => {
@@ -1250,7 +1220,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (!shown.length) return;
     if (!window.showDirectoryPicker) { bulkDownloadFallback(shown); return; }
     try {
-      // 保存先の親フォルダ (前回のものを記憶)
       let parent = null;
       try { parent = await idbGet("nurie_gallery", "saveDir"); } catch (e) {}
       if (parent && !(await ensurePerm(parent, "readwrite"))) parent = null;
@@ -1285,12 +1254,11 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         showToast("保存できませんでした。もう一度お試しください");
       }
     } catch (e) {
-      if (e && e.name === "AbortError") return; // ユーザーがキャンセル
+      if (e && e.name === "AbortError") return;
       bulkDownloadFallback(shown);
     }
   };
 
-  // ---- ページ切り替え ----
   function switchPage(p) {
     seriesView = null;
     page = p;
