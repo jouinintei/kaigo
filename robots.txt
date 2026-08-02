@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
-Disallow: /admin-local.html
-
 Sitemap: https://kaigo-no-rekupuri.edgeone.dev/sitemap.xml

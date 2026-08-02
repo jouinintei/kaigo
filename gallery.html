@@ -1095,7 +1095,18 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       meta.className = "meta";
       const title = document.createElement("div");
       title.className = "title";
-      title.textContent = n.title;
+      if (n.member) {
+        title.textContent = n.title;
+      } else {
+        // 検索エンジン用の作品ページへの本物のリンク (クリック時は今まで通り拡大表示)
+        const ta = document.createElement("a");
+        ta.href = "works/" + encodeURIComponent(n.file.replace(/\.[^.]+$/, ""));
+        ta.textContent = n.title;
+        ta.style.color = "inherit";
+        ta.style.textDecoration = "none";
+        ta.onclick = (e) => { e.preventDefault(); openLightbox(n); pushNav(); };
+        title.appendChild(ta);
+      }
       const tags = document.createElement("div");
       tags.className = "tags";
       if (kindOf(n) === "カレンダー") {
