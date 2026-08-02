@@ -197,4 +197,25 @@ window.NURIE_LIST = [
   { season: "冬", genre: "花", title: "プリムラ", diff: "中級", file: "primula_chu.png" },
   { season: "冬", genre: "花", title: "ポインセチア", diff: "中級", file: "poinsettia_chu.png" },
   { season: "冬", genre: "花", title: "山茶花", diff: "中級", file: "sazanka_chu.png" },
+  // ---- 秋 ----
+  { season: "秋", genre: "食べ物", title: "新米", diff: "初級", file: "shinmai_sho.png" },
+  { season: "秋", genre: "風景", title: "秋", diff: "初級", file: "aki_fukei_sho.png" },
+  { season: "秋", genre: "風景", title: "秋", diff: "上級", file: "aki_fukei_jo.png" },
+  // ---- 冬 ----
+  { season: "冬", genre: "行事", title: "ゆず湯", diff: "中級", file: "yuzuyu_chu.png" },
+  { season: "冬", genre: "行事", title: "クリスマス", diff: "初級", file: "christmas_sho.png" },
+  { season: "冬", genre: "行事", title: "クリスマス", diff: "上級", file: "christmas_jo.png" },
+  { season: "冬", genre: "食べ物", title: "クリスマスケーキ", diff: "初級", file: "christmas_cake_sho.png" },
+  { season: "冬", genre: "行事", title: "サンタクロース", diff: "中級", file: "santa_chu.png" },
+  { season: "冬", genre: "風物詩", title: "マフラーと手袋", diff: "初級", file: "muffler_tebukuro_sho.png" },
+  { season: "冬", genre: "風景", title: "冬", diff: "中級", file: "fuyu_fukei_chu.png" },
+  { season: "冬", genre: "行事", title: "冬至", diff: "上級", file: "touji_jo.png" },
+  { season: "冬", genre: "行事", title: "大掃除", diff: "中級", file: "osouji_chu.png" },
+  { season: "冬", genre: "食べ物", title: "年越しそば", diff: "初級", file: "toshikoshi_soba_sho.png" },
+  { season: "冬", genre: "行事", title: "正月", diff: "初級", file: "shogatsu_sho.png" },
+  { season: "冬", genre: "行事", title: "正月", diff: "中級", file: "shogatsu_chu.png" },
+  { season: "冬", genre: "食べ物", title: "鍋", diff: "中級", file: "nabe_chu.png" },
+  { season: "冬", genre: "行事", title: "餅つき", diff: "中級", file: "mochitsuki_chu.png" },
+  // ---- 通年 ----
+  { season: "通年", genre: "動物", title: "鯉", diff: "初級", file: "koi_sho.png" },
 ];
