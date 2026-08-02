@@ -322,5 +322,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県クイズ その2", file: "todofuken_quiz2.png", answer: "todofuken_quiz2_ans.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "四字熟語 穴埋め その2", file: "yojijukugo2.png", answer: "yojijukugo2_ans.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 天気編", file: "nandoku_tenki.png", answer: "nandoku_tenki_ans.png" },
- { kind: "脳トレ", season: "通年", genre: "計算", title: "会員テスト", file: "test.png", member: true },
+ { kind: "脳トレ", season: "通年", genre: "計算", title: "会員テスト", file: "test.png" },
 ];
