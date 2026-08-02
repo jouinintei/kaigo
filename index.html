@@ -110,6 +110,13 @@
   }
   .new-grid img { width: 100%; aspect-ratio: 1/1.2; object-fit: cover; background: #fff; display: block; }
   .new-grid .cap { font-size: 13px; padding: 6px 8px; text-align: center; }
+  .dekiru {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .dekiru img { width: 100%; height: auto; }
   ol.howto { margin: 6px 0 0 22px; font-size: 16px; }
   ol.howto li { margin-bottom: 8px; }
   footer {
@@ -147,7 +154,11 @@
 <section>
   <h2>このサイトについて</h2>
   <p class="txt">「介護のレクプリ」は、介護施設・デイサービス・ご家庭で使える高齢者向けレクリエーション素材を無料で配布しているサイトです。季節の塗り絵、難読漢字・計算・言葉遊びなどの脳トレプリント、ぬりえ付きの月間カレンダーを揃えています。すべてA4サイズで印刷するだけでそのまま使える形になっており、面倒な会員登録なしでご利用いただけます。</p>
-  <p class="txt">塗り絵は春・夏・秋・冬の季節や、花・動物・食べ物・行事・風景などのジャンルから探せて、塗りやすい太い線のイラストに初級から上級までの難しさの目安つき。脳トレは難読漢字、ことわざ・四字熟語の穴埋め、計算(虫食い算)、しりとり、言葉探し、並び替えなど種類ゆたかで、すべて答えのプリント付きなので進行役の方がその場で答え合わせできます。月間カレンダーはその月の絵柄を塗って仕上げるぬりえ付きで、作品として飾れるので毎月のレクの定番にどうぞ。</p>
+  <div class="dekiru">
+    <img src="dekiru1.png" alt="季節とジャンルで選べる塗り絵: 春夏秋冬の季節ごと、花・動物・食べ物・行事・風景などのジャンルごとに探せます">
+    <img src="dekiru2.png" alt="種類豊かな脳トレプリント: 難読漢字・ことわざ・四字熟語の穴埋め・計算・しりとり・言葉探し・並び替えなど、すべて答えつき">
+    <img src="dekiru3.png" alt="塗り絵つき月間カレンダー: その月の絵柄を塗って仕上げる月間カレンダー">
+  </div>
 </section>
 
 <section>
