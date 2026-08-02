@@ -648,7 +648,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     } catch (e) { return "err"; }
   }
 
-  const FORCE_SERIES = ["難読漢字", "ことわざ穴埋め"];
+  const FORCE_SERIES = ["難読漢字", "ことわざ穴埋め", "並び替えクイズ", "ことばさがし"];
   function seriesBase(t) {
     const s = String(t);
     for (const f of FORCE_SERIES) {
