@@ -105,6 +105,7 @@ export async function onRequest(context) {
     "<title>" + esc(pageTitle) + "</title>\n" +
     "<meta name=\"description\" content=\"" + esc(desc) + "\">\n" +
     "<link rel=\"canonical\" href=\"" + esc(url) + "\">\n" +
+    "<meta name=\"robots\" content=\"noindex\">\n" +
     "<meta property=\"og:type\" content=\"article\">\n" +
     "<meta property=\"og:site_name\" content=\"" + SITE + "\">\n" +
     "<meta property=\"og:title\" content=\"" + esc(pageTitle) + "\">\n" +
@@ -150,7 +151,8 @@ export async function onRequest(context) {
     status: 200,
     headers: {
       "Content-Type": "text/html; charset=utf-8",
-      "Cache-Control": "public, max-age=600"
+      "Cache-Control": "public, max-age=600",
+      "X-Robots-Tag": "noindex"
     }
   });
 }
