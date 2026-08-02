@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>介護のレクプリ 管理ページ</title>
 <style>
   :root {
@@ -314,6 +315,11 @@
         <option value="">難しさを選ぶ</option>
         <option>初級</option><option>中級</option><option>上級</option>
       </select>
+      <select id="bulkMember">
+        <option value="">公開範囲を選ぶ</option>
+        <option value="normal">通常(無料)</option>
+        <option value="member">🔒会員限定</option>
+      </select>
       <button id="bulkApply">全部に適用</button>
     </div>
 
@@ -475,6 +481,7 @@
            (e.diff ? 'diff: "' + esc(e.diff) + '", ' : "") +
            'file: "' + esc(e.file) + '"' +
            (e.answer ? ', answer: "' + esc(e.answer) + '"' : "") +
+           (e.member ? ', member: true' : "") +
            ' },\n';
     });
     s += "];\n";
@@ -808,6 +815,18 @@
       ab.onclick = () => af.click();
       tdDel.appendChild(ab);
       tdDel.appendChild(af);
+      const mLab = document.createElement("label");
+      mLab.style.display = "block";
+      mLab.style.marginTop = "6px";
+      mLab.style.fontSize = "13px";
+      mLab.style.whiteSpace = "nowrap";
+      const mChk = document.createElement("input");
+      mChk.type = "checkbox";
+      mChk.checked = !!it.member;
+      mChk.onchange = () => it.member = mChk.checked;
+      mLab.appendChild(mChk);
+      mLab.appendChild(document.createTextNode(" 🔒会員限定"));
+      tdDel.appendChild(mLab);
 
       tr.appendChild(tdImg);
       tr.appendChild(tdTitle);
@@ -825,11 +844,13 @@
     const s = document.getElementById("bulkSeason").value;
     const g = document.getElementById("bulkGenre").value;
     const d = document.getElementById("bulkDiff").value;
+    const m = document.getElementById("bulkMember").value;
     newItems.forEach(it => {
       if (k) it.kind = k;
       if (s) it.season = s;
       if (g) it.genre = g;
       if (d) it.diff = d;
+      if (m) it.member = (m === "member");
     });
     renderNew();
   };
@@ -867,6 +888,7 @@
         const name = await uniqueFileName(autoName(conv.ext));
         await uploadImage(conv.blob, name);
         const entry = { season: it.season, genre: it.genre, title: it.title, diff: it.diff, file: name };
+        if (it.member) entry.member = true;
         if (it.kind === "脳トレ" || it.kind === "カレンダー") entry.kind = it.kind;
         if (it.month) entry.month = it.month;
         if (it.year && it.kind === "カレンダー") entry.year = it.year;
@@ -943,6 +965,7 @@
       const pend = {
         title: e.title,
         kind: eKind,
+        member: !!e.member,
         season: e.season,
         genre: e.genre || "",
         diff: e.diff || ""
@@ -979,6 +1002,17 @@
       ti.value = pend.title;
       ti.oninput = () => { pend.title = ti.value; markDirty(); };
       tdTitle.appendChild(ti);
+      const mLab2 = document.createElement("label");
+      mLab2.style.display = "block";
+      mLab2.style.fontSize = "13px";
+      mLab2.style.whiteSpace = "nowrap";
+      const mChk2 = document.createElement("input");
+      mChk2.type = "checkbox";
+      mChk2.checked = !!e.member;
+      mChk2.onchange = () => { pend.member = mChk2.checked; markDirty(); };
+      mLab2.appendChild(mChk2);
+      mLab2.appendChild(document.createTextNode(" 🔒会員限定"));
+      tdTitle.appendChild(mLab2);
 
       const tdGenre = document.createElement("td");
       const renderGenreCell = () => {
@@ -1016,6 +1050,7 @@
       updBtn.onclick = async () => {
         if (!pend.title.trim()) { listStatus("お題が空欄です", true); return; }
         e.title = pend.title.trim();
+        if (pend.member) e.member = true; else delete e.member;
         e.season = pend.kind === "脳トレ" ? "通年" : pend.season;
         e.genre = pend.genre.trim();
         if (pend.diff && pend.kind !== "脳トレ") e.diff = pend.diff; else delete e.diff;
