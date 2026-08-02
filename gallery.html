@@ -137,6 +137,18 @@
     border-color: var(--star);
   }
 
+  .page-intro {
+    max-width: 860px;
+    margin: 18px auto 0;
+    padding: 0 20px;
+    font-size: 15px;
+    color: #7a7466;
+    text-align: center;
+    line-height: 1.8;
+  }
+  @media (max-width: 600px) {
+    .page-intro { font-size: 13.5px; padding: 0 14px; text-align: left; }
+  }
   .toolbar {
     max-width: 1100px;
     margin: 20px auto 8px;
@@ -557,6 +569,8 @@
   </div>
 </header>
 
+<p class="page-intro" id="pageIntro" style="display:none"></p>
+
 <div class="toolbar" id="toolbar"></div>
 
 <div class="bulkbar" id="bulkBar">
@@ -886,6 +900,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const tf = document.getElementById("tabFav");
     tf.classList.toggle("active", page === "fav");
     tf.textContent = "★ お気に入り" + (nFav ? " (" + nFav + ")" : "");
+
+    const PAGE_INTRO = {
+      list: "高齢者向けの無料塗り絵です。デイサービスや介護施設のレクリエーションで使いやすいよう、A4サイズで印刷できます。季節の花、風景、食べ物、年中行事などから選べます。",
+      noutore: "難読漢字、計算問題、ことわざ、言葉探しなど、高齢者向けの脳トレプリントを無料で配布しています。すべて答え付きです。"
+    };
+    const intro = document.getElementById("pageIntro");
+    const introTxt = (!seriesView && PAGE_INTRO[page]) || "";
+    intro.textContent = introTxt;
+    intro.style.display = introTxt ? "" : "none";
 
     buildToolbar();
 
