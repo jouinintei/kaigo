@@ -769,13 +769,21 @@
       }));
 
       const tdSeason = document.createElement("td");
-      tdSeason.appendChild(makeSeasonSelect(it.season, v => it.season = v));
+      if (it.kind === "脳トレ") {
+        tdSeason.textContent = "—";
+      } else {
+        tdSeason.appendChild(makeSeasonSelect(it.season, v => it.season = v));
+      }
 
       const tdGenre = document.createElement("td");
       tdGenre.appendChild(makeGenreSelect(it.genre, v => it.genre = v, it.kind));
 
       const tdDiff = document.createElement("td");
-      tdDiff.appendChild(makeDiffSelect(it.diff, v => it.diff = v));
+      if (it.kind === "脳トレ") {
+        tdDiff.textContent = "—";
+      } else {
+        tdDiff.appendChild(makeDiffSelect(it.diff, v => it.diff = v));
+      }
 
       const tdDel = document.createElement("td");
       const del = document.createElement("button");
@@ -837,6 +845,10 @@
         if (m) it.month = parseInt(m[1], 10);
         const y = String(it.title).match(/(20\d{2})年/);
         it.year = y ? parseInt(y[1], 10) : new Date().getFullYear();
+      } else if (it.kind === "脳トレ") {
+        if (!it.title) { st.className = "status ng"; st.textContent = "お題が空欄のものがあります"; return; }
+        it.season = "通年";
+        it.diff = "";
       } else if (!it.title || !it.season || !it.diff) {
         st.className = "status ng";
         st.textContent = "お題・季節・難しさが空欄のものがあります";
@@ -979,24 +991,34 @@
         pend.kind = v;
         if (pend.genre && !currentGenres(v).includes(pend.genre)) pend.genre = "";
         renderGenreCell();
+        renderSeasonDiffCells();
         markDirty();
       }));
 
       const tdSeason = document.createElement("td");
-      tdSeason.appendChild(makeSeasonSelect(pend.season, v => { pend.season = v; markDirty(); }, true));
+      const tdDiff = document.createElement("td");
+      const renderSeasonDiffCells = () => {
+        tdSeason.innerHTML = "";
+        tdDiff.innerHTML = "";
+        if (pend.kind === "脳トレ") {
+          tdSeason.textContent = "—";
+          tdDiff.textContent = "—";
+        } else {
+          tdSeason.appendChild(makeSeasonSelect(pend.season, v => { pend.season = v; markDirty(); }, true));
+          tdDiff.appendChild(makeDiffSelect(pend.diff, v => { pend.diff = v; markDirty(); }, pend.kind !== "カレンダー"));
+        }
+      };
+      renderSeasonDiffCells();
 
       renderGenreCell();
-
-      const tdDiff = document.createElement("td");
-      tdDiff.appendChild(makeDiffSelect(pend.diff, v => { pend.diff = v; markDirty(); }, eKind !== "カレンダー"));
 
       const tdOps = document.createElement("td");
       updBtn.onclick = async () => {
         if (!pend.title.trim()) { listStatus("お題が空欄です", true); return; }
         e.title = pend.title.trim();
-        e.season = pend.season;
+        e.season = pend.kind === "脳トレ" ? "通年" : pend.season;
         e.genre = pend.genre.trim();
-        if (pend.diff) e.diff = pend.diff; else delete e.diff;
+        if (pend.diff && pend.kind !== "脳トレ") e.diff = pend.diff; else delete e.diff;
         if (pend.kind === "塗り絵") delete e.kind; else e.kind = pend.kind;
         if (pend.kind === "カレンダー") {
           const m = e.title.match(/(\d{1,2})月/);

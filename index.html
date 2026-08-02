@@ -823,9 +823,14 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         tags.innerHTML =
           '<span class="tag kind">カレンダー</span>' +
           (n.month ? '<span class="tag">' + n.month + '月</span>' : '');
+      } else if (kindOf(n) === "脳トレ") {
+        // 脳トレは季節・難しさを出さない
+        tags.innerHTML =
+          '<span class="tag kind">脳トレ</span>' +
+          (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
+          (n.answer ? '<span class="tag">答え付き</span>' : '');
       } else {
         tags.innerHTML =
-          (kindOf(n) === "脳トレ" ? '<span class="tag kind">脳トレ</span>' : '') +
           '<span class="tag season-' + n.season + '">' + n.season + '</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
           (n.diff ? '<span class="tag diff-' + n.diff + '">' + n.diff + '</span>' : '') +
@@ -881,10 +886,12 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
 
   function dlName(n) {
-    return n.title + (n.diff ? "(" + n.diff + ")" : "") + n.file.substring(n.file.lastIndexOf("."));
+    const d = (kindOf(n) === "脳トレ") ? "" : (n.diff ? "(" + n.diff + ")" : "");
+    return n.title + d + n.file.substring(n.file.lastIndexOf("."));
   }
   function dlNameAns(n) {
-    return n.title + " 答え" + (n.diff ? "(" + n.diff + ")" : "") + n.answer.substring(n.answer.lastIndexOf("."));
+    const d = (kindOf(n) === "脳トレ") ? "" : (n.diff ? "(" + n.diff + ")" : "");
+    return n.title + " 答え" + d + n.answer.substring(n.answer.lastIndexOf("."));
   }
 
   // ---- ページ送り ----
@@ -925,7 +932,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const file = lbShowingAnswer ? n.answer : n.file;
     document.getElementById("lbImg").src = "images/" + file;
     document.getElementById("lbTitle").textContent =
-      n.title + (lbShowingAnswer ? " 答え" : "") + (n.diff ? "(" + n.diff + ")" : "");
+      n.title + (lbShowingAnswer ? " 答え" : "") + ((n.diff && kindOf(n) !== "脳トレ") ? "(" + n.diff + ")" : "");
     const save = document.getElementById("lbSave");
     save.href = "images/" + file;
     save.download = lbShowingAnswer ? dlNameAns(n) : dlName(n);
