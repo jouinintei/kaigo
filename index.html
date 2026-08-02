@@ -554,7 +554,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 </script>
 <script>
 (function () {
-  const list = (window.NURIE_LIST || []).slice().reverse();
+  const MEMBER_TAB = true;
+  let list = (window.NURIE_LIST || []).slice().reverse();
   let page = "list";
   let selSeason = null;
   let selGenre = null;
@@ -587,6 +588,24 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
   function imgPath(n, file) {
     return (n && n.member ? "member-img/" : "images/") + file;
+  }
+
+  let memberLoaded = false;
+  async function loadMemberList() {
+    try {
+      const r = await fetch("api/member-list");
+      if (r.status === 403) return "auth";
+      if (!r.ok) return "err";
+      const txt = await r.text();
+      let entries = [];
+      try {
+        entries = new Function('"use strict"; return [' + txt + ']')() || [];
+      } catch (e) { return "err"; }
+      entries = entries.filter(Boolean).map(e => Object.assign({}, e, { member: true })).reverse();
+      list = entries.concat(list.filter(n => !n.member));
+      memberLoaded = true;
+      return "ok";
+    } catch (e) { return "err"; }
   }
 
   function seriesBase(t) {
@@ -809,9 +828,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const nFav = loadFav().length;
     document.getElementById("tabNoutore").classList.toggle("active", page === "noutore");
     document.getElementById("tabList").classList.toggle("active", page === "list");
-    const hasMember = list.some(n => n.member);
     const tm = document.getElementById("tabMember");
-    tm.style.display = hasMember ? "" : "none";
+    tm.style.display = MEMBER_TAB ? "" : "none";
     tm.classList.toggle("active", page === "member");
     const tf = document.getElementById("tabFav");
     tf.classList.toggle("active", page === "fav");
@@ -1284,9 +1302,27 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   };
   document.getElementById("tabMember").onclick = async () => {
     if (!isMemberUnlocked() && !(await unlockMember())) return;
+    if (!memberLoaded) {
+      let st = await loadMemberList();
+      if (st === "auth") {
+        clearMemberUnlock();
+        if (!(await unlockMember())) return;
+        st = await loadMemberList();
+      }
+      if (st !== "ok") {
+        alert("会員コンテンツを読み込めませんでした。もう一度お試しください");
+        return;
+      }
+    }
     switchPage("member");
   };
 
+  if (isMemberUnlocked()) {
+    loadMemberList().then(st => {
+      if (st === "auth") clearMemberUnlock();
+      else if (st === "ok") render();
+    });
+  }
   render();
 })();
 </script>
