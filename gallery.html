@@ -648,7 +648,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     } catch (e) { return "err"; }
   }
 
-  const FORCE_SERIES = ["難読漢字"];
+  const FORCE_SERIES = ["難読漢字", "ことわざ穴埋め"];
   function seriesBase(t) {
     const s = String(t);
     for (const f of FORCE_SERIES) {
@@ -759,6 +759,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
             seriesView = null;
             curPage = 1;
             render();
+            syncState();
           };
           bar.appendChild(b);
         });
@@ -774,7 +775,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const back = document.createElement("button");
       back.className = "reset-btn";
       back.textContent = "← 一覧にもどる";
-      back.onclick = () => { seriesView = null; curPage = 1; render(); };
+      back.onclick = () => {
+        if (navDepth > 0) { history.back(); }
+        else { seriesView = null; curPage = 1; render(); syncState(); }
+      };
       bar.appendChild(back);
       return;
     }
@@ -783,7 +787,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         const backM = document.createElement("button");
         backM.className = "cal-btn";
         backM.textContent = "← 月の一覧にもどる";
-        backM.onclick = () => { calMonth = null; render(); };
+        backM.onclick = () => {
+          if (navDepth > 0 && history.state && history.state.calMonth) { history.back(); }
+          else { calMonth = null; render(); syncState(); }
+        };
         bar.appendChild(backM);
       }
       const back = document.createElement("button");
@@ -812,7 +819,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       });
       sel.value = current || "すべて";
       sel.classList.toggle("picked", !!current);
-      sel.onchange = () => { curPage = 1; seriesView = null; onChange(sel.value === "すべて" ? null : sel.value); };
+      sel.onchange = () => { curPage = 1; seriesView = null; onChange(sel.value === "すべて" ? null : sel.value); syncState(); };
       wrap.appendChild(label);
       wrap.appendChild(sel);
       bar.appendChild(wrap);
@@ -838,7 +845,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const r = document.createElement("button");
       r.className = "reset-btn";
       r.textContent = "✕ 絞り込みを解除";
-      r.onclick = () => { selSeason = selGenre = selDiff = selUsed = null; seriesView = null; curPage = 1; render(); };
+      r.onclick = () => { selSeason = selGenre = selDiff = selUsed = null; seriesView = null; curPage = 1; render(); syncState(); };
       bar.appendChild(r);
     }
     if (page === "list" && list.some(n => kindOf(n) === "カレンダー")) {
@@ -905,7 +912,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         const b = document.createElement("button");
         b.className = "month-btn";
         b.innerHTML = "📅 " + m.label + '<span class="mcount">' + m.count + " 枚</span>";
-        b.onclick = () => { calMonth = m.key; curPage = 1; render(); };
+        b.onclick = () => { calMonth = m.key; curPage = 1; pushNav(); render(); };
         grid.appendChild(b);
       });
       return;
@@ -972,6 +979,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         const openSeries = () => {
           seriesView = sBase;
           curPage = 1;
+          pushNav();
           render();
           window.scrollTo({ top: 0, behavior: "smooth" });
         };
@@ -1028,7 +1036,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
           thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
         }
       };
-      img.onclick = () => openLightbox(n);
+      img.onclick = () => { openLightbox(n); pushNav(); };
       thumb.appendChild(img);
 
       const fav = document.createElement("button");
@@ -1135,6 +1143,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const go = (n) => {
       curPage = n;
       render();
+      syncState();
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
     const prev = document.createElement("button");
@@ -1187,10 +1196,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     lbShowingAnswer = !lbShowingAnswer;
     lbUpdate();
   };
-  lb.onclick = e => { if (e.target === lb) closeLightbox(); };
-  document.getElementById("lbClose").onclick = closeLightbox;
+  lb.onclick = e => { if (e.target === lb) lbSmartClose(); };
+  document.getElementById("lbClose").onclick = lbSmartClose;
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && lb.classList.contains("show")) closeLightbox();
+    if (e.key === "Escape" && lb.classList.contains("show")) lbSmartClose();
   });
   document.getElementById("lbSave").onclick = () => {
     if (!lbCurrent) return;
@@ -1327,12 +1336,76 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   };
 
   function switchPage(p) {
+    const clean = !seriesView && !calMonth && !selSeason && !selGenre &&
+                  !selDiff && !selUsed && curPage === 1;
+    if (p === page && clean) { render(); return; }
     seriesView = null;
     page = p;
     selSeason = selGenre = selDiff = selUsed = null;
     curPage = 1;
     calMonth = null;
     render();
+    pushNav();
+  }
+
+  // ==========================================================
+  //  戻るボタンで1段階ずつ戻れるようにする (履歴管理)
+  // ==========================================================
+  let navDepth = 0;
+  function currentStateObj() {
+    return {
+      d: navDepth,
+      page: page,
+      seriesView: seriesView,
+      calMonth: calMonth,
+      curPage: curPage,
+      selSeason: selSeason,
+      selGenre: selGenre,
+      selDiff: selDiff,
+      selUsed: selUsed,
+      memberKind: memberKind,
+      lb: (lbCurrent && lb.classList.contains("show")) ? lbCurrent.file : null
+    };
+  }
+  function pushNav() {
+    navDepth++;
+    try { history.pushState(currentStateObj(), ""); } catch (e) {}
+  }
+  function syncState() {
+    try { history.replaceState(currentStateObj(), ""); } catch (e) {}
+  }
+  function lbSmartClose() {
+    if (navDepth > 0 && history.state && history.state.lb) { history.back(); }
+    else { closeLightbox(); syncState(); }
+  }
+  function applyState(st) {
+    page = st.page || "list";
+    seriesView = st.seriesView || null;
+    calMonth = st.calMonth || null;
+    curPage = st.curPage || 1;
+    selSeason = st.selSeason || null;
+    selGenre = st.selGenre || null;
+    selDiff = st.selDiff || null;
+    selUsed = st.selUsed || null;
+    memberKind = st.memberKind || "塗り絵";
+    if (page === "member" && !memberLoaded) {
+      if (isMemberUnlocked()) { loadMemberList().then(() => render()); }
+      else { page = "list"; }
+    }
+    render();
+    if (st.lb) {
+      const n = list.find(x => x.file === st.lb);
+      if (n) {
+        lbCurrent = n;
+        lbShowingAnswer = false;
+        lbUpdate();
+        lb.classList.add("show");
+      } else {
+        closeLightbox();
+      }
+    } else if (lb.classList.contains("show")) {
+      closeLightbox();
+    }
   }
   document.getElementById("tabNoutore").onclick = () => switchPage("noutore");
   document.getElementById("tabList").onclick = () => switchPage("list");
@@ -1378,7 +1451,21 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
   const qp = new URLSearchParams(location.search).get("page");
   if (qp === "noutore" || qp === "calendar" || qp === "fav") page = qp;
-  render();
+  const basePage = page;
+  window.addEventListener("popstate", e => {
+    const st = e.state || { page: basePage, d: 0 };
+    navDepth = st.d || 0;
+    applyState(st);
+  });
+  const hs0 = history.state;
+  if (hs0 && hs0.page) {
+    // 再読み込みや「TOPから戻ってきた」ときは、前回見ていた画面を復元する
+    navDepth = hs0.d || 0;
+    applyState(hs0);
+  } else {
+    try { history.replaceState(currentStateObj(), ""); } catch (e) {}
+    render();
+  }
 })();
 </script>
 </body>
