@@ -116,6 +116,12 @@
     color: #8a8477;
     cursor: pointer;
   }
+  .tab-top {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
   .tab.active {
     background: var(--accent);
     border-color: var(--accent);
@@ -464,6 +470,10 @@
       letter-spacing: 0;
       white-space: nowrap;
     }
+    .tab-top {
+      flex: 0.5;
+      justify-content: center;
+    }
 
     .toolbar {
       display: grid;
@@ -526,6 +536,7 @@
   <h1><a href="./"><img src="logo.png" alt="介護のレクプリ" style="max-width:min(88%,480px); height:auto; vertical-align:middle"></a></h1>
   <p>お好みの画像を選んで印刷できます。</p>
   <div class="tabs">
+    <a class="tab tab-top" href="./">TOP</a>
     <button class="tab" id="tabNoutore">脳トレを選ぶ</button>
     <button class="tab active" id="tabList">塗り絵を選ぶ</button>
     <button class="tab fav-tab" id="tabFav">★ お気に入り</button>

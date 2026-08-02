@@ -72,8 +72,8 @@
     text-decoration: none;
     border: 2px solid var(--accent);
   }
-  .cta a.main { background: var(--accent); color: #fff; }
-  .cta a.sub2 { background: #fff; color: var(--accent); }
+  .cta a { background: #fff; color: var(--accent); }
+  .cta a:hover { background: var(--accent-soft); }
   .counts {
     display: flex;
     justify-content: center;
@@ -110,19 +110,6 @@
   }
   .new-grid img { width: 100%; aspect-ratio: 1/1.2; object-fit: cover; background: #fff; display: block; }
   .new-grid .cap { font-size: 13px; padding: 6px 8px; text-align: center; }
-  .feature {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 14px;
-  }
-  .feature div {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 18px;
-  }
-  .feature h3 { font-size: 17px; color: var(--accent); margin-bottom: 8px; }
-  .feature p { font-size: 14.5px; }
   ol.howto { margin: 6px 0 0 22px; font-size: 16px; }
   ol.howto li { margin-bottom: 8px; }
   footer {
@@ -148,42 +135,19 @@
   <div class="catch">高齢者向けの塗り絵・脳トレ・カレンダーを、無料でそのまま印刷。</div>
   <div class="sub">介護施設・デイサービスのレクリエーション担当の方のための素材集です。</div>
   <div class="cta">
-    <a class="main" href="gallery.html">🎨 塗り絵をえらぶ</a>
-    <a class="sub2" href="gallery.html?page=noutore">🧠 脳トレをえらぶ</a>
-    <a class="sub2" href="gallery.html?page=calendar">📅 カレンダー</a>
+    <a href="gallery.html">🎨 塗り絵をえらぶ</a>
+    <a href="gallery.html?page=noutore">🧠 脳トレをえらぶ</a>
+    <a href="gallery.html?page=calendar">📅 カレンダー</a>
   </div>
   <div class="counts" id="counts"></div>
 </div>
 
 <div class="wrap">
 
-<section id="newSec" style="display:none">
-  <h2>新着の素材</h2>
-  <div class="new-grid" id="newGrid"></div>
-</section>
-
 <section>
   <h2>このサイトについて</h2>
-  <p class="txt">「介護のレクプリ」は、介護施設・デイサービス・ご家庭で使える高齢者向けレクリエーション素材を無料で配布しているサイトです。季節の塗り絵、難読漢字・計算・言葉遊びなどの脳トレプリント、ぬりえ付きの月間カレンダーを揃えています。</p>
-  <p class="txt">すべてA4サイズで印刷するだけでそのまま使える形になっており、面倒な会員登録なしでご利用いただけます。塗り絵は春・夏・秋・冬の季節や、花・動物・食べ物・行事などのジャンルから選べます。脳トレは答え付きなので、進行役の方がその場で答え合わせできます。</p>
-</section>
-
-<section>
-  <h2>できること</h2>
-  <div class="feature">
-    <div>
-      <h3>🎨 季節とジャンルで選べる塗り絵</h3>
-      <p>春夏秋冬の季節ごと、花・動物・食べ物・行事・風景などのジャンルごとに探せます。塗りやすい太い線のイラストで、初級から上級まで難しさの目安つきです。</p>
-    </div>
-    <div>
-      <h3>🧠 種類ゆたかな脳トレプリント</h3>
-      <p>難読漢字、ことわざ・四字熟語の穴埋め、計算(虫食い算)、しりとり、言葉探し、並び替えなど。すべて答えのプリント付きです。</p>
-    </div>
-    <div>
-      <h3>📅 ぬりえ付き月間カレンダー</h3>
-      <p>その月の絵柄を塗って仕上げる月間カレンダー。作品として飾れるので、毎月のレクの定番にどうぞ。</p>
-    </div>
-  </div>
+  <p class="txt">「介護のレクプリ」は、介護施設・デイサービス・ご家庭で使える高齢者向けレクリエーション素材を無料で配布しているサイトです。季節の塗り絵、難読漢字・計算・言葉遊びなどの脳トレプリント、ぬりえ付きの月間カレンダーを揃えています。すべてA4サイズで印刷するだけでそのまま使える形になっており、面倒な会員登録なしでご利用いただけます。</p>
+  <p class="txt">塗り絵は春・夏・秋・冬の季節や、花・動物・食べ物・行事・風景などのジャンルから探せて、塗りやすい太い線のイラストに初級から上級までの難しさの目安つき。脳トレは難読漢字、ことわざ・四字熟語の穴埋め、計算(虫食い算)、しりとり、言葉探し、並び替えなど種類ゆたかで、すべて答えのプリント付きなので進行役の方がその場で答え合わせできます。月間カレンダーはその月の絵柄を塗って仕上げるぬりえ付きで、作品として飾れるので毎月のレクの定番にどうぞ。</p>
 </section>
 
 <section>
@@ -194,6 +158,11 @@
     <li>A4サイズで印刷して、そのままレクリエーションに使う</li>
   </ol>
   <p class="txt" style="margin-top:10px">印刷・保存した素材には「使用済み」の印がつくので、同じものを二度使ってしまう心配もありません。</p>
+</section>
+
+<section id="newSec" style="display:none">
+  <h2>新着の素材</h2>
+  <div class="new-grid" id="newGrid"></div>
 </section>
 
 <footer>
