@@ -552,6 +552,16 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   let selGenre = null;
   let selDiff = null;
   let selUsed = null;
+  let seriesView = null;        // 「◯◯ シリーズ」を開いているとき、そのシリーズ名
+
+  // 「虫食い算 その3」→「虫食い算」のようにシリーズ名を取り出す
+  function seriesBase(t) {
+    return String(t).replace(/\s*その\d+$/, "");
+  }
+  function seriesNum(t) {
+    const m = String(t).match(/その(\d+)$/);
+    return m ? parseInt(m[1], 10) : 1;
+  }
   let curPage = 1;              // ページ番号
   const PER_PAGE = 9;           // 1ページの表示枚数
   let calMonth = null;          // カレンダーで選択中の月 (例: "2026-8")
@@ -625,6 +635,20 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const bar = document.getElementById("toolbar");
     bar.innerHTML = "";
     if (page === "fav") return;
+    if (seriesView && (page === "list" || page === "noutore")) {
+      const lbl = document.createElement("span");
+      lbl.style.fontWeight = "bold";
+      lbl.style.fontSize = "18px";
+      lbl.style.marginRight = "6px";
+      lbl.textContent = "📚 " + seriesView + " シリーズ";
+      bar.appendChild(lbl);
+      const back = document.createElement("button");
+      back.className = "reset-btn";
+      back.textContent = "← 一覧にもどる";
+      back.onclick = () => { seriesView = null; curPage = 1; render(); };
+      bar.appendChild(back);
+      return;
+    }
     if (page === "calendar") {
       if (calMonth) {
         const backM = document.createElement("button");
@@ -659,7 +683,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       });
       sel.value = current || "すべて";
       sel.classList.toggle("picked", !!current);
-      sel.onchange = () => { curPage = 1; onChange(sel.value === "すべて" ? null : sel.value); };
+      sel.onchange = () => { curPage = 1; seriesView = null; onChange(sel.value === "すべて" ? null : sel.value); };
       wrap.appendChild(label);
       wrap.appendChild(sel);
       bar.appendChild(wrap);
@@ -684,7 +708,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const r = document.createElement("button");
       r.className = "reset-btn";
       r.textContent = "✕ 絞り込みを解除";
-      r.onclick = () => { selSeason = selGenre = selDiff = selUsed = null; curPage = 1; render(); };
+      r.onclick = () => { selSeason = selGenre = selDiff = selUsed = null; seriesView = null; curPage = 1; render(); };
       bar.appendChild(r);
     }
     // 塗り絵ページにカレンダーコーナーへの入口
@@ -758,7 +782,31 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       return;
     }
 
-    const all = currentShown();
+    let all = currentShown();
+
+    // シリーズ(「その2」「その3」…)をまとめる
+    const seriesCounts = {};
+    let seriesGrouped = false;
+    if (page === "list" || page === "noutore") {
+      if (seriesView) {
+        all = all.filter(n => seriesBase(n.title) === seriesView)
+                 .slice().sort((a, b) => seriesNum(a.title) - seriesNum(b.title));
+      } else {
+        seriesGrouped = true;
+        const groups = new Map();
+        all.forEach(n => {
+          const b = seriesBase(n.title);
+          if (!groups.has(b)) groups.set(b, []);
+          groups.get(b).push(n);
+        });
+        all = [];
+        groups.forEach((arr, b) => {
+          seriesCounts[b] = arr.length;
+          arr.sort((a, c) => seriesNum(a.title) - seriesNum(c.title));
+          all.push(arr[0]);
+        });
+      }
+    }
 
     // ページ割り(9枚ずつ)
     const totalPages = Math.max(1, Math.ceil(all.length / PER_PAGE));
@@ -783,6 +831,54 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("bulkBar").classList.toggle("show", page === "fav" && all.length > 0);
 
     shown.forEach(n => {
+      const sBase = seriesBase(n.title);
+      const sCount = seriesGrouped ? (seriesCounts[sBase] || 1) : 1;
+      if (sCount > 1) {
+        // シリーズまとめカード(押すと一覧が開く)
+        const card = document.createElement("div");
+        card.className = "card";
+        const openSeries = () => {
+          seriesView = sBase;
+          curPage = 1;
+          render();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+        const thumb = document.createElement("div");
+        thumb.className = "thumb";
+        const img = document.createElement("img");
+        img.src = "images/" + n.file;
+        img.alt = sBase;
+        img.onerror = () => {
+          thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
+        };
+        img.onclick = openSeries;
+        thumb.appendChild(img);
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = sBase;
+        const tags = document.createElement("div");
+        tags.className = "tags";
+        tags.innerHTML =
+          (kindOf(n) === "脳トレ" ? '<span class="tag kind">脳トレ</span>' : '') +
+          (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
+          '<span class="tag">シリーズ全' + sCount + '枚</span>';
+        const btns = document.createElement("div");
+        btns.className = "btns";
+        const b = document.createElement("a");
+        b.className = "btn-dl";
+        b.textContent = "▶ " + sCount + "枚を見る";
+        b.onclick = openSeries;
+        btns.appendChild(b);
+        meta.appendChild(title);
+        meta.appendChild(tags);
+        meta.appendChild(btns);
+        card.appendChild(thumb);
+        card.appendChild(meta);
+        grid.appendChild(card);
+        return;
+      }
       const h = hist[n.file] || {};
       const card = document.createElement("div");
       card.className = "card";
@@ -1102,6 +1198,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 
   // ---- ページ切り替え ----
   function switchPage(p) {
+    seriesView = null;
     page = p;
     selSeason = selGenre = selDiff = selUsed = null;
     curPage = 1;
