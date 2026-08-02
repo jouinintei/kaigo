@@ -611,7 +611,13 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (page === "calendar") return "カレンダー";
     return "塗り絵";
   }
-  function kindSubset() { return list.filter(n => kindOf(n) === pageKind()); }
+  let memberKind = "塗り絵";     // 会員ページ内の種類切り替え
+  function kindSubset() {
+    if (page === "member") {
+      return list.filter(n => n.member && kindOf(n) === memberKind);
+    }
+    return list.filter(n => kindOf(n) === pageKind());
+  }
 
   // ---- 保存領域 (このPCのブラウザ) ----
   const STORE_KEY = "nurie_history_v1";
@@ -667,9 +673,31 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const lbl = document.createElement("span");
       lbl.style.fontWeight = "bold";
       lbl.style.fontSize = "18px";
-      lbl.textContent = "🔒 会員専用コンテンツ";
+      lbl.textContent = "🔒 会員専用";
       bar.appendChild(lbl);
-      return;
+      // 会員素材にある種類だけ切り替えボタンを出す
+      const kindsAvail = ["塗り絵", "脳トレ", "カレンダー"].filter(k =>
+        list.some(n => n.member && kindOf(n) === k));
+      if (kindsAvail.length && !kindsAvail.includes(memberKind)) memberKind = kindsAvail[0];
+      if (kindsAvail.length > 1) {
+        kindsAvail.forEach(k => {
+          const b = document.createElement("button");
+          b.className = "cal-btn";
+          b.textContent = k;
+          if (k === memberKind) {
+            b.style.background = "#e8630a";
+            b.style.color = "#fff";
+          }
+          b.onclick = () => {
+            memberKind = k;
+            selSeason = selGenre = selDiff = selUsed = null;
+            seriesView = null;
+            curPage = 1;
+            render();
+          };
+          bar.appendChild(b);
+        });
+      }
     }
     if (seriesView && (page === "list" || page === "noutore" || page === "member")) {
       const lbl = document.createElement("span");
@@ -725,8 +753,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       bar.appendChild(wrap);
     };
 
-    if (page === "noutore") {
-      // 脳トレはジャンルだけで選ぶ
+    const genreOnly = (page === "noutore") ||
+      (page === "member" && memberKind !== "塗り絵");
+    if (genreOnly) {
+      // 脳トレ(と会員の脳トレ・カレンダー)はジャンルだけで選ぶ
       selSeason = selDiff = selUsed = null;
       if (genres.length) {
         addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
@@ -758,9 +788,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
 
   function currentShown() {
-    if (page === "member") {
-      return list.filter(n => n.member);
-    }
     if (page === "fav") {
       const f = loadFav();
       return list.filter(n => f.includes(n.file));
@@ -770,7 +797,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       return kindSubset().filter(n => calKey(n) === calMonth && !n.member)
         .slice().sort((a, b) => String(a.title).localeCompare(String(b.title), "ja"));
     }
-    return kindSubset().filter(n => !n.member).filter(n =>
+    return kindSubset().filter(n => (page === "member" ? true : !n.member)).filter(n =>
       (!selSeason || n.season === selSeason) &&
       (!selGenre || n.genre === selGenre) &&
       (!selDiff || n.diff === selDiff) &&
