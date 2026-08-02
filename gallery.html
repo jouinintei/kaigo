@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品一覧(塗り絵・脳トレ・カレンダー)|介護のレクプリ</title>
+<meta name="description" content="高齢者向けの無料塗り絵・脳トレ・月間カレンダーの一覧ページ。季節やジャンルで絞り込んで、A4サイズでそのまま印刷・保存できます。">
+<link rel="canonical" href="https://kaigo-no-rekupuri.edgeone.dev/gallery.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="介護のレクプリ">
+<meta property="og:title" content="作品一覧(塗り絵・脳トレ・カレンダー)|介護のレクプリ">
+<meta property="og:description" content="高齢者向けの無料塗り絵・脳トレ・月間カレンダーの一覧ページ。A4印刷対応。">
+<meta property="og:url" content="https://kaigo-no-rekupuri.edgeone.dev/gallery.html">
+<meta property="og:image" content="https://kaigo-no-rekupuri.edgeone.dev/logo.png">
+<style>
+  :root {
+    --bg: #faf6ef;
+    --card: #ffffff;
+    --ink: #3a3a3a;
+    --accent: #e8833a;
+    --accent-soft: #fbe3cf;
+    --line: #e5ddd0;
+    --easy: #4a9b6e;
+    --hard: #c05a5a;
+    --spring: #d886a8;
+    --summer: #4a90c2;
+    --autumn: #c07a3a;
+    --winter: #7d8fb5;
+    --star: #f0b429;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Maru Gothic ProN", "BIZ UDGothic", "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 3px solid var(--accent);
+    padding: 20px 24px 0;
+    text-align: center;
+    position: relative;
+  }
+  .private-badge {
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    color: #d43a3a;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  .apply-btn {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #e8630a;
+    background: #fff;
+    border: 2px solid #e8630a;
+    border-radius: 999px;
+    padding: 7px 16px;
+    cursor: pointer;
+  }
+  .apply-btn:hover { background: #fff3e8; }
+  .admin-link {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 14px;
+    color: #a09a8c;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 14px;
+    background: var(--card);
+  }
+  .admin-link:hover { color: var(--accent); border-color: var(--accent); }
+  .reload-btn {
+    position: absolute;
+    top: 14px;
+    right: 168px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #a09a8c;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 14px;
+    background: var(--card);
+    cursor: pointer;
+  }
+  .reload-btn:hover { color: var(--accent); border-color: var(--accent); }
+  header h1 {
+    font-size: 30px;
+    letter-spacing: 4px;
+    color: var(--accent);
+  }
+  header p { font-size: 15px; color: #8a8477; margin-top: 4px; }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .tab {
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 12px 34px;
+    border: 2px solid var(--line);
+    border-bottom: none;
+    border-radius: 14px 14px 0 0;
+    background: #f3ede1;
+    color: #8a8477;
+    cursor: pointer;
+  }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .tab.fav-tab.active {
+    background: var(--star);
+    border-color: var(--star);
+  }
+
+  .toolbar {
+    max-width: 1100px;
+    margin: 20px auto 8px;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    align-items: center;
+    justify-content: center;
+  }
+  .filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .filter label {
+    font-size: 15px;
+    font-weight: bold;
+    color: #8a8477;
+  }
+  .filter select {
+    font-family: inherit;
+    font-size: 17px;
+    padding: 10px 14px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+    min-width: 120px;
+  }
+  .filter select:hover { border-color: var(--accent); }
+  .filter select.picked {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    font-weight: bold;
+  }
+  .reset-btn {
+    font-family: inherit;
+    font-size: 15px;
+    padding: 10px 18px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+    color: #8a8477;
+    cursor: pointer;
+  }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cal-btn {
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 22px;
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: #a05b1e;
+    cursor: pointer;
+  }
+  .cal-btn:hover { background: var(--accent); color: #fff; }
+  .month-btn {
+    grid-column: 1 / -1;
+    font-family: inherit;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 22px 20px;
+    border: 2px solid var(--line);
+    border-left: 8px solid var(--accent);
+    border-radius: 14px;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  }
+  .month-btn:hover { border-color: var(--accent); background: #fdf4ea; }
+  .month-btn .mcount { font-size: 14px; color: #a09a8c; font-weight: normal; margin-left: 12px; }
+
+  .bulkbar {
+    max-width: 1100px;
+    margin: 20px auto 8px;
+    padding: 0 20px;
+    display: none;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .bulkbar.show { display: flex; }
+  .bulk-btn {
+    font-size: 17px;
+    font-weight: bold;
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+  }
+  .bulk-save { background: #6b8f7a; color: #fff; }
+  .bulk-save:hover { background: #5c7f6b; }
+
+  .count {
+    text-align: center;
+    font-size: 14px;
+    color: #a09a8c;
+    margin-bottom: 12px;
+  }
+
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto 24px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .pager {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+  }
+  .pager button {
+    font-family: inherit;
+    font-size: 16px;
+    min-width: 46px;
+    padding: 10px 14px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .pager button:hover:not(:disabled) { border-color: var(--accent); }
+  .pager button.cur {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: bold;
+  }
+  .pager button:disabled { opacity: .4; cursor: default; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05);
+    position: relative;
+  }
+  .thumb {
+    aspect-ratio: 297/210;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .thumb .noimg {
+    color: #c9c2b4;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .fav-btn {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.92);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    color: #c9c2b4;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  }
+  .fav-btn:hover { color: var(--star); }
+  .fav-btn.on { color: var(--star); }
+
+  .meta { padding: 12px 14px 14px; }
+  .meta .title { font-size: 17px; font-weight: bold; }
+  .tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .tag {
+    font-size: 12.5px;
+    border-radius: 6px;
+    padding: 2px 9px;
+    background: var(--accent-soft);
+    color: #a05b1e;
+  }
+  .tag.season-通年 { background: #ece8e0; color: #7a7466; }
+  .tag.genre { background: #ece4f4; color: #7a5ba6; }
+  .tag.kind { background: #ddeef0; color: #2e7d8a; }
+  .tag.season-春 { background: #f7e4ec; color: var(--spring); }
+  .tag.season-夏 { background: #e0edf7; color: var(--summer); }
+  .tag.season-秋 { background: #f7e9dc; color: var(--autumn); }
+  .tag.season-冬 { background: #e6eaf2; color: var(--winter); }
+  .tag.diff-初級 { background: #e2f2e8; color: var(--easy); }
+  .tag.diff-中級 { background: #faf0d8; color: #a4761d; }
+  .tag.diff-上級 { background: #f7e3e3; color: var(--hard); }
+
+  .history { margin-top: 8px; display: flex; flex-direction: column; gap: 3px; min-height: 4px; }
+  .hist-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: #4a7a5e;
+    background: #eef6f0;
+    border: 1px solid #cfe5d6;
+    border-radius: 6px;
+    padding: 2px 8px;
+    width: fit-content;
+    cursor: pointer;
+  }
+  .hist-badge:hover { text-decoration: line-through; opacity: .7; }
+
+  .used-ribbon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #4a9b6e;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 3px 12px;
+    border-radius: 999px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+
+  .btns { display: flex; gap: 8px; margin-top: 12px; }
+  .btns button, .btns a {
+    flex: 1;
+    text-align: center;
+    font-size: 15px;
+    padding: 9px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    font-family: inherit;
+  }
+  .btn-dl { background: var(--accent); color: #fff; font-weight: bold; }
+  .btn-dl:hover { background: #d3722c; }
+  .btn-ans { background: #6b8f7a; color: #fff; font-weight: bold; flex: 0 0 32%; }
+  .btn-ans:hover { background: #5c7f6b; }
+
+  .empty {
+    text-align: center;
+    color: #a09a8c;
+    padding: 60px 20px;
+    font-size: 17px;
+  }
+  .note {
+    text-align: center;
+    font-size: 12.5px;
+    color: #b5aea0;
+    padding-bottom: 30px;
+  }
+
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(40, 35, 28, .88);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+    cursor: zoom-out;
+  }
+  #lightbox.show { display: flex; }
+  #lbImg {
+    max-width: 94vw;
+    max-height: 78vh;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.4);
+    cursor: default;
+  }
+  .lb-bar {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    cursor: default;
+  }
+  .lb-title { color: #fff; font-size: 19px; font-weight: bold; margin-right: 6px; }
+  .lb-bar button, .lb-bar a {
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .lb-save { background: var(--accent); color: #fff; }
+  .lb-save:hover { background: #d3722c; }
+  .lb-toggle { background: #6b8f7a; color: #fff; }
+  .lb-toggle:hover { background: #5c7f6b; }
+  .lb-close { background: #efe9dd; color: #6b6455; }
+  .lb-close:hover { background: #e0d8c6; }
+  .thumb img { cursor: zoom-in; }
+
+  @media (max-width: 600px) {
+    header { padding: 40px 12px 0; }
+    .private-badge { top: 10px; left: 12px; font-size: 13px; }
+    .admin-link { top: 8px; right: 12px; font-size: 12px; padding: 4px 10px; }
+    .apply-btn { top: 8px; right: 12px; font-size: 12px; padding: 5px 12px; }
+    .reload-btn { top: 8px; right: 128px; font-size: 12px; padding: 4px 10px; }
+    header h1 img { max-width: 82%; }
+    header p { font-size: 13px; }
+
+    .tabs { gap: 4px; margin-top: 12px; }
+    .tab {
+      flex: 1;
+      padding: 11px 4px;
+      font-size: 14px;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 12px;
+      margin-top: 14px;
+    }
+    .filter { flex-direction: column; align-items: stretch; gap: 2px; }
+    .filter label { font-size: 13px; }
+    .filter select {
+      width: 100%;
+      min-width: 0;
+      font-size: 16px;
+      padding: 10px 8px;
+    }
+    .reset-btn { grid-column: 1 / -1; }
+
+    .grid { padding: 0 12px; gap: 14px; }
+    .meta .title { font-size: 16px; }
+
+    .bulkbar { padding: 0 12px; }
+    .bulk-btn { flex: 1; padding: 12px 10px; font-size: 15.5px; }
+
+    .pager { gap: 6px; padding: 0 12px; }
+    .pager button { min-width: 42px; padding: 9px 10px; font-size: 15px; }
+
+    .lb-bar button, .lb-bar a { padding: 9px 16px; font-size: 15px; }
+    .lb-title { font-size: 16px; width: 100%; text-align: center; margin: 0; }
+  }
+
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%) translateY(20px);
+    background: #3a3a3a;
+    color: #fff;
+    font-size: 15px;
+    padding: 12px 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .25s;
+    z-index: 300;
+    max-width: 92vw;
+    text-align: center;
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="apply-btn" id="tabApply">💌 会員申請</button>
+  <h1><a href="./"><img src="logo.png" alt="介護のレクプリ" style="max-width:min(88%,480px); height:auto; vertical-align:middle"></a></h1>
+  <p>お好みの画像を選んで印刷できます。</p>
+  <div class="tabs">
+    <button class="tab" id="tabNoutore">脳トレを選ぶ</button>
+    <button class="tab active" id="tabList">塗り絵を選ぶ</button>
+    <button class="tab fav-tab" id="tabFav">★ お気に入り</button>
+    <button class="tab" id="tabMember">🔒 会員専用</button>
+  </div>
+</header>
+
+<div class="toolbar" id="toolbar"></div>
+
+<div class="bulkbar" id="bulkBar">
+  <button class="bulk-btn bulk-save" id="bulkSave">💾 まとめて保存</button>
+</div>
+
+<div class="count" id="count"></div>
+<div class="grid" id="grid"></div>
+<div class="pager" id="pager"></div>
+<div class="empty" id="empty" style="display:none"></div>
+<div class="note">※「使用済み」やお気に入りの記録はこのパソコンのブラウザに保存されます。緑のバッジを押すと記録を消せます。</div>
+
+<div id="lightbox">
+  <img id="lbImg" alt="">
+  <div class="lb-bar">
+    <span class="lb-title" id="lbTitle"></span>
+    <button class="lb-toggle" id="lbAnswer" style="display:none">答えを見る</button>
+    <a class="lb-save" id="lbSave">💾 保存</a>
+    <button class="lb-close" id="lbClose">✕ 閉じる</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
+</script>
+<script>
+(function () {
+  const MEMBER_TAB = true;
+  let list = (window.NURIE_LIST || []).slice().reverse();
+  let page = "list";
+  let selSeason = null;
+  let selGenre = null;
+  let selDiff = null;
+  let selUsed = null;
+  let seriesView = null;
+
+  const MEMBER_KEY = "nurie_member_v1";
+  function isMemberUnlocked() {
+    try { return localStorage.getItem(MEMBER_KEY) === "yes"; } catch (e) { return false; }
+  }
+  function clearMemberUnlock() {
+    try { localStorage.removeItem(MEMBER_KEY); } catch (e) {}
+  }
+  async function unlockMember() {
+    const pw = window.prompt("会員パスワードを入力してください");
+    if (pw === null) return false;
+    try {
+      const r = await fetch("api/member-login?pw=" + encodeURIComponent(pw.trim()));
+      if (r.ok) {
+        try { localStorage.setItem(MEMBER_KEY, "yes"); } catch (e) {}
+        return true;
+      }
+      if (r.status === 401) alert("パスワードが違います");
+      else alert("会員機能の準備がまだのようです(設定を確認してください)");
+    } catch (e) {
+      alert("通信できませんでした。電波の良いところでもう一度お試しください");
+    }
+    return false;
+  }
+  function imgPath(n, file) {
+    return (n && n.member ? "member-img/" : "images/") + file;
+  }
+
+  let memberLoaded = false;
+  async function loadMemberList() {
+    try {
+      const r = await fetch("api/member-list");
+      if (r.status === 403) return "auth";
+      if (!r.ok) return "err";
+      const txt = await r.text();
+      let entries = [];
+      try {
+        entries = new Function('"use strict"; return [' + txt + ']')() || [];
+      } catch (e) { return "err"; }
+      entries = entries.filter(Boolean).map(e => Object.assign({}, e, { member: true })).reverse();
+      list = entries.concat(list.filter(n => !n.member));
+      memberLoaded = true;
+      return "ok";
+    } catch (e) { return "err"; }
+  }
+
+  const FORCE_SERIES = ["難読漢字"];
+  function seriesBase(t) {
+    const s = String(t);
+    for (const f of FORCE_SERIES) {
+      if (s !== f && s.indexOf(f) === 0) return f;
+    }
+    return s.replace(/\s*その\d+(\s*[((][^))]*[))])?$/, "");
+  }
+  function seriesNum(t) {
+    const m = String(t).match(/その(\d+)(?:\s*[((][^))]*[))])?$/);
+    return m ? parseInt(m[1], 10) : 1;
+  }
+  let curPage = 1;
+  const PER_PAGE = 9;
+  let calMonth = null;
+
+  function calKey(n) { return (n.year || 0) + "-" + (n.month || 0); }
+  function calLabel(n) { return (n.year ? n.year + "年" : "") + (n.month ? n.month + "月" : "その他"); }
+
+  const seasonOrder = ["春", "夏", "秋", "冬", "通年"];
+  const diffs = ["初級", "中級", "上級"];
+  const useds = ["未使用", "使用済み"];
+
+  function kindOf(n) {
+    if (n.kind === "脳トレ") return "脳トレ";
+    if (n.kind === "カレンダー") return "カレンダー";
+    return "塗り絵";
+  }
+  function pageKind() {
+    if (page === "noutore") return "脳トレ";
+    if (page === "calendar") return "カレンダー";
+    return "塗り絵";
+  }
+  let memberKind = "塗り絵";
+  function kindSubset() {
+    if (page === "member") {
+      return list.filter(n => n.member && kindOf(n) === memberKind);
+    }
+    return list.filter(n => kindOf(n) === pageKind());
+  }
+
+  const STORE_KEY = "nurie_history_v1";
+  const FAV_KEY = "nurie_fav_v1";
+  function loadJSON(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+    catch (e) { return fallback; }
+  }
+  function saveJSON(key, v) {
+    try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {}
+  }
+
+  const loadHist = () => loadJSON(STORE_KEY, {});
+  function today() {
+    const d = new Date();
+    return (d.getMonth() + 1) + "/" + d.getDate();
+  }
+  function mark(file, kind) {
+    const h = loadHist();
+    if (!h[file]) h[file] = {};
+    h[file][kind] = today();
+    saveJSON(STORE_KEY, h);
+  }
+  function unmark(file, kind) {
+    const h = loadHist();
+    if (h[file]) {
+      delete h[file][kind];
+      if (!h[file].print && !h[file].save) delete h[file];
+      saveJSON(STORE_KEY, h);
+    }
+    render();
+  }
+  function isUsed(file) { return !!loadHist()[file]; }
+
+  const loadFav = () => loadJSON(FAV_KEY, []);
+  function isFav(file) { return loadFav().includes(file); }
+  function toggleFav(file) {
+    let f = loadFav();
+    if (f.includes(file)) f = f.filter(x => x !== file);
+    else f.push(file);
+    saveJSON(FAV_KEY, f);
+    render();
+  }
+
+  function buildToolbar() {
+    const bar = document.getElementById("toolbar");
+    bar.innerHTML = "";
+    if (page === "fav") return;
+    if (page === "member") {
+      const lbl = document.createElement("span");
+      lbl.style.fontWeight = "bold";
+      lbl.style.fontSize = "18px";
+      lbl.textContent = "🔒 会員専用";
+      bar.appendChild(lbl);
+      const kindsAvail = ["塗り絵", "脳トレ", "カレンダー"].filter(k =>
+        list.some(n => n.member && kindOf(n) === k));
+      if (kindsAvail.length && !kindsAvail.includes(memberKind)) memberKind = kindsAvail[0];
+      if (kindsAvail.length > 1) {
+        kindsAvail.forEach(k => {
+          const b = document.createElement("button");
+          b.className = "cal-btn";
+          b.textContent = k;
+          if (k === memberKind) {
+            b.style.background = "#e8630a";
+            b.style.color = "#fff";
+          }
+          b.onclick = () => {
+            memberKind = k;
+            selSeason = selGenre = selDiff = selUsed = null;
+            seriesView = null;
+            curPage = 1;
+            render();
+          };
+          bar.appendChild(b);
+        });
+      }
+    }
+    if (seriesView && (page === "list" || page === "noutore" || page === "member")) {
+      const lbl = document.createElement("span");
+      lbl.style.fontWeight = "bold";
+      lbl.style.fontSize = "18px";
+      lbl.style.marginRight = "6px";
+      lbl.textContent = "📚 " + seriesView + " シリーズ";
+      bar.appendChild(lbl);
+      const back = document.createElement("button");
+      back.className = "reset-btn";
+      back.textContent = "← 一覧にもどる";
+      back.onclick = () => { seriesView = null; curPage = 1; render(); };
+      bar.appendChild(back);
+      return;
+    }
+    if (page === "calendar") {
+      if (calMonth) {
+        const backM = document.createElement("button");
+        backM.className = "cal-btn";
+        backM.textContent = "← 月の一覧にもどる";
+        backM.onclick = () => { calMonth = null; render(); };
+        bar.appendChild(backM);
+      }
+      const back = document.createElement("button");
+      back.className = "reset-btn";
+      back.textContent = "← 塗り絵にもどる";
+      back.onclick = () => switchPage("list");
+      bar.appendChild(back);
+      return;
+    }
+    const sub = kindSubset();
+    const seasons = seasonOrder.filter(s => sub.some(n => n.season === s));
+    const genres = [];
+    sub.forEach(n => { if (n.genre && !genres.includes(n.genre)) genres.push(n.genre); });
+
+    const addSelect = (labelText, options, current, onChange) => {
+      const wrap = document.createElement("div");
+      wrap.className = "filter";
+      const label = document.createElement("label");
+      label.textContent = labelText;
+      const sel = document.createElement("select");
+      ["すべて"].concat(options).forEach(o => {
+        const op = document.createElement("option");
+        op.value = o;
+        op.textContent = o;
+        sel.appendChild(op);
+      });
+      sel.value = current || "すべて";
+      sel.classList.toggle("picked", !!current);
+      sel.onchange = () => { curPage = 1; seriesView = null; onChange(sel.value === "すべて" ? null : sel.value); };
+      wrap.appendChild(label);
+      wrap.appendChild(sel);
+      bar.appendChild(wrap);
+    };
+
+    const genreOnly = (page === "noutore") ||
+      (page === "member" && memberKind !== "塗り絵");
+    if (genreOnly) {
+      selSeason = selDiff = selUsed = null;
+      if (genres.length) {
+        addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
+      }
+    } else {
+      addSelect("季節:", seasons, selSeason, v => { selSeason = v; render(); });
+      if (genres.length) {
+        addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
+      }
+      addSelect("難しさ:", diffs, selDiff, v => { selDiff = v; render(); });
+      addSelect("使用状況:", useds, selUsed, v => { selUsed = v; render(); });
+    }
+
+    if (selSeason || selGenre || selDiff || selUsed) {
+      const r = document.createElement("button");
+      r.className = "reset-btn";
+      r.textContent = "✕ 絞り込みを解除";
+      r.onclick = () => { selSeason = selGenre = selDiff = selUsed = null; seriesView = null; curPage = 1; render(); };
+      bar.appendChild(r);
+    }
+    if (page === "list" && list.some(n => kindOf(n) === "カレンダー")) {
+      const c = document.createElement("button");
+      c.className = "cal-btn";
+      c.textContent = "📅 カレンダーはこちら";
+      c.onclick = () => switchPage("calendar");
+      bar.appendChild(c);
+    }
+  }
+
+  function currentShown() {
+    if (page === "fav") {
+      const f = loadFav();
+      return list.filter(n => f.includes(n.file));
+    }
+    if (page === "calendar") {
+      if (!calMonth) return [];
+      return kindSubset().filter(n => calKey(n) === calMonth && !n.member)
+        .slice().sort((a, b) => String(a.title).localeCompare(String(b.title), "ja"));
+    }
+    return kindSubset().filter(n => (page === "member" ? true : !n.member)).filter(n =>
+      (!selSeason || n.season === selSeason) &&
+      (!selGenre || n.genre === selGenre) &&
+      (!selDiff || n.diff === selDiff) &&
+      (!selUsed ||
+       (selUsed === "使用済み" && isUsed(n.file)) ||
+       (selUsed === "未使用" && !isUsed(n.file))));
+  }
+
+  function render() {
+    const nFav = loadFav().length;
+    document.getElementById("tabNoutore").classList.toggle("active", page === "noutore");
+    document.getElementById("tabList").classList.toggle("active", page === "list");
+    const tm = document.getElementById("tabMember");
+    tm.style.display = MEMBER_TAB ? "" : "none";
+    tm.classList.toggle("active", page === "member");
+    const tf = document.getElementById("tabFav");
+    tf.classList.toggle("active", page === "fav");
+    tf.textContent = "★ お気に入り" + (nFav ? " (" + nFav + ")" : "");
+
+    buildToolbar();
+
+    const hist = loadHist();
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    if (page === "calendar" && !calMonth) {
+      const months = [];
+      kindSubset().forEach(n => {
+        const k = calKey(n);
+        let m = months.find(x => x.key === k);
+        if (!m) { m = { key: k, year: n.year || 0, month: n.month || 0, count: 0, label: calLabel(n) }; months.push(m); }
+        m.count++;
+      });
+      months.sort((a, b) => (a.year - b.year) || (a.month - b.month));
+      document.getElementById("count").textContent = "";
+      renderPager(1);
+      const empty = document.getElementById("empty");
+      empty.style.display = months.length ? "none" : "block";
+      empty.textContent = "カレンダーはまだありません";
+      document.getElementById("bulkBar").classList.remove("show");
+      months.forEach(m => {
+        const b = document.createElement("button");
+        b.className = "month-btn";
+        b.innerHTML = "📅 " + m.label + '<span class="mcount">' + m.count + " 枚</span>";
+        b.onclick = () => { calMonth = m.key; curPage = 1; render(); };
+        grid.appendChild(b);
+      });
+      return;
+    }
+
+    let all = currentShown();
+
+    const seriesCounts = {};
+    let seriesGrouped = false;
+    if (page === "list" || page === "noutore" || page === "member") {
+      if (seriesView) {
+        all = all.filter(n => seriesBase(n.title) === seriesView)
+                 .slice().sort((a, b) =>
+                   (seriesNum(a.title) - seriesNum(b.title)) ||
+                   (list.indexOf(b) - list.indexOf(a)));
+      } else {
+        seriesGrouped = true;
+        const groups = new Map();
+        all.forEach(n => {
+          const b = seriesBase(n.title);
+          if (!groups.has(b)) groups.set(b, []);
+          groups.get(b).push(n);
+        });
+        all = [];
+        groups.forEach((arr, b) => {
+          seriesCounts[b] = arr.length;
+          arr.sort((a, c) =>
+            (seriesNum(a.title) - seriesNum(c.title)) ||
+            (list.indexOf(c) - list.indexOf(a)));
+          all.push(arr[0]);
+        });
+      }
+    }
+
+    const totalPages = Math.max(1, Math.ceil(all.length / PER_PAGE));
+    if (curPage > totalPages) curPage = totalPages;
+    if (curPage < 1) curPage = 1;
+    const shown = all.slice((curPage - 1) * PER_PAGE, curPage * PER_PAGE);
+
+    document.getElementById("count").textContent =
+      all.length ? all.length + " 枚あります" +
+        (totalPages > 1 ? "(" + curPage + " / " + totalPages + " ページ)" : "") : "";
+    renderPager(totalPages);
+    const empty = document.getElementById("empty");
+    empty.style.display = all.length ? "none" : "block";
+    empty.textContent = page === "member"
+      ? "会員専用コンテンツはまだありません"
+      : page === "fav"
+      ? "お気に入りはまだありません(カード右上の ☆ を押すと登録できます)"
+      : (page === "noutore"
+        ? "この条件の脳トレはまだありません"
+        : (page === "calendar"
+          ? "カレンダーはまだありません"
+          : "この条件の塗り絵はまだありません"));
+
+    document.getElementById("bulkBar").classList.toggle("show", page === "fav" && all.length > 0);
+
+    shown.forEach(n => {
+      const sBase = seriesBase(n.title);
+      const sCount = seriesGrouped ? (seriesCounts[sBase] || 1) : 1;
+      if (sCount > 1) {
+        const card = document.createElement("div");
+        card.className = "card";
+        const openSeries = () => {
+          seriesView = sBase;
+          curPage = 1;
+          render();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+        const thumb = document.createElement("div");
+        thumb.className = "thumb";
+        const img = document.createElement("img");
+        img.src = imgPath(n, n.file);
+        img.alt = sBase;
+        img.onerror = () => {
+          thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
+        };
+        img.onclick = openSeries;
+        thumb.appendChild(img);
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = sBase;
+        const tags = document.createElement("div");
+        tags.className = "tags";
+        tags.innerHTML =
+          (kindOf(n) === "脳トレ" ? '<span class="tag kind">脳トレ</span>' : '') +
+          (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
+          '<span class="tag">シリーズ全' + sCount + '枚</span>';
+        const btns = document.createElement("div");
+        btns.className = "btns";
+        const b = document.createElement("a");
+        b.className = "btn-dl";
+        b.textContent = "▶ " + sCount + "枚を見る";
+        b.onclick = openSeries;
+        btns.appendChild(b);
+        meta.appendChild(title);
+        meta.appendChild(tags);
+        meta.appendChild(btns);
+        card.appendChild(thumb);
+        card.appendChild(meta);
+        grid.appendChild(card);
+        return;
+      }
+      const h = hist[n.file] || {};
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const thumb = document.createElement("div");
+      thumb.className = "thumb";
+      const img = document.createElement("img");
+      img.src = imgPath(n, n.file);
+      img.alt = n.title;
+      img.onerror = () => {
+        if (n.member) {
+          clearMemberUnlock();
+          thumb.innerHTML = '<div class="noimg">会員の確認が切れました<br>「🔒 会員専用」タブを押し直してください</div>';
+        } else {
+          thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
+        }
+      };
+      img.onclick = () => openLightbox(n);
+      thumb.appendChild(img);
+
+      const fav = document.createElement("button");
+      fav.className = "fav-btn" + (isFav(n.file) ? " on" : "");
+      fav.textContent = isFav(n.file) ? "★" : "☆";
+      fav.title = page === "fav" ? "お気に入りから外す" : "お気に入りに登録/解除";
+      fav.onclick = () => toggleFav(n.file);
+      card.appendChild(fav);
+
+      if (h.print || h.save) {
+        const rb = document.createElement("div");
+        rb.className = "used-ribbon";
+        rb.textContent = "✓ 使用済み";
+        card.appendChild(rb);
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = n.title;
+      const tags = document.createElement("div");
+      tags.className = "tags";
+      if (kindOf(n) === "カレンダー") {
+        tags.innerHTML =
+          '<span class="tag kind">カレンダー</span>' +
+          (n.month ? '<span class="tag">' + n.month + '月</span>' : '');
+      } else if (kindOf(n) === "脳トレ") {
+        tags.innerHTML =
+          (n.member ? '<span class="tag" style="background:#f3e2c0;color:#8a6410">🔒会員</span>' : '') +
+          '<span class="tag kind">脳トレ</span>' +
+          (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
+          (n.answer ? '<span class="tag">答え付き</span>' : '');
+      } else {
+        tags.innerHTML =
+          (n.member ? '<span class="tag" style="background:#f3e2c0;color:#8a6410">🔒会員</span>' : '') +
+          '<span class="tag season-' + n.season + '">' + n.season + '</span>' +
+          (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
+          (n.diff ? '<span class="tag diff-' + n.diff + '">' + n.diff + '</span>' : '') +
+          (n.answer ? '<span class="tag">答え付き</span>' : '');
+      }
+
+      const histBox = document.createElement("div");
+      histBox.className = "history";
+      const addBadge = (kind, label, date) => {
+        const b = document.createElement("span");
+        b.className = "hist-badge";
+        b.title = "押すとこの記録を消します";
+        b.textContent = label + " " + date;
+        b.onclick = () => unmark(n.file, kind);
+        histBox.appendChild(b);
+      };
+      if (h.print) addBadge("print", "🖨 印刷済", h.print);
+      if (h.save) addBadge("save", "💾 保存済", h.save);
+
+      const btns = document.createElement("div");
+      btns.className = "btns";
+      const d = document.createElement("a");
+      d.className = "btn-dl";
+      d.textContent = "💾 保存";
+      d.href = imgPath(n, n.file);
+      d.download = dlName(n);
+      d.onclick = () => {
+        mark(n.file, "save");
+        showToast("保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
+        setTimeout(render, 100);
+      };
+      btns.appendChild(d);
+      if (n.answer) {
+        const da = document.createElement("a");
+        da.className = "btn-ans";
+        da.textContent = "💾 答え";
+        da.href = imgPath(n, n.answer);
+        da.download = dlNameAns(n);
+        da.onclick = () => {
+          showToast("答えを保存しました");
+        };
+        btns.appendChild(da);
+      }
+
+      meta.appendChild(title);
+      meta.appendChild(tags);
+      meta.appendChild(histBox);
+      meta.appendChild(btns);
+      card.appendChild(thumb);
+      card.appendChild(meta);
+      grid.appendChild(card);
+    });
+  }
+
+  function dlName(n) {
+    const d = (kindOf(n) === "脳トレ") ? "" : (n.diff ? "(" + n.diff + ")" : "");
+    return n.title + d + n.file.substring(n.file.lastIndexOf("."));
+  }
+  function dlNameAns(n) {
+    const d = (kindOf(n) === "脳トレ") ? "" : (n.diff ? "(" + n.diff + ")" : "");
+    return n.title + " 答え" + d + n.answer.substring(n.answer.lastIndexOf("."));
+  }
+
+  function renderPager(totalPages) {
+    const pager = document.getElementById("pager");
+    pager.innerHTML = "";
+    if (totalPages <= 1) return;
+    const go = (n) => {
+      curPage = n;
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    const prev = document.createElement("button");
+    prev.textContent = "← 前へ";
+    prev.disabled = curPage === 1;
+    prev.onclick = () => go(curPage - 1);
+    pager.appendChild(prev);
+    for (let n = 1; n <= totalPages; n++) {
+      const b = document.createElement("button");
+      b.textContent = n;
+      if (n === curPage) b.className = "cur";
+      b.onclick = () => go(n);
+      pager.appendChild(b);
+    }
+    const next = document.createElement("button");
+    next.textContent = "次へ →";
+    next.disabled = curPage === totalPages;
+    next.onclick = () => go(curPage + 1);
+    pager.appendChild(next);
+  }
+
+  const lb = document.getElementById("lightbox");
+  let lbCurrent = null;
+  let lbShowingAnswer = false;
+  function lbUpdate() {
+    const n = lbCurrent;
+    const file = lbShowingAnswer ? n.answer : n.file;
+    document.getElementById("lbImg").src = imgPath(n, file);
+    document.getElementById("lbTitle").textContent =
+      n.title + (lbShowingAnswer ? " 答え" : "") + ((n.diff && kindOf(n) !== "脳トレ") ? "(" + n.diff + ")" : "");
+    const save = document.getElementById("lbSave");
+    save.href = imgPath(n, file);
+    save.download = lbShowingAnswer ? dlNameAns(n) : dlName(n);
+    const tg = document.getElementById("lbAnswer");
+    tg.style.display = n.answer ? "inline-block" : "none";
+    tg.textContent = lbShowingAnswer ? "問題に戻る" : "答えを見る";
+  }
+  function openLightbox(n) {
+    lbCurrent = n;
+    lbShowingAnswer = false;
+    lbUpdate();
+    lb.classList.add("show");
+  }
+  function closeLightbox() {
+    lb.classList.remove("show");
+    lbCurrent = null;
+  }
+  document.getElementById("lbAnswer").onclick = () => {
+    if (!lbCurrent || !lbCurrent.answer) return;
+    lbShowingAnswer = !lbShowingAnswer;
+    lbUpdate();
+  };
+  lb.onclick = e => { if (e.target === lb) closeLightbox(); };
+  document.getElementById("lbClose").onclick = closeLightbox;
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && lb.classList.contains("show")) closeLightbox();
+  });
+  document.getElementById("lbSave").onclick = () => {
+    if (!lbCurrent) return;
+    if (!lbShowingAnswer) mark(lbCurrent.file, "save");
+    showToast((lbShowingAnswer ? "答えを" : "") + "保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
+    setTimeout(render, 100);
+  };
+
+  let toastTimer = null;
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 5000);
+  }
+
+  const FOLDER_NAME = "介護のレクプリ";
+
+  function idbOpen(name) {
+    return new Promise((res, rej) => {
+      const r = indexedDB.open(name, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("kv");
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async function idbGet(dbName, k) {
+    const db = await idbOpen(dbName);
+    return new Promise((res, rej) => {
+      const rq = db.transaction("kv").objectStore("kv").get(k);
+      rq.onsuccess = () => res(rq.result);
+      rq.onerror = () => rej(rq.error);
+    });
+  }
+  async function idbSet(dbName, k, v) {
+    const db = await idbOpen(dbName);
+    return new Promise((res, rej) => {
+      const tx = db.transaction("kv", "readwrite");
+      tx.objectStore("kv").put(v, k);
+      tx.oncomplete = () => res();
+      tx.onerror = () => rej(tx.error);
+    });
+  }
+  async function ensurePerm(handle, mode) {
+    try {
+      if ((await handle.queryPermission({ mode: mode })) === "granted") return true;
+      return (await handle.requestPermission({ mode: mode })) === "granted";
+    } catch (e) { return false; }
+  }
+
+  let siteImagesCache = null;
+  async function getImageBlob(file, member) {
+    try {
+      const r = await fetch((member ? "member-img/" : "images/") + file);
+      if (r.ok) return await r.blob();
+    } catch (e) {}
+    if (!siteImagesCache) {
+      let h = null;
+      try { h = await idbGet("nurie_admin", "dir"); } catch (e) {}
+      if (h && !(await ensurePerm(h, "read"))) h = null;
+      if (h) { try { await h.getFileHandle("data.js"); } catch (e) { h = null; } }
+      if (!h) {
+        showToast("画像を読み取るため、このギャラリーのフォルダ(index.htmlのある場所)を選んでください");
+        h = await window.showDirectoryPicker();
+        try { await h.getFileHandle("data.js"); }
+        catch (e) { throw new Error("ギャラリーのフォルダが見つかりません"); }
+        try { await idbSet("nurie_admin", "dir", h); } catch (e) {}
+      }
+      siteImagesCache = await h.getDirectoryHandle("images");
+    }
+    const fh = await siteImagesCache.getFileHandle(file);
+    return await fh.getFile();
+  }
+
+  function bulkDownloadFallback(shown) {
+    shown.forEach((n, i) => {
+      setTimeout(() => {
+        const a = document.createElement("a");
+        a.href = imgPath(n, n.file);
+        a.download = dlName(n);
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }, i * 400);
+    });
+    shown.forEach(n => mark(n.file, "save"));
+    showToast(shown.length + " 枚を保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
+    setTimeout(render, shown.length * 400 + 100);
+  }
+
+  document.getElementById("bulkSave").onclick = async () => {
+    const shown = currentShown();
+    if (!shown.length) return;
+    if (!window.showDirectoryPicker) { bulkDownloadFallback(shown); return; }
+    try {
+      let parent = null;
+      try { parent = await idbGet("nurie_gallery", "saveDir"); } catch (e) {}
+      if (parent && !(await ensurePerm(parent, "readwrite"))) parent = null;
+      if (!parent) {
+        showToast("保存先のフォルダを選んでください(その中に「" + FOLDER_NAME + "」フォルダを作って保存します)");
+        parent = await window.showDirectoryPicker({ mode: "readwrite" });
+        try { await idbSet("nurie_gallery", "saveDir", parent); } catch (e) {}
+      }
+      const dest = await parent.getDirectoryHandle(FOLDER_NAME, { create: true });
+      let ok = 0;
+      const writeOne = async (file, name, member) => {
+        const blob = await getImageBlob(file, member);
+        const fh = await dest.getFileHandle(name, { create: true });
+        const w = await fh.createWritable();
+        await w.write(blob);
+        await w.close();
+      };
+      for (const n of shown) {
+        try {
+          await writeOne(n.file, dlName(n), n.member);
+          if (n.answer) await writeOne(n.answer, dlNameAns(n), n.member);
+          mark(n.file, "save");
+          ok++;
+        } catch (e) {
+          if (e && e.name === "AbortError") throw e;
+        }
+      }
+      render();
+      if (ok > 0) {
+        showToast(ok + " 枚を「" + parent.name + "」の中の「" + FOLDER_NAME + "」フォルダに保存しました");
+      } else {
+        showToast("保存できませんでした。もう一度お試しください");
+      }
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+      bulkDownloadFallback(shown);
+    }
+  };
+
+  function switchPage(p) {
+    seriesView = null;
+    page = p;
+    selSeason = selGenre = selDiff = selUsed = null;
+    curPage = 1;
+    calMonth = null;
+    render();
+  }
+  document.getElementById("tabNoutore").onclick = () => switchPage("noutore");
+  document.getElementById("tabList").onclick = () => switchPage("list");
+  document.getElementById("tabFav").onclick = () => switchPage("fav");
+  const APPLY_KEY = "nurie_apply_v1";
+  document.getElementById("tabApply").onclick = async () => {
+    let done = false;
+    try { done = localStorage.getItem(APPLY_KEY) === "yes"; } catch (e) {}
+    if (done) {
+      showToast("まだ開設していません");
+      return;
+    }
+    try { fetch("api/member-apply", { method: "POST" }); } catch (e) {}
+    try { localStorage.setItem(APPLY_KEY, "yes"); } catch (e) {}
+    showToast("まだ開設していません");
+  };
+  document.getElementById("tabMember").onclick = async () => {
+    if (!isMemberUnlocked() && !(await unlockMember())) return;
+    if (!memberLoaded) {
+      let st = await loadMemberList();
+      if (st === "auth") {
+        clearMemberUnlock();
+        if (!(await unlockMember())) return;
+        st = await loadMemberList();
+      }
+      if (st !== "ok") {
+        alert("会員コンテンツを読み込めませんでした。もう一度お試しください");
+        return;
+      }
+    }
+    switchPage("member");
+  };
+
+  if (isMemberUnlocked()) {
+    loadMemberList().then(st => {
+      if (st === "auth") clearMemberUnlock();
+      else if (st === "ok") render();
+    });
+  }
+  const qp = new URLSearchParams(location.search).get("page");
+  if (qp === "noutore" || qp === "calendar" || qp === "fav") page = qp;
+  render();
+})();
+</script>
+</body>
+</html>
