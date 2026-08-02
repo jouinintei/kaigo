@@ -209,4 +209,5 @@ window.NURIE_LIST = [
   { season: "冬", genre: "食べ物", title: "鍋", diff: "中級", file: "nabe_chu.png" },
   { season: "冬", genre: "行事", title: "餅つき", diff: "中級", file: "mochitsuki_chu.png" },
   { season: "通年", genre: "動物", title: "鯉", diff: "初級", file: "koi_sho.png" },
+  { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "3文字しりとり", diff: "初級", file: "up_1785644279674_1.png", answer: "up_1785644282058_2.png" },
 ];
