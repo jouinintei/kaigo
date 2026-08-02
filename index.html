@@ -504,14 +504,13 @@
 
 <header>
   <div class="private-badge">非公開中</div>
-  <button class="reload-btn" id="reloadBtn" title="最新の内容を読み込み直します">🔄 更新</button>
-  <a class="admin-link" href="admin.html">管理ページ(齊藤)</a>
   <h1><img src="logo.png" alt="介護のレクプリ" style="max-width:min(88%,480px); height:auto; vertical-align:middle"></h1>
   <p>お好みの画像を選んで印刷できます。</p>
   <div class="tabs">
     <button class="tab" id="tabNoutore">脳トレを選ぶ</button>
     <button class="tab active" id="tabList">塗り絵を選ぶ</button>
     <button class="tab fav-tab" id="tabFav">★ お気に入り</button>
+    <button class="tab" id="tabMember">🔒 会員専用</button>
   </div>
 </header>
 
@@ -553,6 +552,35 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   let selDiff = null;
   let selUsed = null;
   let seriesView = null;        // 「◯◯ シリーズ」を開いているとき、そのシリーズ名
+
+  // ===== 会員専用 (サーバー側でパスワード照合・画像配信) =====
+  const MEMBER_KEY = "nurie_member_v1";
+  function isMemberUnlocked() {
+    try { return localStorage.getItem(MEMBER_KEY) === "yes"; } catch (e) { return false; }
+  }
+  function clearMemberUnlock() {
+    try { localStorage.removeItem(MEMBER_KEY); } catch (e) {}
+  }
+  async function unlockMember() {
+    const pw = window.prompt("会員パスワードを入力してください");
+    if (pw === null) return false;
+    try {
+      const r = await fetch("api/member-login?pw=" + encodeURIComponent(pw.trim()));
+      if (r.ok) {
+        try { localStorage.setItem(MEMBER_KEY, "yes"); } catch (e) {}
+        return true;
+      }
+      if (r.status === 401) alert("パスワードが違います");
+      else alert("会員機能の準備がまだのようです(設定を確認してください)");
+    } catch (e) {
+      alert("通信できませんでした。電波の良いところでもう一度お試しください");
+    }
+    return false;
+  }
+  // 会員画像はサーバーの配達係(member-img)経由で読む
+  function imgPath(n, file) {
+    return (n && n.member ? "member-img/" : "images/") + file;
+  }
 
   // 「虫食い算 その3」→「虫食い算」のようにシリーズ名を取り出す
   function seriesBase(t) {
@@ -635,7 +663,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const bar = document.getElementById("toolbar");
     bar.innerHTML = "";
     if (page === "fav") return;
-    if (seriesView && (page === "list" || page === "noutore")) {
+    if (page === "member") {
+      const lbl = document.createElement("span");
+      lbl.style.fontWeight = "bold";
+      lbl.style.fontSize = "18px";
+      lbl.textContent = "🔒 会員専用コンテンツ";
+      bar.appendChild(lbl);
+      return;
+    }
+    if (seriesView && (page === "list" || page === "noutore" || page === "member")) {
       const lbl = document.createElement("span");
       lbl.style.fontWeight = "bold";
       lbl.style.fontSize = "18px";
@@ -722,16 +758,19 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
 
   function currentShown() {
+    if (page === "member") {
+      return list.filter(n => n.member);
+    }
     if (page === "fav") {
       const f = loadFav();
       return list.filter(n => f.includes(n.file));
     }
     if (page === "calendar") {
       if (!calMonth) return [];
-      return kindSubset().filter(n => calKey(n) === calMonth)
+      return kindSubset().filter(n => calKey(n) === calMonth && !n.member)
         .slice().sort((a, b) => String(a.title).localeCompare(String(b.title), "ja"));
     }
-    return kindSubset().filter(n =>
+    return kindSubset().filter(n => !n.member).filter(n =>
       (!selSeason || n.season === selSeason) &&
       (!selGenre || n.genre === selGenre) &&
       (!selDiff || n.diff === selDiff) &&
@@ -746,6 +785,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const nFav = loadFav().length;
     document.getElementById("tabNoutore").classList.toggle("active", page === "noutore");
     document.getElementById("tabList").classList.toggle("active", page === "list");
+    const hasMember = list.some(n => n.member);
+    const tm = document.getElementById("tabMember");
+    tm.style.display = hasMember ? "" : "none";
+    tm.classList.toggle("active", page === "member");
     const tf = document.getElementById("tabFav");
     tf.classList.toggle("active", page === "fav");
     tf.textContent = "★ お気に入り" + (nFav ? " (" + nFav + ")" : "");
@@ -787,7 +830,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     // シリーズ(「その2」「その3」…)をまとめる
     const seriesCounts = {};
     let seriesGrouped = false;
-    if (page === "list" || page === "noutore") {
+    if (page === "list" || page === "noutore" || page === "member") {
       if (seriesView) {
         all = all.filter(n => seriesBase(n.title) === seriesView)
                  .slice().sort((a, b) => seriesNum(a.title) - seriesNum(b.title));
@@ -820,7 +863,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     renderPager(totalPages);
     const empty = document.getElementById("empty");
     empty.style.display = all.length ? "none" : "block";
-    empty.textContent = page === "fav"
+    empty.textContent = page === "member"
+      ? "会員専用コンテンツはまだありません"
+      : page === "fav"
       ? "お気に入りはまだありません(カード右上の ☆ を押すと登録できます)"
       : (page === "noutore"
         ? "この条件の脳トレはまだありません"
@@ -846,7 +891,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         const thumb = document.createElement("div");
         thumb.className = "thumb";
         const img = document.createElement("img");
-        img.src = "images/" + n.file;
+        img.src = imgPath(n, n.file);
         img.alt = sBase;
         img.onerror = () => {
           thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
@@ -886,10 +931,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const thumb = document.createElement("div");
       thumb.className = "thumb";
       const img = document.createElement("img");
-      img.src = "images/" + n.file;
+      img.src = imgPath(n, n.file);
       img.alt = n.title;
       img.onerror = () => {
-        thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
+        if (n.member) {
+          clearMemberUnlock();
+          thumb.innerHTML = '<div class="noimg">会員の確認が切れました<br>「🔒 会員専用」タブを押し直してください</div>';
+        } else {
+          thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
+        }
       };
       img.onclick = () => openLightbox(n);
       thumb.appendChild(img);
@@ -922,11 +972,13 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       } else if (kindOf(n) === "脳トレ") {
         // 脳トレは季節・難しさを出さない
         tags.innerHTML =
+          (n.member ? '<span class="tag" style="background:#f3e2c0;color:#8a6410">🔒会員</span>' : '') +
           '<span class="tag kind">脳トレ</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
           (n.answer ? '<span class="tag">答え付き</span>' : '');
       } else {
         tags.innerHTML =
+          (n.member ? '<span class="tag" style="background:#f3e2c0;color:#8a6410">🔒会員</span>' : '') +
           '<span class="tag season-' + n.season + '">' + n.season + '</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
           (n.diff ? '<span class="tag diff-' + n.diff + '">' + n.diff + '</span>' : '') +
@@ -951,7 +1003,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const d = document.createElement("a");
       d.className = "btn-dl";
       d.textContent = "💾 保存";
-      d.href = "images/" + n.file;
+      d.href = imgPath(n, n.file);
       d.download = dlName(n);
       d.onclick = () => {
         mark(n.file, "save");
@@ -963,7 +1015,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         const da = document.createElement("a");
         da.className = "btn-ans";
         da.textContent = "💾 答え";
-        da.href = "images/" + n.answer;
+        da.href = imgPath(n, n.answer);
         da.download = dlNameAns(n);
         da.onclick = () => {
           showToast("答えを保存しました");
@@ -1026,11 +1078,11 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   function lbUpdate() {
     const n = lbCurrent;
     const file = lbShowingAnswer ? n.answer : n.file;
-    document.getElementById("lbImg").src = "images/" + file;
+    document.getElementById("lbImg").src = imgPath(n, file);
     document.getElementById("lbTitle").textContent =
       n.title + (lbShowingAnswer ? " 答え" : "") + ((n.diff && kindOf(n) !== "脳トレ") ? "(" + n.diff + ")" : "");
     const save = document.getElementById("lbSave");
-    save.href = "images/" + file;
+    save.href = imgPath(n, file);
     save.download = lbShowingAnswer ? dlNameAns(n) : dlName(n);
     const tg = document.getElementById("lbAnswer");
     tg.style.display = n.answer ? "inline-block" : "none";
@@ -1111,9 +1163,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 
   // 画像の中身を取得 (Web公開時はfetch、ローカルではギャラリーのフォルダから読む)
   let siteImagesCache = null;
-  async function getImageBlob(file) {
+  async function getImageBlob(file, member) {
     try {
-      const r = await fetch("images/" + file);
+      const r = await fetch((member ? "member-img/" : "images/") + file);
       if (r.ok) return await r.blob();
     } catch (e) {}
     if (!siteImagesCache) {
@@ -1139,7 +1191,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     shown.forEach((n, i) => {
       setTimeout(() => {
         const a = document.createElement("a");
-        a.href = "images/" + n.file;
+        a.href = imgPath(n, n.file);
         a.download = dlName(n);
         document.body.appendChild(a);
         a.click();
@@ -1167,8 +1219,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       }
       const dest = await parent.getDirectoryHandle(FOLDER_NAME, { create: true });
       let ok = 0;
-      const writeOne = async (file, name) => {
-        const blob = await getImageBlob(file);
+      const writeOne = async (file, name, member) => {
+        const blob = await getImageBlob(file, member);
         const fh = await dest.getFileHandle(name, { create: true });
         const w = await fh.createWritable();
         await w.write(blob);
@@ -1176,8 +1228,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       };
       for (const n of shown) {
         try {
-          await writeOne(n.file, dlName(n));
-          if (n.answer) await writeOne(n.answer, dlNameAns(n));
+          await writeOne(n.file, dlName(n), n.member);
+          if (n.answer) await writeOne(n.answer, dlNameAns(n), n.member);
           mark(n.file, "save");
           ok++;
         } catch (e) {
@@ -1205,10 +1257,13 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     calMonth = null;
     render();
   }
-  document.getElementById("reloadBtn").onclick = () => location.reload();
   document.getElementById("tabNoutore").onclick = () => switchPage("noutore");
   document.getElementById("tabList").onclick = () => switchPage("list");
   document.getElementById("tabFav").onclick = () => switchPage("fav");
+  document.getElementById("tabMember").onclick = async () => {
+    if (!isMemberUnlocked() && !(await unlockMember())) return;
+    switchPage("member");
+  };
 
   render();
 })();
