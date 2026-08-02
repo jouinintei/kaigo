@@ -989,6 +989,12 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         img.src = imgPath(n, n.file);
         img.alt = sBase;
         img.onerror = () => {
+          if (!img.dataset.retry) {
+            // 古いキャッシュが残っている場合に備えて、キャッシュを無視して1回だけ読み直す
+            img.dataset.retry = "1";
+            img.src = imgPath(n, n.file) + "?r=" + Date.now();
+            return;
+          }
           thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
         };
         img.onclick = openSeries;
@@ -1029,6 +1035,12 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       img.src = imgPath(n, n.file);
       img.alt = n.title;
       img.onerror = () => {
+        if (!img.dataset.retry) {
+          // 古いキャッシュが残っている場合に備えて、キャッシュを無視して1回だけ読み直す
+          img.dataset.retry = "1";
+          img.src = imgPath(n, n.file) + "?r=" + Date.now();
+          return;
+        }
         if (n.member) {
           clearMemberUnlock();
           thumb.innerHTML = '<div class="noimg">会員の確認が切れました<br>「🔒 会員専用」タブを押し直してください</div>';
@@ -1171,7 +1183,13 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   function lbUpdate() {
     const n = lbCurrent;
     const file = lbShowingAnswer ? n.answer : n.file;
-    document.getElementById("lbImg").src = imgPath(n, file);
+    const li = document.getElementById("lbImg");
+    li.onerror = () => {
+      if (li.dataset.retry === file) return;
+      li.dataset.retry = file;
+      li.src = imgPath(n, file) + "?r=" + Date.now();
+    };
+    li.src = imgPath(n, file);
     document.getElementById("lbTitle").textContent =
       n.title + (lbShowingAnswer ? " 答え" : "") + ((n.diff && kindOf(n) !== "脳トレ") ? "(" + n.diff + ")" : "");
     const save = document.getElementById("lbSave");
