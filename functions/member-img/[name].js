@@ -10,41 +10,64 @@ async function hmacHex(message, secret) {
   return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
+function cleanRepo(v) {
+  // 余分な空白・URL形式・前後のスラッシュを自動整理
+  let s = String(v || "").trim();
+  s = s.replace(/^https?:\/\/github\.com\//i, "");
+  s = s.replace(/^\/+|\/+$/g, "");
+  s = s.replace(/\.git$/i, "");
+  return s;
+}
+
 export async function onRequest(context) {
   const { request, env, params } = context;
 
-  if (!env || !env.MEMBER_PASSWORD || !env.MEMBER_SECRET || !env.GITHUB_TOKEN || !env.MEMBER_REPO) {
+  const password = String((env && env.MEMBER_PASSWORD) || "").trim();
+  const secret = String((env && env.MEMBER_SECRET) || "").trim();
+  const token = String((env && env.GITHUB_TOKEN) || "").trim();
+  const repo = cleanRepo(env && env.MEMBER_REPO);
+
+  if (!password || !secret || !token || !repo) {
     return new Response("server_not_configured", { status: 500 });
   }
 
   // 1) 通行証の検認
   const cookie = request.headers.get("Cookie") || "";
   const m = cookie.match(/(?:^|;\s*)rk_member=([a-f0-9]{64})/);
-  const expected = await hmacHex("member|" + env.MEMBER_PASSWORD, env.MEMBER_SECRET);
+  const expected = await hmacHex("member|" + password, secret);
   if (!m || m[1] !== expected) {
     return new Response("会員専用です", { status: 403, headers: { "Cache-Control": "no-store" } });
   }
 
-  // 2) ファイル名の安全確認 (英数字・ドット・ハイフン・アンダースコアのみ)
+  // 2) ファイル名の安全確認
   const name = decodeURIComponent(params && params.name ? String(params.name) : "");
   if (!/^[A-Za-z0-9_\-]+\.(png|jpg|jpeg|gif|webp)$/i.test(name)) {
     return new Response("bad name", { status: 400 });
   }
 
   // 3) 非公開リポジトリから画像を取得
-  const gh = await fetch(
-    "https://api.github.com/repos/" + env.MEMBER_REPO + "/contents/images/" + name,
-    {
-      headers: {
-        "Authorization": "Bearer " + env.GITHUB_TOKEN,
-        "Accept": "application/vnd.github.raw",
-        "User-Agent": "rekupuri-member-fn",
-        "X-GitHub-Api-Version": "2022-11-28"
+  let gh;
+  try {
+    gh = await fetch(
+      "https://api.github.com/repos/" + repo + "/contents/images/" + name,
+      {
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/vnd.github.raw",
+          "User-Agent": "rekupuri-member-fn",
+          "X-GitHub-Api-Version": "2022-11-28"
+        }
       }
-    }
-  );
+    );
+  } catch (e) {
+    return new Response("fetch_error: " + (e && e.message), { status: 502, headers: { "Cache-Control": "no-store" } });
+  }
   if (!gh.ok) {
-    return new Response("not found", { status: 404, headers: { "Cache-Control": "no-store" } });
+    // どこで失敗したか分かるように、GitHub側の状態を添えて返す
+    // (gh 401=トークン不正 / gh 404=リポジトリ名・パス・権限の問題 / gh 403=権限やレート制限)
+    return new Response("not found (gh " + gh.status + ", repo=" + repo + ")", {
+      status: 404, headers: { "Cache-Control": "no-store", "Content-Type": "text/plain; charset=utf-8" }
+    });
   }
 
   const ext = name.split(".").pop().toLowerCase();
