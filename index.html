@@ -616,11 +616,16 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     } catch (e) { return "err"; }
   }
 
+  const FORCE_SERIES = ["難読漢字"];
   function seriesBase(t) {
-    return String(t).replace(/\s*その\d+$/, "");
+    const s = String(t);
+    for (const f of FORCE_SERIES) {
+      if (s !== f && s.indexOf(f) === 0) return f;
+    }
+    return s.replace(/\s*その\d+(\s*[((][^))]*[))])?$/, "");
   }
   function seriesNum(t) {
-    const m = String(t).match(/その(\d+)$/);
+    const m = String(t).match(/その(\d+)(?:\s*[((][^))]*[))])?$/);
     return m ? parseInt(m[1], 10) : 1;
   }
   let curPage = 1;
@@ -881,7 +886,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (page === "list" || page === "noutore" || page === "member") {
       if (seriesView) {
         all = all.filter(n => seriesBase(n.title) === seriesView)
-                 .slice().sort((a, b) => seriesNum(a.title) - seriesNum(b.title));
+                 .slice().sort((a, b) =>
+                   (seriesNum(a.title) - seriesNum(b.title)) ||
+                   (list.indexOf(b) - list.indexOf(a)));
       } else {
         seriesGrouped = true;
         const groups = new Map();
@@ -893,7 +900,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         all = [];
         groups.forEach((arr, b) => {
           seriesCounts[b] = arr.length;
-          arr.sort((a, c) => seriesNum(a.title) - seriesNum(c.title));
+          arr.sort((a, c) =>
+            (seriesNum(a.title) - seriesNum(c.title)) ||
+            (list.indexOf(c) - list.indexOf(a)));
           all.push(arr[0]);
         });
       }
