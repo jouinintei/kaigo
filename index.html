@@ -511,6 +511,7 @@
     <button class="tab active" id="tabList">塗り絵を選ぶ</button>
     <button class="tab fav-tab" id="tabFav">★ お気に入り</button>
     <button class="tab" id="tabMember">🔒 会員専用</button>
+    <button class="tab" id="tabApply">💌 会員申請</button>
   </div>
 </header>
 
@@ -816,6 +817,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const tm = document.getElementById("tabMember");
     tm.style.display = hasMember ? "" : "none";
     tm.classList.toggle("active", page === "member");
+    document.getElementById("tabApply").style.display = hasMember ? "none" : "";
     const tf = document.getElementById("tabFav");
     tf.classList.toggle("active", page === "fav");
     tf.textContent = "★ お気に入り" + (nFav ? " (" + nFav + ")" : "");
@@ -1287,6 +1289,18 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   document.getElementById("tabNoutore").onclick = () => switchPage("noutore");
   document.getElementById("tabList").onclick = () => switchPage("list");
   document.getElementById("tabFav").onclick = () => switchPage("fav");
+  const APPLY_KEY = "nurie_apply_v1";
+  document.getElementById("tabApply").onclick = async () => {
+    let done = false;
+    try { done = localStorage.getItem(APPLY_KEY) === "yes"; } catch (e) {}
+    if (done) {
+      showToast("まだ開設していません");
+      return;
+    }
+    try { fetch("api/member-apply", { method: "POST" }); } catch (e) {}
+    try { localStorage.setItem(APPLY_KEY, "yes"); } catch (e) {}
+    showToast("まだ開設していません");
+  };
   document.getElementById("tabMember").onclick = async () => {
     if (!isMemberUnlocked() && !(await unlockMember())) return;
     switchPage("member");
