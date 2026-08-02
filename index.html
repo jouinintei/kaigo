@@ -215,7 +215,12 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 </script>
 <script>
 (function () {
-  const list = (window.NURIE_LIST || []).slice();
+  const seen = new Set();
+  const list = (window.NURIE_LIST || []).filter(n => {
+    if (!n || !n.file || seen.has(n.file)) return false;
+    seen.add(n.file);
+    return true;
+  });
   if (!list.length) return;
   const kindOf = n => n.kind === "脳トレ" ? "脳トレ" : (n.kind === "カレンダー" ? "カレンダー" : "塗り絵");
   const c = { "塗り絵": 0, "脳トレ": 0, "カレンダー": 0 };

@@ -587,7 +587,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 <script>
 (function () {
   const MEMBER_TAB = true;
-  let list = (window.NURIE_LIST || []).slice().reverse();
+  function dedupe(arr) {
+    const seen = new Set();
+    return arr.filter(n => {
+      if (!n || !n.file || seen.has(n.file)) return false;
+      seen.add(n.file);
+      return true;
+    });
+  }
+  let list = dedupe((window.NURIE_LIST || []).slice().reverse());
   let page = "list";
   let selSeason = null;
   let selGenre = null;
@@ -634,7 +642,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         entries = new Function('"use strict"; return [' + txt + ']')() || [];
       } catch (e) { return "err"; }
       entries = entries.filter(Boolean).map(e => Object.assign({}, e, { member: true })).reverse();
-      list = entries.concat(list.filter(n => !n.member));
+      list = dedupe(entries.concat(list.filter(n => !n.member)));
       memberLoaded = true;
       return "ok";
     } catch (e) { return "err"; }
