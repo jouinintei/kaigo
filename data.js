@@ -213,7 +213,6 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "ことわざ", title: "ことわざ", diff: "初級", file: "up_1785644813830_1.png", answer: "up_1785644816458_2.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字（野菜）", diff: "初級", file: "up_1785645644164_1.png", answer: "up_1785645646492_2.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 野菜編", diff: "中級", file: "nandoku_yasai.png", answer: "nandoku_yasai_ans.png" },
-  { kind: "脳トレ", season: "通年", genre: "ことわざ", title: "ことわざ穴埋め 動物編", diff: "初級", file: "kotowaza_doubutsu.png", answer: "kotowaza_doubutsu_ans.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 果物編", diff: "中級", file: "nandoku_kudamono.png", answer: "nandoku_kudamono_ans.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 動物編", diff: "中級", file: "nandoku_doubutsu.png", answer: "nandoku_doubutsu_ans.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "四字熟語 穴埋め", diff: "中級", file: "yojijukugo.png", answer: "yojijukugo_ans.png" },
