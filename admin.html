@@ -481,6 +481,7 @@
            (e.diff ? 'diff: "' + esc(e.diff) + '", ' : "") +
            'file: "' + esc(e.file) + '"' +
            (e.answer ? ', answer: "' + esc(e.answer) + '"' : "") +
+           (e.added ? ', added: "' + esc(e.added) + '"' : "") +
            (e.member ? ', member: true' : "") +
            ' },\n';
     });
@@ -888,6 +889,8 @@
         const name = await uniqueFileName(autoName(conv.ext));
         await uploadImage(conv.blob, name);
         const entry = { season: it.season, genre: it.genre, title: it.title, diff: it.diff, file: name };
+        const ad = new Date();
+        entry.added = ad.getFullYear() + "-" + String(ad.getMonth() + 1).padStart(2, "0");
         if (it.member) entry.member = true;
         if (it.kind === "脳トレ" || it.kind === "カレンダー") entry.kind = it.kind;
         if (it.month) entry.month = it.month;

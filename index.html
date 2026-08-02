@@ -56,24 +56,30 @@
     color: #8a8477;
     margin-top: 8px;
   }
-  .cta {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-top: 26px;
+  .pick {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-top: 6px;
   }
-  .cta a {
-    display: inline-block;
-    padding: 14px 28px;
+  .pick-col { display: flex; flex-direction: column; gap: 10px; }
+  .pick-col a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 10px;
     border-radius: 999px;
     font-size: 18px;
     font-weight: bold;
     text-decoration: none;
     border: 2px solid var(--accent);
+    background: #fff;
+    color: var(--accent);
   }
-  .cta a { background: #fff; color: var(--accent); }
-  .cta a:hover { background: var(--accent-soft); }
+  .pick-col a:hover { background: var(--accent-soft); }
+  .pick-col a img { height: 30px; width: auto; }
+  .pick-col .pick-card { width: 100%; height: auto; }
   .counts {
     display: flex;
     justify-content: center;
@@ -93,30 +99,6 @@
     margin-bottom: 14px;
   }
   p.txt { font-size: 16px; margin-bottom: 12px; }
-  .new-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-    margin-top: 6px;
-  }
-  .new-grid a {
-    display: block;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    color: var(--ink);
-  }
-  .new-grid img { width: 100%; aspect-ratio: 1/1.2; object-fit: cover; background: #fff; display: block; }
-  .new-grid .cap { font-size: 13px; padding: 6px 8px; text-align: center; }
-  .dekiru {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 10px;
-    margin-top: 12px;
-  }
-  .dekiru img { width: 100%; height: auto; }
   ol.howto { margin: 6px 0 0 22px; font-size: 16px; }
   ol.howto li { margin-bottom: 8px; }
   footer {
@@ -141,12 +123,6 @@
   <img class="logo" src="logo.png" alt="介護のレクプリ">
   <div class="catch">高齢者向けの塗り絵・脳トレ・カレンダーを、無料でそのまま印刷。</div>
   <div class="sub">介護施設・デイサービスのレクリエーション担当の方のための素材集です。</div>
-  <div class="cta">
-    <a href="gallery.html">🎨 塗り絵をえらぶ</a>
-    <a href="gallery.html?page=noutore">🧠 脳トレをえらぶ</a>
-    <a href="gallery.html?page=calendar">📅 カレンダー</a>
-  </div>
-  <div class="counts" id="counts"></div>
 </div>
 
 <div class="wrap">
@@ -154,18 +130,31 @@
 <section>
   <h2>このサイトについて</h2>
   <p class="txt">「介護のレクプリ」は、介護施設・デイサービス・ご家庭で使える高齢者向けレクリエーション素材を無料で配布しているサイトです。季節の塗り絵、難読漢字・計算・言葉遊びなどの脳トレプリント、ぬりえ付きの月間カレンダーを揃えています。すべてA4サイズで印刷するだけでそのまま使える形になっており、面倒な会員登録なしでご利用いただけます。</p>
-  <div class="dekiru">
-    <img src="dekiru1.png" alt="季節とジャンルで選べる塗り絵: 春夏秋冬の季節ごと、花・動物・食べ物・行事・風景などのジャンルごとに探せます">
-    <img src="dekiru2.png" alt="種類豊かな脳トレプリント: 難読漢字・ことわざ・四字熟語の穴埋め・計算・しりとり・言葉探し・並び替えなど、すべて答えつき">
-    <img src="dekiru3.png" alt="塗り絵つき月間カレンダー: その月の絵柄を塗って仕上げる月間カレンダー">
+</section>
+
+<section>
+  <div class="pick">
+    <div class="pick-col">
+      <a href="gallery.html"><img src="icon1.png" alt="">塗り絵をえらぶ</a>
+      <img class="pick-card" src="dekiru1.png" alt="季節とジャンルで選べる塗り絵: 春夏秋冬の季節ごと、花・動物・食べ物・行事・風景などのジャンルごとに探せます">
+    </div>
+    <div class="pick-col">
+      <a href="gallery.html?page=noutore"><img src="icon2.png" alt="">脳トレをえらぶ</a>
+      <img class="pick-card" src="dekiru2.png" alt="種類豊かな脳トレプリント: 難読漢字・ことわざ・四字熟語の穴埋め・計算・しりとり・言葉探し・並び替えなど、すべて答えつき">
+    </div>
+    <div class="pick-col">
+      <a href="gallery.html?page=calendar"><img src="icon3.png" alt="">カレンダー</a>
+      <img class="pick-card" src="dekiru3.png" alt="塗り絵つき月間カレンダー: その月の絵柄を塗って仕上げる月間カレンダー">
+    </div>
   </div>
+  <div class="counts" id="counts"></div>
 </section>
 
 <section>
   <h2>使い方</h2>
   <ol class="howto">
     <li>「塗り絵をえらぶ」「脳トレをえらぶ」から好きな素材を探す</li>
-    <li>画像を保存する(まとめて保存もできます)</li>
+    <li>画像を保存する(お気に入りに複数入れてまとめて保存することも可能です。)</li>
     <li>A4サイズで印刷して、そのままレクリエーションに使う</li>
   </ol>
   <p class="txt" style="margin-top:10px">印刷・保存した素材には「使用済み」の印がつくので、同じものを二度使ってしまう心配もありません。</p>
@@ -173,7 +162,7 @@
 
 <section id="newSec" style="display:none">
   <h2>新着の素材</h2>
-  <div class="new-grid" id="newGrid"></div>
+  <p class="txt" id="newTxt"></p>
 </section>
 
 <footer>
@@ -196,25 +185,13 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     '<span>塗り絵 <b>' + c["塗り絵"] + '</b> 枚</span>' +
     '<span>脳トレ <b>' + c["脳トレ"] + '</b> 枚</span>' +
     '<span>カレンダー <b>' + c["カレンダー"] + '</b> 枚</span>';
-  const latest = list.slice().reverse().filter(n => kindOf(n) !== "カレンダー").slice(0, 6);
-  if (latest.length >= 3) {
+  const d = new Date();
+  const ym = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  const monthCount = list.filter(n => n.added === ym).length;
+  if (monthCount > 0) {
     document.getElementById("newSec").style.display = "";
-    const grid = document.getElementById("newGrid");
-    latest.forEach(n => {
-      const a = document.createElement("a");
-      a.href = kindOf(n) === "脳トレ" ? "gallery.html?page=noutore" : "gallery.html";
-      const img = document.createElement("img");
-      img.src = "images/" + n.file;
-      img.alt = n.title;
-      img.loading = "lazy";
-      img.onerror = () => { a.remove(); };
-      const cap = document.createElement("div");
-      cap.className = "cap";
-      cap.textContent = n.title;
-      a.appendChild(img);
-      a.appendChild(cap);
-      grid.appendChild(a);
-    });
+    document.getElementById("newTxt").textContent =
+      "今月は " + monthCount + " 枚の素材を追加しました。";
   }
 })();
 </script>
