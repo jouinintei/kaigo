@@ -87,7 +87,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "動物", title: "庭の猫", diff: "上級", file: "niwa_neko.png" },
   { season: "通年", genre: "風景", title: "田園風景", diff: "上級", file: "denen_fukei.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字(魚へん)", diff: "中級", file: "nandoku_kanji_sakana.png", answer: "nandoku_kanji_sakana_kotae.png" },
-  { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "3文字しりとり", diff: "初級", file: "shiritori_3moji.png", answer: "shiritori_3moji_kotae.png" },
   { kind: "脳トレ", season: "通年", genre: "ことわざ", title: "ことわざ絵クイズ その1", diff: "中級", file: "kotowaza_quiz_1.png" },
   { kind: "脳トレ", season: "通年", genre: "ことわざ", title: "ことわざ絵クイズ その2", diff: "中級", file: "kotowaza_quiz_2.png" },
   { kind: "カレンダー", year: 2026, month: 8, season: "通年", title: "8月カレンダー", file: "calendar_2026_08.png" },
@@ -95,7 +94,6 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 9, season: "通年", title: "9月カレンダー", file: "calendar_2026_09.png" },
   { kind: "カレンダー", year: 2026, month: 9, season: "通年", title: "9月カレンダー(貼り付け用)", file: "calendar_2026_09_blank.png" },
   { kind: "カレンダー", year: 2026, month: 10, season: "通年", title: "10月カレンダー(貼り付け用)", file: "calendar_2026_10_blank.png" },
-  // ---- 秋の塗り絵 60枚 ----
   { season: "秋", genre: "花", title: "きんもくせい", diff: "中級", file: "kinmokusei_chu.png" },
   { season: "秋", genre: "花", title: "コスモス", diff: "初級", file: "cosmos_sho.png" },
   { season: "秋", genre: "花", title: "コスモス", diff: "中級", file: "cosmos_chu.png" },
@@ -156,7 +154,6 @@ window.NURIE_LIST = [
   { season: "秋", genre: "風物詩", title: "赤とんぼとすすき", diff: "中級", file: "akatonbo_susuki_chu.png" },
   { season: "秋", genre: "風景", title: "寺と彼岸花", diff: "上級", file: "tera_higanbana_jo.png" },
   { season: "秋", genre: "風景", title: "川辺のすすき", diff: "上級", file: "kawabe_susuki_jo.png" },
-  // ---- 花(春) ----
   { season: "春", genre: "花", title: "つつじ", diff: "中級", file: "tsutsuji_chu.png" },
   { season: "春", genre: "花", title: "アネモネ", diff: "中級", file: "anemone_chu.png" },
   { season: "春", genre: "花", title: "カーネーション", diff: "中級", file: "carnation_chu.png" },
@@ -174,19 +171,16 @@ window.NURIE_LIST = [
   { season: "春", genre: "花", title: "芝桜", diff: "中級", file: "shibazakura_chu.png" },
   { season: "春", genre: "花", title: "花かんざし", diff: "中級", file: "hanakanzashi_chu.png" },
   { season: "春", genre: "花", title: "藤", diff: "中級", file: "fuji_hana_chu.png" },
-  // ---- 花(夏) ----
   { season: "夏", genre: "花", title: "ペチュニア", diff: "中級", file: "petunia_chu.png" },
   { season: "夏", genre: "花", title: "マリーゴールド2", diff: "中級", file: "marigold2_chu.png" },
   { season: "夏", genre: "花", title: "マリーゴールド3", diff: "中級", file: "marigold3_chu.png" },
   { season: "夏", genre: "花", title: "ユリ", diff: "中級", file: "yuri2_chu.png" },
   { season: "夏", genre: "花", title: "ラベンダー2", diff: "中級", file: "lavender2_chu.png" },
   { season: "夏", genre: "花", title: "芙蓉", diff: "中級", file: "fuyou_chu.png" },
-  // ---- 花(秋) ----
   { season: "秋", genre: "花", title: "シュウメイギク", diff: "中級", file: "shumeigiku_chu.png" },
   { season: "秋", genre: "花", title: "ネリネ", diff: "中級", file: "nerine_chu.png" },
   { season: "秋", genre: "花", title: "彼岸花", diff: "初級", file: "higanbana_sho.png" },
   { season: "秋", genre: "花", title: "皇帝ダリア", diff: "中級", file: "kotei_dahlia_chu.png" },
-  // ---- 花(冬) ----
   { season: "冬", genre: "花", title: "カトレア", diff: "中級", file: "cattleya_chu.png" },
   { season: "冬", genre: "花", title: "クリスマスローズ", diff: "中級", file: "christmasrose_chu.png" },
   { season: "冬", genre: "花", title: "シクラメン", diff: "中級", file: "cyclamen_chu.png" },
@@ -197,11 +191,9 @@ window.NURIE_LIST = [
   { season: "冬", genre: "花", title: "プリムラ", diff: "中級", file: "primula_chu.png" },
   { season: "冬", genre: "花", title: "ポインセチア", diff: "中級", file: "poinsettia_chu.png" },
   { season: "冬", genre: "花", title: "山茶花", diff: "中級", file: "sazanka_chu.png" },
-  // ---- 秋 ----
   { season: "秋", genre: "食べ物", title: "新米", diff: "初級", file: "shinmai_sho.png" },
   { season: "秋", genre: "風景", title: "秋", diff: "初級", file: "aki_fukei_sho.png" },
   { season: "秋", genre: "風景", title: "秋", diff: "上級", file: "aki_fukei_jo.png" },
-  // ---- 冬 ----
   { season: "冬", genre: "行事", title: "ゆず湯", diff: "中級", file: "yuzuyu_chu.png" },
   { season: "冬", genre: "行事", title: "クリスマス", diff: "初級", file: "christmas_sho.png" },
   { season: "冬", genre: "行事", title: "クリスマス", diff: "上級", file: "christmas_jo.png" },
@@ -216,6 +208,5 @@ window.NURIE_LIST = [
   { season: "冬", genre: "行事", title: "正月", diff: "中級", file: "shogatsu_chu.png" },
   { season: "冬", genre: "食べ物", title: "鍋", diff: "中級", file: "nabe_chu.png" },
   { season: "冬", genre: "行事", title: "餅つき", diff: "中級", file: "mochitsuki_chu.png" },
-  // ---- 通年 ----
   { season: "通年", genre: "動物", title: "鯉", diff: "初級", file: "koi_sho.png" },
 ];
