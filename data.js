@@ -210,7 +210,6 @@ window.NURIE_LIST = [
   { season: "冬", genre: "行事", title: "餅つき", diff: "中級", file: "mochitsuki_chu.png" },
   { season: "通年", genre: "動物", title: "鯉", diff: "初級", file: "koi_sho.png" },
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "3文字しりとり", diff: "初級", file: "up_1785644279674_1.png", answer: "up_1785644282058_2.png" },
-  { kind: "脳トレ", season: "通年", genre: "ことわざ", title: "ことわざ", diff: "初級", file: "up_1785644813830_1.png", answer: "up_1785644816458_2.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字（野菜）", diff: "初級", file: "up_1785645644164_1.png", answer: "up_1785645646492_2.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 野菜編", diff: "中級", file: "nandoku_yasai.png", answer: "nandoku_yasai_ans.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 果物編", diff: "中級", file: "nandoku_kudamono.png", answer: "nandoku_kudamono_ans.png" },
@@ -321,5 +320,4 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県クイズ その2", file: "todofuken_quiz2.png", answer: "todofuken_quiz2_ans.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "四字熟語 穴埋め その2", file: "yojijukugo2.png", answer: "yojijukugo2_ans.png" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 天気編", file: "nandoku_tenki.png", answer: "nandoku_tenki_ans.png" },
-  
 ];
