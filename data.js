@@ -457,7 +457,6 @@ window.NURIE_LIST = [
   { season: "春", genre: "食べ物", title: "花より団子", diff: "初級", file: "hanayoridango_sho.png", added: "2026-08" },
   { season: "春", genre: "食べ物", title: "花より団子 その2", diff: "初級", file: "hanayoridango2_sho.png", added: "2026-08" },
   { season: "夏", genre: "行事", title: "海の日", diff: "初級", file: "umi_no_hi_sho.png", added: "2026-08" },
-  { season: "夏", genre: "風物詩", title: "目には青葉 山ほととぎす 初鰹", diff: "初級", file: "me_ni_aoba_sho.png", added: "2026-08" },
   { season: "通年", title: "幾何学もよう", diff: "初級", file: "kikagaku_sho.png", added: "2026-08" },
   { season: "秋", genre: "行事", title: "勤労感謝の日", diff: "初級", file: "kinro_kansha_sho.png", added: "2026-08" },
   { season: "秋", genre: "行事", title: "敬老の日", diff: "初級", file: "keirou_sho.png", added: "2026-08" },
