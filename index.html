@@ -2,6 +2,15 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<script>
+// 旧URLで開かれたら、新しいURL(rekupuri.com)へ移動する
+(function () {
+  if (location.hostname === "kaigo-no-rekupuri.edgeone.dev") {
+    location.replace("https://rekupuri.com" + location.pathname + location.search + location.hash);
+  }
+})();
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>介護のレクプリ|高齢者向け 無料の塗り絵・脳トレ・カレンダー素材</title>
 <meta name="description" content="介護施設・デイサービスのレクリエーションで使える塗り絵・脳トレ(難読漢字・計算・言葉遊びなど)・月間カレンダーの無料素材集。すべてA4印刷対応で、季節やジャンルから選んでそのまま使えます。">
