@@ -1306,30 +1306,61 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     } catch (e) { return false; }
   }
 
-  let siteImagesCache = null;
-  async function getImageBlob(file, member) {
-    try {
-      const r = await fetch((member ? "member-img/" : "images/") + file);
-      if (r.ok) return await r.blob();
-    } catch (e) {}
-    if (!siteImagesCache) {
-      let h = null;
-      try { h = await idbGet("nurie_admin", "dir"); } catch (e) {}
-      if (h && !(await ensurePerm(h, "read"))) h = null;
-      if (h) { try { await h.getFileHandle("data.js"); } catch (e) { h = null; } }
-      if (!h) {
-        showToast("画像を読み取るため、このギャラリーのフォルダ(index.htmlのある場所)を選んでください");
-        h = await window.showDirectoryPicker();
-        try { await h.getFileHandle("data.js"); }
-        catch (e) { throw new Error("ギャラリーのフォルダが見つかりません"); }
-        try { await idbSet("nurie_admin", "dir", h); } catch (e) {}
-      }
-      siteImagesCache = await h.getDirectoryHandle("images");
-    }
-    const fh = await siteImagesCache.getFileHandle(file);
-    return await fh.getFile();
+  async function fetchImageBlob(file, member) {
+    const r = await fetch((member ? "member-img/" : "images/") + file);
+    if (!r.ok) throw new Error("読み込めません: " + file);
+    return await r.blob();
   }
 
+  // ZIPを作る部品 (外部の部品を使わないので、どの環境でも動きます)
+  function crc32(buf) {
+    let table = crc32.t;
+    if (!table) {
+      table = crc32.t = new Uint32Array(256);
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        table[n] = c >>> 0;
+      }
+    }
+    let crc = 0xFFFFFFFF;
+    for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ table[(crc ^ buf[i]) & 0xFF];
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function makeZip(files) {
+    const enc = new TextEncoder();
+    const parts = [], central = [];
+    let offset = 0, cdSize = 0;
+    const d = new Date();
+    const t = ((d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1)) & 0xFFFF;
+    const dt = (((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate()) & 0xFFFF;
+    files.forEach(f => {
+      const nb = enc.encode(f.name);
+      const crc = crc32(f.data);
+      const lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+      lh.setUint16(8, 0, true); lh.setUint16(10, t, true); lh.setUint16(12, dt, true);
+      lh.setUint32(14, crc, true); lh.setUint32(18, f.data.length, true); lh.setUint32(22, f.data.length, true);
+      lh.setUint16(26, nb.length, true); lh.setUint16(28, 0, true);
+      parts.push(new Uint8Array(lh.buffer), nb, f.data);
+      const ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
+      ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true); ch.setUint16(12, t, true); ch.setUint16(14, dt, true);
+      ch.setUint32(16, crc, true); ch.setUint32(20, f.data.length, true); ch.setUint32(24, f.data.length, true);
+      ch.setUint16(28, nb.length, true); ch.setUint16(30, 0, true); ch.setUint16(32, 0, true);
+      ch.setUint16(34, 0, true); ch.setUint16(36, 0, true); ch.setUint32(38, 0, true); ch.setUint32(42, offset, true);
+      central.push(new Uint8Array(ch.buffer), nb);
+      cdSize += 46 + nb.length;
+      offset += 30 + nb.length + f.data.length;
+    });
+    const eo = new DataView(new ArrayBuffer(22));
+    eo.setUint32(0, 0x06054b50, true); eo.setUint16(4, 0, true); eo.setUint16(6, 0, true);
+    eo.setUint16(8, files.length, true); eo.setUint16(10, files.length, true);
+    eo.setUint32(12, cdSize, true); eo.setUint32(16, offset, true); eo.setUint16(20, 0, true);
+    return new Blob(parts.concat(central, [new Uint8Array(eo.buffer)]), { type: "application/zip" });
+  }
+
+  // 1枚ずつ連続ダウンロード (最後の手段)
   function bulkDownloadFallback(shown) {
     shown.forEach((n, i) => {
       setTimeout(() => {
@@ -1342,51 +1373,126 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       }, i * 400);
     });
     shown.forEach(n => mark(n.file, "save"));
-    showToast(shown.length + " 枚を保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
+    showToast("保存を始めました。「複数のファイルのダウンロード」を聞かれたら「許可」を押してください");
     setTimeout(render, shown.length * 400 + 100);
   }
 
+  // まとめて保存 その2: 1つのZIPにまとめて保存 (どのパソコン・ブラウザでも動きます)
+  async function bulkZipSave(shown) {
+    showToast("画像をまとめています。しばらくお待ちください…");
+    const files = [];
+    const used = {};
+    const uniq = (name) => {
+      if (!used[name]) { used[name] = 1; return name; }
+      const i = name.lastIndexOf(".");
+      const stem = i >= 0 ? name.slice(0, i) : name;
+      const ext = i >= 0 ? name.slice(i) : "";
+      return stem + "(" + (++used[name]) + ")" + ext;
+    };
+    const add = async (file, name, member) => {
+      const b = await fetchImageBlob(file, member);
+      files.push({ name: FOLDER_NAME + "/" + uniq(name), data: new Uint8Array(await b.arrayBuffer()) });
+    };
+    let ok = 0;
+    for (const n of shown) {
+      try {
+        await add(n.file, dlName(n), n.member);
+        if (n.answer) await add(n.answer, dlNameAns(n), n.member);
+        mark(n.file, "save");
+        ok++;
+      } catch (e) {}
+    }
+    if (!ok) {
+      showToast("保存できませんでした。通信の状態を確かめて、もう一度お試しください");
+      return;
+    }
+    const blob = makeZip(files);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    // ファイル名は半角にしておく (日本語名を落としてしまうブラウザがあるため)
+    a.download = "kaigo-no-rekupuri.zip";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+    render();
+    showToast(ok + " 枚を1つにまとめて保存しました(kaigo-no-rekupuri.zip)。右クリック →「すべて展開」で「" + FOLDER_NAME + "」フォルダが出てきます");
+  }
+
+  // まとめて保存 その1: 選んだフォルダにそのまま保存
+  async function bulkFolderSave(parent, shown) {
+    const dest = await parent.getDirectoryHandle(FOLDER_NAME, { create: true });
+    let ok = 0;
+    const writeOne = async (file, name, member) => {
+      const blob = await fetchImageBlob(file, member);
+      const fh = await dest.getFileHandle(name, { create: true });
+      const w = await fh.createWritable();
+      await w.write(blob);
+      await w.close();
+    };
+    for (const n of shown) {
+      try {
+        await writeOne(n.file, dlName(n), n.member);
+        if (n.answer) await writeOne(n.answer, dlNameAns(n), n.member);
+        mark(n.file, "save");
+        ok++;
+      } catch (e) {}
+    }
+    render();
+    if (ok > 0) showToast(ok + " 枚を「" + parent.name + "」の中の「" + FOLDER_NAME + "」フォルダに保存しました");
+    else showToast("保存できませんでした。もう一度お試しください");
+    return ok;
+  }
+
+  const SAVEDIR_FLAG = "nurie_savedir_v1";
   document.getElementById("bulkSave").onclick = async () => {
     const shown = currentShown();
     if (!shown.length) return;
-    if (!window.showDirectoryPicker) { bulkDownloadFallback(shown); return; }
+    const btn = document.getElementById("bulkSave");
+    if (btn.disabled) return;
+    btn.disabled = true;
     try {
-      let parent = null;
-      try { parent = await idbGet("nurie_gallery", "saveDir"); } catch (e) {}
-      if (parent && !(await ensurePerm(parent, "readwrite"))) parent = null;
-      if (!parent) {
-        showToast("保存先のフォルダを選んでください(その中に「" + FOLDER_NAME + "」フォルダを作って保存します)");
-        parent = await window.showDirectoryPicker({ mode: "readwrite" });
-        try { await idbSet("nurie_gallery", "saveDir", parent); } catch (e) {}
-      }
-      const dest = await parent.getDirectoryHandle(FOLDER_NAME, { create: true });
-      let ok = 0;
-      const writeOne = async (file, name, member) => {
-        const blob = await getImageBlob(file, member);
-        const fh = await dest.getFileHandle(name, { create: true });
-        const w = await fh.createWritable();
-        await w.write(blob);
-        await w.close();
-      };
-      for (const n of shown) {
-        try {
-          await writeOne(n.file, dlName(n), n.member);
-          if (n.answer) await writeOne(n.answer, dlNameAns(n), n.member);
-          mark(n.file, "save");
-          ok++;
-        } catch (e) {
-          if (e && e.name === "AbortError") throw e;
+      if (window.showDirectoryPicker) {
+        let remembered = false;
+        try { remembered = localStorage.getItem(SAVEDIR_FLAG) === "1"; } catch (e) {}
+        let parent = null;
+        if (!remembered) {
+          // 初回は、ボタンを押した直後にフォルダ選択を出す。
+          // (先に別の処理をはさむとブラウザに拒否されて保存できなくなるため)
+          showToast("保存先のフォルダを選んでください(その中に「" + FOLDER_NAME + "」フォルダを作って保存します)");
+          try {
+            parent = await window.showDirectoryPicker({ mode: "readwrite" });
+          } catch (e) {
+            if (e && e.name === "AbortError") return;
+            parent = null;
+          }
+          if (parent) {
+            try { await idbSet("nurie_gallery", "saveDir", parent); } catch (e) {}
+            try { localStorage.setItem(SAVEDIR_FLAG, "1"); } catch (e) {}
+          }
+        } else {
+          try { parent = await idbGet("nurie_gallery", "saveDir"); } catch (e) {}
+          if (parent && !(await ensurePerm(parent, "readwrite"))) parent = null;
+          if (!parent) {
+            try {
+              parent = await window.showDirectoryPicker({ mode: "readwrite" });
+              try { await idbSet("nurie_gallery", "saveDir", parent); } catch (e) {}
+            } catch (e) {
+              if (e && e.name === "AbortError") return;
+              parent = null;
+            }
+          }
         }
+        if (parent) { await bulkFolderSave(parent, shown); return; }
       }
-      render();
-      if (ok > 0) {
-        showToast(ok + " 枚を「" + parent.name + "」の中の「" + FOLDER_NAME + "」フォルダに保存しました");
-      } else {
-        showToast("保存できませんでした。もう一度お試しください");
-      }
+      // フォルダ保存が使えない/失敗したときは、ZIPにまとめて保存
+      await bulkZipSave(shown);
     } catch (e) {
-      if (e && e.name === "AbortError") return;
-      bulkDownloadFallback(shown);
+      try { await bulkZipSave(shown); }
+      catch (e2) { showToast("保存できませんでした。お手数ですが1枚ずつ「保存」を押してください"); }
+    } finally {
+      btn.disabled = false;
     }
   };
 
