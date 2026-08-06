@@ -22,6 +22,12 @@ async function loadList(origin) {
 }
 
 export async function onRequest(context) {
+  {
+    const _u = new URL(context.request.url);
+    if (_u.hostname === "kaigo-no-rekupuri.edgeone.dev") {
+      return Response.redirect("https://rekupuri.com" + _u.pathname + _u.search, 301);
+    }
+  }
   const origin = new URL(context.request.url).origin;
   const list = await loadList(origin);
   const urls = [
