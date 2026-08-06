@@ -862,8 +862,21 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     }
     const sub = kindSubset();
     const seasons = seasonOrder.filter(s => sub.some(n => n.season === s));
-    const genres = [];
-    sub.forEach(n => { if (n.genre && !genres.includes(n.genre)) genres.push(n.genre); });
+    const GENRE_ORDER = ["花", "動物", "食べ物", "行事", "風景", "風物詩", "その他"];
+    const genresOf = (season) => {
+      const g = [];
+      sub.forEach(n => {
+        if (!n.genre) return;
+        if (season && n.season !== season) return;
+        if (!g.includes(n.genre)) g.push(n.genre);
+      });
+      g.sort((a, b) => {
+        const ia = GENRE_ORDER.indexOf(a), ib = GENRE_ORDER.indexOf(b);
+        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+      });
+      return g;
+    };
+    const genres = genresOf(selSeason);
 
     const addSelect = (labelText, options, current, onChange) => {
       const wrap = document.createElement("div");
@@ -893,7 +906,11 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
       }
     } else {
-      addSelect("季節:", seasons, selSeason, v => { selSeason = v; render(); });
+      addSelect("季節:", seasons, selSeason, v => {
+        selSeason = v;
+        if (selGenre && !genresOf(v).includes(selGenre)) selGenre = null;
+        render();
+      });
       if (genres.length) {
         addSelect("ジャンル:", genres, selGenre, v => { selGenre = v; render(); });
       }
