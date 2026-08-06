@@ -149,6 +149,46 @@
   @media (max-width: 600px) {
     .page-intro { font-size: 13.5px; padding: 0 14px; text-align: left; }
   }
+  .searchbar {
+    max-width: 620px;
+    margin: 18px auto 0;
+    padding: 0 20px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .searchbar input {
+    flex: 1;
+    font-family: inherit;
+    font-size: 17px;
+    padding: 12px 16px;
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--ink);
+    min-width: 0;
+  }
+  .searchbar input:focus { outline: none; border-color: var(--accent); }
+  .searchbar input.on { border-color: var(--accent); background: #fffaf4; }
+  .q-clear {
+    font-family: inherit;
+    font-size: 16px;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    background: var(--card);
+    color: #8a8477;
+    cursor: pointer;
+    display: none;
+  }
+  .q-clear.show { display: block; }
+  .q-clear:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 600px) {
+    .searchbar { padding: 0 12px; margin-top: 12px; }
+    .searchbar input { font-size: 16px; padding: 11px 14px; }
+  }
   .toolbar {
     max-width: 1100px;
     margin: 20px auto 8px;
@@ -571,6 +611,11 @@
 
 <p class="page-intro" id="pageIntro" style="display:none"></p>
 
+<div class="searchbar" id="searchBar">
+  <input type="search" id="q" placeholder="キーワードで探す(例: ねこ、ひまわり、正月)" autocomplete="off">
+  <button class="q-clear" id="qClear" title="消す">✕</button>
+</div>
+
 <div class="toolbar" id="toolbar"></div>
 
 <div class="bulkbar" id="bulkBar">
@@ -616,6 +661,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   let selDiff = null;
   let selUsed = null;
   let seriesView = null;
+  let qWord = "";
 
   const MEMBER_KEY = "nurie_member_v1";
   function isMemberUnlocked() {
@@ -871,17 +917,74 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     }
   }
 
+  // ---- キーワード検索 ----
+  // ひらがな・カタカナ・大文字小文字・長音の違いを吸収してから比べます
+  function normQ(s) {
+    return String(s || "")
+      .replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60))
+      .replace(/[Ａ-Ｚａ-ｚ０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+      .toLowerCase()
+      .replace(/[ー－―‐\-・･'"”’　\s]/g, "");
+  }
+  // よく使う漢字の読み。ひらがなで打っても漢字の作品が見つかるようにします
+  const YOMI = {
+    "猫":"ねこ","犬":"いぬ","兎":"うさぎ","鼠":"ねずみ","熊":"くま","狼":"おおかみ",
+    "馬":"うま","羊":"ひつじ","鳥":"とり","魚":"さかな","鯉":"こい","金魚":"きんぎょ",
+    "鶴":"つる","亀":"かめ","蝶":"ちょう","蛍":"ほたる","虫":"むし","猿":"さる","鹿":"しか",
+    "花":"はな","桜":"さくら","梅":"うめ","菊":"きく","菜":"な","葉":"は","木":"き","森":"もり",
+    "海":"うみ","山":"やま","川":"かわ","空":"そら","雪":"ゆき","雨":"あめ","月":"つき","星":"ほし",
+    "春":"はる","夏":"なつ","秋":"あき","冬":"ふゆ","正月":"しょうがつ","節分":"せつぶん",
+    "餅":"もち","柿":"かき","栗":"くり","芋":"いも","米":"こめ","茶":"ちゃ","酒":"さけ",
+    "傘":"かさ","舟":"ふね","船":"ふね","駅":"えき","家":"いえ","庭":"にわ","窓":"まど",
+    "着物":"きもの","盆栽":"ぼんさい","茶道":"さどう","歌舞伎":"かぶき","漬物":"つけもの",
+    "誕生日":"たんじょうび","喫茶店":"きっさてん","干し柿":"ほしがき","漢字":"かんじ",
+    "計算":"けいさん","言葉":"ことば","動物":"どうぶつ","風景":"ふうけい","食":"たべもの",
+    "行事":"ぎょうじ","初級":"やさしい","上級":"むずかしい",
+    "焼":"やき","煮":"に","揚":"あげ","汁":"しる","鍋":"なべ","湯":"ゆ","豆":"まめ",
+    "卵":"たまご","団子":"だんご","寿司":"すし","弁当":"べんとう","饅":"まん","菓子":"かし",
+    "野菜":"やさい","果物":"くだもの","果":"くだもの","味":"あじ","料理":"りょうり",
+    "祭":"まつり","花火":"はなび","風鈴":"ふうりん","団扇":"うちわ","扇":"おうぎ",
+    "縁側":"えんがわ","囲炉裏":"いろり","障子":"しょうじ","神社":"じんじゃ","寺":"てら",
+    "城":"しろ","橋":"はし","道":"みち","畑":"はたけ","田":"た","稲":"いね","麦":"むぎ",
+    "温泉":"おんせん","風呂":"ふろ","電車":"でんしゃ","汽車":"きしゃ","自転車":"じてんしゃ",
+    "帽子":"ぼうし","眼鏡":"めがね","時計":"とけい","電話":"でんわ","手紙":"てがみ",
+    "子供":"こども","女":"おんな","男":"おとこ","老":"ろう","朝":"あさ","昼":"ひる","夜":"よる",
+    "紅葉":"もみじ","落葉":"おちば","若葉":"わかば","竹":"たけ","松":"まつ","柳":"やなぎ",
+    "実":"み","種":"たね","苗":"なえ","池":"いけ","滝":"たき","岩":"いわ","砂":"すな",
+    "雲":"くも","風":"かぜ","虹":"にじ","氷":"こおり","炭":"すみ","火":"ひ","水":"みず"
+  };
+  const YOMI_KEYS = Object.keys(YOMI).sort((a, b) => b.length - a.length);
+  function withYomi(t) {
+    let add = "";
+    YOMI_KEYS.forEach(k => { if (t.indexOf(k) >= 0) add += YOMI[k]; });
+    return t + add;
+  }
+  function toKana(t) {
+    let s = String(t);
+    YOMI_KEYS.forEach(k => { s = s.split(k).join(YOMI[k]); });
+    return s;
+  }
+  function matchQ(n) {
+    if (!qWord) return true;
+    const base = [n.title, n.genre, n.season, n.diff, kindOf(n)].join(" ");
+    // 漢字のまま・ぜんぶ読み仮名にしたもの、両方を用意して照合します
+    const hay = normQ(base) + "|" + normQ(toKana(base)) + "|" + normQ(withYomi(base));
+    const words = qWord.trim().split(/[\s,、]+/).filter(Boolean);
+    if (!words.length) return true;
+    return words.every(w => hay.indexOf(normQ(w)) >= 0 || hay.indexOf(normQ(toKana(w))) >= 0);
+  }
+
   function currentShown() {
     if (page === "fav") {
       const f = loadFav();
-      return list.filter(n => f.includes(n.file));
+      return list.filter(n => f.includes(n.file)).filter(matchQ);
     }
     if (page === "calendar") {
       if (!calMonth) return [];
       return kindSubset().filter(n => calKey(n) === calMonth && !n.member)
         .slice().sort((a, b) => String(a.title).localeCompare(String(b.title), "ja"));
     }
-    return kindSubset().filter(n => (page === "member" ? true : !n.member)).filter(n =>
+    return kindSubset().filter(n => (page === "member" ? true : !n.member)).filter(matchQ).filter(n =>
       (!selSeason || n.season === selSeason) &&
       (!selGenre || n.genre === selGenre) &&
       (!selDiff || n.diff === selDiff) &&
@@ -906,9 +1009,17 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       noutore: "難読漢字、計算問題、ことわざ、言葉探しなど、高齢者向けの脳トレプリントを無料で配布しています。すべて答え付きです。"
     };
     const intro = document.getElementById("pageIntro");
-    const introTxt = (!seriesView && PAGE_INTRO[page]) || "";
+    const introTxt = (!seriesView && !qWord && PAGE_INTRO[page]) || "";
     intro.textContent = introTxt;
     intro.style.display = introTxt ? "" : "none";
+
+    // 検索欄 (カレンダーの月一覧では出さない)
+    const sBar = document.getElementById("searchBar");
+    const qEl = document.getElementById("q");
+    sBar.style.display = (page === "calendar") ? "none" : "flex";
+    if (qEl.value !== qWord) qEl.value = qWord;
+    qEl.classList.toggle("on", !!qWord);
+    document.getElementById("qClear").classList.toggle("show", !!qWord);
 
     buildToolbar();
 
@@ -946,8 +1057,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const seriesCounts = {};
     let seriesGrouped = false;
     // シリーズにまとめるのは脳トレだけ (塗り絵はすべて単独で表示)
-    const useSeries = (page === "noutore") ||
-      (page === "member" && memberKind === "脳トレ");
+    // キーワード検索中は、探しているものが埋もれないよう1枚ずつ出します
+    const useSeries = !qWord && ((page === "noutore") ||
+      (page === "member" && memberKind === "脳トレ"));
     if (useSeries) {
       if (seriesView) {
         all = all.filter(n => seriesBase(n.title) === seriesView)
@@ -979,12 +1091,16 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const shown = all.slice((curPage - 1) * PER_PAGE, curPage * PER_PAGE);
 
     document.getElementById("count").textContent =
-      all.length ? all.length + " 枚あります" +
-        (totalPages > 1 ? "(" + curPage + " / " + totalPages + " ページ)" : "") : "";
+      all.length
+        ? (qWord ? "「" + qWord.trim() + "」の検索結果 " : "") + all.length + " 枚あります" +
+          (totalPages > 1 ? "(" + curPage + " / " + totalPages + " ページ)" : "")
+        : "";
     renderPager(totalPages);
     const empty = document.getElementById("empty");
     empty.style.display = all.length ? "none" : "block";
-    empty.textContent = page === "member"
+    empty.textContent = qWord
+      ? "「" + qWord.trim() + "」に当てはまる作品は見つかりませんでした"
+      : page === "member"
       ? "会員専用コンテンツはまだありません"
       : page === "fav"
       ? "お気に入りはまだありません(カード右上の ☆ を押すと登録できます)"
@@ -1496,12 +1612,42 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     }
   };
 
+  // ---- 検索欄の操作 ----
+  (function () {
+    const qEl = document.getElementById("q");
+    let timer = null;
+    const apply = (v) => {
+      if (v === qWord) return;
+      qWord = v;
+      seriesView = null;
+      curPage = 1;
+      render();
+      syncState();
+    };
+    qEl.addEventListener("input", () => {
+      if (timer) clearTimeout(timer);
+      const v = qEl.value;
+      timer = setTimeout(() => apply(v), 250);
+    });
+    qEl.addEventListener("keydown", e => {
+      if (e.key === "Enter") { if (timer) clearTimeout(timer); apply(qEl.value); qEl.blur(); }
+      if (e.key === "Escape") { if (timer) clearTimeout(timer); qEl.value = ""; apply(""); }
+    });
+    document.getElementById("qClear").onclick = () => {
+      if (timer) clearTimeout(timer);
+      qEl.value = "";
+      apply("");
+      qEl.focus();
+    };
+  })();
+
   function switchPage(p) {
     const clean = !seriesView && !calMonth && !selSeason && !selGenre &&
-                  !selDiff && !selUsed && curPage === 1;
+                  !selDiff && !selUsed && !qWord && curPage === 1;
     if (p === page && clean) { render(); return; }
     seriesView = null;
     page = p;
+    qWord = "";
     selSeason = selGenre = selDiff = selUsed = null;
     curPage = 1;
     calMonth = null;
@@ -1525,6 +1671,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       selDiff: selDiff,
       selUsed: selUsed,
       memberKind: memberKind,
+      q: qWord,
       lb: (lbCurrent && lb.classList.contains("show")) ? lbCurrent.file : null
     };
   }
@@ -1549,6 +1696,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     selDiff = st.selDiff || null;
     selUsed = st.selUsed || null;
     memberKind = st.memberKind || "塗り絵";
+    qWord = st.q || "";
     if (page === "member" && !memberLoaded) {
       if (isMemberUnlocked()) { loadMemberList().then(() => render()); }
       else { page = "list"; }
