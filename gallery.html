@@ -1533,6 +1533,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         if (n.answer) await add(n.answer, dlNameAns(n), n.member);
         mark(n.file, "save");
         ok++;
+        if (shown.length > 5) {
+          showToast("画像をまとめています… " + ok + " / " + shown.length + " 枚");
+        }
       } catch (e) {}
     }
     if (!ok) {
@@ -1578,7 +1581,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     return ok;
   }
 
-  const SAVEDIR_FLAG = "nurie_savedir_v1";
+  // まとめて保存は ZIP 一本。
+  // フォルダ選択(File System Access API)はパソコンやブラウザによって
+  // 許可の出方が変わり、分かりにくい表示が出ることがあったため使いません。
   document.getElementById("bulkSave").onclick = async () => {
     const shown = currentShown();
     if (!shown.length) return;
@@ -1586,44 +1591,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (btn.disabled) return;
     btn.disabled = true;
     try {
-      if (window.showDirectoryPicker) {
-        let remembered = false;
-        try { remembered = localStorage.getItem(SAVEDIR_FLAG) === "1"; } catch (e) {}
-        let parent = null;
-        if (!remembered) {
-          // 初回は、ボタンを押した直後にフォルダ選択を出す。
-          // (先に別の処理をはさむとブラウザに拒否されて保存できなくなるため)
-          showToast("保存先のフォルダを選んでください(その中に「" + FOLDER_NAME + "」フォルダを作って保存します)");
-          try {
-            parent = await window.showDirectoryPicker({ mode: "readwrite" });
-          } catch (e) {
-            if (e && e.name === "AbortError") return;
-            parent = null;
-          }
-          if (parent) {
-            try { await idbSet("nurie_gallery", "saveDir", parent); } catch (e) {}
-            try { localStorage.setItem(SAVEDIR_FLAG, "1"); } catch (e) {}
-          }
-        } else {
-          try { parent = await idbGet("nurie_gallery", "saveDir"); } catch (e) {}
-          if (parent && !(await ensurePerm(parent, "readwrite"))) parent = null;
-          if (!parent) {
-            try {
-              parent = await window.showDirectoryPicker({ mode: "readwrite" });
-              try { await idbSet("nurie_gallery", "saveDir", parent); } catch (e) {}
-            } catch (e) {
-              if (e && e.name === "AbortError") return;
-              parent = null;
-            }
-          }
-        }
-        if (parent) { await bulkFolderSave(parent, shown); return; }
-      }
-      // フォルダ保存が使えない/失敗したときは、ZIPにまとめて保存
       await bulkZipSave(shown);
     } catch (e) {
-      try { await bulkZipSave(shown); }
-      catch (e2) { showToast("保存できませんでした。お手数ですが1枚ずつ「保存」を押してください"); }
+      showToast("保存できませんでした。お手数ですが1枚ずつ「保存」を押してください");
     } finally {
       btn.disabled = false;
     }
