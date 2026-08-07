@@ -158,7 +158,9 @@ export async function onRequest(context) {
     list.length +
     "枚の一覧です。作品名をクリックすると、その作品のページが開いてA4サイズでダウンロードできます。会員登録も費用も必要ありません。</p>" +
     sections +
-    "<footer>© 介護のレクプリ</footer></div></body></html>";
+    '<footer><a href="/">トップ</a>｜<a href="/terms.html">素材のご利用について</a>｜' +
+    '<a href="/privacy.html">プライバシーポリシー</a><br>© 介護のレクプリ</footer>' +
+    "</div></body></html>";
 
   return new Response(html, {
     headers: {
