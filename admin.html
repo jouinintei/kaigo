@@ -321,6 +321,7 @@
         <option value="member">🔒会員限定</option>
       </select>
       <button id="bulkApply">全部に適用</button>
+      <label style="white-space:nowrap"><input type="checkbox" id="a4Conv" checked> A4・300dpiに変換して投稿する</label>
     </div>
 
     <table id="newTable" style="display:none">
@@ -551,6 +552,142 @@
   function autoName(ext) {
     upSeq++;
     return "up_" + Date.now() + "_" + upSeq + ext;
+  }
+
+  // ==========================================================
+  //  A4・300dpi への変換 (印刷用)
+  // ==========================================================
+  const A4SIZE = { portrait: [2480, 3508], landscape: [3508, 2480] };
+  const DPM = 11811; // 300dpi = 11811 px/m
+
+  let crcTable = null;
+  function crc32(buf, start, end) {
+    if (!crcTable) {
+      crcTable = new Uint32Array(256);
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        crcTable[n] = c >>> 0;
+      }
+    }
+    let crc = 0xFFFFFFFF;
+    for (let i = start; i < end; i++) crc = (crc >>> 8) ^ crcTable[(crc ^ buf[i]) & 0xFF];
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function u32(v) { const a = new Uint8Array(4); new DataView(a.buffer).setUint32(0, v >>> 0); return a; }
+  function pngChunk(type, data) {
+    const t = new Uint8Array(4);
+    for (let i = 0; i < 4; i++) t[i] = type.charCodeAt(i);
+    const body = new Uint8Array(4 + data.length);
+    body.set(t, 0); body.set(data, 4);
+    const out = new Uint8Array(12 + data.length);
+    out.set(u32(data.length), 0);
+    out.set(body, 4);
+    out.set(u32(crc32(body, 0, body.length)), 8 + data.length);
+    return out;
+  }
+  function concatBytes(arrs) {
+    let n = 0; arrs.forEach(a => n += a.length);
+    const out = new Uint8Array(n); let o = 0;
+    arrs.forEach(a => { out.set(a, o); o += a.length; });
+    return out;
+  }
+  // 白黒(グレースケール)PNG。色情報を持たないぶん軽く、300dpiの情報も入ります
+  async function encodeGrayPNG(canvas) {
+    if (typeof CompressionStream === "undefined") return null;
+    const w = canvas.width, h = canvas.height;
+    const d = canvas.getContext("2d").getImageData(0, 0, w, h).data;
+    const raw = new Uint8Array((w + 1) * h);
+    let o = 0;
+    for (let y = 0; y < h; y++) {
+      raw[o++] = 1; // Subフィルタ
+      const base = y * w * 4;
+      let prev = 0;
+      for (let x = 0; x < w; x++) {
+        const v = d[base + x * 4];
+        raw[o++] = (v - prev) & 0xFF;
+        prev = v;
+      }
+    }
+    const cs = new CompressionStream("deflate");
+    const wr = cs.writable.getWriter();
+    wr.write(raw); wr.close();
+    const comp = new Uint8Array(await new Response(cs.readable).arrayBuffer());
+    const ihdr = new Uint8Array(13), dv = new DataView(ihdr.buffer);
+    dv.setUint32(0, w); dv.setUint32(4, h);
+    ihdr[8] = 8; ihdr[9] = 0; // 8bit グレースケール
+    const phys = new Uint8Array(9), pv = new DataView(phys.buffer);
+    pv.setUint32(0, DPM); pv.setUint32(4, DPM); phys[8] = 1;
+    return concatBytes([
+      new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]),
+      pngChunk("IHDR", ihdr), pngChunk("pHYs", phys),
+      pngChunk("IDAT", comp), pngChunk("IEND", new Uint8Array(0))
+    ]);
+  }
+  async function loadImageAny(file) {
+    let src = null;
+    try { src = await createImageBitmap(file); } catch (e) {}
+    if (!src) {
+      src = await new Promise((res, rej) => {
+        const im = new Image();
+        im.onload = () => res(im);
+        im.onerror = () => rej(new Error("この画像は読み込めない形式です。PNGかJPEGにしてからお試しください"));
+        im.src = URL.createObjectURL(file);
+      });
+    }
+    return src;
+  }
+  // 絵を伸ばさず、白い余白を足してA4比率にしてから300dpiの画素数へ
+  async function toA4Image(file, forceExt) {
+    const src = await loadImageAny(file);
+    const w = src.width || src.naturalWidth;
+    const h = src.height || src.naturalHeight;
+    const ori = (w >= h) ? "landscape" : "portrait";
+    const tw = A4SIZE[ori][0], th = A4SIZE[ori][1];
+
+    const ta = tw / th, ca = w / h;
+    let nw, nh;
+    if (ca > ta) { nw = w; nh = Math.round(w / ta); }
+    else { nw = Math.round(h * ta); nh = h; }
+    const pad = document.createElement("canvas");
+    pad.width = nw; pad.height = nh;
+    const pc = pad.getContext("2d");
+    pc.fillStyle = "#fff"; pc.fillRect(0, 0, nw, nh);
+    pc.drawImage(src, Math.floor((nw - w) / 2), Math.floor((nh - h) / 2));
+
+    const cv = document.createElement("canvas");
+    cv.width = tw; cv.height = th;
+    const cx = cv.getContext("2d");
+    cx.imageSmoothingEnabled = true;
+    cx.imageSmoothingQuality = "high";
+    cx.fillStyle = "#fff"; cx.fillRect(0, 0, tw, th);
+    cx.drawImage(pad, 0, 0, tw, th);
+
+    const id = cx.getImageData(0, 0, tw, th), dd = id.data;
+    for (let i = 0; i < dd.length; i += 4) {
+      let g = dd[i] * 0.299 + dd[i + 1] * 0.587 + dd[i + 2] * 0.114;
+      if (dd[i + 3] < 128) g = 255;
+      const v = g < 105 ? 0 : (g > 205 ? 255 : g);
+      dd[i] = dd[i + 1] = dd[i + 2] = v; dd[i + 3] = 255;
+    }
+    cx.putImageData(id, 0, 0);
+
+    // 差し替え先が .jpg のときは、ファイル名を変えないよう JPEG で書き出す
+    if (forceExt === ".jpg" || forceExt === ".jpeg") {
+      const jb = await new Promise(res => cv.toBlob(res, "image/jpeg", 0.92));
+      return { blob: jb, ext: forceExt };
+    }
+    const bytes = await encodeGrayPNG(cv);
+    if (bytes) return { blob: new Blob([bytes], { type: "image/png" }), ext: ".png" };
+    const pb = await new Promise(res => cv.toBlob(res, "image/png"));
+    return { blob: pb, ext: ".png" };
+  }
+
+  // 同じ名前のファイルを上書きする (GitHubは上書きに版札=sha が要ります)
+  async function overwriteFile(path, blob, message) {
+    const cur = await getFile(path);
+    const buf = new Uint8Array(await blob.arrayBuffer());
+    await putFile(path, b64encode(buf), message, cur ? cur.sha : undefined);
   }
 
   // ==========================================================
@@ -884,7 +1021,8 @@
       let done = 0;
       for (const it of newItems) {
         st.textContent = "画像を変換中... (" + (done + 1) + "/" + newItems.length + ")";
-        const conv = await toWebImage(it.blob);
+        const useA4 = document.getElementById("a4Conv").checked;
+        const conv = useA4 ? await toA4Image(it.blob) : await toWebImage(it.blob);
         st.textContent = "アップロード中... (" + (done + 1) + "/" + newItems.length + ")";
         const name = await uniqueFileName(autoName(conv.ext));
         await uploadImage(conv.blob, name);
@@ -896,7 +1034,7 @@
         if (it.month) entry.month = it.month;
         if (it.year && it.kind === "カレンダー") entry.year = it.year;
         if (it.answerBlob) {
-          const ansConv = await toWebImage(it.answerBlob);
+          const ansConv = useA4 ? await toA4Image(it.answerBlob) : await toWebImage(it.answerBlob);
           const ansName = await uniqueFileName(autoName(ansConv.ext));
           await uploadImage(ansConv.blob, ansName);
           entry.answer = ansName;
@@ -1094,6 +1232,40 @@
       tdOps.appendChild(updBtn);
       tdOps.appendChild(del);
 
+      // ---- 絵だけを差し替える(ファイル名はそのまま。data.js はさわりません) ----
+      const repInput = document.createElement("input");
+      repInput.type = "file";
+      repInput.accept = "image/*";
+      repInput.style.display = "none";
+      repInput.onchange = async () => {
+        const f = repInput.files[0];
+        if (!f) return;
+        if (!window.confirm("「" + e.title + "」の絵を差し替えますか?\n今の絵は上書きされて元に戻せません。")) {
+          repInput.value = "";
+          return;
+        }
+        const dot = e.file.lastIndexOf(".");
+        const ext = dot >= 0 ? e.file.slice(dot).toLowerCase() : ".png";
+        try {
+          listStatus("画像をA4・300dpiに変換中...");
+          const conv = await toA4Image(f, ext);
+          listStatus("差し替え中...");
+          await overwriteFile("images/" + e.file, conv.blob, "画像差し替え: " + e.title);
+          img.style.display = "";
+          img.src = imgSrc(e.file) + "?t=" + Date.now();
+          listStatus("✓ 「" + e.title + "」の絵を差し替えました(1〜2分で反映)");
+        } catch (err) {
+          listStatus(err.message, true);
+        }
+        repInput.value = "";
+      };
+      const repBtn = document.createElement("button");
+      repBtn.className = "mini-btn";
+      repBtn.textContent = "絵を差し替え";
+      repBtn.onclick = () => repInput.click();
+      tdOps.appendChild(repBtn);
+      tdOps.appendChild(repInput);
+
       const ansInput = document.createElement("input");
       ansInput.type = "file";
       ansInput.accept = "image/*";
@@ -1102,8 +1274,20 @@
         const f = ansInput.files[0];
         if (!f) return;
         try {
+          if (e.answer) {
+            // すでに答えがあるときは、同じファイル名のまま中身だけ差し替える
+            const dot2 = e.answer.lastIndexOf(".");
+            const ext2 = dot2 >= 0 ? e.answer.slice(dot2).toLowerCase() : ".png";
+            listStatus("答えをA4・300dpiに変換中...");
+            const conv2 = await toA4Image(f, ext2);
+            listStatus("差し替え中...");
+            await overwriteFile("images/" + e.answer, conv2.blob, "答え差し替え: " + e.title);
+            renderList();
+            listStatus("✓ 「" + e.title + "」の答えを差し替えました(1〜2分で反映)");
+            return;
+          }
           listStatus("答えをアップロード中...");
-          const conv = await toWebImage(f);
+          const conv = await toA4Image(f);
           const ansName = await uniqueFileName(autoName(conv.ext));
           await uploadImage(conv.blob, ansName);
           e.answer = ansName;
