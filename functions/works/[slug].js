@@ -118,6 +118,7 @@ export async function onRequest(context) {
     "<meta property=\"og:url\" content=\"" + esc(url) + "\">\n" +
     "<meta property=\"og:image\" content=\"" + esc(img) + "\">\n" +
     "<link rel=\"icon\" href=\"/favicon.ico\" sizes=\"48x48\">\n" +
+    "<script src=\"/analytics.js\" defer></script>\n" +
     "<script type=\"application/ld+json\">" + JSON.stringify(ld) + "</script>\n" +
     "<style>\n" +
     "body{font-family:\"Hiragino Maru Gothic ProN\",\"BIZ UDGothic\",\"Yu Gothic\",\"Meiryo\",sans-serif;background:#faf6ef;color:#3a3a3a;line-height:1.7;margin:0}\n" +
