@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>画像の差し替え|介護のレクプリ 管理</title>
+<style>
+  :root { --bg:#faf6ef; --card:#fff; --ink:#3a3a3a; --accent:#e8833a; --line:#e5ddd0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:"Hiragino Maru Gothic ProN","BIZ UDGothic","Yu Gothic","Meiryo",sans-serif;
+         background:var(--bg); color:var(--ink); line-height:1.7; }
+  header { background:var(--card); border-bottom:3px solid var(--accent); padding:16px 20px; text-align:center; }
+  header h1 { font-size:20px; color:var(--accent); }
+  header p { font-size:13px; color:#8a8477; margin-top:3px; }
+  header a { color:var(--accent); }
+  .wrap { max-width:880px; margin:0 auto; padding:18px 14px 60px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin-bottom:14px; }
+  h2 { font-size:16px; color:var(--accent); margin-bottom:8px; }
+  input[type=text], input[type=search], select {
+    font-family:inherit; font-size:16px; padding:9px 11px;
+    border:1px solid var(--line); border-radius:8px; width:100%; background:#fff; color:var(--ink); }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .row > * { flex:1; min-width:200px; }
+  button { font-family:inherit; font-size:16px; font-weight:bold; padding:11px 22px;
+    border:none; border-radius:8px; background:var(--accent); color:#fff; cursor:pointer; }
+  button:disabled { opacity:.45; cursor:default; }
+  button.sub { background:#fff; border:2px solid var(--line); color:#8a8477; font-weight:normal; padding:9px 16px; }
+  #drop { border:2px dashed var(--line); border-radius:12px; padding:28px 16px; text-align:center;
+          color:#8a8477; font-size:15px; cursor:pointer; background:#fffdf9; }
+  #drop.over { border-color:var(--accent); background:#fff4e9; color:var(--accent); }
+  .list { max-height:260px; overflow:auto; border:1px solid var(--line); border-radius:8px; margin-top:8px; }
+  .item { display:flex; gap:10px; align-items:center; padding:7px 10px; border-bottom:1px solid #f2ece1; cursor:pointer; font-size:15px; }
+  .item:last-child { border-bottom:none; }
+  .item:hover { background:#fff4e9; }
+  .item.sel { background:#fbe3cf; }
+  .item img { width:46px; height:34px; object-fit:contain; background:#fff; border:1px solid var(--line); border-radius:4px; }
+  .item .nm { flex:1; }
+  .item .fn { font-size:12px; color:#a09a8c; }
+  .prev { display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; }
+  .prev figure { flex:1; min-width:240px; }
+  .prev img { width:100%; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  .prev figcaption { font-size:13px; color:#8a8477; margin-top:4px; text-align:center; }
+  .msg { font-size:15px; margin-top:10px; font-weight:bold; }
+  .msg.ok { color:#4a9b6e; }
+  .msg.ng { color:#c05a5a; }
+  .note { font-size:13.5px; color:#8a8477; margin-top:8px; }
+  ol { margin:6px 0 0 22px; font-size:14.5px; }
+  ol li { margin-bottom:5px; }
+  .badge { display:inline-block; font-size:12px; background:#f2ece1; color:#6b5535;
+           border-radius:99px; padding:2px 9px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>画像の差し替え</h1>
+  <p>作品の絵だけを新しいものに入れ替えます | <a href="admin.html">← 管理ページ</a> ｜ <a href="gallery.html">ギャラリー</a></p>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>1. 差し替える作品を選ぶ</h2>
+    <input type="search" id="q" placeholder="作品名かファイル名で探す(例: ひまわり畑)" autocomplete="off">
+    <div class="list" id="list"></div>
+    <div class="note">選んだ作品のファイル名で書き出します。ファイル名が同じなので、GitHubに上げるとそのまま上書きされます。</div>
+    <div class="row" style="margin-top:10px">
+      <input type="text" id="manual" placeholder="一覧にないときは、ファイル名を直接入力(例: sakura_sho.png)">
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2. 新しい画像を入れる</h2>
+    <div id="drop">ここに画像をドラッグ、またはクリックして選ぶ<br><span style="font-size:13px">(PNG / JPG。作り直した線画をそのまま入れてください)</span></div>
+    <input type="file" id="file" accept="image/*" style="display:none">
+    <div class="row" style="margin-top:12px">
+      <label style="flex:0 0 auto; font-size:14.5px; color:#6b5535">向き</label>
+      <select id="ori">
+        <option value="auto">自動(元画像に合わせる)</option>
+        <option value="portrait">A4たて 2480×3508</option>
+        <option value="landscape">A4よこ 3508×2480</option>
+      </select>
+      <label style="flex:0 0 auto; font-size:14.5px; color:#6b5535">線の濃さ</label>
+      <select id="lv">
+        <option value="normal">ふつう</option>
+        <option value="strong">濃いめ(かすれた線をはっきりさせる)</option>
+        <option value="soft">やさしめ(細かい模様を残す)</option>
+      </select>
+    </div>
+    <div class="prev" id="prev"></div>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="card">
+    <h2>3. 書き出す</h2>
+    <div class="row">
+      <button id="go" disabled>A4・300dpiで書き出す</button>
+      <button class="sub" id="reset">やり直す</button>
+    </div>
+    <div class="note" id="outname"></div>
+    <h2 style="margin-top:16px">GitHubへの上げ方</h2>
+    <ol>
+      <li>リポジトリで <b>images</b> フォルダを先に開く</li>
+      <li>Add file → Upload files に、書き出した画像をドラッグ</li>
+      <li>Commit changes を押す(同じ名前なので上書きされます)</li>
+      <li>サイトを開いて <b>Ctrl+F5</b>。古い絵が残っていたらもう一度</li>
+    </ol>
+    <div class="note">data.js はさわる必要ありません。絵だけが入れ替わります。</div>
+  </div>
+
+</div>
+
+<script>
+document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
+</script>
+<script>
+(function () {
+  "use strict";
+
+  var A4 = { portrait: [2480, 3508], landscape: [3508, 2480] };
+  var DPM = 11811; // 300dpi = 11811 px/m
+  var selected = null, srcImg = null, outCanvas = null;
+
+  var listEl = document.getElementById("list");
+  var qEl = document.getElementById("q");
+  var manualEl = document.getElementById("manual");
+  var msgEl = document.getElementById("msg");
+  var goBtn = document.getElementById("go");
+  var prevEl = document.getElementById("prev");
+  var outnameEl = document.getElementById("outname");
+
+  var works = (window.NURIE_LIST || []).filter(function (n) { return n && n.file; });
+
+  function kindOf(n) { return n.kind || "塗り絵"; }
+  function label(n) {
+    var d = (kindOf(n) === "塗り絵" && n.diff) ? "(" + n.diff + ")" : "";
+    return n.title + d;
+  }
+  function norm(s) { return String(s || "").toLowerCase(); }
+
+  function renderList() {
+    var q = norm(qEl.value).trim();
+    var hit = works.filter(function (n) {
+      if (!q) return true;
+      return norm(n.title).indexOf(q) >= 0 || norm(n.file).indexOf(q) >= 0;
+    }).slice(0, 200);
+    listEl.innerHTML = "";
+    if (!hit.length) {
+      listEl.innerHTML = '<div class="item" style="cursor:default;color:#a09a8c">見つかりませんでした</div>';
+      return;
+    }
+    hit.forEach(function (n) {
+      var d = document.createElement("div");
+      d.className = "item" + (selected && selected.file === n.file ? " sel" : "");
+      var im = document.createElement("img");
+      im.loading = "lazy";
+      im.src = (n.member ? "member-img/" : "images/") + n.file;
+      im.onerror = function () { im.style.visibility = "hidden"; };
+      var nm = document.createElement("div");
+      nm.className = "nm";
+      nm.innerHTML = '<div>' + label(n) + '<span class="badge">' + kindOf(n) + '</span></div>' +
+                     '<div class="fn">' + n.file + '</div>';
+      d.appendChild(im); d.appendChild(nm);
+      d.onclick = function () {
+        selected = n;
+        manualEl.value = "";
+        renderList();
+        updateOut();
+      };
+      listEl.appendChild(d);
+    });
+  }
+
+  function outName() {
+    var m = manualEl.value.trim();
+    if (m) return /\.png$/i.test(m) ? m : m + ".png";
+    return selected ? selected.file : "";
+  }
+  function updateOut() {
+    var n = outName();
+    outnameEl.textContent = n ? ("書き出すファイル名: " + n) : "作品を選ぶか、ファイル名を入力してください";
+    goBtn.disabled = !(n && srcImg);
+  }
+
+  qEl.addEventListener("input", renderList);
+  manualEl.addEventListener("input", function () { if (manualEl.value.trim()) selected = null; renderList(); updateOut(); });
+
+  // ---- 画像の受け取り ----
+  var drop = document.getElementById("drop"), fileEl = document.getElementById("file");
+  drop.onclick = function () { fileEl.click(); };
+  fileEl.onchange = function () { if (fileEl.files && fileEl.files[0]) loadFile(fileEl.files[0]); };
+  ["dragenter", "dragover"].forEach(function (e) {
+    drop.addEventListener(e, function (ev) { ev.preventDefault(); drop.classList.add("over"); });
+  });
+  ["dragleave", "drop"].forEach(function (e) {
+    drop.addEventListener(e, function (ev) { ev.preventDefault(); drop.classList.remove("over"); });
+  });
+  drop.addEventListener("drop", function (ev) {
+    var f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+    if (f) loadFile(f);
+  });
+
+  function loadFile(f) {
+    if (!/^image\//.test(f.type)) { setMsg("画像ファイルを入れてください", true); return; }
+    var url = URL.createObjectURL(f);
+    var im = new Image();
+    im.onload = function () {
+      srcImg = im;
+      setMsg("");
+      process();
+      updateOut();
+    };
+    im.onerror = function () { setMsg("画像を読み込めませんでした", true); };
+    im.src = url;
+  }
+
+  function setMsg(t, ng) {
+    msgEl.textContent = t || "";
+    msgEl.className = "msg" + (t ? (ng ? " ng" : " ok") : "");
+  }
+
+  document.getElementById("ori").onchange = process;
+  document.getElementById("lv").onchange = process;
+
+  // ---- 変換 ----
+  function process() {
+    if (!srcImg) return;
+    var oriSel = document.getElementById("ori").value;
+    var ori = oriSel;
+    if (ori === "auto") ori = (srcImg.width >= srcImg.height) ? "landscape" : "portrait";
+    var tw = A4[ori][0], th = A4[ori][1];
+
+    // 1) 元画像を、絵を伸ばさずに白で余白を足してA4比率にする
+    var w = srcImg.width, h = srcImg.height;
+    var ta = tw / th, ca = w / h, nw, nh;
+    if (ca > ta) { nw = w; nh = Math.round(w / ta); }
+    else { nw = Math.round(h * ta); nh = h; }
+    var pad = document.createElement("canvas");
+    pad.width = nw; pad.height = nh;
+    var pc = pad.getContext("2d");
+    pc.fillStyle = "#fff"; pc.fillRect(0, 0, nw, nh);
+    pc.drawImage(srcImg, Math.floor((nw - w) / 2), Math.floor((nh - h) / 2));
+
+    // 2) A4の画素数へ
+    var cv = document.createElement("canvas");
+    cv.width = tw; cv.height = th;
+    var cx = cv.getContext("2d");
+    cx.imageSmoothingEnabled = true;
+    cx.imageSmoothingQuality = "high";
+    cx.fillStyle = "#fff"; cx.fillRect(0, 0, tw, th);
+    cx.drawImage(pad, 0, 0, tw, th);
+
+    // 3) グレースケール＋コントラスト
+    var lv = document.getElementById("lv").value;
+    var lo = 105, hi = 205;
+    if (lv === "strong") { lo = 140; hi = 190; }
+    if (lv === "soft") { lo = 70; hi = 225; }
+    var id = cx.getImageData(0, 0, tw, th), d = id.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var g = (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114);
+      if (d[i + 3] < 128) g = 255;              // 透明は白に
+      var v = g < lo ? 0 : (g > hi ? 255 : g);
+      d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
+    }
+    cx.putImageData(id, 0, 0);
+    outCanvas = cv;
+
+    // プレビュー
+    var small = document.createElement("canvas");
+    var pw = 420, ph = Math.round(th * pw / tw);
+    small.width = pw; small.height = ph;
+    small.getContext("2d").drawImage(cv, 0, 0, pw, ph);
+    prevEl.innerHTML = "";
+    var f1 = document.createElement("figure");
+    var i1 = document.createElement("img"); i1.src = srcImg.src;
+    var c1 = document.createElement("figcaption");
+    c1.textContent = "元の画像 " + w + "×" + h;
+    f1.appendChild(i1); f1.appendChild(c1);
+    var f2 = document.createElement("figure");
+    var i2 = document.createElement("img"); i2.src = small.toDataURL();
+    var c2 = document.createElement("figcaption");
+    c2.textContent = "書き出し後 " + tw + "×" + th + "(300dpi)";
+    f2.appendChild(i2); f2.appendChild(c2);
+    prevEl.appendChild(f1); prevEl.appendChild(f2);
+
+    if (Math.min(w, h) < 1000) {
+      setMsg("元の画像が小さめです(" + w + "×" + h + ")。印刷すると線がぼやけることがあります", true);
+    }
+  }
+
+  // ---- PNGに300dpiの情報(pHYs)を埋める ----
+  var crcTable = null;
+  function crc32(buf, start, end) {
+    if (!crcTable) {
+      crcTable = new Uint32Array(256);
+      for (var n = 0; n < 256; n++) {
+        var c = n;
+        for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        crcTable[n] = c >>> 0;
+      }
+    }
+    var crc = 0xFFFFFFFF;
+    for (var i = start; i < end; i++) crc = (crc >>> 8) ^ crcTable[(crc ^ buf[i]) & 0xFF];
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function withDpi(bytes) {
+    // IHDR(先頭8+25バイト)の直後に pHYs チャンクを差し込む
+    var head = 8 + 25;
+    if (bytes.length < head) return bytes;
+    var chunk = new Uint8Array(21);
+    var dv = new DataView(chunk.buffer);
+    dv.setUint32(0, 9);                       // length
+    chunk[4] = 0x70; chunk[5] = 0x48; chunk[6] = 0x59; chunk[7] = 0x73; // "pHYs"
+    dv.setUint32(8, DPM); dv.setUint32(12, DPM);
+    chunk[16] = 1;                            // 単位=メートル
+    dv.setUint32(17, crc32(chunk, 4, 17));
+    var out = new Uint8Array(bytes.length + chunk.length);
+    out.set(bytes.subarray(0, head), 0);
+    out.set(chunk, head);
+    out.set(bytes.subarray(head), head + chunk.length);
+    return out;
+  }
+
+  // ---- 白黒(グレースケール)PNGを自前で作る。色情報を持たないぶん軽い ----
+  function u32(v) { var a = new Uint8Array(4); new DataView(a.buffer).setUint32(0, v >>> 0); return a; }
+  function chunk(type, data) {
+    var t = new Uint8Array(4);
+    for (var i = 0; i < 4; i++) t[i] = type.charCodeAt(i);
+    var body = new Uint8Array(4 + data.length);
+    body.set(t, 0); body.set(data, 4);
+    var out = new Uint8Array(12 + data.length);
+    out.set(u32(data.length), 0);
+    out.set(body, 4);
+    out.set(u32(crc32(body, 0, body.length)), 8 + data.length);
+    return out;
+  }
+  function concat(arrs) {
+    var n = 0; arrs.forEach(function (a) { n += a.length; });
+    var out = new Uint8Array(n), o = 0;
+    arrs.forEach(function (a) { out.set(a, o); o += a.length; });
+    return out;
+  }
+  function grayRaw(cv) {
+    var w = cv.width, h = cv.height;
+    var d = cv.getContext("2d").getImageData(0, 0, w, h).data;
+    var raw = new Uint8Array((w + 1) * h);
+    var o = 0;
+    for (var y = 0; y < h; y++) {
+      raw[o++] = 1; // Subフィルタ。白が続くところが0になって圧縮が効く
+      var base = y * w * 4, prev = 0;
+      for (var x = 0; x < w; x++) {
+        var v = d[base + x * 4];
+        raw[o++] = (v - prev) & 0xFF;
+        prev = v;
+      }
+    }
+    return raw;
+  }
+  async function encodeGrayPNG(cv) {
+    if (typeof CompressionStream === "undefined") return null;
+    var raw = grayRaw(cv);
+    var cs = new CompressionStream("deflate");
+    var wr = cs.writable.getWriter();
+    wr.write(raw); wr.close();
+    var comp = new Uint8Array(await new Response(cs.readable).arrayBuffer());
+    var ihdr = new Uint8Array(13), dv = new DataView(ihdr.buffer);
+    dv.setUint32(0, cv.width); dv.setUint32(4, cv.height);
+    ihdr[8] = 8;   // bit depth
+    ihdr[9] = 0;   // color type 0 = グレースケール
+    var phys = new Uint8Array(9), pv = new DataView(phys.buffer);
+    pv.setUint32(0, DPM); pv.setUint32(4, DPM); phys[8] = 1;
+    return concat([
+      new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]),
+      chunk("IHDR", ihdr), chunk("pHYs", phys),
+      chunk("IDAT", comp), chunk("IEND", new Uint8Array(0))
+    ]);
+  }
+
+  function save(bytes, name) {
+    var b = new Blob([bytes], { type: "image/png" });
+    var url = URL.createObjectURL(b);
+    var a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 20000);
+    setMsg(name + " を書き出しました(" + Math.round(bytes.length / 1024) + " KB)。GitHubの images フォルダに上げてください");
+    goBtn.disabled = false;
+  }
+
+  goBtn.onclick = function () {
+    if (!outCanvas) return;
+    var name = outName();
+    if (!name) return;
+    goBtn.disabled = true;
+    setMsg("書き出しています…");
+    encodeGrayPNG(outCanvas).then(function (bytes) {
+      if (bytes) { save(bytes, name); return; }
+      // 古いブラウザ向けの控え
+      outCanvas.toBlob(function (blob) {
+        blob.arrayBuffer().then(function (ab) { save(withDpi(new Uint8Array(ab)), name); });
+      }, "image/png");
+    }).catch(function () {
+      outCanvas.toBlob(function (blob) {
+        blob.arrayBuffer().then(function (ab) { save(withDpi(new Uint8Array(ab)), name); });
+      }, "image/png");
+    });
+  };
+
+  document.getElementById("reset").onclick = function () {
+    selected = null; srcImg = null; outCanvas = null;
+    qEl.value = ""; manualEl.value = ""; fileEl.value = "";
+    prevEl.innerHTML = ""; setMsg("");
+    renderList(); updateOut();
+  };
+
+  renderList();
+  updateOut();
+})();
+</script>
+</body>
+</html>
