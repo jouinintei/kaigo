@@ -132,6 +132,7 @@ export async function onRequest(context) {
     '<link rel="icon" href="/favicon.ico" sizes="48x48">' +
     '<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">' +
     '<link rel="apple-touch-icon" href="/apple-touch-icon.png">' +
+    '<script src="/analytics.js" defer></' + 'script>' +
     "<style>" +
     ":root{--bg:#faf6ef;--card:#fff;--ink:#3a3a3a;--accent:#e8833a;--line:#e5ddd0}" +
     "*{box-sizing:border-box;margin:0;padding:0}" +
