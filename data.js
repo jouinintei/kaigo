@@ -529,4 +529,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "鶴の折り紙", diff: "初級", file: "tsuru_origami_sho.png", added: "2026-08" },
   { season: "夏", genre: "風物詩", title: "夏の風物詩", diff: "中級", file: "up_1786433365544_1.png", added: "2026-08" },
   { kind: "カレンダー", year: 2026, month: 9, season: "通年", title: "9月カレンダー", file: "up_1786434439732_1.png", added: "2026-08" },
+  { season: "秋", genre: "風物詩", title: "秋のいろいろ", diff: "初級", file: "up_1786434983765_1.png", added: "2026-08" },
 ];
