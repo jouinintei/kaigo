@@ -765,11 +765,29 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const d = new Date();
     return (d.getMonth() + 1) + "/" + d.getDate();
   }
+ const _saveQueue = [];
+  let _saveTimer = null;
+  function logSave(file) {
+    _saveQueue.push(file);
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(() => {
+      const files = _saveQueue.splice(0);
+      try {
+        fetch("api/log-save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ files: files }),
+          keepalive: true
+        }).catch(() => {});
+      } catch (e) {}
+    }, 2000);
+  }
   function mark(file, kind) {
     const h = loadHist();
     if (!h[file]) h[file] = {};
     h[file][kind] = today();
     saveJSON(STORE_KEY, h);
+    if (kind === "save") logSave(file);
   }
   function unmark(file, kind) {
     const h = loadHist();
