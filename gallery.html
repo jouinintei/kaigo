@@ -1766,6 +1766,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
   const qp = new URLSearchParams(location.search).get("page");
   if (qp === "noutore" || qp === "calendar" || qp === "fav") page = qp;
+  const qs0 = new URLSearchParams(location.search);
+  if (qs0.get("season")) selSeason = qs0.get("season");
+  if (qs0.get("genre")) selGenre = qs0.get("genre");
   const basePage = page;
   window.addEventListener("popstate", e => {
     const st = e.state || { page: basePage, d: 0 };
