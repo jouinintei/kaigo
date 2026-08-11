@@ -34,7 +34,17 @@ export async function onRequest(context) {
     origin + "/",
     origin + "/gallery.html",
     origin + "/gallery.html?page=noutore",
-    origin + "/gallery.html?page=calendar"
+    origin + "/gallery.html?page=calendar",
+    origin + "/nurie-haru.html",
+    origin + "/nurie-natsu.html",
+    origin + "/nurie-aki.html",
+    origin + "/nurie-fuyu.html",
+    origin + "/nurie-doubutsu.html",
+    origin + "/keirou-nurie.html",
+    origin + "/noutore-print.html",
+    origin + "/nurie-calendar.html",
+    origin + "/terms.html",
+    origin + "/privacy.html"
   ];
   list.filter(e => !e.member).forEach(e => {
     urls.push(origin + "/works/" + encodeURIComponent(e.file.replace(/\.[^.]+$/, "")));
