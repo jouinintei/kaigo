@@ -537,5 +537,5 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 9, season: "通年", title: "9月カレンダー6", file: "up_1786697020286_1.png", added: "2026-08" },
   { season: "秋", genre: "食べ物", title: "さんま定食", diff: "中級", file: "up_1786697869414_1.png", added: "2026-08" },
   { kind: "カレンダー", year: 2026, month: 9, season: "通年", title: "9月カレンダー7", file: "up_1786698468255_2.png", added: "2026-08" },
-  { season: "秋", genre: "食べ物", title: "秋っぽい和菓子", diff: "初級", file: "up_1786698965869_1.png", added: "2026-08" },
+  { season: "秋", genre: "食べ物", title: "和菓子", diff: "初級", file: "up_1786698965869_1.png", added: "2026-08" },
 ];
