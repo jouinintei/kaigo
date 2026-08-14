@@ -765,7 +765,17 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const d = new Date();
     return (d.getMonth() + 1) + "/" + d.getDate();
   }
- const _saveQueue = [];
+  const DID_KEY = "rekupuri_did";
+  function deviceId() {
+    let id = "";
+    try { id = localStorage.getItem(DID_KEY) || ""; } catch (e) {}
+    if (!id) {
+      id = Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 4);
+      try { localStorage.setItem(DID_KEY, id); } catch (e) {}
+    }
+    return id;
+  }
+  const _saveQueue = [];
   let _saveTimer = null;
   function logSave(file) {
     _saveQueue.push(file);
@@ -776,7 +786,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         fetch("api/log-save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ files: files }),
+          body: JSON.stringify({ files: files, did: deviceId() }),
           keepalive: true
         }).catch(() => {});
       } catch (e) {}
