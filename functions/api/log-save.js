@@ -4,6 +4,7 @@
 
 const FILE_PATH = "data/save-log.json";
 const KEEP_DAYS = 120;
+const KEEP_EVENTS = 300;
 
 function cleanRepo(r) {
   return String(r || "")
@@ -23,15 +24,16 @@ function ghHeaders(env) {
 async function ghRead(env) {
   const repo = cleanRepo(env.MEMBER_REPO);
   const r = await fetch("https://api.github.com/repos/" + repo + "/contents/" + FILE_PATH, { headers: ghHeaders(env) });
-  if (r.status === 404) return { sha: null, data: { totals: {}, days: {} } };
+  if (r.status === 404) return { sha: null, data: { totals: {}, days: {}, events: [] } };
   if (!r.ok) throw new Error("github read " + r.status);
   const j = await r.json();
-  let data = { totals: {}, days: {} };
+  let data = { totals: {}, days: {}, events: [] };
   try {
     data = JSON.parse(decodeURIComponent(escape(atob(String(j.content || "").replace(/\n/g, "")))));
   } catch (e) {}
   if (!data.totals) data.totals = {};
   if (!data.days) data.days = {};
+  if (!Array.isArray(data.events)) data.events = [];
   return { sha: j.sha, data: data };
 }
 
@@ -83,7 +85,8 @@ export async function onRequest({ request, env }) {
   files = files.filter(f => typeof f === "string" && f.length > 0 && f.length < 200).slice(0, 60);
   if (!files.length) return json({ ok: false });
 
-  const day = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  const now = Date.now();
+  const day = new Date(now + 9 * 3600 * 1000).toISOString().slice(0, 10);
 
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -93,7 +96,8 @@ export async function onRequest({ request, env }) {
       files.forEach(f => {
         d.totals[f] = (d.totals[f] || 0) + 1;
         d.days[day][f] = (d.days[day][f] || 0) + 1;
-      });
+        d.events.push({ t: now, f: f });
+      if (d.events.length > KEEP_EVENTS) d.events = d.events.slice(d.events.length - KEEP_EVENTS);
       const keys = Object.keys(d.days).sort();
       while (keys.length > KEEP_DAYS) delete d.days[keys.shift()];
       if (await ghWrite(env, cur.sha, d)) return json({ ok: true });
