@@ -98,6 +98,7 @@
   .ev .meta{font-size:11px;color:var(--ink-3);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
   .tag{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;color:var(--ink-2)}
   .tag.kind{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+  .tag.dev{margin-left:auto;font-variant-numeric:tabular-nums;letter-spacing:.03em;color:var(--ink-3)}
   @media (prefers-color-scheme: dark){.tag.kind{color:#ffb87a}}
   @keyframes flash{from{background:var(--accent-soft)}to{background:transparent}}
   .ev.fresh{animation:flash 2.4s ease-out}
@@ -122,6 +123,7 @@
   <input type="password" id="keyInput" placeholder="STATS_KEY" autocomplete="off">
   <button class="btn" id="goBtn" style="width:100%">開く</button>
   <p class="err" id="gateErr"></p>
+  <button class="btn-ghost" id="forceBtn" style="display:none">確認せずに開く</button>
 </div>
 
 <div class="wrap" id="app" style="display:none">
@@ -160,6 +162,10 @@
     <div class="chart" id="chart"><div class="tip" id="tip"></div></div>
     <div id="dayTable"></div>
   </section>
+
+  <p class="sub" style="line-height:1.8;font-size:12px;margin:-8px 0 26px">
+    ※「端末」はブラウザごとに自動で付く符号です。誰かは特定できません。同じ人でもスマホとパソコンでは別の端末として数えます。ブラウザの履歴を消すと新しい符号になります。
+  </p>
 
   <p class="sub" style="text-align:center">
     <button class="btn-ghost" id="logoutBtn">キーを消す</button>
@@ -285,6 +291,7 @@
     var days = d.days || {};
     var events = Array.isArray(d.events) ? d.events.slice() : [];
     var totals = d.totals || {};
+    var devs = d.devs || {};
 
     // 日別合計
     var dayTotal = {};
@@ -294,10 +301,10 @@
       dayTotal[k] = s;
     });
 
-    drawTiles(dayTotal, totals);
+    drawTiles(dayTotal, totals, devs);
     drawChart(dayTotal);
-    drawTable(dayTotal);
-    drawFeed(events);
+    drawTable(dayTotal, devs);
+    drawFeed(events, devs);
 
     // 画像フォルダが未判定なら、実際に保存されたファイルで探して描き直す
     if (imgDir === null && events.length){
@@ -305,7 +312,7 @@
       for (var i = events.length - 1; i >= 0 && samples.length < 5; i--){
         if (samples.indexOf(events[i].f) < 0) samples.push(events[i].f);
       }
-      detectImgDir(samples, function(){ drawFeed(events); });
+      detectImgDir(samples, function(){ drawFeed(events, devs); });
     }
 
     var ks = Object.keys(dayTotal).sort();
@@ -313,7 +320,7 @@
       ks.length ? fmtMD(ks[0]) + " 〜 " + fmtMD(ks[ks.length-1]) + " の記録" : "";
   }
 
-  function drawTiles(dayTotal, totals){
+  function drawTiles(dayTotal, totals, devs){
     var t = todayKey(), y = shiftKey(t,-1);
     var week = 0;
     for (var i=0;i<7;i++) week += dayTotal[shiftKey(t,-i)] || 0;
@@ -322,12 +329,19 @@
     var kinds = 0;
     Object.keys(totals).forEach(function(){ kinds++; });
 
+    var weekDev = {};
+    for (var j=0;j<7;j++){
+      var o = devs[shiftKey(t,-j)] || {};
+      Object.keys(o).forEach(function(id){ weekDev[id] = 1; });
+    }
+
     var rows = [
       ["今日の保存", dayTotal[t] || 0, "件"],
+      ["今日の端末", Object.keys(devs[t] || {}).length, "台"],
       ["昨日", dayTotal[y] || 0, "件"],
       ["この7日間", week, "件"],
-      ["累計", all, "件"],
-      ["保存された種類", kinds, "作品"]
+      ["7日間の端末", Object.keys(weekDev).length, "台"],
+      ["累計", all, "件"]
     ];
     document.getElementById("tiles").innerHTML = rows.map(function(r){
       return '<div class="tile"><div class="label">'+r[0]+'</div><div class="value">'+
@@ -421,16 +435,25 @@
     return Math.ceil(m / p) * p;
   }
 
-  function drawTable(dayTotal){
+  function drawTable(dayTotal, devs){
     var ks = Object.keys(dayTotal).sort().reverse();
-    var html = '<table><thead><tr><th>日付</th><th style="text-align:right">保存件数</th></tr></thead><tbody>';
+    var html = '<table><thead><tr><th>日付</th><th style="text-align:right">保存件数</th>'+
+               '<th style="text-align:right">端末</th><th>内訳</th></tr></thead><tbody>';
     ks.forEach(function(k){
-      html += '<tr><td>'+fmtMD(k)+'</td><td class="num">'+dayTotal[k]+'</td></tr>';
+      var o = devs[k] || {};
+      var ids = Object.keys(o).sort(function(a,b){ return o[b]-o[a]; });
+      var breakdown = ids.length
+        ? ids.map(function(id){ return shortId(id)+' '+o[id]; }).join("　")
+        : '<span style="color:var(--ink-3)">—</span>';
+      html += '<tr><td>'+fmtMD(k)+'</td><td class="num">'+dayTotal[k]+'</td>'+
+              '<td class="num">'+(ids.length || "—")+'</td><td style="font-size:12px">'+breakdown+'</td></tr>';
     });
     document.getElementById("dayTable").innerHTML = html + '</tbody></table>';
   }
 
-  function drawFeed(events){
+  function shortId(id){ return "端末" + String(id).slice(0,4); }
+
+  function drawFeed(events, devs){
     var wrap = document.getElementById("feedWrap");
     if (!events.length){
       wrap.innerHTML = '<p class="empty">まだ1件も記録がありません。<br>'+
@@ -444,7 +467,14 @@
     var html = "", curDay = "";
     events.forEach(function(e){
       var k = dayKey(e.t);
-      if (k !== curDay){ curDay = k; html += '<div class="daysep">'+labelDay(k)+'</div>'; }
+      if (k !== curDay){
+        curDay = k;
+        var o = (devs || {})[k] || {};
+        var n = Object.keys(o).length;
+        var tot = 0; Object.keys(o).forEach(function(id){ tot += o[id]; });
+        var summary = n ? '　<span style="color:var(--ink-2)">'+n+'台から '+tot+'件</span>' : "";
+        html += '<div class="daysep">'+labelDay(k)+summary+'</div>';
+      }
       var it = info(e.f);
       var fresh = (!firstDraw && newestBefore !== null && e.t > newestBefore) ? " fresh" : "";
       var ttl = it ? it.title : e.f;
@@ -453,6 +483,7 @@
       if (it && it.season) tags.push('<span class="tag">'+it.season+'</span>');
       if (it && it.genre)  tags.push('<span class="tag">'+it.genre+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
+      if (e.d)             tags.push('<span class="tag dev">'+esc(shortId(e.d))+'</span>');
       var thumb = (imgDir === null)
         ? '<div class="thumb none">🖼</div>'
         : '<img class="thumb" src="'+imgDir+encodeURIComponent(e.f)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
@@ -490,12 +521,25 @@
 
   document.getElementById("goBtn").addEventListener("click", function(){
     var v = document.getElementById("keyInput").value.trim();
-    if (!v){ document.getElementById("gateErr").textContent = "キーを入力してください"; return; }
-    // 先に1回だけ確かめる
-    fetch("api/log-save?key=" + encodeURIComponent(v), {cache:"no-store"}).then(function(r){
-      if (r.ok) start(v);
-      else document.getElementById("gateErr").textContent = "キーが違うようです";
-    }).catch(function(){ document.getElementById("gateErr").textContent = "通信に失敗しました"; });
+    var err = document.getElementById("gateErr");
+    if (!v){ err.textContent = "キーを入力してください"; return; }
+    err.textContent = "確認中…";
+    // 先に1回だけ確かめる（キャッシュを避けるため毎回ちがうURLで問い合わせる）
+    fetch("api/log-save?key=" + encodeURIComponent(v) + "&_=" + Date.now(), {cache:"no-store"})
+      .then(function(r){
+        if (r.ok) { start(v); return; }
+        if (r.status === 404) err.innerHTML = 'キーが違うようです（404）<br><span style="color:var(--ink-3)">EdgeOneの環境変数 STATS_KEY と同じ文字列か確認してください</span>';
+        else err.innerHTML = 'サーバー側でエラーが出ています（' + r.status + '）<br><span style="color:var(--ink-3)">キーは合っているかもしれません。下の「確認せずに開く」をお試しください</span>';
+        document.getElementById("forceBtn").style.display = "";
+      })
+      .catch(function(){
+        err.textContent = "通信に失敗しました";
+        document.getElementById("forceBtn").style.display = "";
+      });
+  });
+  document.getElementById("forceBtn").addEventListener("click", function(){
+    var v = document.getElementById("keyInput").value.trim();
+    if (v) start(v);
   });
   document.getElementById("keyInput").addEventListener("keydown", function(e){
     if (e.key === "Enter") document.getElementById("goBtn").click();
@@ -516,7 +560,10 @@
     if (!document.hidden && key) { load(true); schedule(); }
   });
 
-  var saved = localStorage.getItem(KEY_STORE);
+  // URLに ?key=... が付いていればそれで開く
+  var urlKey = "";
+  try { urlKey = new URLSearchParams(location.search).get("key") || ""; } catch(e){}
+  var saved = urlKey || localStorage.getItem(KEY_STORE);
   if (saved) start(saved);
   else document.getElementById("keyInput").focus();
 })();
