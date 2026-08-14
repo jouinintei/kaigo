@@ -539,4 +539,5 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 9, season: "通年", title: "9月カレンダー7", file: "up_1786698468255_2.png", added: "2026-08" },
   { season: "秋", genre: "食べ物", title: "和菓子", diff: "初級", file: "up_1786698965869_1.png", added: "2026-08" },
   { season: "夏", genre: "風物詩", title: "花火", diff: "上級", file: "up_1786699872178_2.png", added: "2026-08" },
+  { season: "夏", genre: "風物詩", title: "送り火", diff: "上級", file: "up_1786709449497_1.png", added: "2026-08" },
 ];
