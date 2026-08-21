@@ -545,4 +545,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風景", title: "忍野八海", diff: "上級", file: "up_1787281255003_2.png", added: "2026-08" },
   { season: "通年", genre: "その他", title: "蝶と花の曼荼羅", diff: "初級", file: "up_1787281927634_3.png", added: "2026-08" },
   { season: "通年", title: "動物曼荼羅", diff: "初級", file: "up_1787282123201_4.png", added: "2026-08" },
+  { season: "通年", genre: "動物", title: "動物曼荼羅", diff: "上級", file: "up_1787282410347_5.png", added: "2026-08" },
 ];
