@@ -543,4 +543,5 @@ window.NURIE_LIST = [
   { season: "夏", genre: "風物詩", title: "送り火", diff: "初級", file: "up_1786710655144_2.png", added: "2026-08" },
   { season: "通年", genre: "動物", title: "窓際の猫", diff: "中級", file: "up_1787280884689_1.png", added: "2026-08" },
   { season: "通年", genre: "風景", title: "忍野八海", diff: "上級", file: "up_1787281255003_2.png", added: "2026-08" },
+  { season: "通年", genre: "その他", title: "蝶と花の曼荼羅", diff: "初級", file: "up_1787281927634_3.png", added: "2026-08" },
 ];
