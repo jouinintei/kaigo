@@ -549,4 +549,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風景", title: "東京駅", diff: "中級", file: "up_1787282917259_6.png", added: "2026-08" },
   { season: "通年", genre: "風景", title: "橋の上", diff: "上級", file: "up_1787283008008_7.png", added: "2026-08" },
   { season: "通年", genre: "風景", title: "昭和の部屋", diff: "中級", file: "up_1787305433755_8.png", added: "2026-08" },
+  { season: "通年", genre: "風景", title: "キャンプ", diff: "上級", file: "up_1787323089737_9.png", added: "2026-08" },
 ];
