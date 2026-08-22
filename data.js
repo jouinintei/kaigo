@@ -563,4 +563,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "食べ物", title: "カレーライス", diff: "初級", file: "up_1787372141416_20.png", added: "2026-08" },
   { season: "通年", genre: "風物詩", title: "昭和の子供の玩具", diff: "中級", file: "up_1787372326442_21.png", added: "2026-08" },
   { season: "通年", genre: "その他", title: "日本人形", diff: "中級", file: "up_1787372518698_22.png", added: "2026-08" },
+  { season: "通年", genre: "その他", title: "日本人形", diff: "初級", file: "up_1787372679417_23.png", added: "2026-08" },
 ];
