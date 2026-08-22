@@ -557,4 +557,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "昭和の物", diff: "初級", file: "up_1787370691780_14.png", added: "2026-08" },
   { season: "通年", genre: "風景", title: "昭和の街並み", diff: "上級", file: "up_1787370787866_15.png", added: "2026-08" },
   { season: "通年", genre: "風景", title: "昭和の商店街", diff: "上級", file: "up_1787371128205_16.png", added: "2026-08" },
+  { season: "通年", genre: "風物詩", title: "掛け軸", diff: "初級", file: "up_1787371221552_17.png", added: "2026-08" },
 ];
