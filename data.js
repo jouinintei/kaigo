@@ -571,4 +571,9 @@ window.NURIE_LIST = [
   { season: "夏", genre: "風景", title: "ひまわりと女性", diff: "中級", file: "up_1788526143836_4.png", added: "2026-09" },
   { season: "秋", genre: "風景", title: "紅葉と女性", diff: "上級", file: "up_1788526148082_5.png", added: "2026-09" },
   { season: "夏", genre: "その他", title: "あじさいと女性", diff: "中級", file: "up_1788526151750_6.png", added: "2026-09" },
+  { season: "通年", genre: "風景", title: "百合と女性", diff: "中級", file: "up_1788526840685_7.png", added: "2026-09" },
+  { season: "通年", genre: "風景", title: "神秘的な女性", diff: "上級", file: "up_1788526844867_8.png", added: "2026-09" },
+  { season: "通年", genre: "風景", title: "神秘的な女性", diff: "中級", file: "up_1788526848636_9.png", added: "2026-09" },
+  { season: "通年", genre: "風景", title: "猫と女性", diff: "中級", file: "up_1788526852238_10.png", added: "2026-09" },
+  { season: "通年", genre: "風景", title: "読書", diff: "上級", file: "up_1788526855312_11.png", added: "2026-09" },
 ];
