@@ -581,5 +581,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "風物詩", title: "お月見 女性", diff: "中級", file: "up_1788527661836_14.png", added: "2026-09" },
   { season: "通年", genre: "その他", title: "大正ロマン その3", diff: "中級", file: "up_1788528030289_15.png", added: "2026-09" },
   { season: "秋", genre: "風物詩", title: "コスモスと女性", diff: "中級", file: "up_1788528061244_16.png", added: "2026-09" },
-  { kind: "カレンダー", year: 2026, month: 11, season: "通年", title: "11月カレンダー", file: "up_1789101383550_1.png", added: "2026-09" },
+  { kind: "カレンダー", year: 2026, month: 10, season: "通年", title: "10月カレンダー", file: "up_1789101383550_1.png", added: "2026-09" },
 ];
