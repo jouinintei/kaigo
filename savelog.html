@@ -175,7 +175,16 @@
   @keyframes flash{from{background:var(--accent-soft)}to{background:transparent}}
   .ev.fresh{animation:flash 2.4s ease-out}
   .empty{color:var(--ink-3);font-size:13px;padding:22px 2px;line-height:1.8}
-  #feedWrap{max-height:520px;overflow:auto}
+  #feedWrap{max-height:430px;overflow:auto}
+  #rankWrap{max-height:262px;overflow:auto}
+  .inssum{flex-basis:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-top:8px;cursor:default}
+  .inssum .tile{padding:9px 12px}
+  .inssum .tile .label{margin-bottom:3px;font-size:11px}
+  .inssum .tile .value{font-size:21px}
+  .inssum .tile .value .live{color:var(--accent)}
+  .inssum .tile.err .value{font-size:12px;color:#c0392b;font-weight:500;line-height:1.4}
+  .inssum:empty{display:none}
+  .card.closed .card-head .inssum{display:grid}
   .status{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
   .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:5px;vertical-align:1px}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
@@ -210,17 +219,15 @@
   <section class="card">
     <div class="card-head">
       <div>
-        <h2>アクセスと検索</h2>
-        <p class="note">Google アナリティクス・Search Console・Bing の数字。開いたときに取得します(約10分キャッシュ)</p>
+        <h2><span class="dot live"></span>いま保存されたもの</h2>
+        <p class="note" id="feedNote">新しい順。約30秒ごとに自動で更新します。</p>
       </div>
       <div class="tools">
-        <span class="status" id="insStatus"></span>
-        <button class="btn-ghost" id="insReloadBtn">取得し直す</button>
+        <span class="status" id="status"></span>
+        <button class="btn-ghost" id="reloadBtn">更新</button>
       </div>
     </div>
-    <div class="ins" id="insGa"><h3>Google アナリティクス <span class="src">GA4</span></h3><p class="empty">読み込み中…</p></div>
-    <div class="ins" id="insGsc"><h3>Google 検索 <span class="src">Search Console・確定分(3日前まで)</span></h3><p class="empty">読み込み中…</p></div>
-    <div class="ins" id="insBing"><h3>Bing 検索 <span class="src">Bing Webmaster Tools・直近28日</span></h3><p class="empty">読み込み中…</p></div>
+    <div id="feedWrap"><p class="empty">読み込み中…</p></div>
   </section>
 
   <section class="card">
@@ -243,6 +250,23 @@
   <section class="card">
     <div class="card-head">
       <div>
+        <h2>アクセスと検索</h2>
+        <p class="note">Google アナリティクス・Search Console・Bing の数字。開くと詳しい内訳が出ます(約10分キャッシュ)</p>
+      </div>
+      <div class="tools">
+        <span class="status" id="insStatus"></span>
+        <button class="btn-ghost" id="insReloadBtn">取得し直す</button>
+      </div>
+      <div class="inssum" id="insSummary"></div>
+    </div>
+    <div class="ins" id="insGa"><h3>Google アナリティクス <span class="src">GA4</span></h3><p class="empty">読み込み中…</p></div>
+    <div class="ins" id="insGsc"><h3>Google 検索 <span class="src">Search Console・確定分(3日前まで)</span></h3><p class="empty">読み込み中…</p></div>
+    <div class="ins" id="insBing"><h3>Bing 検索 <span class="src">Bing Webmaster Tools・直近28日</span></h3><p class="empty">読み込み中…</p></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
         <h2>リピーターの端末</h2>
         <p class="note">利用日数の多い順。2日以上＝リピーター、5日以上＝常連。右の帯は直近30日で保存があった日</p>
       </div>
@@ -251,20 +275,6 @@
       </div>
     </div>
     <div id="devWrap"><p class="empty">読み込み中…</p></div>
-  </section>
-
-  <section class="card">
-    <div class="card-head">
-      <div>
-        <h2><span class="dot live"></span>いま保存されたもの</h2>
-        <p class="note" id="feedNote">新しい順。約30秒ごとに自動で更新します。</p>
-      </div>
-      <div class="tools">
-        <span class="status" id="status"></span>
-        <button class="btn-ghost" id="reloadBtn">更新</button>
-      </div>
-    </div>
-    <div id="feedWrap"><p class="empty">読み込み中…</p></div>
   </section>
 
   <section class="card">
@@ -280,6 +290,9 @@
     <div class="chart" id="chart"><div class="tip" id="tip"></div></div>
     <div id="dayTable"></div>
   </section>
+
+
+
 
   <p class="sub" style="line-height:1.8;font-size:12px;margin:-8px 0 26px">
     ※「端末」はブラウザごとに自動で付く符号です。誰かは特定できません。同じ人でもスマホとパソコンでは別の端末として数えます。ブラウザの履歴を消すと新しい符号になります。
@@ -448,14 +461,16 @@
   function saveOpen(o){ try { localStorage.setItem(OPEN_STORE, JSON.stringify(o)); } catch(e){} }
   (function initFold(){
     var open = loadOpen();
+    var DEFAULT_OPEN = { "いま保存されたもの": true, "人気ランキング": true };
     document.querySelectorAll("#app .card").forEach(function(card){
       var head = card.querySelector(".card-head");
       var h2 = head && head.querySelector("h2");
       if (!h2) return;
       var id = h2.textContent.trim();
-      card.classList.toggle("closed", !open[id]);
+      var isOpen = (id in open) ? !!open[id] : !!DEFAULT_OPEN[id];
+      card.classList.toggle("closed", !isOpen);
       head.addEventListener("click", function(e){
-        if (e.target.closest(".tools")) return;
+        if (e.target.closest(".tools") || e.target.closest(".inssum")) return;
         var now = card.classList.toggle("closed");
         var o = loadOpen(); o[id] = !now; saveOpen(o);
       });
@@ -475,6 +490,29 @@
   /* ---------- アクセス解析 (GA4 / Search Console / Bing) ---------- */
   var insLoaded = false;
   var insForce = false;
+  var insSum = {};
+  function drawSummary(){
+    var tiles = [];
+    var push = function(label, value, unit, extra){ tiles.push('<div class="tile"><div class="label">' + label + '</div><div class="value">' + (extra || "") + value + '<span class="unit">' + (unit || "") + '</span></div></div>'); };
+    var err = function(label, msg){ tiles.push('<div class="tile err"><div class="label">' + label + '</div><div class="value">' + esc(msg) + '</div></div>'); };
+    if (insSum.ga) {
+      if (insSum.ga.error) err("Google アナリティクス", "取得できません");
+      else {
+        push("いま見ている人", insSum.ga.realtime === null ? "—" : num(insSum.ga.realtime), "人", insSum.ga.realtime > 0 ? '<span class="live">● </span>' : "");
+        push("今日の訪問者", num(insSum.ga.today), "人");
+        push("7日間の訪問者", num(insSum.ga.week), "人");
+      }
+    }
+    if (insSum.gsc) {
+      if (insSum.gsc.error) err("Google 検索", "取得できません");
+      else { push("Google クリック(28日)", num(insSum.gsc.clicks), "回"); push("Google 表示(28日)", num(insSum.gsc.imps), "回"); }
+    }
+    if (insSum.bing) {
+      if (insSum.bing.error) err("Bing 検索", "取得できません");
+      else { push("Bing クリック(28日)", num(insSum.bing.clicks), "回"); push("Bing 表示(28日)", num(insSum.bing.imps), "回"); }
+    }
+    document.getElementById("insSummary").innerHTML = tiles.join("");
+  }
   function num(n){ return Number(n || 0).toLocaleString("ja-JP"); }
   function sumLast(arr, field, n){
     var a = arr.slice(-n), s = 0;
@@ -522,6 +560,7 @@
     var box = document.getElementById("insGa");
     var head = box.querySelector("h3").outerHTML;
     var daily = d.daily || [];
+    insSum.ga = { realtime: d.realtime, today: sumLast(daily, "users", 1), week: sumLast(daily, "users", 7) };
     var html = head + miniTiles([
       ["いま見ている人", d.realtime === null ? "—" : num(d.realtime), "人", d.realtime > 0 ? '<span class="live">● </span>' : ""],
       ["今日の訪問者", num(sumLast(daily, "users", 1)), "人"],
@@ -547,6 +586,7 @@
     var head = box.querySelector("h3").outerHTML;
     var daily = d.daily || [];
     var clicks = sumLast(daily, "clicks", 28), imps = sumLast(daily, "impressions", 28);
+    insSum.gsc = { clicks: clicks, imps: imps };
     var pos = 0, pw = 0;
     daily.forEach(function(x){ pos += Number(x.position || 0) * Number(x.impressions || 0); pw += Number(x.impressions || 0); });
     var html = head + miniTiles([
@@ -570,6 +610,7 @@
     var head = box.querySelector("h3").outerHTML;
     var daily = d.daily || [];
     var clicks = sumLast(daily, "clicks", 28), imps = sumLast(daily, "impressions", 28);
+    insSum.bing = { clicks: clicks, imps: imps };
     var html = head + miniTiles([
       ["クリック(28日)", num(clicks), "回"],
       ["検索で表示(28日)", num(imps), "回"],
@@ -595,7 +636,8 @@
       return insFetch(j[0]).then(j[1]).catch(function(e){
         var box = document.getElementById(j[2]);
         box.innerHTML = box.querySelector("h3").outerHTML + insErr(e.message || e);
-      });
+        insSum[j[0]] = { error: true };
+      }).then(drawSummary);
     });
     Promise.all(jobs).then(function(){ st.textContent = "取得 " + hhmm(Date.now()); insLoaded = true; });
   }
@@ -877,7 +919,12 @@
     document.getElementById("dayTable").innerHTML = html + '</tbody></table>';
   }
 
-  function shortId(id){ return "端末" + String(id).slice(0,4); }
+  // 端末符号に名前を付ける(先頭4文字で判定)
+  var DEV_NAMES = { "jhqa": "千春会東向日", "8qmx": "自分" };
+  function shortId(id){
+    var k = String(id).slice(0,4);
+    return DEV_NAMES[k] || ("端末" + k);
+  }
 
   function drawFeed(events, devs){
     var wrap = document.getElementById("feedWrap");
