@@ -106,6 +106,22 @@
   .rk .nums b{font-size:19px;display:block}
   .rk .nums span{font-size:11px;color:var(--ink-3)}
 
+  /* --- 端末 --- */
+  .dv{display:flex;gap:12px;align-items:center;padding:9px 2px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .dv .id{font-variant-numeric:tabular-nums;font-weight:600;font-size:14px;min-width:84px}
+  .dv .badge{font-size:11px;border-radius:999px;padding:2px 9px;background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line)}
+  .dv .badge.rep{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:600}
+  .dv .badge.reg{background:var(--accent);color:#fff;border-color:transparent;font-weight:600}
+  .dv .stat{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .dv .stat b{font-size:15px;color:var(--ink)}
+  .dv .strip{display:flex;gap:2px;margin-left:auto}
+  .dv .strip i{display:block;width:9px;height:14px;border-radius:2px;background:var(--surface-2);border:1px solid var(--line)}
+  .dv .strip i.on{background:var(--accent);border-color:var(--accent)}
+  .dv .strip i.today{outline:1px dashed var(--ink-3);outline-offset:1px}
+  .tag.dev.rep{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+  @media (prefers-color-scheme: dark){.tag.dev.rep{color:#ffb87a}}
+  @media (max-width:600px){.dv .strip{margin-left:0;width:100%}}
+
   /* --- フィード --- */
   .daysep{font-size:12px;color:var(--ink-3);padding:16px 2px 8px;border-bottom:1px solid var(--line);letter-spacing:.05em}
   .daysep:first-child{padding-top:4px}
@@ -170,6 +186,19 @@
       </div>
     </div>
     <div id="rankWrap"><p class="empty">読み込み中…</p></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>リピーターの端末</h2>
+        <p class="note">利用日数の多い順。2日以上＝リピーター、5日以上＝常連。右の帯は直近30日で保存があった日</p>
+      </div>
+      <div class="tools">
+        <button class="btn-ghost" id="devMoreBtn" style="display:none">すべて表示</button>
+      </div>
+    </div>
+    <div id="devWrap"><p class="empty">読み込み中…</p></div>
   </section>
 
   <section class="card">
@@ -341,9 +370,11 @@
     drawTiles(dayTotal, totals, devs);
     drawChart(dayTotal);
     drawTable(dayTotal, devs);
+    devStats = buildDevStats(devs);
     drawFeed(events, devs);
     lastData = d;
     drawRank(d);
+    drawDevices();
 
     // 画像フォルダが未判定なら、実際に保存されたファイルで探して描き直す
     if (imgDir === null && events.length){
@@ -430,6 +461,78 @@
     rankPeriod = Number(b.dataset.p);
     this.querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x === b); });
     drawRank(lastData);
+  });
+
+  /* ---------- 端末ごとの利用状況 ---------- */
+  var devStats = {};
+  var devShowAll = false;
+  function buildDevStats(devs){
+    var st = {};
+    Object.keys(devs || {}).forEach(function(k){
+      var o = devs[k] || {};
+      Object.keys(o).forEach(function(id){
+        if (!st[id]) st[id] = { days: {}, total: 0, first: k, last: k };
+        st[id].days[k] = o[id];
+        st[id].total += o[id];
+        if (k < st[id].first) st[id].first = k;
+        if (k > st[id].last) st[id].last = k;
+      });
+    });
+    Object.keys(st).forEach(function(id){ st[id].nDays = Object.keys(st[id].days).length; });
+    return st;
+  }
+  function devLevel(id){
+    var s = devStats[id];
+    if (!s) return "";
+    if (s.nDays >= 5) return "reg";
+    if (s.nDays >= 2) return "rep";
+    return "";
+  }
+  function drawDevices(){
+    var wrap = document.getElementById("devWrap");
+    var moreBtn = document.getElementById("devMoreBtn");
+    var ids = Object.keys(devStats).sort(function(a, b){
+      return (devStats[b].nDays - devStats[a].nDays) || (devStats[b].last > devStats[a].last ? 1 : devStats[b].last < devStats[a].last ? -1 : 0) || (devStats[b].total - devStats[a].total);
+    });
+    if (!ids.length){
+      wrap.innerHTML = '<p class="empty">まだ端末の記録がありません</p>';
+      moreBtn.style.display = "none";
+      return;
+    }
+    var t = todayKey();
+    var N = 30;
+    var keys = [];
+    for (var i = N - 1; i >= 0; i--) keys.push(shiftKey(t, -i));
+    var LIMIT = 15;
+    var shown = devShowAll ? ids : ids.slice(0, LIMIT);
+    moreBtn.style.display = ids.length > LIMIT ? "" : "none";
+    moreBtn.textContent = devShowAll ? "上位" + LIMIT + "件だけにする" : "すべて表示（" + ids.length + "台）";
+    var html = "";
+    shown.forEach(function(id){
+      var s = devStats[id];
+      var lv = devLevel(id);
+      var badge = lv === "reg" ? '<span class="badge reg">常連</span>'
+                : lv === "rep" ? '<span class="badge rep">リピーター</span>'
+                : '<span class="badge">1回のみ</span>';
+      var lastLbl = s.last === t ? "今日" : s.last === shiftKey(t, -1) ? "昨日" : fmtMD(s.last);
+      var strip = keys.map(function(k){
+        var on = s.days[k] ? " on" : "";
+        var td = k === t ? " today" : "";
+        return '<i class="' + on + td + '" title="' + fmtMD(k) + (s.days[k] ? " " + s.days[k] + "件" : "") + '"></i>';
+      }).join("");
+      html += '<div class="dv">' +
+        '<span class="id">' + esc(shortId(id)) + '</span>' + badge +
+        '<span class="stat"><b>' + s.nDays + '</b>日利用</span>' +
+        '<span class="stat"><b>' + s.total + '</b>件</span>' +
+        '<span class="stat">初回 ' + fmtMD(s.first) + '　最終 ' + lastLbl + '</span>' +
+        '<span class="strip">' + strip + '</span>' +
+      '</div>';
+    });
+    wrap.innerHTML = html;
+  }
+  document.getElementById("devMoreBtn").addEventListener("click", function(){
+    devShowAll = !devShowAll;
+    drawDevices();
   });
 
   function drawTiles(dayTotal, totals, devs){
@@ -595,7 +698,12 @@
       if (it && it.season) tags.push('<span class="tag">'+it.season+'</span>');
       if (it && it.genre)  tags.push('<span class="tag">'+it.genre+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
-      if (e.d)             tags.push('<span class="tag dev">'+esc(shortId(e.d))+'</span>');
+      if (e.d){
+        var lv = devLevel(e.d);
+        var ds = devStats[e.d];
+        tags.push('<span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(e.d)) +
+          (lv ? (lv === "reg" ? " ★常連 " : " リピーター ") + ds.nDays + "日利用" : "") + '</span>');
+      }
       var thumb = (imgDir === null)
         ? '<div class="thumb none">🖼</div>'
         : '<img class="thumb" src="'+imgDir+encodeURIComponent(e.f)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
