@@ -1,8 +1,8 @@
 // functions/api/insights.js
-// 保存ログ(savelog.html)向けに、Google アナリティクス(GA4)・Search Console・Cloudflare Web Analytics の
+// 保存ログ(savelog.html)向けに、Google アナリティクス(GA4)・Search Console・Bing Webmaster Tools の
 // 数字をまとめて返す。閲覧には STATS_KEY が必要(log-save と同じ)。
 //
-// 使い方: GET /api/insights?key=STATS_KEY&src=ga|gsc|cf|bing
+// 使い方: GET /api/insights?key=STATS_KEY&src=ga|gsc|bing
 //
 // 環境変数(EdgeOne Pages の設定画面で登録):
 //   STATS_KEY        … 閲覧キー(既存)
@@ -11,8 +11,6 @@
 //                      ※値が1000文字までの環境では GOOGLE_SA_EMAIL + GOOGLE_SA_KEY_1 / GOOGLE_SA_KEY_2 に分ける
 //   GA_PROPERTY_ID   … GA4 のプロパティID(数字だけ。例: 123456789)
 //   GSC_SITE         … Search Console のプロパティ(例: sc-domain:rekupuri.com  または  https://rekupuri.com/)
-//   CF_API_TOKEN     … Cloudflare API トークン(既存。Account Analytics: Read が必要)
-//   CF_ACCOUNT_ID    … Cloudflare アカウントID(既存)
 //   BING_API_KEY     … Bing Webmaster Tools の設定 → APIアクセス で発行したAPIキー
 //   BING_SITE        … (省略可) Bing に登録したサイトURL。既定は https://rekupuri.com/
 
@@ -25,9 +23,8 @@ export async function onRequest({ request, env }) {
   try {
     if (src === "ga")  return json(await fetchGA(env));
     if (src === "gsc") return json(await fetchGSC(env));
-    if (src === "cf")  return json(await fetchCF(env));
     if (src === "bing") return json(await fetchBing(env));
-    return json({ error: "src は ga / gsc / cf のどれかを指定してください" }, 400);
+    return json({ error: "src は ga / gsc / bing のどれかを指定してください" }, 400);
   } catch (e) {
     return json({ error: String(e && e.message || e) }, 200);
   }
@@ -194,57 +191,37 @@ async function fetchGSC(env) {
   };
 }
 
-/* ---------- Cloudflare Web Analytics ---------- */
-// 以前から動いている stats.js と同じ取り方(datetime で絞って時間別に取得)を使い、日本時間の日別にまとめる
-async function fetchCF(env) {
-  if (!env.CF_API_TOKEN || !env.CF_ACCOUNT_ID) throw new Error("CF_API_TOKEN / CF_ACCOUNT_ID がありません");
-  const DAYS = 28;
-  const nowJst = new Date(Date.now() + 9 * 3600 * 1000);
-  const todayUtc0 = Date.UTC(nowJst.getUTCFullYear(), nowJst.getUTCMonth(), nowJst.getUTCDate()) - 9 * 3600 * 1000; // JST 今日0時
-  const startMs = todayUtc0 - (DAYS - 1) * 86400 * 1000;
-  const endMs = todayUtc0 + 86400 * 1000;
-  const s = new Date(startMs).toISOString(), e = new Date(endMs).toISOString();
-  const q = `query($t:string!,$s:Time!,$e:Time!){viewer{accounts(filter:{accountTag:$t}){
-    byHour: rumPageloadEventsAdaptiveGroups(limit:2000,filter:{datetime_geq:$s,datetime_lt:$e},orderBy:[datetimeHour_ASC]){count sum{visits} dimensions{datetimeHour}}
-  }}}`;
-  const r = await fetch("https://api.cloudflare.com/client/v4/graphql", {
-    method: "POST",
-    headers: { "Authorization": "Bearer " + env.CF_API_TOKEN, "Content-Type": "application/json" },
-    body: JSON.stringify({ query: q, variables: { t: env.CF_ACCOUNT_ID, s: s, e: e } })
-  });
-  const j = await r.json();
-  if (j.errors && j.errors.length) throw new Error(j.errors.map(x => x.message).join(" / "));
-  const acc = (((j.data || {}).viewer || {}).accounts || [])[0] || {};
-  const byDay = {};
-  for (let i = 0; i < DAYS; i++) byDay[jstKey(-(DAYS - 1 - i))] = { views: 0, visits: 0 };
-  (acc.byHour || []).forEach(x => {
-    const t = Date.parse(x.dimensions.datetimeHour);
-    if (isNaN(t)) return;
-    const k = new Date(t + 9 * 3600 * 1000).toISOString().slice(0, 10);
-    if (!byDay[k]) return;
-    byDay[k].views += x.count || 0;
-    byDay[k].visits += (x.sum && x.sum.visits) || 0;
-  });
-  return {
-    updated: Date.now(),
-    daily: Object.keys(byDay).sort().map(k => ({ date: k, views: byDay[k].views, visits: byDay[k].visits }))
-  };
-}
-
 /* ---------- Bing Webmaster Tools ---------- */
 async function fetchBing(env) {
   if (!env.BING_API_KEY) throw new Error("BING_API_KEY がありません");
-  const site = env.BING_SITE || "https://rekupuri.com/";
   const base = "https://ssl.bing.com/webmaster/api.svc/json/";
-  const get = async (method) => {
-    const r = await fetch(base + method + "?siteUrl=" + encodeURIComponent(site) + "&apikey=" + encodeURIComponent(env.BING_API_KEY), {
+  const call = async (method, siteUrl) => {
+    const r = await fetch(base + method + "?siteUrl=" + encodeURIComponent(siteUrl) + "&apikey=" + encodeURIComponent(env.BING_API_KEY), {
       headers: { "Accept": "application/json" }
     });
+    const text = await r.text();
     let j = null;
-    try { j = await r.json(); } catch (e) { j = null; }
-    if (!r.ok) throw new Error((j && (j.Message || j.ErrorCode)) ? (j.Message || ("ErrorCode " + j.ErrorCode)) : ("HTTP " + r.status));
+    try { j = JSON.parse(text); } catch (e) { j = null; }
+    if (!r.ok) {
+      const msg = (j && (j.Message || j.ErrorCode)) ? (j.Message || ("ErrorCode " + j.ErrorCode)) : text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160);
+      const err = new Error("HTTP " + r.status + (msg ? " " + msg : ""));
+      err.status = r.status;
+      throw err;
+    }
     return (j && j.d) || [];
   };
+  // Bing に登録したURLの形が分からないので、候補を順に試す(最初に通ったものを使う)
+  const candidates = [];
+  const push = u => { if (u && candidates.indexOf(u) < 0) candidates.push(u); };
+  push(env.BING_SITE);
+  ["https://rekupuri.com/", "https://rekupuri.com", "http://rekupuri.com/", "https://www.rekupuri.com/", "rekupuri.com"].forEach(push);
+  let site = null, lastErr = null, traffic = null;
+  for (const c of candidates) {
+    try { traffic = await call("GetRankAndTrafficStats", c); site = c; break; }
+    catch (e) { lastErr = e; if (e.status && e.status !== 400) break; }
+  }
+  if (!site) throw new Error((lastErr && lastErr.message) + "(siteUrl 候補: " + candidates.join(", ") + " はいずれも不可。Bing Webmaster Tools のサイト一覧のURLを BING_SITE に登録してください)");
+  const get = (method) => call(method, site);
   // "/Date(1694649600000-0000)/" 形式 → YYYY-MM-DD (UTC基準の日付をそのまま使う)
   const dkey = (v) => {
     const m = /\/Date\((-?\d+)/.exec(String(v || ""));
@@ -253,7 +230,7 @@ async function fetchBing(env) {
     return new Date(ms).toISOString().slice(0, 10);
   };
   const since = jstKey(-28);
-  const [traffic, queries, pages] = await Promise.all([get("GetRankAndTrafficStats"), get("GetQueryStats"), get("GetPageStats")]);
+  const [queries, pages] = await Promise.all([get("GetQueryStats"), get("GetPageStats")]);
 
   const daily = traffic.map(x => ({ key: dkey(x.Date), clicks: Number(x.Clicks || 0), impressions: Number(x.Impressions || 0) }))
     .filter(x => x.key).sort((a, b) => a.key < b.key ? -1 : 1).slice(-28);
@@ -278,6 +255,7 @@ async function fetchBing(env) {
   };
   return {
     updated: Date.now(),
+    site: site,
     range: { start: daily.length ? daily[0].key : since, end: daily.length ? daily[daily.length - 1].key : jstKey(0) },
     daily: daily,
     queries: agg(queries, "Query").slice(0, 20),

@@ -211,7 +211,7 @@
     <div class="card-head">
       <div>
         <h2>アクセスと検索</h2>
-        <p class="note">Google アナリティクス・Search Console・Bing・Cloudflare の数字。開いたときに取得します(約10分キャッシュ)</p>
+        <p class="note">Google アナリティクス・Search Console・Bing の数字。開いたときに取得します(約10分キャッシュ)</p>
       </div>
       <div class="tools">
         <span class="status" id="insStatus"></span>
@@ -221,7 +221,6 @@
     <div class="ins" id="insGa"><h3>Google アナリティクス <span class="src">GA4</span></h3><p class="empty">読み込み中…</p></div>
     <div class="ins" id="insGsc"><h3>Google 検索 <span class="src">Search Console・確定分(3日前まで)</span></h3><p class="empty">読み込み中…</p></div>
     <div class="ins" id="insBing"><h3>Bing 検索 <span class="src">Bing Webmaster Tools・直近28日</span></h3><p class="empty">読み込み中…</p></div>
-    <div class="ins" id="insCf"><h3>Cloudflare Web Analytics <span class="src">直近28日</span></h3><p class="empty">読み込み中…</p></div>
   </section>
 
   <section class="card">
@@ -473,7 +472,7 @@
     });
   })();
 
-  /* ---------- アクセス解析 (GA4 / Search Console / Cloudflare) ---------- */
+  /* ---------- アクセス解析 (GA4 / Search Console / Bing) ---------- */
   var insLoaded = false;
   function num(n){ return Number(n || 0).toLocaleString("ja-JP"); }
   function sumLast(arr, field, n){
@@ -583,27 +582,14 @@
       (d.pages || []).map(function(q){ var pth = String(q.key).replace(/^https?:\/\/[^\/]+/, "") || "/"; return '<tr><td class="path" title="' + esc(q.key) + '">' + esc(pth) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td></tr>'; }).join("") +
       '</tbody></table></div></div>';
     if (!daily.length) html += '<p class="sub" style="margin:8px 0 0">まだBing側にデータがありません(登録から数日かかります)</p>';
-    box.innerHTML = html;
-  }
-  function drawCF(d){
-    var box = document.getElementById("insCf");
-    var head = box.querySelector("h3").outerHTML;
-    var daily = d.daily || [];
-    var html = head + miniTiles([
-      ["今日の訪問", num(sumLast(daily, "visits", 1)), "回"],
-      ["7日間の訪問", num(sumLast(daily, "visits", 7)), "回"],
-      ["7日間のページ閲覧", num(sumLast(daily, "views", 7)), "回"],
-      ["28日間の訪問", num(sumLast(daily, "visits", 28)), "回"],
-      ["28日間のページ閲覧", num(sumLast(daily, "views", 28)), "回"]
-    ]);
-    html += spark(daily, "visits", "date");
+    if (d.site) html += '<p class="sub" style="margin:8px 0 0">Bing のサイトURL: ' + esc(d.site) + '</p>';
     box.innerHTML = html;
   }
   function loadInsights(){
     var st = document.getElementById("insStatus");
     st.textContent = "取得中…";
     var jobs = [
-      ["ga", drawGA, "insGa"], ["gsc", drawGSC, "insGsc"], ["bing", drawBing, "insBing"], ["cf", drawCF, "insCf"]
+      ["ga", drawGA, "insGa"], ["gsc", drawGSC, "insGsc"], ["bing", drawBing, "insBing"]
     ].map(function(j){
       return insFetch(j[0]).then(j[1]).catch(function(e){
         var box = document.getElementById(j[2]);
