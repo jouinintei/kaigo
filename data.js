@@ -594,5 +594,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "花", title: "きんもくせい", diff: "初級", file: "up_1789104803170_1.png", added: "2026-09" },
   { season: "秋", genre: "風物詩", title: "金木犀香る女性", diff: "初級", file: "up_1789380324902_1.png", added: "2026-09" },
   { season: "通年", genre: "風景", title: "公園", diff: "中級", file: "up_1789380461209_2.png", added: "2026-09" },
-  { season: "通年", genre: "食べ物", title: "喫茶店のマスター", diff: "中級", file: "up_1789380723165_3.png", added: "2026-09" },
+  { season: "通年", genre: "食べ物", title: "喫茶店のマスター", diff: "上級", file: "up_1789380723165_3.png", added: "2026-09" },
 ];
