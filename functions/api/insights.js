@@ -6,8 +6,9 @@
 //
 // 環境変数(EdgeOne Pages の設定画面で登録):
 //   STATS_KEY        … 閲覧キー(既存)
-//   GOOGLE_SA_JSON   … Google Cloud のサービスアカウント鍵(JSONファイルの中身をそのまま)
-//                      ※長すぎて入らない場合は GOOGLE_SA_EMAIL と GOOGLE_SA_KEY(private_key の値)に分けてもよい
+//   GOOGLE_SA_JSON_B64 … Google Cloud のサービスアカウント鍵(JSONファイル全体を base64url にしたもの。記号なし)
+//                      ※GOOGLE_SA_JSON(JSONそのまま) や GOOGLE_SA_EMAIL + GOOGLE_SA_KEY(鍵の本体だけ) でも可
+//                      ※値が1000文字までの環境では GOOGLE_SA_EMAIL + GOOGLE_SA_KEY_1 / GOOGLE_SA_KEY_2 に分ける
 //   GA_PROPERTY_ID   … GA4 のプロパティID(数字だけ。例: 123456789)
 //   GSC_SITE         … Search Console のプロパティ(例: sc-domain:rekupuri.com  または  https://rekupuri.com/)
 //   CF_API_TOKEN     … Cloudflare API トークン(既存。Account Analytics: Read が必要)
@@ -50,13 +51,30 @@ function jstKey(offsetDays) {
 function saCreds(env) {
   let email = env.GOOGLE_SA_EMAIL || "";
   let pem = env.GOOGLE_SA_KEY || "";
-  if (env.GOOGLE_SA_JSON) {
-    const j = JSON.parse(env.GOOGLE_SA_JSON);
+  // 環境変数が1000文字までの環境向け: GOOGLE_SA_KEY_1, _2, _3 … に分けたものをつなげる
+  if (!pem) {
+    for (let i = 1; i <= 9; i++) {
+      const part = env["GOOGLE_SA_KEY_" + i];
+      if (!part) break;
+      pem += String(part).trim();
+    }
+  }
+  let jsonText = env.GOOGLE_SA_JSON || "";
+  // 記号が使えない環境変数向け: JSON全体を base64url にしたもの
+  if (!jsonText && env.GOOGLE_SA_JSON_B64) jsonText = new TextDecoder().decode(fromB64url(env.GOOGLE_SA_JSON_B64));
+  if (jsonText) {
+    const j = JSON.parse(jsonText);
     email = j.client_email || email;
     pem = j.private_key || pem;
   }
-  if (!email || !pem) throw new Error("Google の設定がありません(GOOGLE_SA_JSON または GOOGLE_SA_EMAIL/GOOGLE_SA_KEY)");
+  if (!email || !pem) throw new Error("Google の設定がありません(GOOGLE_SA_JSON / GOOGLE_SA_JSON_B64 / GOOGLE_SA_EMAIL+GOOGLE_SA_KEY のいずれか)");
   return { email, pem: pem.replace(/\\n/g, "\n") };
+}
+
+function fromB64url(s) {
+  let b = String(s).trim().replace(/-/g, "+").replace(/_/g, "/").replace(/\s+/g, "");
+  while (b.length % 4) b += "=";
+  return Uint8Array.from(atob(b), c => c.charCodeAt(0));
 }
 
 function b64url(bytes) {
@@ -68,8 +86,9 @@ function b64url(bytes) {
 function b64urlStr(str) { return b64url(new TextEncoder().encode(str)); }
 
 async function importPem(pem) {
-  const body = pem.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
-  const raw = Uint8Array.from(atob(body), c => c.charCodeAt(0));
+  // PEM(ヘッダー付き)でも、本体だけでも、base64url でも受け付ける
+  const body = pem.replace(/-----[^-]+-----/g, "");
+  const raw = fromB64url(body);
   return crypto.subtle.importKey("pkcs8", raw.buffer, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]);
 }
 
