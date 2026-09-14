@@ -138,6 +138,79 @@
     border-color: var(--star);
   }
 
+  .rankbox {
+    max-width: 1100px;
+    margin: 18px auto 0;
+    padding: 0 20px;
+  }
+  .rankbox h2 {
+    font-size: 18px;
+    color: #6b5535;
+    border-left: 6px solid var(--accent);
+    padding-left: 10px;
+    margin-bottom: 10px;
+  }
+  .rank {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .rank button {
+    display: block;
+    position: relative;
+    width: 100%;
+    font-family: inherit;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 8px 10px;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  }
+  .rank button:hover { border-color: var(--accent); background: #fffaf4; }
+  .rank img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 297/210;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 6px;
+  }
+  .rank .no {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 32px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  }
+  .rank .no.g { background: #d6a52a; }
+  .rank .no.s { background: #9aa0a6; }
+  .rank .no.b { background: #b5744a; }
+  .rank .ttl {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 6px;
+    line-height: 1.4;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .rank .sub { font-size: 12px; color: #8a8477; }
+  @media (max-width: 600px) {
+    .rankbox { padding: 0 12px; margin-top: 14px; }
+    .rank { grid-template-columns: repeat(3, 1fr); gap: 14px 8px; }
+    .rank .ttl { font-size: 13px; }
+  }
   .page-intro {
     max-width: 860px;
     margin: 18px auto 0;
@@ -610,6 +683,11 @@
   </div>
 </header>
 
+<div class="rankbox" id="rankBox" style="display:none">
+  <h2>今週の人気塗り絵</h2>
+  <div class="rank" id="rankList"></div>
+</div>
+
 <p class="page-intro" id="pageIntro" style="display:none"></p>
 
 <div class="searchbar" id="searchBar">
@@ -1058,6 +1136,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const introTxt = (!seriesView && !qWord && PAGE_INTRO[page]) || "";
     intro.textContent = introTxt;
     intro.style.display = introTxt ? "" : "none";
+    const rankBox = document.getElementById("rankBox");
+    rankBox.style.display = (page === "list" && !seriesView && !qWord && rankBox.dataset.ready) ? "" : "none";
 
     // 検索欄 (カレンダーの月一覧では出さない)
     const sBar = document.getElementById("searchBar");
@@ -1774,6 +1854,43 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("tabList").textContent = "塗り絵";
     document.getElementById("tabNoutore").textContent = "脳トレ";
   }
+  fetch("api/popular", { cache: "no-store" })
+    .then(r => r.ok ? r.json() : { files: [] })
+    .then(res => {
+      const byFile = {};
+      list.forEach(n => { byFile[n.file] = n; });
+      const top = (res.files || [])
+        .map(f => byFile[f])
+        .filter(n => n && !n.member && kindOf(n) === "塗り絵")
+        .slice(0, 5);
+      if (top.length < 3) return;
+      const cls = ["g", "s", "b", "", ""];
+      const box = document.getElementById("rankList");
+      box.innerHTML = "";
+      top.forEach((n, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        const img = document.createElement("img");
+        img.src = imgPath(n, n.file);
+        img.alt = n.title;
+        img.loading = "lazy";
+        const no = document.createElement("span");
+        no.className = "no " + cls[i];
+        no.textContent = i + 1;
+        const t = document.createElement("div");
+        t.className = "ttl";
+        t.textContent = n.title;
+        const s = document.createElement("div");
+        s.className = "sub";
+        s.textContent = [n.season, n.genre, n.diff].filter(Boolean).join("・");
+        b.append(no, img, t, s);
+        b.onclick = () => { openLightbox(n); pushNav(); };
+        box.appendChild(b);
+      });
+      document.getElementById("rankBox").dataset.ready = "1";
+      if (page === "list") render();
+    })
+    .catch(() => {});
   const qp = new URLSearchParams(location.search).get("page");
   if (qp === "noutore" || qp === "calendar" || qp === "fav") page = qp;
   const qs0 = new URLSearchParams(location.search);
