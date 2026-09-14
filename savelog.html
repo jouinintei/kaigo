@@ -211,7 +211,7 @@
     <div class="card-head">
       <div>
         <h2>アクセスと検索</h2>
-        <p class="note">Google アナリティクス・Search Console・Cloudflare の数字。開いたときに取得します(約10分キャッシュ)</p>
+        <p class="note">Google アナリティクス・Search Console・Bing・Cloudflare の数字。開いたときに取得します(約10分キャッシュ)</p>
       </div>
       <div class="tools">
         <span class="status" id="insStatus"></span>
@@ -220,6 +220,7 @@
     </div>
     <div class="ins" id="insGa"><h3>Google アナリティクス <span class="src">GA4</span></h3><p class="empty">読み込み中…</p></div>
     <div class="ins" id="insGsc"><h3>Google 検索 <span class="src">Search Console・確定分(3日前まで)</span></h3><p class="empty">読み込み中…</p></div>
+    <div class="ins" id="insBing"><h3>Bing 検索 <span class="src">Bing Webmaster Tools・直近28日</span></h3><p class="empty">読み込み中…</p></div>
     <div class="ins" id="insCf"><h3>Cloudflare Web Analytics <span class="src">直近28日</span></h3><p class="empty">読み込み中…</p></div>
   </section>
 
@@ -564,6 +565,26 @@
     if (d.range) html += '<p class="sub" style="margin:8px 0 0">集計期間 ' + esc(d.range.start) + ' 〜 ' + esc(d.range.end) + '(Google 側で確定した分のみ)</p>';
     box.innerHTML = html;
   }
+  function drawBing(d){
+    var box = document.getElementById("insBing");
+    var head = box.querySelector("h3").outerHTML;
+    var daily = d.daily || [];
+    var clicks = sumLast(daily, "clicks", 28), imps = sumLast(daily, "impressions", 28);
+    var html = head + miniTiles([
+      ["クリック(28日)", num(clicks), "回"],
+      ["検索で表示(28日)", num(imps), "回"],
+      ["クリック率", imps ? (clicks / imps * 100).toFixed(1) : "—", "%"],
+      ["直近7日のクリック", num(sumLast(daily, "clicks", 7)), "回"]
+    ]);
+    html += spark(daily, "clicks", "key");
+    html += '<div class="cols"><div><h4>検索キーワード(上位20)</h4><table><thead><tr><th>キーワード</th><th style="text-align:right">クリック</th><th style="text-align:right">表示</th><th style="text-align:right">順位</th></tr></thead><tbody>' +
+      (d.queries || []).map(function(q){ return '<tr><td>' + esc(q.key) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td><td class="num">' + (q.position ? Number(q.position).toFixed(1) : "—") + '</td></tr>'; }).join("") +
+      '</tbody></table></div><div><h4>検索から来たページ(上位10)</h4><table><thead><tr><th>ページ</th><th style="text-align:right">クリック</th><th style="text-align:right">表示</th></tr></thead><tbody>' +
+      (d.pages || []).map(function(q){ var pth = String(q.key).replace(/^https?:\/\/[^\/]+/, "") || "/"; return '<tr><td class="path" title="' + esc(q.key) + '">' + esc(pth) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td></tr>'; }).join("") +
+      '</tbody></table></div></div>';
+    if (!daily.length) html += '<p class="sub" style="margin:8px 0 0">まだBing側にデータがありません(登録から数日かかります)</p>';
+    box.innerHTML = html;
+  }
   function drawCF(d){
     var box = document.getElementById("insCf");
     var head = box.querySelector("h3").outerHTML;
@@ -582,7 +603,7 @@
     var st = document.getElementById("insStatus");
     st.textContent = "取得中…";
     var jobs = [
-      ["ga", drawGA, "insGa"], ["gsc", drawGSC, "insGsc"], ["cf", drawCF, "insCf"]
+      ["ga", drawGA, "insGa"], ["gsc", drawGSC, "insGsc"], ["bing", drawBing, "insBing"], ["cf", drawCF, "insCf"]
     ].map(function(j){
       return insFetch(j[0]).then(j[1]).catch(function(e){
         var box = document.getElementById(j[2]);

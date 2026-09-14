@@ -2,7 +2,7 @@
 // 保存ログ(savelog.html)向けに、Google アナリティクス(GA4)・Search Console・Cloudflare Web Analytics の
 // 数字をまとめて返す。閲覧には STATS_KEY が必要(log-save と同じ)。
 //
-// 使い方: GET /api/insights?key=STATS_KEY&src=ga|gsc|cf
+// 使い方: GET /api/insights?key=STATS_KEY&src=ga|gsc|cf|bing
 //
 // 環境変数(EdgeOne Pages の設定画面で登録):
 //   STATS_KEY        … 閲覧キー(既存)
@@ -13,6 +13,8 @@
 //   GSC_SITE         … Search Console のプロパティ(例: sc-domain:rekupuri.com  または  https://rekupuri.com/)
 //   CF_API_TOKEN     … Cloudflare API トークン(既存。Account Analytics: Read が必要)
 //   CF_ACCOUNT_ID    … Cloudflare アカウントID(既存)
+//   BING_API_KEY     … Bing Webmaster Tools の設定 → APIアクセス で発行したAPIキー
+//   BING_SITE        … (省略可) Bing に登録したサイトURL。既定は https://rekupuri.com/
 
 export async function onRequest({ request, env }) {
   const url = new URL(request.url);
@@ -24,6 +26,7 @@ export async function onRequest({ request, env }) {
     if (src === "ga")  return json(await fetchGA(env));
     if (src === "gsc") return json(await fetchGSC(env));
     if (src === "cf")  return json(await fetchCF(env));
+    if (src === "bing") return json(await fetchBing(env));
     return json({ error: "src は ga / gsc / cf のどれかを指定してください" }, 400);
   } catch (e) {
     return json({ error: String(e && e.message || e) }, 200);
@@ -225,5 +228,59 @@ async function fetchCF(env) {
   return {
     updated: Date.now(),
     daily: Object.keys(byDay).sort().map(k => ({ date: k, views: byDay[k].views, visits: byDay[k].visits }))
+  };
+}
+
+/* ---------- Bing Webmaster Tools ---------- */
+async function fetchBing(env) {
+  if (!env.BING_API_KEY) throw new Error("BING_API_KEY がありません");
+  const site = env.BING_SITE || "https://rekupuri.com/";
+  const base = "https://ssl.bing.com/webmaster/api.svc/json/";
+  const get = async (method) => {
+    const r = await fetch(base + method + "?siteUrl=" + encodeURIComponent(site) + "&apikey=" + encodeURIComponent(env.BING_API_KEY), {
+      headers: { "Accept": "application/json" }
+    });
+    let j = null;
+    try { j = await r.json(); } catch (e) { j = null; }
+    if (!r.ok) throw new Error((j && (j.Message || j.ErrorCode)) ? (j.Message || ("ErrorCode " + j.ErrorCode)) : ("HTTP " + r.status));
+    return (j && j.d) || [];
+  };
+  // "/Date(1694649600000-0000)/" 形式 → YYYY-MM-DD (UTC基準の日付をそのまま使う)
+  const dkey = (v) => {
+    const m = /\/Date\((-?\d+)/.exec(String(v || ""));
+    const ms = m ? Number(m[1]) : Date.parse(v);
+    if (isNaN(ms)) return "";
+    return new Date(ms).toISOString().slice(0, 10);
+  };
+  const since = jstKey(-28);
+  const [traffic, queries, pages] = await Promise.all([get("GetRankAndTrafficStats"), get("GetQueryStats"), get("GetPageStats")]);
+
+  const daily = traffic.map(x => ({ key: dkey(x.Date), clicks: Number(x.Clicks || 0), impressions: Number(x.Impressions || 0) }))
+    .filter(x => x.key).sort((a, b) => a.key < b.key ? -1 : 1).slice(-28);
+
+  const agg = (rows, nameField) => {
+    const m = {};
+    rows.forEach(x => {
+      const k = dkey(x.Date);
+      if (k && k < since) return;
+      const name = x[nameField];
+      if (!name) return;
+      if (!m[name]) m[name] = { key: name, clicks: 0, impressions: 0, posW: 0 };
+      const imp = Number(x.Impressions || 0);
+      m[name].clicks += Number(x.Clicks || 0);
+      m[name].impressions += imp;
+      m[name].posW += Number(x.AvgImpressionPosition || 0) * imp;
+    });
+    return Object.keys(m).map(k => {
+      const o = m[k];
+      return { key: o.key, clicks: o.clicks, impressions: o.impressions, position: o.impressions ? o.posW / o.impressions : 0 };
+    }).sort((a, b) => (b.clicks - a.clicks) || (b.impressions - a.impressions));
+  };
+  return {
+    updated: Date.now(),
+    range: { start: daily.length ? daily[0].key : since, end: daily.length ? daily[daily.length - 1].key : jstKey(0) },
+    daily: daily,
+    queries: agg(queries, "Query").slice(0, 20),
+    pages: agg(pages, "Query").slice(0, 10)
   };
 }
