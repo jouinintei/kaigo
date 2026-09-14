@@ -172,6 +172,10 @@
   .ev .meta{font-size:11px;color:var(--ink-3);display:flex;gap:4px;flex-wrap:wrap;align-items:center}
   .ev .time{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
   .ev .tag.dev{margin-left:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ev{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+  .ev .more{display:none;font-size:11.5px;color:var(--ink-2);line-height:1.6;border-top:1px dashed var(--line);padding-top:5px;margin-top:2px}
+  .ev.open{border-color:var(--accent)}
+  .ev.open .more{display:block}
   @media (max-width:600px){#feedWrap{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
   .tag{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;color:var(--ink-2)}
   .tag.kind{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
@@ -957,14 +961,18 @@
       var fresh = (!firstDraw && newestBefore !== null && e.t > newestBefore) ? " fresh" : "";
       var ttl = it ? it.title : e.f;
       var tags = [];
+      var more = [];
       if (kindOf(it) !== "塗り絵") tags.push('<span class="tag kind">'+kindOf(it)+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
+      more.push(labelDay(k) + " " + hhmm(e.t));
+      if (it) more.push([kindOf(it), it.season, it.genre, it.diff].filter(Boolean).join("・"));
+      else more.push("ファイル: " + e.f);
       if (e.d){
         var lv = devLevel(e.d);
         var ds = devStats[e.d];
-        tags.push('<span class="tag dev' + (lv ? " rep" : "") + '" title="' + esc(shortId(e.d)) +
-          (lv ? (lv === "reg" ? "　常連　" : "　リピーター　") + ds.nDays + "日利用" : "") + '">' + esc(shortId(e.d)) +
+        tags.push('<span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(e.d)) +
           (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>');
+        more.push(shortId(e.d) + (lv ? (lv === "reg" ? "(常連)" : "(リピーター)") + " " + ds.nDays + "日利用・" + ds.total + "件" : "(初回)"));
       }
       var thumb = (imgDir === null)
         ? '<div class="thumb none">🖼</div>'
@@ -972,7 +980,8 @@
       html += '<div class="ev'+fresh+'">'+
         thumb+
         '<div class="body"><div class="ttl" title="'+esc(ttl)+'">'+esc(ttl)+'</div>'+
-        '<div class="meta"><span class="time">'+hhmm(e.t)+'</span>'+tags.join("")+'</div></div>'+
+        '<div class="meta"><span class="time">'+hhmm(e.t)+'</span>'+tags.join("")+'</div>'+
+        '<div class="more">'+more.map(function(x){ return esc(x); }).join("<br>")+'</div></div>'+
       '</div>';
     });
     wrap.innerHTML = html;
@@ -1027,6 +1036,12 @@
     if (e.key === "Enter") document.getElementById("goBtn").click();
   });
   document.getElementById("reloadBtn").addEventListener("click", function(){ load(true); schedule(); });
+  // タイルを押すと詳細(日時・分類・端末の利用状況)を開閉(スマホ向け)
+  document.getElementById("feedWrap").addEventListener("click", function(e){
+    var ev = e.target.closest(".ev");
+    if (!ev) return;
+    ev.classList.toggle("open");
+  });
   document.getElementById("tableBtn").addEventListener("click", function(){
     var t = document.getElementById("dayTable");
     var on = t.style.display === "block";
