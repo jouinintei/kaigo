@@ -1,0 +1,201 @@
+// functions/api/insights.js
+// 保存ログ(savelog.html)向けに、Google アナリティクス(GA4)・Search Console・Cloudflare Web Analytics の
+// 数字をまとめて返す。閲覧には STATS_KEY が必要(log-save と同じ)。
+//
+// 使い方: GET /api/insights?key=STATS_KEY&src=ga|gsc|cf
+//
+// 環境変数(EdgeOne Pages の設定画面で登録):
+//   STATS_KEY        … 閲覧キー(既存)
+//   GOOGLE_SA_JSON   … Google Cloud のサービスアカウント鍵(JSONファイルの中身をそのまま)
+//                      ※長すぎて入らない場合は GOOGLE_SA_EMAIL と GOOGLE_SA_KEY(private_key の値)に分けてもよい
+//   GA_PROPERTY_ID   … GA4 のプロパティID(数字だけ。例: 123456789)
+//   GSC_SITE         … Search Console のプロパティ(例: sc-domain:rekupuri.com  または  https://rekupuri.com/)
+//   CF_API_TOKEN     … Cloudflare API トークン(既存。Account Analytics: Read が必要)
+//   CF_ACCOUNT_ID    … Cloudflare アカウントID(既存)
+//   CF_SITE_TAG      … Web Analytics のサイトトークン(ビーコンの token と同じ文字列)
+
+export async function onRequest({ request, env }) {
+  const url = new URL(request.url);
+  const key = url.searchParams.get("key") || "";
+  if (!env.STATS_KEY || key !== env.STATS_KEY) return json({ error: "not found" }, 404);
+
+  const src = url.searchParams.get("src") || "";
+  try {
+    if (src === "ga")  return json(await fetchGA(env));
+    if (src === "gsc") return json(await fetchGSC(env));
+    if (src === "cf")  return json(await fetchCF(env));
+    return json({ error: "src は ga / gsc / cf のどれかを指定してください" }, 400);
+  } catch (e) {
+    return json({ error: String(e && e.message || e) }, 200);
+  }
+}
+
+function json(obj, status) {
+  return new Response(JSON.stringify(obj), {
+    status: status || 200,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "private, max-age=600"
+    }
+  });
+}
+
+/* ---------- 日付 (JST) ---------- */
+function jstKey(offsetDays) {
+  const d = new Date(Date.now() + 9 * 3600 * 1000 + (offsetDays || 0) * 86400 * 1000);
+  return d.toISOString().slice(0, 10);
+}
+
+/* ---------- Google 認証 (サービスアカウント → アクセストークン) ---------- */
+function saCreds(env) {
+  let email = env.GOOGLE_SA_EMAIL || "";
+  let pem = env.GOOGLE_SA_KEY || "";
+  if (env.GOOGLE_SA_JSON) {
+    const j = JSON.parse(env.GOOGLE_SA_JSON);
+    email = j.client_email || email;
+    pem = j.private_key || pem;
+  }
+  if (!email || !pem) throw new Error("Google の設定がありません(GOOGLE_SA_JSON または GOOGLE_SA_EMAIL/GOOGLE_SA_KEY)");
+  return { email, pem: pem.replace(/\\n/g, "\n") };
+}
+
+function b64url(bytes) {
+  let s = "";
+  const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  for (let i = 0; i < arr.length; i++) s += String.fromCharCode(arr[i]);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64urlStr(str) { return b64url(new TextEncoder().encode(str)); }
+
+async function importPem(pem) {
+  const body = pem.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
+  const raw = Uint8Array.from(atob(body), c => c.charCodeAt(0));
+  return crypto.subtle.importKey("pkcs8", raw.buffer, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]);
+}
+
+async function googleToken(env, scope) {
+  const { email, pem } = saCreds(env);
+  const now = Math.floor(Date.now() / 1000);
+  const header = b64urlStr(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+  const claim = b64urlStr(JSON.stringify({
+    iss: email, scope: scope, aud: "https://oauth2.googleapis.com/token", iat: now, exp: now + 3600
+  }));
+  const key = await importPem(pem);
+  const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, new TextEncoder().encode(header + "." + claim));
+  const jwt = header + "." + claim + "." + b64url(sig);
+  const r = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + encodeURIComponent(jwt)
+  });
+  const j = await r.json();
+  if (!r.ok || !j.access_token) throw new Error("Google 認証に失敗: " + (j.error_description || j.error || r.status));
+  return j.access_token;
+}
+
+async function gpost(url, token, body) {
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const j = await r.json();
+  if (!r.ok) throw new Error((j.error && (j.error.message || j.error.status)) || ("HTTP " + r.status));
+  return j;
+}
+
+/* ---------- GA4 ---------- */
+async function fetchGA(env) {
+  const pid = env.GA_PROPERTY_ID;
+  if (!pid) throw new Error("GA_PROPERTY_ID がありません");
+  const token = await googleToken(env, "https://www.googleapis.com/auth/analytics.readonly");
+  const base = "https://analyticsdata.googleapis.com/v1beta/properties/" + pid;
+
+  const daily = await gpost(base + ":runReport", token, {
+    dateRanges: [{ startDate: "28daysAgo", endDate: "today" }],
+    dimensions: [{ name: "date" }],
+    metrics: [{ name: "activeUsers" }, { name: "screenPageViews" }, { name: "sessions" }],
+    orderBys: [{ dimension: { dimensionName: "date" } }],
+    limit: 100
+  });
+  const pages = await gpost(base + ":runReport", token, {
+    dateRanges: [{ startDate: "7daysAgo", endDate: "today" }],
+    dimensions: [{ name: "pagePath" }],
+    metrics: [{ name: "screenPageViews" }, { name: "activeUsers" }],
+    orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
+    limit: 10
+  });
+  const sources = await gpost(base + ":runReport", token, {
+    dateRanges: [{ startDate: "28daysAgo", endDate: "today" }],
+    dimensions: [{ name: "sessionDefaultChannelGroup" }],
+    metrics: [{ name: "sessions" }],
+    orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
+    limit: 8
+  });
+  let realtime = null;
+  try {
+    const rt = await gpost(base + ":runRealtimeReport", token, { metrics: [{ name: "activeUsers" }] });
+    realtime = Number(((rt.rows || [])[0] || {}).metricValues?.[0]?.value || 0);
+  } catch (e) { realtime = null; }
+
+  const rows = r => (r.rows || []).map(x => ({
+    d: x.dimensionValues.map(v => v.value),
+    m: x.metricValues.map(v => Number(v.value))
+  }));
+  return {
+    updated: Date.now(),
+    realtime: realtime,
+    daily: rows(daily).map(x => ({ date: x.d[0].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"), users: x.m[0], views: x.m[1], sessions: x.m[2] })),
+    pages: rows(pages).map(x => ({ path: x.d[0], views: x.m[0], users: x.m[1] })),
+    sources: rows(sources).map(x => ({ name: x.d[0], sessions: x.m[0] }))
+  };
+}
+
+/* ---------- Search Console ---------- */
+async function fetchGSC(env) {
+  const site = env.GSC_SITE;
+  if (!site) throw new Error("GSC_SITE がありません");
+  const token = await googleToken(env, "https://www.googleapis.com/auth/webmasters.readonly");
+  const url = "https://www.googleapis.com/webmasters/v3/sites/" + encodeURIComponent(site) + "/searchAnalytics/query";
+  // Search Console のデータは2〜3日遅れて確定するので、3日前を終点にする
+  const end = jstKey(-3), start = jstKey(-30);
+  const q = (dims, limit) => gpost(url, token, { startDate: start, endDate: end, dimensions: dims, rowLimit: limit, dataState: "final" });
+  const [daily, queries, pages] = await Promise.all([q(["date"], 100), q(["query"], 20), q(["page"], 10)]);
+  const rows = r => (r.rows || []).map(x => ({
+    key: x.keys[0], clicks: x.clicks || 0, impressions: x.impressions || 0, ctr: x.ctr || 0, position: x.position || 0
+  }));
+  return {
+    updated: Date.now(),
+    range: { start, end },
+    daily: rows(daily).sort((a, b) => a.key < b.key ? -1 : 1),
+    queries: rows(queries),
+    pages: rows(pages)
+  };
+}
+
+/* ---------- Cloudflare Web Analytics ---------- */
+async function fetchCF(env) {
+  if (!env.CF_API_TOKEN || !env.CF_ACCOUNT_ID || !env.CF_SITE_TAG) throw new Error("CF_API_TOKEN / CF_ACCOUNT_ID / CF_SITE_TAG がありません");
+  const start = jstKey(-27), end = jstKey(1);
+  const query = `query($acct: String!, $site: String!, $start: Date!, $end: Date!) {
+    viewer { accounts(filter: { accountTag: $acct }) {
+      series: rumPageloadEventsAdaptiveGroups(
+        limit: 100,
+        filter: { AND: [{ date_geq: $start }, { date_lt: $end }, { siteTag: $site }] },
+        orderBy: [date_ASC]
+      ) { count sum { visits } dimensions { date } }
+    } }
+  }`;
+  const r = await fetch("https://api.cloudflare.com/client/v4/graphql", {
+    method: "POST",
+    headers: { "Authorization": "Bearer " + env.CF_API_TOKEN, "Content-Type": "application/json" },
+    body: JSON.stringify({ query, variables: { acct: env.CF_ACCOUNT_ID, site: env.CF_SITE_TAG, start, end } })
+  });
+  const j = await r.json();
+  if (j.errors && j.errors.length) throw new Error(j.errors.map(e => e.message).join(" / "));
+  const acc = (((j.data || {}).viewer || {}).accounts || [])[0] || {};
+  return {
+    updated: Date.now(),
+    daily: (acc.series || []).map(x => ({ date: x.dimensions.date, views: x.count || 0, visits: (x.sum && x.sum.visits) || 0 }))
+  };
+}

@@ -122,6 +122,24 @@
   @media (prefers-color-scheme: dark){.tag.dev.rep{color:#ffb87a}}
   @media (max-width:600px){.dv .strip{margin-left:0;width:100%}}
 
+  /* --- アクセス解析 --- */
+  .ins{border-top:1px solid var(--line);padding:14px 0 6px;margin-top:6px}
+  #insGa{border-top:0;padding-top:4px;margin-top:0}
+  .ins h3{font-size:13.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .ins h3 .src{font-size:11px;font-weight:500;color:var(--ink-3)}
+  .ins .mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:10px}
+  .ins .mini .tile{padding:10px 12px}
+  .ins .mini .value{font-size:22px}
+  .ins .spark{margin:4px 0 12px}
+  .ins .spark svg{height:64px}
+  .ins .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .ins .cols h4{font-size:12px;color:var(--ink-3);margin:0 0 4px;font-weight:600}
+  .ins table td.path{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ins .err{color:#c0392b;font-size:12px;line-height:1.7;padding:4px 0 8px;min-height:0}
+  .ins .err code{background:var(--surface-2);padding:1px 6px;border-radius:5px;font-size:11px}
+  .ins .live{color:var(--accent);font-weight:700}
+  @media (max-width:640px){.ins .cols{grid-template-columns:1fr}}
+
   /* --- フィード --- */
   .daysep{font-size:12px;color:var(--ink-3);padding:16px 2px 8px;border-bottom:1px solid var(--line);letter-spacing:.05em}
   .daysep:first-child{padding-top:4px}
@@ -170,6 +188,22 @@
   </header>
 
   <div class="tiles" id="tiles"></div>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>アクセスと検索</h2>
+        <p class="note">Google アナリティクス・Search Console・Cloudflare の数字。開いたときに取得します(約10分キャッシュ)</p>
+      </div>
+      <div class="tools">
+        <span class="status" id="insStatus"></span>
+        <button class="btn-ghost" id="insReloadBtn">取得し直す</button>
+      </div>
+    </div>
+    <div class="ins" id="insGa"><h3>Google アナリティクス <span class="src">GA4</span></h3><p class="empty">読み込み中…</p></div>
+    <div class="ins" id="insGsc"><h3>Google 検索 <span class="src">Search Console・確定分(3日前まで)</span></h3><p class="empty">読み込み中…</p></div>
+    <div class="ins" id="insCf"><h3>Cloudflare Web Analytics <span class="src">直近28日</span></h3><p class="empty">読み込み中…</p></div>
+  </section>
 
   <section class="card">
     <div class="card-head">
@@ -389,6 +423,127 @@
     document.getElementById("range").textContent =
       ks.length ? fmtMD(ks[0]) + " 〜 " + fmtMD(ks[ks.length-1]) + " の記録" : "";
   }
+
+  /* ---------- アクセス解析 (GA4 / Search Console / Cloudflare) ---------- */
+  var insLoaded = false;
+  function num(n){ return Number(n || 0).toLocaleString("ja-JP"); }
+  function sumLast(arr, field, n){
+    var a = arr.slice(-n), s = 0;
+    a.forEach(function(x){ s += Number(x[field] || 0); });
+    return s;
+  }
+  function miniTiles(rows){
+    return '<div class="mini">' + rows.map(function(r){
+      return '<div class="tile"><div class="label">' + r[0] + '</div><div class="value">' +
+        (r[3] || "") + r[1] + '<span class="unit">' + (r[2] || "") + '</span></div></div>';
+    }).join("") + '</div>';
+  }
+  function spark(arr, field, labelField){
+    if (!arr.length) return "";
+    var W = 880, H = 64, pad = 2;
+    var vals = arr.map(function(x){ return Number(x[field] || 0); });
+    var max = Math.max.apply(null, vals) || 1;
+    var band = W / arr.length, bw = Math.max(2, band - 2);
+    var out = ['<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img">'];
+    vals.forEach(function(v, i){
+      var h = Math.max(v > 0 ? 2 : 0, (v / max) * (H - pad * 2));
+      var x = band * i + (band - bw) / 2, y = H - pad - h;
+      var k = String(arr[i][labelField] || "");
+      out.push('<rect class="bar" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="1.5"><title>' + esc(k) + '　' + num(v) + '</title></rect>');
+    });
+    out.push('</svg>');
+    var first = String(arr[0][labelField] || ""), last = String(arr[arr.length - 1][labelField] || "");
+    return '<div class="spark">' + out.join("") +
+      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3)"><span>' + esc(first.slice(5)) + '</span><span>' + esc(last.slice(5)) + '</span></div></div>';
+  }
+  function insErr(msg){
+    return '<p class="err">取得できませんでした: ' + esc(msg) +
+      '<br><span style="color:var(--ink-3)">EdgeOne の環境変数と、Google Cloud 側の権限(サービスアカウントの追加)を確認してください</span></p>';
+  }
+  function insFetch(src){
+    return fetch("api/insights?src=" + src + "&key=" + encodeURIComponent(key) + "&_=" + Math.floor(Date.now() / 600000), {cache:"no-store"})
+      .then(function(r){
+        if (r.status === 404) throw new Error("キーが違います");
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function(d){ if (d.error) throw new Error(d.error); return d; });
+  }
+  function drawGA(d){
+    var box = document.getElementById("insGa");
+    var head = box.querySelector("h3").outerHTML;
+    var daily = d.daily || [];
+    var html = head + miniTiles([
+      ["いま見ている人", d.realtime === null ? "—" : num(d.realtime), "人", d.realtime > 0 ? '<span class="live">● </span>' : ""],
+      ["今日の訪問者", num(sumLast(daily, "users", 1)), "人"],
+      ["7日間の訪問者", num(sumLast(daily, "users", 7)), "人"],
+      ["7日間のページ閲覧", num(sumLast(daily, "views", 7)), "回"],
+      ["28日間の訪問者", num(sumLast(daily, "users", 28)), "人"],
+      ["28日間のページ閲覧", num(sumLast(daily, "views", 28)), "回"]
+    ]);
+    html += spark(daily, "users", "date");
+    html += '<div class="cols"><div><h4>よく見られたページ(7日間)</h4><table><thead><tr><th>ページ</th><th style="text-align:right">閲覧</th><th style="text-align:right">人</th></tr></thead><tbody>' +
+      (d.pages || []).map(function(p){ return '<tr><td class="path" title="' + esc(p.path) + '">' + esc(p.path) + '</td><td class="num">' + num(p.views) + '</td><td class="num">' + num(p.users) + '</td></tr>'; }).join("") +
+      '</tbody></table></div><div><h4>どこから来たか(28日間)</h4><table><thead><tr><th>流入元</th><th style="text-align:right">訪問</th></tr></thead><tbody>' +
+      (d.sources || []).map(function(p){ return '<tr><td>' + esc(jpChannel(p.name)) + '</td><td class="num">' + num(p.sessions) + '</td></tr>'; }).join("") +
+      '</tbody></table></div></div>';
+    box.innerHTML = html;
+  }
+  function jpChannel(n){
+    var m = { "Organic Search": "検索(Google など)", "Direct": "直接(ブックマーク・URL入力)", "Referral": "他サイトのリンク", "Organic Social": "SNS", "Unassigned": "その他・不明", "Organic Video": "動画", "Email": "メール", "Paid Search": "検索広告", "Cross-network": "広告" };
+    return m[n] || n;
+  }
+  function drawGSC(d){
+    var box = document.getElementById("insGsc");
+    var head = box.querySelector("h3").outerHTML;
+    var daily = d.daily || [];
+    var clicks = sumLast(daily, "clicks", 28), imps = sumLast(daily, "impressions", 28);
+    var pos = 0, pw = 0;
+    daily.forEach(function(x){ pos += Number(x.position || 0) * Number(x.impressions || 0); pw += Number(x.impressions || 0); });
+    var html = head + miniTiles([
+      ["クリック(28日)", num(clicks), "回"],
+      ["検索で表示(28日)", num(imps), "回"],
+      ["クリック率", imps ? (clicks / imps * 100).toFixed(1) : "—", "%"],
+      ["平均掲載順位", pw ? (pos / pw).toFixed(1) : "—", "位"],
+      ["直近7日のクリック", num(sumLast(daily, "clicks", 7)), "回"]
+    ]);
+    html += spark(daily, "clicks", "key");
+    html += '<div class="cols"><div><h4>検索キーワード(上位20)</h4><table><thead><tr><th>キーワード</th><th style="text-align:right">クリック</th><th style="text-align:right">表示</th><th style="text-align:right">順位</th></tr></thead><tbody>' +
+      (d.queries || []).map(function(q){ return '<tr><td>' + esc(q.key) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td><td class="num">' + Number(q.position).toFixed(1) + '</td></tr>'; }).join("") +
+      '</tbody></table></div><div><h4>検索から来たページ(上位10)</h4><table><thead><tr><th>ページ</th><th style="text-align:right">クリック</th><th style="text-align:right">表示</th></tr></thead><tbody>' +
+      (d.pages || []).map(function(q){ var pth = String(q.key).replace(/^https?:\/\/[^\/]+/, "") || "/"; return '<tr><td class="path" title="' + esc(q.key) + '">' + esc(pth) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td></tr>'; }).join("") +
+      '</tbody></table></div></div>';
+    if (d.range) html += '<p class="sub" style="margin:8px 0 0">集計期間 ' + esc(d.range.start) + ' 〜 ' + esc(d.range.end) + '(Google 側で確定した分のみ)</p>';
+    box.innerHTML = html;
+  }
+  function drawCF(d){
+    var box = document.getElementById("insCf");
+    var head = box.querySelector("h3").outerHTML;
+    var daily = d.daily || [];
+    var html = head + miniTiles([
+      ["今日の訪問", num(sumLast(daily, "visits", 1)), "回"],
+      ["7日間の訪問", num(sumLast(daily, "visits", 7)), "回"],
+      ["7日間のページ閲覧", num(sumLast(daily, "views", 7)), "回"],
+      ["28日間の訪問", num(sumLast(daily, "visits", 28)), "回"],
+      ["28日間のページ閲覧", num(sumLast(daily, "views", 28)), "回"]
+    ]);
+    html += spark(daily, "visits", "date");
+    box.innerHTML = html;
+  }
+  function loadInsights(){
+    var st = document.getElementById("insStatus");
+    st.textContent = "取得中…";
+    var jobs = [
+      ["ga", drawGA, "insGa"], ["gsc", drawGSC, "insGsc"], ["cf", drawCF, "insCf"]
+    ].map(function(j){
+      return insFetch(j[0]).then(j[1]).catch(function(e){
+        var box = document.getElementById(j[2]);
+        box.innerHTML = box.querySelector("h3").outerHTML + insErr(e.message || e);
+      });
+    });
+    Promise.all(jobs).then(function(){ st.textContent = "取得 " + hhmm(Date.now()); insLoaded = true; });
+  }
+  document.getElementById("insReloadBtn").addEventListener("click", loadInsights);
 
   /* ---------- ランキング ---------- */
   var lastData = null;
@@ -737,6 +892,7 @@
     document.getElementById("app").style.display = "";
     load(false);
     schedule();
+    loadInsights();
   }
 
   document.getElementById("goBtn").addEventListener("click", function(){

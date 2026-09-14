@@ -1,0 +1,70 @@
+保存ログに「アクセスと検索」を追加する手順
+==========================================
+
+■ ファイル（公開リポジトリ）
+  savelog.html              → ルートの savelog.html と差し替え
+  functions/api/insights.js → functions/api/ に新規追加
+
+差し替えただけだと3つとも「取得できませんでした」と出ます。
+下の設定を入れると順に表示されるようになります（1つずつ進めてOK）。
+
+
+■ 1. Google Cloud でサービスアカウントを作る（Search Console と GA4 共通・1回だけ）
+  1) https://console.cloud.google.com/ を開き、使うプロジェクトを選ぶ
+  2) 「APIとサービス」→「ライブラリ」で次の2つを検索して「有効にする」
+       ・Google Search Console API
+       ・Google Analytics Data API
+  3) 「IAMと管理」→「サービスアカウント」→「サービスアカウントを作成」
+       名前は何でもOK（例: rekupuri-stats）。ロールは付けずに「完了」
+  4) 作ったアカウントを開き「キー」タブ →「鍵を追加」→「新しい鍵を作成」→ JSON
+       → JSONファイルがダウンロードされる（これが鍵。人に渡さない）
+  5) そのアカウントのメールアドレス（xxx@xxx.iam.gserviceaccount.com）を控える
+
+
+■ 2. Search Console にそのメールを追加
+  https://search.google.com/search-console/ → rekupuri.com のプロパティ
+  → 左下「設定」→「ユーザーと権限」→「ユーザーを追加」
+  → 手順1-5のメールアドレス、権限は「制限付き」でOK
+
+
+■ 3. GA4 にそのメールを追加
+  https://analytics.google.com/ → 左下の歯車「管理」
+  → プロパティ列の「プロパティのアクセス管理」→「＋」→「ユーザーを追加」
+  → 手順1-5のメール、役割は「閲覧者」でOK
+  ついでに同じ「管理」画面の「プロパティの詳細」で「プロパティID」（数字9桁ほど）を控える
+  ※測定ID（G-7E6G8C2FZR）ではなくプロパティIDです
+
+
+■ 4. Cloudflare（Web Analytics）
+  ・CF_API_TOKEN / CF_ACCOUNT_ID は前に stats.js 用に登録したものをそのまま使う
+    （トークンの権限に「Account Analytics: Read」が入っていること）
+  ・CF_SITE_TAG はサイトのビーコンに入っている token と同じ文字列
+      a9863d837944405fb5b7d52eafc53b9e
+
+
+■ 5. EdgeOne Pages の環境変数に登録
+  プロジェクト → 設定 → 環境変数（本番）に追加して、再デプロイ
+
+    GOOGLE_SA_JSON   … 手順1-4のJSONファイルの中身を丸ごと貼る（1行になっていてOK）
+                       ※文字数制限で入らない場合は代わりに
+                         GOOGLE_SA_EMAIL … client_email の値
+                         GOOGLE_SA_KEY   … private_key の値（-----BEGIN PRIVATE KEY----- から END まで）
+    GA_PROPERTY_ID   … 手順3で控えたプロパティID（数字だけ）
+    GSC_SITE         … Search Console のプロパティの種類に合わせて
+                         ドメインプロパティなら  sc-domain:rekupuri.com
+                         URLプレフィックスなら  https://rekupuri.com/
+    CF_SITE_TAG      … a9863d837944405fb5b7d52eafc53b9e
+    （STATS_KEY / CF_API_TOKEN / CF_ACCOUNT_ID は既存のまま）
+
+
+■ 表示される内容
+  Google アナリティクス … いま見ている人、今日/7日/28日の訪問者とページ閲覧、日別グラフ、
+                          よく見られたページ、流入元（検索・直接・SNS など）
+  Google 検索          … 28日のクリック・表示回数・クリック率・平均掲載順位、日別グラフ、
+                          検索キーワード上位20、検索から来たページ上位10
+                          ※Google側の確定に2〜3日かかるので「3日前まで」の集計
+  Cloudflare           … 今日/7日/28日の訪問とページ閲覧、日別グラフ
+
+  取得結果は約10分キャッシュされます。「取得し直す」で再取得できます。
+  どれかが「取得できませんでした」の場合、赤字のメッセージにGoogle側の理由が出ます
+  （例: permission → 手順2・3のユーザー追加漏れ、API has not been used → 手順1-2の有効化漏れ）
