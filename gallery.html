@@ -155,7 +155,7 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 12px;
   }
-  .rank button {
+  .rank .item {
     display: block;
     position: relative;
     width: 100%;
@@ -169,7 +169,26 @@
     text-align: center;
     box-shadow: 0 2px 6px rgba(0,0,0,.05);
   }
-  .rank button:hover { border-color: var(--accent); background: #fffaf4; }
+  .rank .item:hover { border-color: var(--accent); background: #fffaf4; }
+  .rank .rfav {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.92);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    color: #c9c2b4;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    font-family: inherit;
+    padding: 0;
+  }
+  .rank .rfav:hover { color: var(--star); }
+  .rank .rfav.on { color: var(--star); }
   .rank img {
     display: block;
     width: 100%;
@@ -365,6 +384,8 @@
   }
   .bulk-save { background: #6b8f7a; color: #fff; }
   .bulk-save:hover { background: #5c7f6b; }
+  .bulk-clear { background: var(--card); color: #8a8477; border: 2px solid var(--line); box-shadow: none; }
+  .bulk-clear:hover { border-color: #c05a5a; color: #c05a5a; }
 
   .count {
     text-align: center;
@@ -699,6 +720,7 @@
 
 <div class="bulkbar" id="bulkBar">
   <button class="bulk-btn bulk-save" id="bulkSave">💾 まとめて保存</button>
+  <button class="bulk-btn bulk-clear" id="bulkClear">☆ お気に入りをすべて外す</button>
 </div>
 
 <div class="count" id="count"></div>
@@ -1138,6 +1160,11 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     intro.style.display = introTxt ? "" : "none";
     const rankBox = document.getElementById("rankBox");
     rankBox.style.display = (page === "list" && !seriesView && !qWord && rankBox.dataset.ready) ? "" : "none";
+    rankBox.querySelectorAll(".rfav").forEach(b => {
+      const on = isFav(b.dataset.file);
+      b.classList.toggle("on", on);
+      b.textContent = on ? "★" : "☆";
+    });
 
     // 検索欄 (カレンダーの月一覧では出さない)
     const sBar = document.getElementById("searchBar");
@@ -1690,6 +1717,17 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     return ok;
   }
 
+  document.getElementById("bulkClear").onclick = () => {
+    const n = loadFav().length;
+    if (!n) return;
+    if (!window.confirm("お気に入り " + n + " 件をすべて外します。よろしいですか?")) return;
+    saveJSON(FAV_KEY, []);
+    curPage = 1;
+    render();
+    syncState();
+    showToast("お気に入りをすべて外しました");
+  };
+
   // まとめて保存は ZIP 一本。
   // フォルダ選択(File System Access API)はパソコンやブラウザによって
   // 許可の出方が変わり、分かりにくい表示が出ることがあったため使いません。
@@ -1868,8 +1906,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const box = document.getElementById("rankList");
       box.innerHTML = "";
       top.forEach((n, i) => {
-        const b = document.createElement("button");
-        b.type = "button";
+        const b = document.createElement("div");
+        b.className = "item";
+        const fav = document.createElement("button");
+        fav.type = "button";
+        fav.className = "rfav" + (isFav(n.file) ? " on" : "");
+        fav.dataset.file = n.file;
+        fav.textContent = isFav(n.file) ? "★" : "☆";
+        fav.title = "お気に入りに登録/解除";
+        fav.onclick = (e) => { e.stopPropagation(); toggleFav(n.file); };
         const img = document.createElement("img");
         img.src = imgPath(n, n.file);
         img.alt = n.title;
@@ -1883,7 +1928,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         const s = document.createElement("div");
         s.className = "sub";
         s.textContent = [n.season, n.genre, n.diff].filter(Boolean).join("・");
-        b.append(no, img, t, s);
+        b.append(no, fav, img, t, s);
         b.onclick = () => { openLightbox(n); pushNav(); };
         box.appendChild(b);
       });
