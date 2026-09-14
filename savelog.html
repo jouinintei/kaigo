@@ -67,6 +67,24 @@
   .card-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:4px}
   .card-head .tools{margin-left:auto;display:flex;gap:8px;align-items:center}
 
+  /* --- 折りたたみ --- */
+  .card-head{cursor:pointer;user-select:none;border-radius:8px;margin:-6px -6px 4px;padding:6px}
+  .card-head:hover{background:var(--surface-2)}
+  .card-head .tools{cursor:default}
+  .card h2::before{content:"▾";display:inline-block;width:16px;color:var(--ink-3);font-size:12px;transition:transform .15s}
+  .card.closed h2::before{transform:rotate(-90deg)}
+  .card.closed > :not(.card-head){display:none}
+  .card.closed{padding-bottom:10px}
+  .card.closed .card-head{margin-bottom:0}
+  .card.closed .card-head .note{margin-bottom:0}
+  .card.closed .card-head .tools{display:none}
+  .ins h3{cursor:pointer;user-select:none}
+  .ins h3::before{content:"▾";display:inline-block;width:14px;color:var(--ink-3);font-size:11px;transition:transform .15s}
+  .ins.closed h3::before{transform:rotate(-90deg)}
+  .ins.closed > :not(h3){display:none}
+  .ins.closed{padding-bottom:10px}
+  .ins.closed h3{margin-bottom:0}
+
   /* --- グラフ --- */
   .chart{position:relative;width:100%;overflow:visible}
   svg{display:block;width:100%;height:auto;overflow:visible}
@@ -423,6 +441,36 @@
     document.getElementById("range").textContent =
       ks.length ? fmtMD(ks[0]) + " 〜 " + fmtMD(ks[ks.length-1]) + " の記録" : "";
   }
+
+  /* ---------- 折りたたみ (見出しを押すと開閉、状態はこのブラウザに記憶) ---------- */
+  var OPEN_STORE = "rekupuri_savelog_open";
+  function loadOpen(){ try { return JSON.parse(localStorage.getItem(OPEN_STORE)) || {}; } catch(e){ return {}; } }
+  function saveOpen(o){ try { localStorage.setItem(OPEN_STORE, JSON.stringify(o)); } catch(e){} }
+  (function initFold(){
+    var open = loadOpen();
+    document.querySelectorAll("#app .card").forEach(function(card){
+      var head = card.querySelector(".card-head");
+      var h2 = head && head.querySelector("h2");
+      if (!h2) return;
+      var id = h2.textContent.trim();
+      card.classList.toggle("closed", !open[id]);
+      head.addEventListener("click", function(e){
+        if (e.target.closest(".tools")) return;
+        var now = card.classList.toggle("closed");
+        var o = loadOpen(); o[id] = !now; saveOpen(o);
+      });
+    });
+    document.querySelectorAll("#app .ins").forEach(function(sec){
+      var id = "ins:" + sec.id;
+      sec.classList.toggle("closed", open[id] === false);
+      sec.addEventListener("click", function(e){
+        var h3 = e.target.closest("h3");
+        if (!h3 || h3.parentNode !== sec) return;
+        var now = sec.classList.toggle("closed");
+        var o = loadOpen(); o[id] = !now; saveOpen(o);
+      });
+    });
+  })();
 
   /* ---------- アクセス解析 (GA4 / Search Console / Cloudflare) ---------- */
   var insLoaded = false;
