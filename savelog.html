@@ -500,6 +500,39 @@
   var insLoaded = false;
   var insForce = false;
   var insSum = {};
+  // ページの場所 → 分かりやすい名前 + リンク
+  var PAGE_NAMES = {
+    "/": "トップページ", "/index.html": "トップページ", "/gallery.html": "ギャラリー(作品を選ぶ)", "/all": "作品いちらん",
+    "/nurie-haru.html": "春の塗り絵", "/nurie-natsu.html": "夏の塗り絵", "/nurie-aki.html": "秋の塗り絵", "/nurie-fuyu.html": "冬の塗り絵",
+    "/nurie-doubutsu.html": "動物の塗り絵", "/keirou-nurie.html": "敬老の日の塗り絵", "/noutore-print.html": "脳トレプリント", "/nurie-calendar.html": "塗り絵カレンダー",
+    "/terms.html": "素材のご利用について", "/privacy.html": "プライバシーポリシー", "/savelog.html": "保存ログ(このページ)"
+  };
+  var STEM_INDEX = null;
+  function pageName(p){
+    var path = String(p || "");
+    var q = path.indexOf("?"); if (q >= 0) path = path.slice(0, q);
+    var h = path.indexOf("#"); if (h >= 0) path = path.slice(0, h);
+    if (PAGE_NAMES[path]) return PAGE_NAMES[path];
+    var m = /^\/works\/([^\/]+)$/.exec(path);
+    if (m) {
+      if (!STEM_INDEX) {
+        STEM_INDEX = {};
+        Object.keys(INFO).forEach(function(f){ STEM_INDEX[f.replace(/\.[^.]+$/, "")] = INFO[f]; });
+      }
+      var it = STEM_INDEX[decodeURIComponent(m[1])];
+      if (it) return "作品: " + it.title + (it.diff ? "(" + it.diff + ")" : "");
+      return "作品: " + decodeURIComponent(m[1]);
+    }
+    if (/^\/gallery\.html\?/.test(String(p))) return "ギャラリー(絞り込みあり)";
+    return path || "/";
+  }
+  function pageLink(urlOrPath){
+    var raw = String(urlOrPath || "");
+    var path = raw.replace(/^https?:\/\/[^\/]+/, "") || "/";
+    var href = /^https?:\/\//.test(raw) ? raw : path;
+    return '<a href="' + esc(href) + '" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none" title="' + esc(path) + '">' +
+      esc(pageName(path)) + ' <span style="font-size:10px;color:var(--ink-3)">↗</span></a>';
+  }
   function drawSummary(){
     var tiles = [];
     var push = function(label, value, unit, extra){ tiles.push('<div class="tile"><div class="label">' + label + '</div><div class="value">' + (extra || "") + value + '<span class="unit">' + (unit || "") + '</span></div></div>'); };
@@ -580,7 +613,7 @@
     ]);
     html += spark(daily, "users", "date");
     html += '<div class="cols"><div><h4>よく見られたページ(7日間)</h4><table><thead><tr><th>ページ</th><th style="text-align:right">閲覧</th><th style="text-align:right">人</th></tr></thead><tbody>' +
-      (d.pages || []).map(function(p){ return '<tr><td class="path" title="' + esc(p.path) + '">' + esc(p.path) + '</td><td class="num">' + num(p.views) + '</td><td class="num">' + num(p.users) + '</td></tr>'; }).join("") +
+      (d.pages || []).map(function(p){ return '<tr><td class="path">' + pageLink(p.path) + '</td><td class="num">' + num(p.views) + '</td><td class="num">' + num(p.users) + '</td></tr>'; }).join("") +
       '</tbody></table></div><div><h4>どこから来たか(28日間)</h4><table><thead><tr><th>流入元</th><th style="text-align:right">訪問</th></tr></thead><tbody>' +
       (d.sources || []).map(function(p){ return '<tr><td>' + esc(jpChannel(p.name)) + '</td><td class="num">' + num(p.sessions) + '</td></tr>'; }).join("") +
       '</tbody></table></div></div>';
@@ -609,7 +642,7 @@
     html += '<div class="cols"><div><h4>検索キーワード(上位20)</h4><table><thead><tr><th>キーワード</th><th style="text-align:right">クリック</th><th style="text-align:right">表示</th><th style="text-align:right">順位</th></tr></thead><tbody>' +
       (d.queries || []).map(function(q){ return '<tr><td>' + esc(q.key) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td><td class="num">' + Number(q.position).toFixed(1) + '</td></tr>'; }).join("") +
       '</tbody></table></div><div><h4>検索から来たページ(上位10)</h4><table><thead><tr><th>ページ</th><th style="text-align:right">クリック</th><th style="text-align:right">表示</th></tr></thead><tbody>' +
-      (d.pages || []).map(function(q){ var pth = String(q.key).replace(/^https?:\/\/[^\/]+/, "") || "/"; return '<tr><td class="path" title="' + esc(q.key) + '">' + esc(pth) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td></tr>'; }).join("") +
+      (d.pages || []).map(function(q){ return '<tr><td class="path">' + pageLink(q.key) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td></tr>'; }).join("") +
       '</tbody></table></div></div>';
     if (d.range) html += '<p class="sub" style="margin:8px 0 0">集計期間 ' + esc(d.range.start) + ' 〜 ' + esc(d.range.end) + '(Google 側で確定した分のみ)</p>';
     box.innerHTML = html;
@@ -630,7 +663,7 @@
     html += '<div class="cols"><div><h4>検索キーワード(上位20)</h4><table><thead><tr><th>キーワード</th><th style="text-align:right">クリック</th><th style="text-align:right">表示</th><th style="text-align:right">順位</th></tr></thead><tbody>' +
       (d.queries || []).map(function(q){ return '<tr><td>' + esc(q.key) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td><td class="num">' + (q.position ? Number(q.position).toFixed(1) : "—") + '</td></tr>'; }).join("") +
       '</tbody></table></div><div><h4>検索から来たページ(上位10)</h4><table><thead><tr><th>ページ</th><th style="text-align:right">クリック</th><th style="text-align:right">表示</th></tr></thead><tbody>' +
-      (d.pages || []).map(function(q){ var pth = String(q.key).replace(/^https?:\/\/[^\/]+/, "") || "/"; return '<tr><td class="path" title="' + esc(q.key) + '">' + esc(pth) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td></tr>'; }).join("") +
+      (d.pages || []).map(function(q){ return '<tr><td class="path">' + pageLink(q.key) + '</td><td class="num">' + num(q.clicks) + '</td><td class="num">' + num(q.impressions) + '</td></tr>'; }).join("") +
       '</tbody></table></div></div>';
     if (!daily.length) html += '<p class="sub" style="margin:8px 0 0">まだBing側にデータがありません(登録から数日かかります)</p>';
     if (d.site) html += '<p class="sub" style="margin:8px 0 0">Bing のサイトURL: ' + esc(d.site) + '</p>';
