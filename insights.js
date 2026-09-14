@@ -14,6 +14,8 @@
 //   BING_API_KEY     … Bing Webmaster Tools の設定 → APIアクセス で発行したAPIキー
 //   BING_SITE        … (省略可) Bing に登録したサイトURL。既定は https://rekupuri.com/
 
+const VERSION = "2026-09-14c";
+
 export async function onRequest({ request, env }) {
   const url = new URL(request.url);
   const key = url.searchParams.get("key") || "";
@@ -24,6 +26,7 @@ export async function onRequest({ request, env }) {
     if (src === "ga")  return json(await fetchGA(env));
     if (src === "gsc") return json(await fetchGSC(env));
     if (src === "bing") return json(await fetchBing(env));
+    if (src === "version") return json({ version: VERSION });
     return json({ error: "src は ga / gsc / bing のどれかを指定してください" }, 400);
   } catch (e) {
     return json({ error: String(e && e.message || e) }, 200);
@@ -35,7 +38,8 @@ function json(obj, status) {
     status: status || 200,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "private, max-age=600"
+      // エラーはキャッシュしない(設定を直した直後に古いエラーが残らないように)
+      "Cache-Control": (obj && obj.error) ? "no-store" : "private, max-age=600"
     }
   });
 }

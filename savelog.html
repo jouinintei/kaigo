@@ -474,6 +474,7 @@
 
   /* ---------- アクセス解析 (GA4 / Search Console / Bing) ---------- */
   var insLoaded = false;
+  var insForce = false;
   function num(n){ return Number(n || 0).toLocaleString("ja-JP"); }
   function sumLast(arr, field, n){
     var a = arr.slice(-n), s = 0;
@@ -509,7 +510,7 @@
       '<br><span style="color:var(--ink-3)">EdgeOne の環境変数と、Google Cloud 側の権限(サービスアカウントの追加)を確認してください</span></p>';
   }
   function insFetch(src){
-    return fetch("api/insights?src=" + src + "&key=" + encodeURIComponent(key) + "&_=" + Math.floor(Date.now() / 600000), {cache:"no-store"})
+    return fetch("api/insights?src=" + src + "&key=" + encodeURIComponent(key) + "&_=" + (insForce ? Date.now() : Math.floor(Date.now() / 600000)), {cache:"no-store"})
       .then(function(r){
         if (r.status === 404) throw new Error("キーが違います");
         if (!r.ok) throw new Error("HTTP " + r.status);
@@ -598,7 +599,7 @@
     });
     Promise.all(jobs).then(function(){ st.textContent = "取得 " + hhmm(Date.now()); insLoaded = true; });
   }
-  document.getElementById("insReloadBtn").addEventListener("click", loadInsights);
+  document.getElementById("insReloadBtn").addEventListener("click", function(){ insForce = true; loadInsights(); });
 
   /* ---------- ランキング ---------- */
   var lastData = null;
