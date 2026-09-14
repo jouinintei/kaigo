@@ -161,13 +161,18 @@
   /* --- フィード --- */
   .daysep{font-size:12px;color:var(--ink-3);padding:16px 2px 8px;border-bottom:1px solid var(--line);letter-spacing:.05em}
   .daysep:first-child{padding-top:4px}
-  .ev{display:flex;gap:13px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line)}
-  .ev .time{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums;width:44px;flex:none}
-  .ev .thumb{width:46px;height:60px;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);object-fit:cover;object-position:top}
-  .ev .thumb.none{display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink-3)}
-  .ev .body{min-width:0;flex:1}
-  .ev .ttl{font-size:15px;font-weight:600;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .ev .meta{font-size:11px;color:var(--ink-3);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  #feedWrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;align-content:start;padding:2px}
+  #feedWrap > p{grid-column:1/-1}
+  .daysep{grid-column:1/-1;padding:8px 2px 2px;border-bottom:0}
+  .ev{display:flex;flex-direction:column;gap:6px;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--surface);min-width:0}
+  .ev .thumb{width:100%;aspect-ratio:297/210;height:auto;border:1px solid var(--line);border-radius:6px;background:#fff;object-fit:contain}
+  .ev .thumb.none{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--ink-3);background:var(--surface-2)}
+  .ev .body{min-width:0}
+  .ev .ttl{font-size:13.5px;font-weight:600;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ev .meta{font-size:11px;color:var(--ink-3);display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+  .ev .time{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .ev .tag.dev{margin-left:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  @media (max-width:600px){#feedWrap{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
   .tag{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;color:var(--ink-2)}
   .tag.kind{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
   .tag.dev{margin-left:auto;font-variant-numeric:tabular-nums;letter-spacing:.03em;color:var(--ink-3)}
@@ -175,7 +180,7 @@
   @keyframes flash{from{background:var(--accent-soft)}to{background:transparent}}
   .ev.fresh{animation:flash 2.4s ease-out}
   .empty{color:var(--ink-3);font-size:13px;padding:22px 2px;line-height:1.8}
-  #feedWrap{max-height:430px;overflow:auto}
+  #feedWrap{max-height:500px;overflow:auto}
   #rankWrap{max-height:262px;overflow:auto}
   .inssum{flex-basis:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-top:8px;cursor:default}
   .inssum .tile{padding:9px 12px}
@@ -952,24 +957,22 @@
       var fresh = (!firstDraw && newestBefore !== null && e.t > newestBefore) ? " fresh" : "";
       var ttl = it ? it.title : e.f;
       var tags = [];
-      tags.push('<span class="tag kind">'+kindOf(it)+'</span>');
-      if (it && it.season) tags.push('<span class="tag">'+it.season+'</span>');
-      if (it && it.genre)  tags.push('<span class="tag">'+it.genre+'</span>');
+      if (kindOf(it) !== "塗り絵") tags.push('<span class="tag kind">'+kindOf(it)+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
       if (e.d){
         var lv = devLevel(e.d);
         var ds = devStats[e.d];
-        tags.push('<span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(e.d)) +
-          (lv ? (lv === "reg" ? " ★常連 " : " リピーター ") + ds.nDays + "日利用" : "") + '</span>');
+        tags.push('<span class="tag dev' + (lv ? " rep" : "") + '" title="' + esc(shortId(e.d)) +
+          (lv ? (lv === "reg" ? "　常連　" : "　リピーター　") + ds.nDays + "日利用" : "") + '">' + esc(shortId(e.d)) +
+          (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>');
       }
       var thumb = (imgDir === null)
         ? '<div class="thumb none">🖼</div>'
         : '<img class="thumb" src="'+imgDir+encodeURIComponent(e.f)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
       html += '<div class="ev'+fresh+'">'+
-        '<div class="time">'+hhmm(e.t)+'</div>'+
         thumb+
-        '<div class="body"><div class="ttl">'+esc(ttl)+'</div>'+
-        '<div class="meta">'+tags.join("")+'</div></div>'+
+        '<div class="body"><div class="ttl" title="'+esc(ttl)+'">'+esc(ttl)+'</div>'+
+        '<div class="meta"><span class="time">'+hhmm(e.t)+'</span>'+tags.join("")+'</div></div>'+
       '</div>';
     });
     wrap.innerHTML = html;
