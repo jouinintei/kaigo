@@ -602,4 +602,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "動物", title: "ドッグラン2", diff: "中級", file: "up_1790911502302_1.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "犬", diff: "中級", file: "up_1790911505528_2.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "ドッグラン", diff: "中級", file: "up_1790911508171_3.png", added: "2026-10" },
+  { season: "通年", genre: "動物", title: "遊ぶ子猫", diff: "中級", file: "up_1790911744311_4.png", added: "2026-10" },
+  { season: "通年", genre: "動物", title: "寄り添う猫", diff: "中級", file: "up_1790911747349_5.png", added: "2026-10" },
+  { season: "通年", genre: "動物", title: "猫島", diff: "上級", file: "up_1790911750392_6.png", added: "2026-10" },
 ];
