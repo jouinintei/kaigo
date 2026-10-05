@@ -56,8 +56,9 @@ jobs:
           echo "::notice::uploaded $(grep -c '^upload:' sync.log) files"
       - name: Make thumbnails
         run: |
-          pip install -q boto3 pillow
-          python3 .github/scripts/make_thumbs.py
+          python3 -m venv .venv
+          .venv/bin/pip install -q boto3 pillow > pip.log 2>&1 || { echo "::error::pip $(tail -c 400 pip.log | tr '\n' ' ')"; exit 1; }
+          .venv/bin/python .github/scripts/make_thumbs.py 2> err.log || { echo "::error::thumbs $(tail -c 500 err.log | tr '\n' ' ')"; exit 1; }
       - name: Count objects
         run: |
           echo "::notice::local $(ls images | wc -l) / r2 $(aws s3 ls "s3://$R2_BUCKET/images/" --endpoint-url "$R2_ENDPOINT" | wc -l)"
