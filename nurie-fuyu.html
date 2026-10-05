@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<script>window.IMG_BASE="https://img.rekupuri.com/images/";addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG"&&t.src.indexOf(window.IMG_BASE)===0&&!t.dataset.fb){t.dataset.fb="1";t.src="images/"+t.src.slice(window.IMG_BASE.length);e.stopPropagation();}},true);</script>
+<script>window.IMG_BASE="https://img.rekupuri.com/images/";window.THUMB_BASE="https://img.rekupuri.com/thumbs/";addEventListener("error",function(e){var t=e.target;if(!t||t.tagName!=="IMG")return;var s=t.src,T=window.THUMB_BASE,B=window.IMG_BASE;if(s.indexOf(T)===0){t.src=B+s.slice(T.length).replace(/\.jpg(\?.*)?$/,"");e.stopPropagation();return;}if(s.indexOf(B)===0&&!t.dataset.fb){t.dataset.fb="1";t.src="images/"+s.slice(B.length);e.stopPropagation();}},true);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>冬の塗り絵 無料91枚|高齢者向け・A4印刷対応|介護のレクプリ</title>
 <meta name="description" content="高齢者向けの冬の塗り絵を無料で配布。クリスマス・お正月・椿・雪だるま・餅つきなど91枚以上、すべてA4印刷対応。介護施設・デイサービスの12月・1月・2月のレクリエーションに。">
@@ -123,7 +123,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     a.className = "card";
     a.href = "gallery.html?season=冬";
     a.innerHTML =
-      '<img loading="lazy" src="' + window.IMG_BASE + n.file + '" alt="' + (n.title || "") + 'の' + (n.kind || "塗り絵") + '(高齢者向け・A4印刷対応)">' +
+      '<img loading="lazy" src="' + window.THUMB_BASE + n.file + '.jpg" alt="' + (n.title || "") + 'の' + (n.kind || "塗り絵") + '(高齢者向け・A4印刷対応)">' +
       '<div class="t">' + (n.title || "") + '</div>' +
       (n.diff ? '<div class="d">難しさ: ' + n.diff + '</div>' : '');
     grid.appendChild(a);
