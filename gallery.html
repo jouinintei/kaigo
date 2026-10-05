@@ -1023,7 +1023,18 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     "実":"み","種":"たね","苗":"なえ","池":"いけ","滝":"たき","岩":"いわ","砂":"すな",
     "雲":"くも","風":"かぜ","虹":"にじ","氷":"こおり","炭":"すみ","火":"ひ","水":"みず"
   };
-  const YOMI_KEYS = Object.keys(YOMI).sort((a, b) => b.length - a.length);
+  let YOMI_KEYS = Object.keys(YOMI).sort((a, b) => b.length - a.length);
+  let AUTO_T = {};
+  fetch("https://img.rekupuri.com/search/yomi.json", { mode: "cors" })
+    .then(r => r.ok ? r.json() : null)
+    .then(j => {
+      if (!j) return;
+      AUTO_T = j.t || {};
+      Object.keys(j.w || {}).forEach(k => { if (!(k in YOMI)) YOMI[k] = j.w[k]; });
+      YOMI_KEYS = Object.keys(YOMI).sort((a, b) => b.length - a.length);
+      if (qWord) render();
+    })
+    .catch(() => {});
   function withYomi(t) {
     let add = "";
     YOMI_KEYS.forEach(k => { if (t.indexOf(k) >= 0) add += YOMI[k]; });
@@ -1038,7 +1049,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (!qWord) return true;
     const base = [n.title, n.genre, n.season, n.diff, kindOf(n)].join(" ");
     // 漢字のまま・ぜんぶ読み仮名にしたもの、両方を用意して照合します
-    const hay = normQ(base) + "|" + normQ(toKana(base)) + "|" + normQ(withYomi(base));
+    const hay = normQ(base) + "|" + normQ(toKana(base)) + "|" + normQ(withYomi(base)) + "|" + normQ(AUTO_T[n.file] || "");
     const words = qWord.trim().split(/[\s,、]+/).filter(Boolean);
     if (!words.length) return true;
     return words.every(w => hay.indexOf(normQ(w)) >= 0 || hay.indexOf(normQ(toKana(w))) >= 0);
