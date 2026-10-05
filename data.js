@@ -624,4 +624,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "風景", title: "銀杏並木", diff: "上級", file: "up_1791187629427_6.png", added: "2026-10" },
   { kind: "カレンダー", year: 2026, month: 11, season: "通年", title: "11月カレンダー4", file: "up_1791187798300_7.png", added: "2026-10" },
   { kind: "カレンダー", year: 2026, month: 11, season: "通年", title: "11月カレンダー5", file: "up_1791187994455_8.png", added: "2026-10" },
+  { season: "秋", genre: "風物詩", title: "文化の日", diff: "上級", file: "up_1791188114623_9.png", added: "2026-10" },
 ];
