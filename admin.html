@@ -515,9 +515,26 @@
       opt.headers["Content-Type"] = blob.type || "application/octet-stream";
       opt.body = blob;
     }
-    const res = await fetch("api/r2-upload?name=" + encodeURIComponent(name), opt);
+    let res = null;
     let j = null;
-    try { j = await res.json(); } catch (e) {}
+    for (let attempt = 0; attempt < 10; attempt++) {
+      j = null;
+      try {
+        res = await fetch("api/r2-upload?name=" + encodeURIComponent(name), opt);
+        try { j = await res.json(); } catch (e) {}
+      } catch (e) {
+        res = null;
+      }
+      if (res && res.status < 500) break;
+      if (attempt === 0) {
+        ["saveStatus", "listStatus"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.className = "status"; el.textContent = "サイトの更新中のため、少し待ってから自動でやり直します..."; }
+        });
+      }
+      await new Promise(r => setTimeout(r, 10000));
+    }
+    if (!res) throw new Error("通信できませんでした。電波の良いところでもう一度お試しください");
     if (!res.ok || !j || !j.ok) {
       throw new Error("画像の保存に失敗しました (" + res.status + (j && j.error ? " " + j.error : "") + ")");
     }
