@@ -34,12 +34,20 @@ jobs:
           fi
       - name: Sync images to R2
         run: |
+          set +e
           aws s3 sync images "s3://$R2_BUCKET/images" \
             --endpoint-url "$R2_ENDPOINT" \
             --size-only \
             --cache-control "public, max-age=86400" \
-            --no-progress
+            --no-progress > sync.log 2>&1
+          code=$?
+          tail -n 5 sync.log
+          if [ $code -ne 0 ]; then
+            msg=$(grep -iE "error|denied|fail" sync.log | head -n 3 | tr '\n' ' ' | cut -c1-400)
+            echo "::error::exit $code $msg"
+            exit $code
+          fi
+          echo "::notice::uploaded $(grep -c '^upload:' sync.log) files"
       - name: Count objects
         run: |
-          echo "local: $(ls images | wc -l)"
-          echo "r2: $(aws s3 ls "s3://$R2_BUCKET/images/" --endpoint-url "$R2_ENDPOINT" | wc -l)"
+          echo "::notice::local $(ls images | wc -l) / r2 $(aws s3 ls "s3://$R2_BUCKET/images/" --endpoint-url "$R2_ENDPOINT" | wc -l)"
