@@ -1,5 +1,5 @@
 const ACCOUNT_ID = "f2973a9b06bd5d30be681c629f19145e";
-const BUCKET = "rekupuri-images";
+const BUCKET = "rekupuri-img-apac";
 const PREFIX = "images/";
 const ALLOWED_REPO = "jouinintei/kaigo";
 const MAX_BYTES = 20 * 1024 * 1024;

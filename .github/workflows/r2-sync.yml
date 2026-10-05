@@ -26,7 +26,7 @@ jobs:
       AWS_REQUEST_CHECKSUM_CALCULATION: when_required
       AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
       R2_ENDPOINT: https://f2973a9b06bd5d30be681c629f19145e.r2.cloudflarestorage.com
-      R2_BUCKET: rekupuri-images
+      R2_BUCKET: rekupuri-img-apac
     steps:
       - uses: actions/checkout@v4
         with:
