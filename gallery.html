@@ -431,6 +431,7 @@
     font-weight: bold;
   }
   .pager button:disabled { opacity: .4; cursor: default; }
+  .pager .gap { align-self: center; color: #8a8477; font-size: 16px; padding: 0 2px; }
   .card {
     background: var(--card);
     border: 1px solid var(--line);
@@ -1368,12 +1369,31 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     prev.disabled = curPage === 1;
     prev.onclick = () => go(curPage - 1);
     pager.appendChild(prev);
-    for (let n = 1; n <= totalPages; n++) {
+    const addNum = (n) => {
       const b = document.createElement("button");
       b.textContent = n;
       if (n === curPage) b.className = "cur";
       b.onclick = () => go(n);
       pager.appendChild(b);
+    };
+    const addGap = () => {
+      const s = document.createElement("span");
+      s.className = "gap";
+      s.textContent = "…";
+      pager.appendChild(s);
+    };
+    if (totalPages <= 10) {
+      for (let n = 1; n <= totalPages; n++) addNum(n);
+    } else {
+      const span = 7;
+      let start = Math.max(2, curPage - 3);
+      let end = Math.min(totalPages - 1, start + span - 1);
+      start = Math.max(2, end - span + 1);
+      addNum(1);
+      if (start > 2) addGap();
+      for (let n = start; n <= end; n++) addNum(n);
+      if (end < totalPages - 1) addGap();
+      addNum(totalPages);
     }
     const next = document.createElement("button");
     next.textContent = "次へ →";
