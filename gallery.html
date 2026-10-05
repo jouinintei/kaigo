@@ -1501,11 +1501,38 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 
   async function fetchImageBlob(file) {
     let r = null;
-    try { r = await fetch(window.IMG_BASE + file); } catch (e) { r = null; }
+    try { r = await fetch(window.IMG_BASE + file, { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
     if (!r || !r.ok) r = await fetch("images/" + file);
     if (!r.ok) throw new Error("読み込めません: " + file);
     return await r.blob();
   }
+
+  document.addEventListener("click", async (e) => {
+    const a = e.target && e.target.closest ? e.target.closest("a[download]") : null;
+    if (!a || e.defaultPrevented || a.dataset.direct) return;
+    const href = a.getAttribute("href") || "";
+    if (href.indexOf("images/") !== 0) return;
+    e.preventDefault();
+    const name = a.download;
+    const file = href.slice("images/".length);
+    const go = (url, direct) => {
+      const t = document.createElement("a");
+      t.href = url;
+      t.download = name;
+      if (direct) t.dataset.direct = "1";
+      document.body.appendChild(t);
+      t.click();
+      t.remove();
+    };
+    try {
+      const blob = await fetchImageBlob(file);
+      const url = URL.createObjectURL(blob);
+      go(url, false);
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+    } catch (err) {
+      go(href, true);
+    }
+  });
 
   // ZIPを作る部品 (外部の部品を使わないので、どの環境でも動きます)
   function crc32(buf) {
