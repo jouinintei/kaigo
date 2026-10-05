@@ -642,4 +642,5 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 11, season: "通年", title: "11月カレンダー10", file: "up_1791192963758_3.png", added: "2026-10" },
   { season: "通年", genre: "食べ物", title: "ケーキ", diff: "中級", file: "up_1791193389535_4.png", added: "2026-10" },
   { season: "秋", genre: "風物詩", title: "ハロウィンのお菓子", diff: "初級", file: "up_1791201669434_5.png", added: "2026-10" },
+  { season: "秋", genre: "風物詩", title: "ハロウィンのお菓子", diff: "上級", file: "up_1791201768735_6.png", added: "2026-10" },
 ];
