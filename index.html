@@ -239,7 +239,7 @@
 </section>
 
 <footer>
-  <a href="/all">作品いちらん</a>｜<a href="/terms.html">素材のご利用について</a>｜<a href="/privacy.html">プライバシーポリシー</a>｜<a href="#contact">お問い合わせ</a><br>
+  <a href="/all">作品いちらん</a>｜<a href="/terms.html">素材のご利用について</a>｜<a href="/privacy.html">プライバシーポリシー</a>｜<a href="#contact">お問い合わせ・要望</a><br>
   © 介護のレクプリ
 </footer>
 
@@ -272,6 +272,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("newTxt").textContent =
       "今月は " + monthCount + " 枚の素材を追加しました。";
   }
+  function deviceId() {
+    let id = "";
+    try { id = localStorage.getItem("rekupuri_did") || ""; } catch (e) {}
+    if (!id) {
+      id = Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 4);
+      try { localStorage.setItem("rekupuri_did", id); } catch (e) {}
+    }
+    return id;
+  }
   const btn = document.getElementById("cSend");
   btn.onclick = async () => {
     const text = document.getElementById("cText").value.trim();
@@ -298,7 +307,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const r = await fetch("api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text, from: from, type: type, web: web })
+        body: JSON.stringify({ text: text, from: from, type: type, web: web, did: deviceId() })
       });
       if (r.ok) {
         try { localStorage.setItem("rk_contact_last", String(Date.now())); } catch (e) {}

@@ -184,6 +184,15 @@
   @keyframes flash{from{background:var(--accent-soft)}to{background:transparent}}
   .ev.fresh{animation:flash 2.4s ease-out}
   .empty{color:var(--ink-3);font-size:13px;padding:22px 2px;line-height:1.8}
+  #inqWrap{max-height:520px;overflow:auto}
+  .inq{padding:11px 2px;border-bottom:1px solid var(--line)}
+  .inq:last-child{border-bottom:0}
+  .inq .top{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+  .inq .when{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .inq .tag.dev{margin-left:0}
+  .inq .tag.bug{background:#fdecea;border-color:transparent;color:#c0392b}
+  .inq .txt{font-size:14px;line-height:1.75;white-space:pre-wrap;word-break:break-word}
+  .inq .from{font-size:12px;color:var(--ink-3);margin-top:5px;word-break:break-all}
   #feedWrap{max-height:500px;overflow:auto}
   #rankWrap{max-height:262px;overflow:auto}
   .inssum{flex-basis:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-top:8px;cursor:default}
@@ -237,6 +246,19 @@
       </div>
     </div>
     <div id="feedWrap"><p class="empty">読み込み中…</p></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>お問い合わせ・要望</h2>
+        <p class="note" id="inqNote">新しい順。送った端末が分かります。</p>
+      </div>
+      <div class="tools">
+        <button class="btn-ghost" id="inqReloadBtn">更新</button>
+      </div>
+    </div>
+    <div id="inqWrap"><p class="empty">読み込み中…</p></div>
   </section>
 
   <section class="card">
@@ -449,6 +471,7 @@
     lastData = d;
     drawRank(d);
     drawDevices();
+    drawInquiries();
 
     // 画像フォルダが未判定なら、実際に保存されたファイルで探して描き直す
     if (imgDir === null && events.length){
@@ -470,7 +493,7 @@
   function saveOpen(o){ try { localStorage.setItem(OPEN_STORE, JSON.stringify(o)); } catch(e){} }
   (function initFold(){
     var open = loadOpen();
-    var DEFAULT_OPEN = { "いま保存されたもの": true, "人気ランキング": true };
+    var DEFAULT_OPEN = { "いま保存されたもの": true, "お問い合わせ・要望": true, "人気ランキング": true };
     document.querySelectorAll("#app .card").forEach(function(card){
       var head = card.querySelector(".card-head");
       var h2 = head && head.querySelector("h2");
@@ -1032,6 +1055,55 @@
 
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 
+  /* ---------- お問い合わせ・要望 ---------- */
+  var inqItems = null;
+  function drawInquiries(){
+    var wrap = document.getElementById("inqWrap");
+    var note = document.getElementById("inqNote");
+    if (inqItems === null) return;
+    if (!inqItems.length){
+      note.textContent = "新しい順。送った端末が分かります。";
+      wrap.innerHTML = '<p class="empty">まだお問い合わせはありません。</p>';
+      return;
+    }
+    var items = inqItems.slice().sort(function(a,b){ return Date.parse(b.date) - Date.parse(a.date); });
+    note.textContent = "新しい順。全" + items.length + "件。送った端末が分かります。";
+    var html = "", curDay = "";
+    items.forEach(function(it){
+      var t = Date.parse(it.date);
+      var k = dayKey(t);
+      if (k !== curDay){ curDay = k; html += '<div class="daysep" style="grid-column:auto;padding:12px 2px 2px">' + labelDay(k) + '</div>'; }
+      var type = it.type || "その他";
+      var tags = '<span class="when">' + hhmm(t) + '</span>' +
+        '<span class="tag ' + (type === "不具合" ? "bug" : "kind") + '">' + esc(type) + '</span>';
+      if (it.d && it.d !== "unknown"){
+        var lv = (typeof devLevel === "function") ? devLevel(it.d) : "";
+        tags += '<span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(it.d)) +
+          (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>';
+      } else {
+        tags += '<span class="tag dev">端末不明</span>';
+      }
+      html += '<div class="inq"><div class="top">' + tags + '</div>' +
+        '<div class="txt">' + esc(it.text || "") + '</div>' +
+        (it.from ? '<div class="from">返信先: ' + esc(it.from) + '</div>' : '') + '</div>';
+    });
+    wrap.innerHTML = html;
+  }
+  function loadInquiries(){
+    fetch("api/contact?key=" + encodeURIComponent(key) + "&_=" + Date.now(), {cache:"no-store"})
+      .then(function(r){
+        if (!r.ok) throw new Error("読み込みに失敗しました (" + r.status + ")");
+        return r.json();
+      })
+      .then(function(j){
+        inqItems = Array.isArray(j.items) ? j.items : [];
+        drawInquiries();
+      })
+      .catch(function(e){
+        document.getElementById("inqWrap").innerHTML = '<p class="empty">' + esc(String(e.message || e)) + '</p>';
+      });
+  }
+
   /* ---------- 起動 ---------- */
   function start(k){
     key = k;
@@ -1040,6 +1112,7 @@
     document.getElementById("app").style.display = "";
     load(false);
     schedule();
+    loadInquiries();
     loadInsights();
   }
 
@@ -1068,7 +1141,8 @@
   document.getElementById("keyInput").addEventListener("keydown", function(e){
     if (e.key === "Enter") document.getElementById("goBtn").click();
   });
-  document.getElementById("reloadBtn").addEventListener("click", function(){ load(true); schedule(); });
+  document.getElementById("reloadBtn").addEventListener("click", function(){ load(true); schedule(); loadInquiries(); });
+  document.getElementById("inqReloadBtn").addEventListener("click", function(){ loadInquiries(); });
   // タイルを押すと詳細(日時・分類・端末の利用状況)を開閉(スマホ向け)
   document.getElementById("feedWrap").addEventListener("click", function(e){
     var ev = e.target.closest(".ev");
