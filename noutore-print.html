@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<script>window.IMG_BASE="https://img.rekupuri.com/images/";addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG"&&t.src.indexOf(window.IMG_BASE)===0&&!t.dataset.fb){t.dataset.fb="1";t.src="images/"+t.src.slice(window.IMG_BASE.length);e.stopPropagation();}},true);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>脳トレプリント 無料65枚|高齢者向け・答え付き・A4印刷対応|介護のレクプリ</title>
 <meta name="description" content="高齢者向けの脳トレプリントを無料で配布。難読漢字・ことわざ・計算・言葉遊び・クイズなど65枚以上、答え付き・A4印刷対応。介護施設・デイサービスの脳トレレクにそのまま使えます。">
@@ -122,7 +123,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     a.className = "card";
     a.href = "gallery.html?page=noutore";
     a.innerHTML =
-      '<img loading="lazy" src="images/' + n.file + '" alt="' + (n.title || "") + 'の' + (n.kind || "塗り絵") + '(高齢者向け・A4印刷対応)">' +
+      '<img loading="lazy" src="' + window.IMG_BASE + n.file + '" alt="' + (n.title || "") + 'の' + (n.kind || "塗り絵") + '(高齢者向け・A4印刷対応)">' +
       '<div class="t">' + (n.title || "") + '</div>' +
       (n.diff ? '<div class="d">難しさ: ' + n.diff + '</div>' : '');
     grid.appendChild(a);

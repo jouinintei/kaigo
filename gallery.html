@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<script>window.IMG_BASE="https://img.rekupuri.com/images/";addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG"&&t.src.indexOf(window.IMG_BASE)===0&&!t.dataset.fb){t.dataset.fb="1";t.src="images/"+t.src.slice(window.IMG_BASE.length);e.stopPropagation();}},true);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>作品一覧(塗り絵・脳トレ・カレンダー)|介護のレクプリ</title>
 <meta name="description" content="高齢者向けの無料塗り絵・脳トレ・月間カレンダーの一覧ページ。季節やジャンルで絞り込んで、A4サイズでそのまま印刷・保存できます。">
@@ -758,6 +759,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   let qWord = "";
 
   function imgPath(n, file) {
+    return window.IMG_BASE + file;
+  }
+  function dlPath(n, file) {
     return "images/" + file;
   }
 
@@ -1316,7 +1320,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const d = document.createElement("a");
       d.className = "btn-dl";
       d.textContent = "💾 保存";
-      d.href = imgPath(n, n.file);
+      d.href = dlPath(n, n.file);
       d.download = dlName(n);
       d.onclick = () => {
         mark(n.file, "save");
@@ -1328,7 +1332,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         const da = document.createElement("a");
         da.className = "btn-ans";
         da.textContent = "💾 答え";
-        da.href = imgPath(n, n.answer);
+        da.href = dlPath(n, n.answer);
         da.download = dlNameAns(n);
         da.onclick = () => {
           showToast("答えを保存しました");
@@ -1419,7 +1423,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("lbTitle").textContent =
       n.title + (lbShowingAnswer ? " 答え" : "") + ((n.diff && kindOf(n) !== "脳トレ") ? "(" + n.diff + ")" : "");
     const save = document.getElementById("lbSave");
-    save.href = imgPath(n, file);
+    save.href = dlPath(n, file);
     save.download = lbShowingAnswer ? dlNameAns(n) : dlName(n);
     const tg = document.getElementById("lbAnswer");
     tg.style.display = n.answer ? "inline-block" : "none";
@@ -1496,7 +1500,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
 
   async function fetchImageBlob(file) {
-    const r = await fetch("images/" + file);
+    let r = null;
+    try { r = await fetch(window.IMG_BASE + file); } catch (e) { r = null; }
+    if (!r || !r.ok) r = await fetch("images/" + file);
     if (!r.ok) throw new Error("読み込めません: " + file);
     return await r.blob();
   }
@@ -1554,7 +1560,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     shown.forEach((n, i) => {
       setTimeout(() => {
         const a = document.createElement("a");
-        a.href = imgPath(n, n.file);
+        a.href = dlPath(n, n.file);
         a.download = dlName(n);
         document.body.appendChild(a);
         a.click();
