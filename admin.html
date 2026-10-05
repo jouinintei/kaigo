@@ -846,7 +846,7 @@
   fileInput.onchange = () => { addFiles(fileInput.files); fileInput.value = ""; };
 
   function guess(name) {
-    const base = name.replace(/\.[^.]+$/, "");
+    const base = name.replace(/\.[^.]+$/, "").replace(/[_＿]+/g, " ");
     const parts = base.replace(/　/g, " ").trim().split(/\s+/);
     let diff = "";
     let title = base;

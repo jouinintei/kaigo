@@ -766,7 +766,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   //   → 「虫食い算」「難読漢字」「ことばさがし」
   function seriesBase(t) {
     const s = String(t).replace(/\s*その\d+(\s*[((][^))]*[))])?$/, "");
-    const m = s.match(/^[^\s　((]+/);
+    const m = s.match(/^[^\s　((_＿]+/);
     return m ? m[0] : s;
   }
   function seriesNum(t) {
