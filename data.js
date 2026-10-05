@@ -617,4 +617,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 山菜きのこ編", file: "up_1790925816886_4.png", answer: "up_1791177157025_1.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "猫と女性", diff: "上級", file: "up_1790925839909_6.png", added: "2026-10" },
   { kind: "カレンダー", year: 2026, month: 11, season: "通年", title: "11月カレンダー", file: "up_1791186466634_1.png", added: "2026-10" },
+  { season: "秋", genre: "風景", title: "紅葉", diff: "上級", file: "up_1791186496957_2.png", added: "2026-10" },
 ];
