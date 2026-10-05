@@ -1,0 +1,27 @@
+name: R2 bucket copy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/r2-copy-trigger"
+  workflow_dispatch:
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_ENDPOINT: https://f2973a9b06bd5d30be681c629f19145e.r2.cloudflarestorage.com
+      SRC_BUCKET: rekupuri-images
+      DST_BUCKET: rekupuri-img-apac
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+      - name: Copy
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -q boto3 > pip.log 2>&1 || { echo "::error::pip $(tail -c 400 pip.log | tr '\n' ' ')"; exit 1; }
+          .venv/bin/python .github/scripts/copy_bucket.py 2> err.log || { echo "::error::copy $(tail -c 500 err.log | tr '\n' ' ')"; exit 1; }
