@@ -160,7 +160,7 @@ export async function onRequest(context) {
     "枚の一覧です。作品名をクリックすると、その作品のページが開いてA4サイズでダウンロードできます。会員登録も費用も必要ありません。</p>" +
     sections +
     '<footer><a href="/">トップ</a>｜<a href="/terms.html">素材のご利用について</a>｜' +
-    '<a href="/privacy.html">プライバシーポリシー</a>｜<a href="/#contact">お問い合わせ・要望</a><br>© 介護のレクプリ</footer>' +
+    '<a href="/privacy.html">プライバシーポリシー</a>｜<a href="/contact.html">お問い合わせ・要望</a><br>© 介護のレクプリ</footer>' +
     "</div></body></html>";
 
   return new Response(html, {

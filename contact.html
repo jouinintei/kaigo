@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<script>
+(function () {
+  if (location.hostname === "kaigo-no-rekupuri.edgeone.dev") {
+    location.replace("https://rekupuri.com" + location.pathname + location.search + location.hash);
+  }
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>お問い合わせ・要望|介護のレクプリ</title>
+<meta name="description" content="「介護のレクプリ」へのご要望・不具合のご連絡・お問い合わせはこちらから。">
+<link rel="canonical" href="https://rekupuri.com/contact.html">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="/analytics.js" defer></script>
+<style>
+  :root { --bg:#faf6ef; --card:#fff; --ink:#3a3a3a; --accent:#e8833a; --accent-soft:#fbe3cf; --line:#e5ddd0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:"Hiragino Maru Gothic ProN","BIZ UDGothic","Yu Gothic","Meiryo",sans-serif;
+         background:var(--bg); color:var(--ink); line-height:1.9; }
+  header { background:var(--card); border-bottom:3px solid var(--accent); padding:18px 24px; text-align:center; }
+  header h1 { font-size:22px; color:var(--accent); letter-spacing:1px; }
+  header p { font-size:14px; color:#8a8477; margin-top:4px; }
+  a { color:#b3611f; }
+  .wrap { max-width:780px; margin:0 auto; padding:22px 16px 60px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin-bottom:18px; }
+  h2 { font-size:18px; color:var(--accent); margin:0 0 10px; padding-bottom:5px; border-bottom:1px solid var(--line); }
+  p { font-size:15.5px; margin-bottom:10px; }
+  .examples { list-style:none; margin:4px 0 14px; display:flex; flex-wrap:wrap; gap:8px; }
+  .examples li { font-size:14px; background:var(--accent-soft); color:#6b5535; border-radius:999px; padding:4px 14px; }
+  .contact { display:flex; flex-direction:column; gap:10px; }
+  .contact label { font-size:14px; font-weight:bold; color:#6b5535; margin-bottom:-6px; }
+  .contact textarea, .contact input, .contact select {
+    font-family:inherit; font-size:16px; padding:10px 12px;
+    border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); width:100%;
+  }
+  .contact textarea { resize:vertical; }
+  .contact .hp { position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+  .contact .cnote { font-size:14px; color:#8a8477; line-height:1.7; }
+  .contact .cnote a { color:inherit; }
+  .contact button {
+    font-family:inherit; font-size:17px; font-weight:bold; padding:12px 0;
+    border:none; border-radius:999px; background:var(--accent); color:#fff; cursor:pointer; max-width:220px; width:100%;
+  }
+  .contact button:disabled { opacity:0.5; cursor:default; }
+  .cmsg { font-size:15px; color:#4a9b6e; font-weight:bold; }
+  .count { font-size:13px; color:#8a8477; text-align:right; margin-top:-6px; }
+  details { border-top:1px solid var(--line); padding:10px 0; }
+  details:first-of-type { border-top:none; padding-top:2px; }
+  summary { font-size:15.5px; font-weight:bold; cursor:pointer; color:#6b5535; }
+  details p { margin:8px 0 2px; font-size:15px; }
+  footer { text-align:center; font-size:13px; color:#8a8477; padding:34px 16px 26px; margin-top:30px; border-top:1px solid var(--line); }
+  footer a { margin:0 6px; }
+  @media (max-width:600px){ .card { padding:18px 16px; } p { font-size:15px; } header h1 { font-size:20px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>お問い合わせ・要望</h1>
+  <p><a href="/">介護のレクプリ トップへ</a>｜<a href="gallery.html">作品ギャラリーへ</a></p>
+</header>
+
+<div class="wrap">
+
+<div class="card">
+  <h2>ご意見・ご要望をお寄せください</h2>
+  <p>「こんな塗り絵がほしい」「ここが使いづらい」「表示がおかしい」など、お気軽にお送りください。いただいた声をもとに、素材やサイトを増やし、直していきます。</p>
+  <ul class="examples" aria-label="ご要望の例">
+    <li>来月の行事の塗り絵がほしい</li>
+    <li>線が太めのやさしい絵がほしい</li>
+    <li>男性が喜ぶ題材(車・釣りなど)</li>
+    <li>計算の脳トレをもっと</li>
+    <li>保存ができない</li>
+  </ul>
+  <p style="font-size:14px;color:#8a8477">ご要望は「題材」「季節や行事」「難しさ」「使う場面(人数・時間など)」が書いてあると、より形にしやすくなります。</p>
+
+  <div class="contact">
+    <label for="cType">種類</label>
+    <select id="cType">
+      <option value="ご要望">ご要望</option>
+      <option value="不具合">不具合</option>
+      <option value="その他">その他</option>
+    </select>
+    <label for="cText">内容</label>
+    <textarea id="cText" rows="6" maxlength="1000" placeholder="内容をご記入ください"></textarea>
+    <div class="count" id="cCount">0 / 1000</div>
+    <label for="cFrom">返信先(任意)</label>
+    <input id="cFrom" type="text" maxlength="100" placeholder="メールアドレスなど。空欄でもOK">
+    <input id="cWeb" class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div class="cnote">お返事が必要な場合だけ、返信先をご記入ください。ご記入いただいた内容は、ご返信とサイトの改善にのみ使い、<a href="/privacy.html">プライバシーポリシー</a>に従って取り扱います。</div>
+    <button id="cSend">送信する</button>
+    <div id="cMsg" class="cmsg" role="status"></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>よくあるご質問</h2>
+  <details>
+    <summary>印刷はどうすればよいですか。</summary>
+    <p>ギャラリーで素材の「保存」を押して画像を保存し、保存した画像をA4サイズで印刷してください。お使いのプリンターで縦横や余白がずれにくいよう、この方法をおすすめしています。</p>
+  </details>
+  <details>
+    <summary>保存した画像はどこにありますか。</summary>
+    <p>1枚ずつの保存は、ふだんお使いのダウンロード先(多くは「ダウンロード」フォルダ)に入ります。お気に入りの「まとめて保存」で保存先を選んだ場合は、そのフォルダの中の「介護のレクプリ」フォルダに入ります。</p>
+  </details>
+  <details>
+    <summary>施設で何枚印刷しても大丈夫ですか。</summary>
+    <p>はい、枚数の制限はなく、無料でお使いいただけます。画像ファイルそのものの再配布や販売だけはご遠慮ください。詳しくは<a href="/terms.html">素材のご利用について</a>をご覧ください。</p>
+  </details>
+  <details>
+    <summary>お返事はもらえますか。</summary>
+    <p>返信先をご記入いただいた場合は、内容を確認のうえ、可能な範囲でお返事します。ご要望はすべてに沿えるとは限りませんが、いただいた声はすべて読んでいます。</p>
+  </details>
+</div>
+
+<footer>
+  <a href="/">トップ</a>｜<a href="/all">作品いちらん</a>｜<a href="/terms.html">素材のご利用について</a>｜<a href="/privacy.html">プライバシーポリシー</a>｜<a href="/contact.html">お問い合わせ・要望</a><br>
+  © 介護のレクプリ
+</footer>
+
+</div>
+
+<script>
+(function () {
+  const sel = document.getElementById("cType");
+  const want = new URLSearchParams(location.search).get("type");
+  if (want && [...sel.options].some(o => o.value === want)) sel.value = want;
+  const ta = document.getElementById("cText");
+  const cnt = document.getElementById("cCount");
+  ta.addEventListener("input", () => { cnt.textContent = ta.value.length + " / 1000"; });
+  function deviceId() {
+    let id = "";
+    try { id = localStorage.getItem("rekupuri_did") || ""; } catch (e) {}
+    if (!id) {
+      id = Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 4);
+      try { localStorage.setItem("rekupuri_did", id); } catch (e) {}
+    }
+    return id;
+  }
+  const btn = document.getElementById("cSend");
+  btn.onclick = async () => {
+    const text = ta.value.trim();
+    const from = document.getElementById("cFrom").value.trim();
+    const type = sel.value;
+    const web = document.getElementById("cWeb").value;
+    const msg = document.getElementById("cMsg");
+    if (!text) {
+      msg.style.color = "#c05a5a";
+      msg.textContent = "内容をご記入ください";
+      ta.focus();
+      return;
+    }
+    let last = 0;
+    try { last = Number(localStorage.getItem("rk_contact_last") || 0); } catch (e) {}
+    if (Date.now() - last < 60000) {
+      msg.style.color = "#c05a5a";
+      msg.textContent = "続けて送信できません。1分ほどあけてからお試しください";
+      return;
+    }
+    btn.disabled = true;
+    msg.style.color = "#8a8477";
+    msg.textContent = "送信中...";
+    try {
+      const r = await fetch("api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: text, from: from, type: type, web: web, did: deviceId() })
+      });
+      if (r.ok) {
+        try { localStorage.setItem("rk_contact_last", String(Date.now())); } catch (e) {}
+        ta.value = "";
+        cnt.textContent = "0 / 1000";
+        document.getElementById("cFrom").value = "";
+        msg.style.color = "#4a9b6e";
+        msg.textContent = "送信しました。ありがとうございます!";
+        setTimeout(() => { btn.disabled = false; }, 60000);
+      } else {
+        btn.disabled = false;
+        msg.style.color = "#c05a5a";
+        msg.textContent = r.status === 429
+          ? "続けて送信できません。少し時間をおいてからお試しください"
+          : "送信できませんでした。時間をおいてもう一度お試しください";
+      }
+    } catch (e) {
+      btn.disabled = false;
+      msg.style.color = "#c05a5a";
+      msg.textContent = "通信できませんでした。電波の良いところでもう一度お試しください";
+    }
+  };
+})();
+</script>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a9863d837944405fb5b7d52eafc53b9e"}'></script>
+</body>
+</html>

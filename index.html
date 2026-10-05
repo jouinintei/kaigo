@@ -8,7 +8,9 @@
 (function () {
   if (location.hostname === "kaigo-no-rekupuri.edgeone.dev") {
     location.replace("https://rekupuri.com" + location.pathname + location.search + location.hash);
+    return;
   }
+  if (location.hash === "#contact") location.replace("/contact.html");
 })();
 </script>
 
@@ -112,34 +114,17 @@
     margin-bottom: 14px;
   }
   p.txt { font-size: 16px; margin-bottom: 12px; }
-  .contact { display: flex; flex-direction: column; gap: 10px; max-width: 640px; }
-  .contact textarea, .contact input, .contact select {
-    font-family: inherit;
-    font-size: 16px;
-    padding: 10px 12px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: #fff;
-    color: var(--ink);
-  }
-  .contact textarea { resize: vertical; }
-  .contact .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-  .contact .cnote { font-size: 14px; color: #8a8477; line-height: 1.7; }
-  .contact .cnote a { color: inherit; }
-  .contact button {
-    font-family: inherit;
+  .contact-link {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 999px;
     font-size: 17px;
     font-weight: bold;
-    padding: 12px 0;
-    border: none;
-    border-radius: 999px;
+    text-decoration: none;
     background: var(--accent);
     color: #fff;
-    cursor: pointer;
-    max-width: 220px;
   }
-  .contact button:disabled { opacity: 0.5; cursor: default; }
-  .cmsg { font-size: 15px; color: #4a9b6e; font-weight: bold; }
+  .contact-link:hover { opacity: 0.9; }
   ol.howto { margin: 6px 0 0 22px; font-size: 16px; }
   ol.howto li { margin-bottom: 8px; }
   footer {
@@ -223,23 +208,11 @@
 <section id="contact">
   <h2>お問い合わせ・要望</h2>
   <p class="txt">「こんな塗り絵がほしい」「ここが使いづらい」「表示がおかしい」など、ご意見・ご要望・不具合のご連絡をお気軽にお送りください。</p>
-  <div class="contact">
-    <select id="cType" aria-label="種類">
-      <option value="ご要望">ご要望</option>
-      <option value="不具合">不具合</option>
-      <option value="その他">その他</option>
-    </select>
-    <textarea id="cText" rows="5" maxlength="1000" placeholder="内容をご記入ください"></textarea>
-    <input id="cFrom" type="text" maxlength="100" placeholder="返信先(任意)メールアドレスなど。空欄でもOK">
-    <input id="cWeb" class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <div class="cnote">お返事が必要な場合だけ、返信先をご記入ください。ご記入いただいた内容は、ご返信とサイトの改善にのみ使い、<a href="/privacy.html">プライバシーポリシー</a>に従って取り扱います。</div>
-    <button id="cSend">送信する</button>
-    <div id="cMsg" class="cmsg"></div>
-  </div>
+  <a class="contact-link" href="/contact.html">✉ お問い合わせ・要望はこちら</a>
 </section>
 
 <footer>
-  <a href="/all">作品いちらん</a>｜<a href="/terms.html">素材のご利用について</a>｜<a href="/privacy.html">プライバシーポリシー</a>｜<a href="#contact">お問い合わせ・要望</a><br>
+  <a href="/all">作品いちらん</a>｜<a href="/terms.html">素材のご利用について</a>｜<a href="/privacy.html">プライバシーポリシー</a>｜<a href="/contact.html">お問い合わせ・要望</a><br>
   © 介護のレクプリ
 </footer>
 
@@ -272,62 +245,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("newTxt").textContent =
       "今月は " + monthCount + " 枚の素材を追加しました。";
   }
-  function deviceId() {
-    let id = "";
-    try { id = localStorage.getItem("rekupuri_did") || ""; } catch (e) {}
-    if (!id) {
-      id = Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 4);
-      try { localStorage.setItem("rekupuri_did", id); } catch (e) {}
-    }
-    return id;
-  }
-  const btn = document.getElementById("cSend");
-  btn.onclick = async () => {
-    const text = document.getElementById("cText").value.trim();
-    const from = document.getElementById("cFrom").value.trim();
-    const type = document.getElementById("cType").value;
-    const web = document.getElementById("cWeb").value;
-    const msg = document.getElementById("cMsg");
-    if (!text) {
-      msg.style.color = "#c05a5a";
-      msg.textContent = "内容をご記入ください";
-      return;
-    }
-    let last = 0;
-    try { last = Number(localStorage.getItem("rk_contact_last") || 0); } catch (e) {}
-    if (Date.now() - last < 60000) {
-      msg.style.color = "#c05a5a";
-      msg.textContent = "続けて送信できません。1分ほどあけてからお試しください";
-      return;
-    }
-    btn.disabled = true;
-    msg.style.color = "#8a8477";
-    msg.textContent = "送信中...";
-    try {
-      const r = await fetch("api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text, from: from, type: type, web: web, did: deviceId() })
-      });
-      if (r.ok) {
-        try { localStorage.setItem("rk_contact_last", String(Date.now())); } catch (e) {}
-        document.getElementById("cText").value = "";
-        document.getElementById("cFrom").value = "";
-        msg.style.color = "#4a9b6e";
-        msg.textContent = "送信しました。ありがとうございます!";
-      } else {
-        btn.disabled = false;
-        msg.style.color = "#c05a5a";
-        msg.textContent = r.status === 429
-          ? "続けて送信できません。少し時間をおいてからお試しください"
-          : "送信できませんでした。時間をおいてもう一度お試しください";
-      }
-    } catch (e) {
-      btn.disabled = false;
-      msg.style.color = "#c05a5a";
-      msg.textContent = "通信できませんでした。電波の良いところでもう一度お試しください";
-    }
-  };
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a9863d837944405fb5b7d52eafc53b9e"}'></script><!-- End Cloudflare Web Analytics -->
