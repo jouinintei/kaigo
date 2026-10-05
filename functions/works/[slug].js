@@ -75,7 +75,8 @@ export async function onRequest(context) {
     : kind === "カレンダー"
       ? "「" + n.title + "」の塗り絵つき月間カレンダー。無料でA4印刷できます。"
       : "「" + n.title + "」" + d + "の高齢者向け無料塗り絵。" + (n.season && n.season !== "通年" ? "季節: " + n.season + "。" : "") + (n.genre ? "ジャンル: " + n.genre + "。" : "") + "A4サイズで印刷して、デイサービスや介護施設のレクリエーションにそのまま使えます。";
-  const img = origin + "/images/" + n.file;
+  const IMGB = "https://img.rekupuri.com/images/";
+  const img = IMGB + n.file;
   const url = origin + "/works/" + encodeURIComponent(slug);
   const backHref = kind === "脳トレ" ? "/gallery.html?page=noutore"
     : kind === "カレンダー" ? "/gallery.html?page=calendar" : "/gallery.html";
@@ -141,16 +142,17 @@ export async function onRequest(context) {
     "<div class=\"wrap\">\n" +
     "<h1>" + esc(n.title) + (kind === "塗り絵" && n.diff ? "(" + esc(n.diff) + ")" : "") + "</h1>\n" +
     "<div class=\"tags\">" + tags.map(t => '<span class="tag">' + esc(t) + "</span>").join("") + "</div>\n" +
-    "<div class=\"pic\"><img src=\"" + esc("/images/" + n.file) + "\" alt=\"" + esc(n.title + (kind === "脳トレ" ? " 脳トレプリント" : " 塗り絵")) + "\"></div>\n" +
+    "<div class=\"pic\"><img src=\"" + esc(IMGB + n.file) + "\" alt=\"" + esc(n.title + (kind === "脳トレ" ? " 脳トレプリント" : " 塗り絵")) + "\"></div>\n" +
     "<p class=\"txt\">" + esc(desc) + "</p>\n" +
     "<div class=\"btns\">\n" +
-    "<a class=\"b1\" href=\"" + esc("/images/" + n.file) + "\" download=\"" + esc(n.title + (n.diff && kind !== "脳トレ" ? "(" + n.diff + ")" : "")) + esc(n.file.substring(n.file.lastIndexOf("."))) + "\">💾 この" + (kind === "脳トレ" ? "プリント" : kind === "カレンダー" ? "カレンダー" : "塗り絵") + "を保存</a>\n" +
-    (n.answer ? "<a class=\"b2\" href=\"" + esc("/images/" + n.answer) + "\" download=\"" + esc(n.title + " 答え") + esc(n.answer.substring(n.answer.lastIndexOf("."))) + "\">💾 答えを保存</a>\n" : "") +
+    "<a class=\"b1\" href=\"" + esc(IMGB + n.file) + "\" download=\"" + esc(n.title + (n.diff && kind !== "脳トレ" ? "(" + n.diff + ")" : "")) + esc(n.file.substring(n.file.lastIndexOf("."))) + "\">💾 この" + (kind === "脳トレ" ? "プリント" : kind === "カレンダー" ? "カレンダー" : "塗り絵") + "を保存</a>\n" +
+    (n.answer ? "<a class=\"b2\" href=\"" + esc(IMGB + n.answer) + "\" download=\"" + esc(n.title + " 答え") + esc(n.answer.substring(n.answer.lastIndexOf("."))) + "\">💾 答えを保存</a>\n" : "") +
     "<a class=\"b3\" href=\"" + backHref + "\">" + backLabel + " →</a>\n" +
     "</div>\n" +
     "<p class=\"txt\">保存した画像をA4サイズで印刷すると、そのままレクリエーションで使えます。ほかにも塗り絵・脳トレ・カレンダーを無料で配布しています。</p>\n" +
     "</div>\n" +
     "<footer><a href=\"/\">" + SITE + "</a> — 高齢者向けの無料塗り絵・脳トレ・カレンダー素材</footer>\n" +
+    "<script>document.addEventListener(\"click\",async function(e){var a=e.target.closest&&e.target.closest(\"a[download]\");if(!a||a.dataset.direct)return;e.preventDefault();var h=a.getAttribute(\"href\"),nm=a.getAttribute(\"download\");try{var r=await fetch(h,{mode:\"cors\",cache:\"no-cache\"});if(!r.ok)throw 0;var u=URL.createObjectURL(await r.blob());var t=document.createElement(\"a\");t.href=u;t.download=nm;t.dataset.direct=\"1\";document.body.appendChild(t);t.click();t.remove();setTimeout(function(){URL.revokeObjectURL(u)},30000);}catch(x){location.href=h.replace(\"https://img.rekupuri.com\",\"\");}});</script>\n" +
     "</body>\n</html>";
 
   return new Response(html, {

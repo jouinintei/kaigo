@@ -155,8 +155,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       d.className = "item" + (selected && selected.file === n.file ? " sel" : "");
       var im = document.createElement("img");
       im.loading = "lazy";
-      im.src = "images/" + n.file;
-      im.onerror = function () { im.style.visibility = "hidden"; };
+      im.src = "https://img.rekupuri.com/images/" + n.file;
+      im.onerror = function () { if (!im.dataset.fb) { im.dataset.fb = "1"; im.src = "images/" + n.file; return; } im.style.visibility = "hidden"; };
       var nm = document.createElement("div");
       nm.className = "nm";
       nm.innerHTML = '<div>' + label(n) + '<span class="badge">' + kindOf(n) + '</span></div>' +

@@ -498,7 +498,7 @@
     const safe = name.replace(/[^\w.\-ぁ-んァ-ヶ一-龠ー()]/g, "_");
     const exists = async (n) => {
       if (entries.some(e => e.file === n || e.answer === n)) return true;
-      return (await getFile("images/" + n)) !== null;
+      return await r2Exists(n);
     };
     if (!(await exists(safe))) return safe;
     const dot = safe.lastIndexOf(".");
@@ -508,9 +508,27 @@
     while (await exists(stem + "_" + i + ext)) i++;
     return stem + "_" + i + ext;
   }
+  const IMG_BASE = "https://img.rekupuri.com/images/";
+  async function r2Call(method, name, blob) {
+    const opt = { method: method, headers: { "Authorization": "Bearer " + cfg.token } };
+    if (blob) {
+      opt.headers["Content-Type"] = blob.type || "application/octet-stream";
+      opt.body = blob;
+    }
+    const res = await fetch("api/r2-upload?name=" + encodeURIComponent(name), opt);
+    let j = null;
+    try { j = await res.json(); } catch (e) {}
+    if (!res.ok || !j || !j.ok) {
+      throw new Error("画像の保存に失敗しました (" + res.status + (j && j.error ? " " + j.error : "") + ")");
+    }
+    return j;
+  }
+  async function r2Exists(name) {
+    const j = await r2Call("GET", name);
+    return !!j.exists;
+  }
   async function uploadImage(file, name) {
-    const buf = new Uint8Array(await file.arrayBuffer());
-    await putFile("images/" + name, b64encode(buf), "画像追加: " + name);
+    await r2Call("PUT", name, file);
   }
 
   // どんな画像(iPhoneのHEIC写真など)でも、ブラウザで確実に表示できる
@@ -679,6 +697,10 @@
 
   // 同じ名前のファイルを上書きする (GitHubは上書きに版札=sha が要ります)
   async function overwriteFile(path, blob, message) {
+    if (path.indexOf("images/") === 0) {
+      await r2Call("PUT", path.slice("images/".length), blob);
+      return;
+    }
     const cur = await getFile(path);
     const buf = new Uint8Array(await blob.arrayBuffer());
     await putFile(path, b64encode(buf), message, cur ? cur.sha : undefined);
@@ -1059,8 +1081,7 @@
   document.getElementById("ltabCal").onclick = () => { listKind = "カレンダー"; renderList(); };
 
   function imgSrc(file) {
-    // 同じサイトの images フォルダから表示 (反映前の新規分は出ないことがあります)
-    return "images/" + file;
+    return IMG_BASE + file;
   }
 
   function renderList() {
@@ -1094,7 +1115,7 @@
       img.className = "pv";
       img.loading = "lazy";
       img.src = imgSrc(e.file);
-      img.onerror = () => { img.style.display = "none"; };
+      img.onerror = () => { if (!img.dataset.fb) { img.dataset.fb = "1"; img.src = "images/" + e.file; return; } img.style.display = "none"; };
       tdImg.appendChild(img);
       if (e.answer) {
         const lab = document.createElement("div");
@@ -1105,7 +1126,7 @@
         aimg.className = "pv-ans";
         aimg.loading = "lazy";
         aimg.src = imgSrc(e.answer);
-        aimg.onerror = () => { aimg.style.display = "none"; };
+        aimg.onerror = () => { if (!aimg.dataset.fb) { aimg.dataset.fb = "1"; aimg.src = "images/" + e.answer; return; } aimg.style.display = "none"; };
         tdImg.appendChild(aimg);
       }
 
