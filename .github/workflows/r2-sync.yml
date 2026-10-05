@@ -48,6 +48,17 @@ jobs:
             exit $code
           fi
           echo "::notice::uploaded $(grep -c '^upload:' sync.log) files"
+      - name: Set CORS
+        continue-on-error: true
+        run: |
+          cat > cors.json <<'JSON'
+          {"CORSRules":[{"AllowedOrigins":["https://rekupuri.com","https://www.rekupuri.com","https://kaigo-no-rekupuri.edgeone.dev"],"AllowedMethods":["GET","HEAD"],"AllowedHeaders":["*"],"MaxAgeSeconds":86400}]}
+          JSON
+          if aws s3api put-bucket-cors --bucket "$R2_BUCKET" --cors-configuration file://cors.json --endpoint-url "$R2_ENDPOINT" > cors.log 2>&1; then
+            echo "::notice::CORS ok"
+          else
+            echo "::warning::CORS failed $(tr '\n' ' ' < cors.log | cut -c1-300)"
+          fi
       - name: Count objects
         run: |
           echo "::notice::local $(ls images | wc -l) / r2 $(aws s3 ls "s3://$R2_BUCKET/images/" --endpoint-url "$R2_ENDPOINT" | wc -l)"
