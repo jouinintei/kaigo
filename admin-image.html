@@ -155,7 +155,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       d.className = "item" + (selected && selected.file === n.file ? " sel" : "");
       var im = document.createElement("img");
       im.loading = "lazy";
-      im.src = (n.member ? "member-img/" : "images/") + n.file;
+      im.src = "images/" + n.file;
       im.onerror = function () { im.style.visibility = "hidden"; };
       var nm = document.createElement("div");
       nm.className = "nm";

@@ -26,7 +26,7 @@ async function loadList(origin) {
     items.push({
       kind: get(s, "kind"), season: get(s, "season"), genre: get(s, "genre"),
       title: get(s, "title"), diff: get(s, "diff"), file: get(s, "file"),
-      answer: get(s, "answer"), added: get(s, "added"), member: flag(s, "member")
+      answer: get(s, "answer"), added: get(s, "added")
     });
   }
   const seen = new Set();
@@ -53,7 +53,7 @@ export async function onRequest(context) {
   slug = slug.replace(/\.html?$/i, "");
 
   const list = await loadList(origin);
-  const n = list.find(e => !e.member && e.file.replace(/\.[^.]+$/, "") === slug);
+  const n = list.find(e => e.file.replace(/\.[^.]+$/, "") === slug);
 
   if (!n) {
     return new Response(

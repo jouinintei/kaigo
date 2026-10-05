@@ -91,7 +91,7 @@
 <div class="themes"><a href="nurie-haru.html">春の塗り絵</a><a href="nurie-natsu.html">夏の塗り絵</a><a href="nurie-aki.html">秋の塗り絵</a><a href="nurie-fuyu.html">冬の塗り絵</a><a href="nurie-doubutsu.html">動物の塗り絵</a><a href="keirou-nurie.html">敬老の日</a><a href="noutore-print.html">脳トレプリント</a></div>
 
 <footer>
-  <a href="/">トップ</a>｜<a href="gallery.html">作品ギャラリー</a>｜<a href="/terms.html">素材のご利用について</a>｜<a href="/privacy.html">プライバシーポリシー</a><br>
+  <a href="/">トップ</a>｜<a href="gallery.html">作品ギャラリー</a>｜<a href="/terms.html">素材のご利用について</a>｜<a href="/privacy.html">プライバシーポリシー</a>｜<a href="/#contact">お問い合わせ</a><br>
   © 介護のレクプリ
 </footer>
 
@@ -106,7 +106,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   var MAX = 24;
   var seen = {};
   var list = (window.NURIE_LIST || []).filter(function (n) {
-    if (!n || !n.file || seen[n.file] || n.member) return false;
+    if (!n || !n.file || seen[n.file]) return false;
     seen[n.file] = 1;
     var kind = n.kind || "塗り絵";
     if (F.kind && kind !== F.kind) return false;

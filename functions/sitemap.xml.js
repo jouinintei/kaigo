@@ -15,7 +15,7 @@ async function loadList(origin) {
   let m;
   while ((m = re.exec(text))) {
     const s = m[0];
-    items.push({ file: get(s, "file"), added: get(s, "added"), member: flag(s, "member") });
+    items.push({ file: get(s, "file"), added: get(s, "added") });
   }
   const seen = new Set();
   return items.filter(e => e.file && !seen.has(e.file) && seen.add(e.file));
@@ -46,7 +46,7 @@ export async function onRequest(context) {
     origin + "/terms.html",
     origin + "/privacy.html"
   ];
-  list.filter(e => !e.member).forEach(e => {
+  list.forEach(e => {
     urls.push(origin + "/works/" + encodeURIComponent(e.file.replace(/\.[^.]+$/, "")));
   });
   const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +

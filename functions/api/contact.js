@@ -78,8 +78,14 @@ export async function onRequest(context) {
 
   let body;
   try { body = await request.json(); } catch (e) { body = null; }
+  // ボット対策: 人には見えない欄に入力があれば、保存せずに成功したふりをして終える
+  if (body && String(body.web || "").trim()) {
+    return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
+  }
   const text = String((body && body.text) || "").trim().slice(0, 1000);
   const from = String((body && body.from) || "").trim().slice(0, 200);
+  const TYPES = ["ご要望", "不具合", "その他"];
+  const type = TYPES.includes(String((body && body.type) || "")) ? body.type : "その他";
   if (!text) {
     return new Response(JSON.stringify({ ok: false, error: "empty" }), { status: 400, headers });
   }
@@ -87,7 +93,12 @@ export async function onRequest(context) {
   try {
     for (let attempt = 0; attempt < 2; attempt++) {
       const { data, sha } = await ghGet(repo, token);
-      data.push({ date: new Date().toISOString(), text: text, from: from });
+      // 送信間隔の制限: 直前の受付から10秒以内は受け付けない
+      const lastT = data.length ? Date.parse(data[data.length - 1].date) : 0;
+      if (lastT && Date.now() - lastT < 10000) {
+        return new Response(JSON.stringify({ ok: false, error: "too_fast" }), { status: 429, headers });
+      }
+      data.push({ date: new Date().toISOString(), type: type, text: text, from: from });
       if (data.length > 500) data.splice(0, data.length - 500);
       const r = await ghPut(repo, token, data, sha);
       if (r.ok) {

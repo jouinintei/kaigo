@@ -54,8 +54,9 @@
     font-size: 15px;
     font-weight: bold;
   }
-  .apply-btn {
+  .contact-btn {
     position: absolute;
+    text-decoration: none;
     top: 14px;
     right: 18px;
     font-size: 14px;
@@ -67,7 +68,7 @@
     padding: 7px 16px;
     cursor: pointer;
   }
-  .apply-btn:hover { background: #fff3e8; }
+  .contact-btn:hover { background: #fff3e8; }
   .admin-link {
     position: absolute;
     top: 14px;
@@ -127,7 +128,6 @@
     align-items: center;
     justify-content: center;
   }
-  #tabMember { padding: 12px 16px; font-size: 15px; }
   .tab.active {
     background: var(--accent);
     border-color: var(--accent);
@@ -609,7 +609,7 @@
     header { padding: 40px 12px 0; }
     .private-badge { top: 10px; left: 12px; font-size: 13px; }
     .admin-link { top: 8px; right: 12px; font-size: 12px; padding: 4px 10px; }
-    .apply-btn { top: 8px; right: 12px; font-size: 12px; padding: 5px 12px; }
+    .contact-btn { top: 8px; right: 12px; font-size: 12px; padding: 5px 12px; }
     .reload-btn { top: 8px; right: 128px; font-size: 12px; padding: 4px 10px; }
     header h1 img { max-width: 82%; }
     header p { font-size: 13px; }
@@ -629,12 +629,6 @@
       font-size: 13px;
       font-weight: bold;
     }
-    #tabMember {
-      flex: 0.9;
-      padding: 11px 2px;
-      font-size: 11px;
-    }
-
     .toolbar {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -692,7 +686,7 @@
 <body>
 
 <header>
-  <button class="apply-btn" id="tabApply">💌 会員申請</button>
+  <a class="contact-btn" href="./#contact">✉ お問い合わせ</a>
   <h1><a href="./"><img src="logo.png" alt="介護のレクプリ" style="max-width:min(88%,480px); height:auto; vertical-align:middle"></a></h1>
   <p>お好みの画像を選んで印刷できます。</p>
   <div class="tabs">
@@ -700,7 +694,6 @@
     <button class="tab active" id="tabList">塗り絵を選ぶ</button>
     <button class="tab" id="tabNoutore">脳トレを選ぶ</button>
     <button class="tab fav-tab" id="tabFav">★ お気に入り</button>
-    <button class="tab" id="tabMember">🔒 会員専用</button>
   </div>
 </header>
 
@@ -746,7 +739,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 </script>
 <script>
 (function () {
-  const MEMBER_TAB = true;
   function dedupe(arr) {
     const seen = new Set();
     return arr.filter(n => {
@@ -764,49 +756,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   let seriesView = null;
   let qWord = "";
 
-  const MEMBER_KEY = "nurie_member_v1";
-  function isMemberUnlocked() {
-    try { return localStorage.getItem(MEMBER_KEY) === "yes"; } catch (e) { return false; }
-  }
-  function clearMemberUnlock() {
-    try { localStorage.removeItem(MEMBER_KEY); } catch (e) {}
-  }
-  async function unlockMember() {
-    const pw = window.prompt("会員パスワードを入力してください");
-    if (pw === null) return false;
-    try {
-      const r = await fetch("api/member-login?pw=" + encodeURIComponent(pw.trim()));
-      if (r.ok) {
-        try { localStorage.setItem(MEMBER_KEY, "yes"); } catch (e) {}
-        return true;
-      }
-      if (r.status === 401) alert("パスワードが違います");
-      else alert("会員機能の準備がまだのようです(設定を確認してください)");
-    } catch (e) {
-      alert("通信できませんでした。電波の良いところでもう一度お試しください");
-    }
-    return false;
-  }
   function imgPath(n, file) {
-    return (n && n.member ? "member-img/" : "images/") + file;
-  }
-
-  let memberLoaded = false;
-  async function loadMemberList() {
-    try {
-      const r = await fetch("api/member-list");
-      if (r.status === 403) return "auth";
-      if (!r.ok) return "err";
-      const txt = await r.text();
-      let entries = [];
-      try {
-        entries = new Function('"use strict"; return [' + txt + ']')() || [];
-      } catch (e) { return "err"; }
-      entries = entries.filter(Boolean).map(e => Object.assign({}, e, { member: true })).reverse();
-      list = dedupe(entries.concat(list.filter(n => !n.member)));
-      memberLoaded = true;
-      return "ok";
-    } catch (e) { return "err"; }
+    return "images/" + file;
   }
 
   // 脳トレのシリーズ名 = 題名の頭の言葉(最初の空白・カッコの前まで)
@@ -842,11 +793,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (page === "calendar") return "カレンダー";
     return "塗り絵";
   }
-  let memberKind = "塗り絵";
   function kindSubset() {
-    if (page === "member") {
-      return list.filter(n => n.member && kindOf(n) === memberKind);
-    }
     return list.filter(n => kindOf(n) === pageKind());
   }
 
@@ -924,37 +871,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const bar = document.getElementById("toolbar");
     bar.innerHTML = "";
     if (page === "fav") return;
-    if (page === "member") {
-      const lbl = document.createElement("span");
-      lbl.style.fontWeight = "bold";
-      lbl.style.fontSize = "18px";
-      lbl.textContent = "🔒 会員専用";
-      bar.appendChild(lbl);
-      const kindsAvail = ["塗り絵", "脳トレ", "カレンダー"].filter(k =>
-        list.some(n => n.member && kindOf(n) === k));
-      if (kindsAvail.length && !kindsAvail.includes(memberKind)) memberKind = kindsAvail[0];
-      if (kindsAvail.length > 1) {
-        kindsAvail.forEach(k => {
-          const b = document.createElement("button");
-          b.className = "cal-btn";
-          b.textContent = k;
-          if (k === memberKind) {
-            b.style.background = "#e8630a";
-            b.style.color = "#fff";
-          }
-          b.onclick = () => {
-            memberKind = k;
-            selSeason = selGenre = selDiff = selUsed = null;
-            seriesView = null;
-            curPage = 1;
-            render();
-            syncState();
-          };
-          bar.appendChild(b);
-        });
-      }
-    }
-    if (seriesView && (page === "list" || page === "noutore" || page === "member")) {
+    if (seriesView && (page === "list" || page === "noutore")) {
       const lbl = document.createElement("span");
       lbl.style.fontWeight = "bold";
       lbl.style.fontSize = "18px";
@@ -1027,8 +944,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       bar.appendChild(wrap);
     };
 
-    const genreOnly = (page === "noutore") ||
-      (page === "member" && memberKind !== "塗り絵");
+    const genreOnly = (page === "noutore");
     if (genreOnly) {
       selSeason = selDiff = selUsed = null;
       if (genres.length) {
@@ -1127,10 +1043,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     }
     if (page === "calendar") {
       if (!calMonth) return [];
-      return kindSubset().filter(n => calKey(n) === calMonth && !n.member)
+      return kindSubset().filter(n => calKey(n) === calMonth)
         .slice().sort((a, b) => String(a.title).localeCompare(String(b.title), "ja"));
     }
-    return kindSubset().filter(n => (page === "member" ? true : !n.member)).filter(matchQ).filter(n =>
+    return kindSubset().filter(matchQ).filter(n =>
       (!selSeason || n.season === selSeason) &&
       (!selGenre || n.genre === selGenre) &&
       (!selDiff || n.diff === selDiff) &&
@@ -1143,9 +1059,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const nFav = loadFav().length;
     document.getElementById("tabNoutore").classList.toggle("active", page === "noutore");
     document.getElementById("tabList").classList.toggle("active", page === "list");
-    const tm = document.getElementById("tabMember");
-    tm.style.display = MEMBER_TAB ? "" : "none";
-    tm.classList.toggle("active", page === "member");
     const tf = document.getElementById("tabFav");
     tf.classList.toggle("active", page === "fav");
     tf.textContent = "★ お気に入り" + (nFav ? " (" + nFav + ")" : "");
@@ -1211,8 +1124,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     let seriesGrouped = false;
     // シリーズにまとめるのは脳トレだけ (塗り絵はすべて単独で表示)
     // キーワード検索中は、探しているものが埋もれないよう1枚ずつ出します
-    const useSeries = !qWord && ((page === "noutore") ||
-      (page === "member" && memberKind === "脳トレ"));
+    const useSeries = !qWord && (page === "noutore");
     if (useSeries) {
       if (seriesView) {
         all = all.filter(n => seriesBase(n.title) === seriesView)
@@ -1253,8 +1165,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     empty.style.display = all.length ? "none" : "block";
     empty.textContent = qWord
       ? "「" + qWord.trim() + "」に当てはまる作品は見つかりませんでした"
-      : page === "member"
-      ? "会員専用コンテンツはまだありません"
       : page === "fav"
       ? "お気に入りはまだありません(カード右上の ☆ を押すと登録できます)"
       : (page === "noutore"
@@ -1336,12 +1246,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
           img.src = imgPath(n, n.file) + "?r=" + Date.now();
           return;
         }
-        if (n.member) {
-          clearMemberUnlock();
-          thumb.innerHTML = '<div class="noimg">会員の確認が切れました<br>「🔒 会員専用」タブを押し直してください</div>';
-        } else {
-          thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
-        }
+        thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
       };
       img.onclick = () => { openLightbox(n); pushNav(); };
       thumb.appendChild(img);
@@ -1364,18 +1269,14 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       meta.className = "meta";
       const title = document.createElement("div");
       title.className = "title";
-      if (n.member) {
-        title.textContent = n.title;
-      } else {
-        // 検索エンジン用の作品ページへの本物のリンク (クリック時は今まで通り拡大表示)
-        const ta = document.createElement("a");
-        ta.href = "works/" + encodeURIComponent(n.file.replace(/\.[^.]+$/, ""));
-        ta.textContent = n.title;
-        ta.style.color = "inherit";
-        ta.style.textDecoration = "none";
-        ta.onclick = (e) => { e.preventDefault(); openLightbox(n); pushNav(); };
-        title.appendChild(ta);
-      }
+      // 検索エンジン用の作品ページへの本物のリンク (クリック時は今まで通り拡大表示)
+      const ta = document.createElement("a");
+      ta.href = "works/" + encodeURIComponent(n.file.replace(/\.[^.]+$/, ""));
+      ta.textContent = n.title;
+      ta.style.color = "inherit";
+      ta.style.textDecoration = "none";
+      ta.onclick = (e) => { e.preventDefault(); openLightbox(n); pushNav(); };
+      title.appendChild(ta);
       const tags = document.createElement("div");
       tags.className = "tags";
       if (kindOf(n) === "カレンダー") {
@@ -1384,13 +1285,11 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
           (n.month ? '<span class="tag">' + n.month + '月</span>' : '');
       } else if (kindOf(n) === "脳トレ") {
         tags.innerHTML =
-          (n.member ? '<span class="tag" style="background:#f3e2c0;color:#8a6410">🔒会員</span>' : '') +
           '<span class="tag kind">脳トレ</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
           (n.answer ? '<span class="tag">答え付き</span>' : '');
       } else {
         tags.innerHTML =
-          (n.member ? '<span class="tag" style="background:#f3e2c0;color:#8a6410">🔒会員</span>' : '') +
           '<span class="tag season-' + n.season + '">' + n.season + '</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
           (n.diff ? '<span class="tag diff-' + n.diff + '">' + n.diff + '</span>' : '') +
@@ -1575,8 +1474,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     } catch (e) { return false; }
   }
 
-  async function fetchImageBlob(file, member) {
-    const r = await fetch((member ? "member-img/" : "images/") + file);
+  async function fetchImageBlob(file) {
+    const r = await fetch("images/" + file);
     if (!r.ok) throw new Error("読み込めません: " + file);
     return await r.blob();
   }
@@ -1658,15 +1557,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const ext = i >= 0 ? name.slice(i) : "";
       return stem + "(" + (++used[name]) + ")" + ext;
     };
-    const add = async (file, name, member) => {
-      const b = await fetchImageBlob(file, member);
+    const add = async (file, name) => {
+      const b = await fetchImageBlob(file);
       files.push({ name: FOLDER_NAME + "/" + uniq(name), data: new Uint8Array(await b.arrayBuffer()) });
     };
     let ok = 0;
     for (const n of shown) {
       try {
-        await add(n.file, dlName(n), n.member);
-        if (n.answer) await add(n.answer, dlNameAns(n), n.member);
+        await add(n.file, dlName(n));
+        if (n.answer) await add(n.answer, dlNameAns(n));
         mark(n.file, "save");
         ok++;
         if (shown.length > 5) {
@@ -1696,8 +1595,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   async function bulkFolderSave(parent, shown) {
     const dest = await parent.getDirectoryHandle(FOLDER_NAME, { create: true });
     let ok = 0;
-    const writeOne = async (file, name, member) => {
-      const blob = await fetchImageBlob(file, member);
+    const writeOne = async (file, name) => {
+      const blob = await fetchImageBlob(file);
       const fh = await dest.getFileHandle(name, { create: true });
       const w = await fh.createWritable();
       await w.write(blob);
@@ -1705,8 +1604,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     };
     for (const n of shown) {
       try {
-        await writeOne(n.file, dlName(n), n.member);
-        if (n.answer) await writeOne(n.answer, dlNameAns(n), n.member);
+        await writeOne(n.file, dlName(n));
+        if (n.answer) await writeOne(n.answer, dlNameAns(n));
         mark(n.file, "save");
         ok++;
       } catch (e) {}
@@ -1804,7 +1703,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       selGenre: selGenre,
       selDiff: selDiff,
       selUsed: selUsed,
-      memberKind: memberKind,
       q: qWord,
       lb: (lbCurrent && lb.classList.contains("show")) ? lbCurrent.file : null
     };
@@ -1829,12 +1727,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     selGenre = st.selGenre || null;
     selDiff = st.selDiff || null;
     selUsed = st.selUsed || null;
-    memberKind = st.memberKind || "塗り絵";
     qWord = st.q || "";
-    if (page === "member" && !memberLoaded) {
-      if (isMemberUnlocked()) { loadMemberList().then(() => render()); }
-      else { page = "list"; }
-    }
+    if (page === "member") page = "list";
     render();
     if (st.lb) {
       const n = list.find(x => x.file === st.lb);
@@ -1853,41 +1747,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   document.getElementById("tabNoutore").onclick = () => switchPage("noutore");
   document.getElementById("tabList").onclick = () => switchPage("list");
   document.getElementById("tabFav").onclick = () => switchPage("fav");
-  const APPLY_KEY = "nurie_apply_v1";
-  document.getElementById("tabApply").onclick = async () => {
-    let done = false;
-    try { done = localStorage.getItem(APPLY_KEY) === "yes"; } catch (e) {}
-    if (done) {
-      showToast("まだ開設していません");
-      return;
-    }
-    try { fetch("api/member-apply", { method: "POST" }); } catch (e) {}
-    try { localStorage.setItem(APPLY_KEY, "yes"); } catch (e) {}
-    showToast("まだ開設していません");
-  };
-  document.getElementById("tabMember").onclick = async () => {
-    if (!isMemberUnlocked() && !(await unlockMember())) return;
-    if (!memberLoaded) {
-      let st = await loadMemberList();
-      if (st === "auth") {
-        clearMemberUnlock();
-        if (!(await unlockMember())) return;
-        st = await loadMemberList();
-      }
-      if (st !== "ok") {
-        alert("会員コンテンツを読み込めませんでした。もう一度お試しください");
-        return;
-      }
-    }
-    switchPage("member");
-  };
-
-  if (isMemberUnlocked()) {
-    loadMemberList().then(st => {
-      if (st === "auth") clearMemberUnlock();
-      else if (st === "ok") render();
-    });
-  }
   if (window.matchMedia && window.matchMedia("(max-width: 600px)").matches) {
     document.getElementById("tabList").textContent = "塗り絵";
     document.getElementById("tabNoutore").textContent = "脳トレ";
@@ -1899,7 +1758,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       list.forEach(n => { byFile[n.file] = n; });
       const top = (res.files || [])
         .map(f => byFile[f])
-        .filter(n => n && !n.member && kindOf(n) === "塗り絵")
+        .filter(n => n && kindOf(n) === "塗り絵")
         .slice(0, 5);
       if (top.length < 3) return;
       const cls = ["g", "s", "b", "", ""];

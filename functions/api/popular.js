@@ -35,7 +35,6 @@ export async function onRequest({ request, env }) {
     const cnt = {};    // file -> 回数
     for (const e of events) {
       if (!e || !e.f || !e.t || e.t < since) continue;
-      if (String(e.f).startsWith("m_")) continue;          // 会員作品は載せない
       if (!devs[e.f]) { devs[e.f] = new Set(); cnt[e.f] = 0; }
       devs[e.f].add(e.d || "?");
       cnt[e.f]++;
