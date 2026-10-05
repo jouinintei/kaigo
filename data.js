@@ -638,4 +638,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "動物", title: "秋刀魚をくわえる猫", diff: "初級", file: "up_1791190518257_13.png", added: "2026-10" },
   { season: "通年", genre: "その他", title: "魚屋と猫", diff: "中級", file: "up_1791190647562_14.png", added: "2026-10" },
   { season: "秋", genre: "風物詩", title: "まつぼっくりとどんぐり", diff: "初級", file: "up_1791190875171_15.png", added: "2026-10" },
+  { season: "秋", genre: "風物詩", title: "秋を包む小さな手", diff: "初級", file: "up_1791191544660_1.png", added: "2026-10" },
 ];
