@@ -1,0 +1,45 @@
+name: R2 image sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "images/**"
+      - ".github/workflows/r2-sync.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: r2-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ENDPOINT: https://f2973a9b06bd5d30eb681c629f19145e.r2.cloudflarestorage.com
+      R2_BUCKET: rekupuri-images
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: images
+      - name: Check secrets
+        run: |
+          if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY が未設定です"; exit 1
+          fi
+      - name: Sync images to R2
+        run: |
+          aws s3 sync images "s3://$R2_BUCKET/images" \
+            --endpoint-url "$R2_ENDPOINT" \
+            --size-only \
+            --cache-control "public, max-age=86400" \
+            --no-progress
+      - name: Count objects
+        run: |
+          echo "local: $(ls images | wc -l)"
+          echo "r2: $(aws s3 ls "s3://$R2_BUCKET/images/" --endpoint-url "$R2_ENDPOINT" | wc -l)"
