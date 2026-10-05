@@ -649,4 +649,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "神秘的な女性と猫", diff: "上級", file: "up_1791202524844_10.png", added: "2026-10" },
   { season: "通年", genre: "花", title: "ガーデニング", diff: "上級", file: "up_1791202833742_11.png", added: "2026-10" },
   { season: "秋", genre: "風景", title: "銀杏", diff: "上級", file: "up_1791203134357_12.png", added: "2026-10" },
+  { season: "秋", genre: "花", title: "銀杏", diff: "初級", file: "up_1791203257913_13.png", added: "2026-10" },
 ];
