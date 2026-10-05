@@ -613,7 +613,6 @@ window.NURIE_LIST = [
   { season: "秋", genre: "食べ物", title: "焼き芋2", diff: "初級", file: "up_1790913499105_12.png", added: "2026-10" },
   { season: "秋", genre: "食べ物", title: "松茸ごはん", diff: "中級", file: "up_1790913505505_14.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "犬 ふせ", diff: "初級", file: "up_1790915501630_1.png", added: "2026-10" },
-  { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字_樹木編_答え", file: "up_1790925811561_2.png", added: "2026-10" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字_樹木編", file: "up_1790925814334_3.png", added: "2026-10" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字_山菜きのこ編", file: "up_1790925816886_4.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "猫と女性", diff: "上級", file: "up_1790925839909_6.png", added: "2026-10" },
