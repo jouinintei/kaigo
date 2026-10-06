@@ -495,7 +495,7 @@ window.NURIE_LIST = [
   { season: "春", genre: "風景", title: "桜の木 その2", diff: "初級", file: "sakura_ki2_sho.png", added: "2026-08" },
   { season: "春", genre: "食べ物", title: "春の山菜", diff: "初級", file: "haru_sansai_sho.png", added: "2026-08" },
   { season: "通年", genre: "その他", title: "生け花", diff: "初級", file: "ikebana_sho.png", added: "2026-08" },
-  { season: "通年", genre: "その他", title: "大正ロマン", diff: "中級", file: "taisho_roman_chu.png", added: "2026-08" },
+  { season: "通年", genre: "人物", title: "大正ロマン", diff: "中級", file: "taisho_roman_chu.png", added: "2026-08" },
   { season: "通年", genre: "人物", title: "大正ロマン その2", diff: "中級", file: "taisho_roman2_chu.png", added: "2026-08" },
   { season: "通年", genre: "その他", title: "誕生日", diff: "初級", file: "tanjobi_sho.png", added: "2026-08" },
   { season: "通年", genre: "その他", title: "茶道", diff: "初級", file: "sado_sho.png", added: "2026-08" },
