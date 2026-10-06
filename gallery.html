@@ -231,6 +231,35 @@
     .rank { grid-template-columns: repeat(3, 1fr); gap: 14px 8px; }
     .rank .ttl { font-size: 13px; }
   }
+  .page-intro.cal-guide {
+    max-width: 640px;
+    text-align: left;
+    background: #fff;
+    border: 1.5px solid #f3d3b6;
+    border-radius: 14px;
+    padding: 14px 20px;
+    color: #5f5a4f;
+    font-size: 14.5px;
+    line-height: 1.7;
+    display: grid;
+    gap: 10px;
+  }
+  .cal-guide .cg-title {
+    font-weight: bold;
+    font-size: 15.5px;
+    color: #6b5535;
+    border-left: 4px solid var(--accent);
+    padding-left: 8px;
+    margin-bottom: 4px;
+  }
+  .cal-guide ul { margin: 0; padding-left: 1.3em; }
+  .cal-guide li { margin: 3px 0; }
+  .cal-guide b { color: #9c561b; }
+  .cal-guide small { color: #8a8477; font-size: 12.5px; }
+  @media (max-width: 600px) {
+    .page-intro.cal-guide { margin: 14px 12px 0; padding: 12px 14px; font-size: 13.5px; }
+    .cal-guide .cg-title { font-size: 14.5px; }
+  }
   .page-intro {
     max-width: 860px;
     margin: 18px auto 0;
@@ -1120,11 +1149,24 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 
     const PAGE_INTRO = {
       noutore: "難読漢字、計算問題、ことわざ、言葉探しなど、高齢者向けの脳トレプリントを無料で配布しています。すべて答え付きです。",
-      calendar: "各月、絵柄つきと「貼り付け用」の2種類があります。貼り付け用は上半分が空白になっているので、塗り終えた塗り絵(縮小して印刷し、切り抜いたもの)や、ちぎり絵・貼り絵・写真などをのりで貼って仕上げます。空白の大きさは横約21cm×縦約14.5cmで、ほぼA5(横向き)です。横向きの塗り絵は「A5」または「71%」に縮小して印刷すると、ちょうど収まります(はみ出した端は少し切ってください)。縦向きの塗り絵は「50%」で、はがきくらいの大きさになります。紙が波打ちにくいスティックのりか両面テープがおすすめです。"
+      calendar: "cal"
     };
     const intro = document.getElementById("pageIntro");
     const introTxt = (!seriesView && !qWord && PAGE_INTRO[page]) || "";
-    intro.textContent = introTxt;
+    intro.classList.toggle("cal-guide", introTxt === "cal");
+    if (introTxt === "cal") {
+      intro.innerHTML =
+        '<div class="cg-block"><div class="cg-title">カレンダーは2種類あります</div>' +
+        '<ul><li><b>絵柄つき</b> … そのまま印刷して使えます</li>' +
+        '<li><b>貼り付け用</b> … 上半分が空白です。塗り終えた塗り絵や、ちぎり絵・貼り絵・写真などを貼って仕上げます</li></ul></div>' +
+        '<div class="cg-block"><div class="cg-title">貼り付け用に塗り絵を貼るときは</div>' +
+        '<ul><li>空白の大きさは <b>横 約21cm × 縦 約14.5cm</b>(ほぼA5の横向き)</li>' +
+        '<li>横向きの塗り絵 → <b>「A5」または「71%」</b>に縮小して印刷<br><small>はみ出した端は少し切ってください</small></li>' +
+        '<li>縦向きの塗り絵 → <b>「50%」</b>に縮小して印刷<br><small>はがきくらいの大きさになります</small></li>' +
+        '<li>のりは<b>スティックのりか両面テープ</b>がおすすめ<br><small>紙が波打ちにくくなります</small></li></ul></div>';
+    } else {
+      intro.textContent = introTxt;
+    }
     intro.style.display = introTxt ? "" : "none";
     const wa = document.getElementById("weekAdded");
     if (!wa.dataset.built) {
@@ -1181,7 +1223,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         if (!m) { m = { key: k, year: n.year || 0, month: n.month || 0, count: 0, label: calLabel(n) }; months.push(m); }
         m.count++;
       });
-      months.sort((a, b) => (a.year - b.year) || (a.month - b.month));
+      months.sort((a, b) => (b.year - a.year) || (b.month - a.month));
       document.getElementById("count").textContent = "";
       renderPager(1);
       const empty = document.getElementById("empty");
