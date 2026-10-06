@@ -672,4 +672,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "花", title: "ナデシコ", diff: "中級", file: "up_1791287012445_33.png", added: "2026-10" },
   { season: "秋", genre: "花", title: "ハギ", diff: "中級", file: "up_1791287015107_34.png", added: "2026-10" },
   { season: "秋", genre: "花", title: "オミナエシ", diff: "中級", file: "up_1791287016931_35.png", added: "2026-10" },
+  { season: "秋", genre: "花", title: "秋の生け花", diff: "上級", file: "up_1791287127741_36.png", added: "2026-10" },
 ];
