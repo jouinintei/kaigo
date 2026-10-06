@@ -679,7 +679,6 @@ window.NURIE_LIST = [
   { season: "秋", genre: "動物", title: "紅葉犬", diff: "初級", file: "up_1791287853404_40.png", added: "2026-10" },
   { season: "秋", genre: "食べ物", title: "ぶどう", diff: "初級", file: "up_1791288286701_41.png", added: "2026-10" },
   { season: "通年", genre: "人物", title: "十二単", diff: "上級", file: "up_1791292983963_42.png", added: "2026-10" },
-  { season: "通年", genre: "人物", title: "十二単", diff: "初級", file: "up_1791292988824_44.png", added: "2026-10" },
   { season: "秋", genre: "風物詩", title: "芸術の秋", diff: "上級", file: "up_1791293895203_45.png", added: "2026-10" },
   { season: "秋", genre: "風物詩", title: "芸術の秋", diff: "中級", file: "up_1791293907944_46.png", added: "2026-10" },
 ];
