@@ -455,7 +455,7 @@ window.NURIE_LIST = [
   { season: "冬", genre: "行事", title: "新年", diff: "初級", file: "shinnen_sho.png", added: "2026-08" },
   { season: "冬", genre: "行事", title: "正月鯛", diff: "初級", file: "shogatsu_tai_sho.png", added: "2026-08" },
   { season: "冬", genre: "風物詩", title: "雪ウサギ", diff: "初級", file: "yukiusagi_sho.png", added: "2026-08" },
-  { season: "冬", genre: "風物詩", title: "雪合戦", diff: "中級", file: "yukigassen_chu.png", added: "2026-08" },
+  { season: "冬", genre: "人物", title: "雪合戦", diff: "中級", file: "yukigassen_chu.png", added: "2026-08" },
   { season: "冬", genre: "風景", title: "冬", diff: "初級", file: "fuyu_sho.png", added: "2026-08" },
   { season: "冬", genre: "風景", title: "冬の伏見稲荷", diff: "中級", file: "fuyu_fushimiinari_chu.png", added: "2026-08" },
   { season: "冬", genre: "風景", title: "冬の木", diff: "初級", file: "fuyu_ki_sho.png", added: "2026-08" },
