@@ -799,7 +799,7 @@
 <div class="grid" id="grid"></div>
 <div class="pager" id="pager"></div>
 <div class="empty" id="empty" style="display:none"></div>
-<div class="note">※「使用済み」やお気に入りの記録はこのパソコンのブラウザに保存されます。緑のバッジを押すと記録を消せます。</div>
+<div class="note">※「使用済み」の印とお気に入りは、この端末(パソコンやスマホ)のブラウザに記録されます。<br>カードの下にある緑の「💾 保存済 ◯/◯」を押すと、その記録を消せます。</div>
 
 <div id="lightbox">
   <img id="lbImg" alt="">
@@ -1192,9 +1192,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         wa.dataset.has = "1";
       }
     }
-    wa.style.display = (wa.dataset.has && page === "list" && !seriesView && !qWord) ? "" : "none";
+    wa.style.display = (wa.dataset.has && page === "list" && !seriesView && !qWord && curPage === 1) ? "" : "none";
     const rankBox = document.getElementById("rankBox");
-    rankBox.style.display = (page === "list" && !seriesView && !qWord && rankBox.dataset.ready) ? "" : "none";
+    rankBox.style.display = (page === "list" && !seriesView && !qWord && curPage === 1 && rankBox.dataset.ready) ? "" : "none";
     rankBox.querySelectorAll(".rfav").forEach(b => {
       const on = isFav(b.dataset.file);
       b.classList.toggle("on", on);
@@ -1483,7 +1483,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       curPage = n;
       render();
       syncState();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const anchor = document.getElementById("searchBar");
+      const top = anchor && anchor.offsetParent ? anchor.getBoundingClientRect().top + window.scrollY - 12 : 0;
+      window.scrollTo({ top: top, behavior: "smooth" });
     };
     const prev = document.createElement("button");
     prev.textContent = "← 前へ";
