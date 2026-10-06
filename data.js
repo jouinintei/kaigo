@@ -488,7 +488,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "レトロ喫茶", diff: "初級", file: "retro_kissa_sho.png", added: "2026-08" },
   { season: "夏", genre: "風物詩", title: "夏休み その2", diff: "初級", file: "natsuyasumi2_sho.png", added: "2026-08" },
   { season: "夏", genre: "食べ物", title: "夏野菜 その2", diff: "初級", file: "natsu_yasai2_sho.png", added: "2026-08" },
-  { season: "通年", genre: "その他", title: "歌舞伎", diff: "中級", file: "kabuki_chu.png", added: "2026-08" },
+  { season: "通年", genre: "人物", title: "歌舞伎", diff: "中級", file: "kabuki_chu.png", added: "2026-08" },
   { season: "通年", genre: "動物", title: "海の中", diff: "上級", file: "umi_naka_jo.png", added: "2026-08" },
   { season: "秋", genre: "食べ物", title: "干し柿 その2", diff: "初級", file: "hoshigaki2_sho.png", added: "2026-08" },
   { season: "通年", genre: "その他", title: "喫茶店", diff: "初級", file: "kissaten_sho.png", added: "2026-08" },
