@@ -468,7 +468,7 @@ window.NURIE_LIST = [
   { season: "夏", genre: "風物詩", title: "屋形船と花火", diff: "中級", file: "yakatabune_hanabi_chu.png", added: "2026-08" },
   { season: "夏", genre: "風景", title: "南国の海辺", diff: "初級", file: "nangoku_umibe_sho.png", added: "2026-08" },
   { season: "夏", genre: "風物詩", title: "駄菓子屋", diff: "上級", file: "dagashiya_jo.png", added: "2026-08" },
-  { season: "夏", genre: "食べ物", title: "流しそうめん", diff: "中級", file: "nagashi_somen_chu.png", added: "2026-08" },
+  { season: "夏", genre: "人物", title: "流しそうめん", diff: "中級", file: "nagashi_somen_chu.png", added: "2026-08" },
   { season: "夏", genre: "人物", title: "夏祭りの浴衣", diff: "上級", file: "natsumatsuri_yukata_jo.png", added: "2026-08" },
   { season: "夏", genre: "花", title: "朝顔と団扇", diff: "中級", file: "asagao_uchiwa_chu.png", added: "2026-08" },
   { season: "夏", genre: "食べ物", title: "アイスクリーム", diff: "初級", file: "ice_cream_sho.png", added: "2026-08" },
