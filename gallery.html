@@ -258,9 +258,9 @@
     color: #6b5535;
   }
   .week-added .wa-head b {
-    font-size: 24px;
+    font-size: 28px;
     color: var(--accent);
-    margin: 0 2px;
+    margin: 0 3px;
   }
   .week-added .wa-chips {
     display: flex;
@@ -275,7 +275,7 @@
     padding: 4px 12px;
     border-radius: 999px;
   }
-  .week-added .wa-chip span { font-size: 17px; }
+  .week-added .wa-chip span { font-size: 21px; margin-left: 2px; }
   .wa-chip.c-春 { background: #f7e4ec; color: #b0507a; }
   .wa-chip.c-夏 { background: #e0edf7; color: #35698f; }
   .wa-chip.c-秋 { background: #f7e9dc; color: #9c561b; }
@@ -286,7 +286,7 @@
     .week-added { margin: 12px 14px 0; padding: 10px 12px 12px; }
     .week-added .wa-head { font-size: 15.5px; }
     .week-added .wa-chip { font-size: 13.5px; padding: 3px 10px; }
-    .week-added .wa-chip span { font-size: 15px; }
+    .week-added .wa-chip span { font-size: 18px; }
   }
   .searchbar {
     max-width: 620px;
@@ -1153,9 +1153,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       });
       if (total > 0) {
         const order = ["春", "夏", "秋", "冬", "通年", "脳トレ", "カレンダー"];
-        const label = k => (k === "脳トレ" || k === "カレンダー" || k === "通年") ? k : k + "の塗り絵";
         const chips = order.filter(k => wc[k]).map(k =>
-          '<span class="wa-chip c-' + k + '">' + label(k) + ' <span>' + wc[k] + '</span>枚</span>').join("");
+          '<span class="wa-chip c-' + k + '">' + k + ' <span>' + wc[k] + '</span>枚</span>').join("");
         wa.innerHTML = '<div class="wa-head">🆕 今週は<b>' + total + '</b>枚追加しました</div>' +
           '<div class="wa-chips">' + chips + '</div>';
         wa.dataset.has = "1";
