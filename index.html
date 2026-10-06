@@ -202,6 +202,7 @@
   <section id="newSec" style="display:none">
  
   <h2>新着の素材</h2>
+  <p class="txt" id="weekTxt"></p>
   <p class="txt" id="newTxt"></p>
 </section>
 
@@ -244,6 +245,26 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("newSec").style.display = "";
     document.getElementById("newTxt").textContent =
       "今月は " + monthCount + " 枚の素材を追加しました。";
+  }
+  const jst = new Date(Date.now() + 9 * 3600e3);
+  const dow = (jst.getUTCDay() + 6) % 7;
+  const weekStart = Date.UTC(jst.getUTCFullYear(), jst.getUTCMonth(), jst.getUTCDate() - dow) - 9 * 3600e3;
+  const wc = {};
+  let weekTotal = 0;
+  list.forEach(n => {
+    const m = /^up_(\d{13})_/.exec(n.file);
+    if (!m || Number(m[1]) < weekStart) return;
+    const k = kindOf(n) === "塗り絵" ? (n.season || "通年") : kindOf(n);
+    wc[k] = (wc[k] || 0) + 1;
+    weekTotal++;
+  });
+  if (weekTotal > 0) {
+    const order = ["春", "夏", "秋", "冬", "通年", "脳トレ", "カレンダー"];
+    const label = k => (["春", "夏", "秋", "冬"].includes(k) ? k + "の塗り絵" : (k === "通年" ? "通年の塗り絵" : k));
+    const parts = order.filter(k => wc[k]).map(k => label(k) + " " + wc[k] + "枚");
+    document.getElementById("newSec").style.display = "";
+    document.getElementById("weekTxt").textContent =
+      "今週は " + weekTotal + " 枚追加しました(" + parts.join("・") + ")。";
   }
 })();
 </script>
