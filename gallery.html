@@ -243,6 +243,19 @@
   @media (max-width: 600px) {
     .page-intro { font-size: 13.5px; padding: 0 14px; text-align: left; }
   }
+  .week-added {
+    max-width: 620px;
+    margin: 10px auto 0;
+    padding: 0 20px;
+    font-size: 14px;
+    color: #7a7466;
+    text-align: center;
+    line-height: 1.7;
+  }
+  .week-added b { color: var(--accent); }
+  @media (max-width: 600px) {
+    .week-added { font-size: 13px; padding: 0 14px; }
+  }
   .searchbar {
     max-width: 620px;
     margin: 18px auto 0;
@@ -710,6 +723,7 @@
   <input type="search" id="q" placeholder="キーワードで探す(例: ねこ、ひまわり、正月)" autocomplete="off">
   <button class="q-clear" id="qClear" title="消す">✕</button>
 </div>
+<p class="week-added" id="weekAdded" style="display:none"></p>
 
 <div class="toolbar" id="toolbar"></div>
 
@@ -1090,6 +1104,30 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const introTxt = (!seriesView && !qWord && PAGE_INTRO[page]) || "";
     intro.textContent = introTxt;
     intro.style.display = introTxt ? "" : "none";
+    const wa = document.getElementById("weekAdded");
+    if (!wa.dataset.built) {
+      wa.dataset.built = "1";
+      const jst = new Date(Date.now() + 9 * 3600e3);
+      const dow = (jst.getUTCDay() + 6) % 7;
+      const weekStart = Date.UTC(jst.getUTCFullYear(), jst.getUTCMonth(), jst.getUTCDate() - dow) - 9 * 3600e3;
+      const wc = {};
+      let total = 0;
+      list.forEach(n => {
+        const m = /^up_(\d{13})_/.exec(n.file || "");
+        if (!m || Number(m[1]) < weekStart) return;
+        const k = kindOf(n) === "塗り絵" ? (n.season || "通年") : kindOf(n);
+        wc[k] = (wc[k] || 0) + 1;
+        total++;
+      });
+      if (total > 0) {
+        const order = ["春", "夏", "秋", "冬", "通年", "脳トレ", "カレンダー"];
+        const label = k => (k === "脳トレ" || k === "カレンダー") ? k : k + "の塗り絵";
+        const parts = order.filter(k => wc[k]).map(k => label(k) + " " + wc[k] + "枚");
+        wa.innerHTML = "今週は <b>" + total + "</b> 枚追加しました(" + parts.join("・") + ")";
+        wa.dataset.has = "1";
+      }
+    }
+    wa.style.display = (wa.dataset.has && page === "list" && !seriesView && !qWord) ? "" : "none";
     const rankBox = document.getElementById("rankBox");
     rankBox.style.display = (page === "list" && !seriesView && !qWord && rankBox.dataset.ready) ? "" : "none";
     rankBox.querySelectorAll(".rfav").forEach(b => {
