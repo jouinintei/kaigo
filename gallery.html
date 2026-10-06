@@ -723,8 +723,17 @@
     }
     .reset-btn { grid-column: 1 / -1; }
 
-    .grid { padding: 0 12px; gap: 14px; }
-    .meta .title { font-size: 16px; }
+    .grid { grid-template-columns: 1fr 1fr; padding: 0 10px; gap: 10px; }
+    .card { border-radius: 10px; }
+    .fav-btn { top: 4px; right: 4px; width: 36px; height: 36px; font-size: 20px; }
+    .meta { padding: 8px 9px 10px; }
+    .meta .title { font-size: 14px; line-height: 1.4; }
+    .tags { gap: 4px; margin-top: 4px; }
+    .tag { font-size: 11px; padding: 1px 6px; }
+    .hist-badge { font-size: 11px; padding: 1px 6px; }
+    .history { margin-top: 4px; }
+    .btns { flex-direction: column; gap: 6px; margin-top: 8px; }
+    .btns button, .btns a { font-size: 14px; padding: 9px 0; }
 
     .bulkbar { padding: 0 12px; }
     .bulk-btn { flex: 1; padding: 12px 10px; font-size: 15.5px; }
@@ -858,7 +867,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     return m ? parseInt(m[1], 10) : 1;
   }
   let curPage = 1;
-  const PER_PAGE = 9;
+  const PER_PAGE = (window.matchMedia && window.matchMedia("(max-width: 600px)").matches) ? 24 : 9;
   let calMonth = null;
 
   function calKey(n) { return (n.year || 0) + "-" + (n.month || 0); }
