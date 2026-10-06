@@ -677,4 +677,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "動物", title: "紅葉猫", diff: "初級", file: "up_1791287849541_38.png", added: "2026-10" },
   { season: "秋", genre: "動物", title: "紅葉犬", diff: "中級", file: "up_1791287851481_39.png", added: "2026-10" },
   { season: "秋", genre: "動物", title: "紅葉犬", diff: "初級", file: "up_1791287853404_40.png", added: "2026-10" },
+  { season: "秋", genre: "食べ物", title: "ぶどう", diff: "初級", file: "up_1791288286701_41.png", added: "2026-10" },
 ];
