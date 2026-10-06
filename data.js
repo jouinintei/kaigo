@@ -592,7 +592,7 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 10, season: "通年", title: "10月カレンダー　その8", file: "up_1789104393604_1.png", added: "2026-09" },
   { kind: "カレンダー", year: 2026, month: 11, season: "通年", title: "11月カレンダー（貼り付け用）", file: "up_1789104500876_2.png", added: "2026-09" },
   { season: "秋", genre: "花", title: "きんもくせい", diff: "初級", file: "up_1789104803170_1.png", added: "2026-09" },
-  { season: "秋", genre: "風物詩", title: "金木犀香る女性", diff: "初級", file: "up_1789380324902_1.png", added: "2026-09" },
+  { season: "秋", genre: "人物", title: "金木犀香る女性", diff: "初級", file: "up_1789380324902_1.png", added: "2026-09" },
   { season: "通年", genre: "風景", title: "公園", diff: "中級", file: "up_1789380461209_2.png", added: "2026-09" },
   { season: "通年", genre: "人物", title: "喫茶店のマスター", diff: "上級", file: "up_1789380723165_3.png", added: "2026-09" },
   { season: "通年", genre: "食べ物", title: "コーヒー", diff: "中級", file: "up_1789380883344_4.png", added: "2026-09" },
