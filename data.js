@@ -472,7 +472,7 @@ window.NURIE_LIST = [
   { season: "夏", genre: "風物詩", title: "夏祭りの浴衣", diff: "上級", file: "natsumatsuri_yukata_jo.png", added: "2026-08" },
   { season: "夏", genre: "花", title: "朝顔と団扇", diff: "中級", file: "asagao_uchiwa_chu.png", added: "2026-08" },
   { season: "夏", genre: "食べ物", title: "アイスクリーム", diff: "初級", file: "ice_cream_sho.png", added: "2026-08" },
-  { season: "夏", genre: "動物", title: "カブトムシとり", diff: "上級", file: "kabutomushi_jo.png", added: "2026-08" },
+  { season: "夏", genre: "人物", title: "カブトムシとり", diff: "上級", file: "kabutomushi_jo.png", added: "2026-08" },
   { season: "夏", genre: "風物詩", title: "ビニールプール", diff: "中級", file: "vinyl_pool_chu.png", added: "2026-08" },
   { season: "夏", genre: "行事", title: "盆踊り", diff: "中級", file: "bonodori_chu.png", added: "2026-08" },
   { season: "秋", genre: "食べ物", title: "おでん その2", diff: "初級", file: "oden2_sho.png", added: "2026-08" },
