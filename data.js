@@ -509,7 +509,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "曼荼羅もよう", diff: "初級", file: "mandala_sho.png", added: "2026-08" },
   { season: "通年", genre: "その他", title: "お手玉", diff: "初級", file: "otedama_sho.png", added: "2026-08" },
   { season: "秋", genre: "風物詩", title: "かかしととんぼ", diff: "上級", file: "kakashi_tonbo_jo.png", added: "2026-08" },
-  { season: "通年", genre: "その他", title: "こどもたち", diff: "初級", file: "kodomotachi_sho.png", added: "2026-08" },
+  { season: "通年", genre: "人物", title: "こどもたち", diff: "初級", file: "kodomotachi_sho.png", added: "2026-08" },
   { season: "夏", genre: "行事", title: "ほおずき市", diff: "上級", file: "hozuki_ichi_jo.png", added: "2026-08" },
   { season: "通年", genre: "食べ物", title: "フルーツボウル", diff: "初級", file: "fruits_bowl_sho.png", added: "2026-08" },
   { season: "冬", genre: "行事", title: "七福神", diff: "上級", file: "shichifukujin_jo.png", added: "2026-08" },
