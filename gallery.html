@@ -1629,6 +1629,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   async function fetchImageBlob(file) {
     let r = null;
     try { r = await fetch(window.IMG_BASE + file, { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
+    if (!r || !r.ok) { try { r = await fetch("api/dl?f=" + encodeURIComponent(file), { cache: "no-store" }); } catch (e) { r = null; } }
     if (!r || !r.ok) r = await fetch("images/" + file);
     if (!r.ok) throw new Error("読み込めません: " + file);
     return await r.blob();
@@ -1657,7 +1658,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       go(url, false);
       setTimeout(() => URL.revokeObjectURL(url), 30000);
     } catch (err) {
-      go(href, true);
+      go("api/dl?f=" + encodeURIComponent(file) + "&n=" + encodeURIComponent(name), true);
     }
   });
 

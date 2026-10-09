@@ -152,7 +152,7 @@ export async function onRequest(context) {
     "<p class=\"txt\">保存した画像をA4サイズで印刷すると、そのままレクリエーションで使えます。ほかにも塗り絵・脳トレ・カレンダーを無料で配布しています。</p>\n" +
     "</div>\n" +
     "<footer><a href=\"/\">" + SITE + "</a> — 高齢者向けの無料塗り絵・脳トレ・カレンダー素材</footer>\n" +
-    "<script>document.addEventListener(\"click\",async function(e){var a=e.target.closest&&e.target.closest(\"a[download]\");if(!a||a.dataset.direct)return;e.preventDefault();var h=a.getAttribute(\"href\"),nm=a.getAttribute(\"download\");try{var r=await fetch(h,{mode:\"cors\",cache:\"no-cache\"});if(!r.ok)throw 0;var u=URL.createObjectURL(await r.blob());var t=document.createElement(\"a\");t.href=u;t.download=nm;t.dataset.direct=\"1\";document.body.appendChild(t);t.click();t.remove();setTimeout(function(){URL.revokeObjectURL(u)},30000);}catch(x){location.href=h.replace(\"https://img.rekupuri.com\",\"\");}});</script>\n" +
+    "<script>document.addEventListener(\"click\",async function(e){var a=e.target.closest&&e.target.closest(\"a[download]\");if(!a||a.dataset.direct)return;e.preventDefault();var h=a.getAttribute(\"href\"),nm=a.getAttribute(\"download\");try{var r=await fetch(h,{mode:\"cors\",cache:\"no-cache\"});if(!r.ok)throw 0;var u=URL.createObjectURL(await r.blob());var t=document.createElement(\"a\");t.href=u;t.download=nm;t.dataset.direct=\"1\";document.body.appendChild(t);t.click();t.remove();setTimeout(function(){URL.revokeObjectURL(u)},30000);}catch(x){location.href=\"/api/dl?f=\"+encodeURIComponent(h.slice(h.lastIndexOf(\"/\")+1))+\"&n=\"+encodeURIComponent(nm);}});</script>\n" +
     "</body>\n</html>";
 
   return new Response(html, {
