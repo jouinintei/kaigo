@@ -702,4 +702,8 @@ window.NURIE_LIST = [
   { season: "通年", genre: "ステンドグラス", title: "富士山", diff: "中級", file: "up_1791604892478_16.png", added: "2026-10" },
   { season: "通年", genre: "ステンドグラス", title: "着物", diff: "中級", file: "up_1791605224552_17.png", added: "2026-10" },
   { season: "秋", genre: "風景", title: "紅葉と寺", diff: "初級", file: "up_1791605517469_18.png", added: "2026-10" },
+  { season: "春", genre: "その他", title: "春", diff: "初級", file: "up_1791607675277_54.png", added: "2026-10" },
+  { season: "夏", genre: "その他", title: "夏", diff: "初級", file: "up_1791607677052_55.png", added: "2026-10" },
+  { season: "秋", genre: "その他", title: "秋", diff: "初級", file: "up_1791607678663_56.png", added: "2026-10" },
+  { season: "冬", genre: "その他", title: "冬", diff: "初級", file: "up_1791607680490_57.png", added: "2026-10" },
 ];
