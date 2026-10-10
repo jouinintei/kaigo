@@ -719,4 +719,5 @@ window.NURIE_LIST = [
   { season: "冬", genre: "動物", title: "マフラーを巻いた狐", diff: "初級", file: "up_1791623995540_76.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "眠る犬", diff: "中級", file: "up_1791624050573_77.png", added: "2026-10" },
   { season: "冬", genre: "動物", title: "暖炉と犬", diff: "上級", file: "up_1791624091033_78.png", added: "2026-10" },
+  { season: "秋", genre: "行事", title: "時代祭り", diff: "上級", file: "up_1791627170104_80.png", added: "2026-10" },
 ];
