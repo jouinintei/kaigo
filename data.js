@@ -701,4 +701,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "ステンドグラス", title: "鳥", diff: "中級", file: "up_1791604682566_15.png", added: "2026-10" },
   { season: "通年", genre: "ステンドグラス", title: "富士山", diff: "中級", file: "up_1791604892478_16.png", added: "2026-10" },
   { season: "通年", genre: "ステンドグラス", title: "着物", diff: "中級", file: "up_1791605224552_17.png", added: "2026-10" },
+  { season: "秋", genre: "風景", title: "紅葉と寺", diff: "初級", file: "up_1791605517469_18.png", added: "2026-10" },
 ];
