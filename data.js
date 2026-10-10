@@ -691,4 +691,5 @@ window.NURIE_LIST = [
   { season: "春", genre: "その他", title: "春の祠", diff: "中級", file: "up_1791602860797_4.png", added: "2026-10" },
   { season: "夏", genre: "その他", title: "夏の祠", diff: "中級", file: "up_1791602940581_5.png", added: "2026-10" },
   { season: "秋", genre: "その他", title: "秋の祠", diff: "中級", file: "up_1791603019370_6.png", added: "2026-10" },
+  { season: "冬", genre: "その他", title: "冬の祠", diff: "中級", file: "up_1791603161042_7.png", added: "2026-10" },
 ];
