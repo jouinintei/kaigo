@@ -684,4 +684,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "十二単", diff: "中級", file: "up_1791295291864_47.png", added: "2026-10" },
   { season: "通年", genre: "人物", title: "十二単", diff: "初級", file: "up_1791295966754_49.png", added: "2026-10" },
   { season: "秋", genre: "風景", title: "昭和の秋", diff: "中級", file: "up_1791600758423_1.png", added: "2026-10" },
+  { season: "通年", genre: "動物", title: "風船の上で寝る猫", diff: "初級", file: "up_1791601572330_2.png", added: "2026-10" },
 ];
