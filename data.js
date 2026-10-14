@@ -758,4 +758,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "冬", genre: "クイズ", title: "冬の言葉クイズ", file: "fuyu_kotoba_quiz.png", answer: "fuyu_kotoba_quiz_ans.png", added: "2026-10" },
   { kind: "脳トレ", season: "通年", genre: "計算", title: "たし算・ひき算", file: "tashizan_hikizan.png", answer: "tashizan_hikizan_ans.png", added: "2026-10" },
   { kind: "脳トレ", season: "冬", genre: "漢字", title: "難読漢字 冬編", file: "nandoku_fuyu.png", answer: "nandoku_fuyu_ans.png", added: "2026-10" },
+  { season: "冬", genre: "花", title: "冬の花壇", diff: "中級", file: "up_1791979070743_26.png", added: "2026-10" },
 ];
