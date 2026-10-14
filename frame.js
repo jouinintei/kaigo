@@ -1,6 +1,6 @@
 (function () {
   var CFG = {
-    inset: 0.012,
+    inset: 0.008,
     line: 14,
     radius: 28,
     pad: 0.012,
@@ -160,8 +160,8 @@
     var mg = Math.round(Math.min(W, H) * CFG.inset);
     var lh = Math.round(Math.min(W, H) * CFG.logoH);
     var lgap = Math.round(lh * 0.3);
-    var fx = mg, fy = mg, fw = W - 2 * mg, fh = H - 2 * mg - lh - lgap;
-    var ix = fx + L, iy = fy + L, iw = fw - 2 * L, ih = fh - 2 * L;
+    var fx = mg, fy = mg, fw = W - 2 * mg, fh = H - 2 * mg;
+    var ix = fx + L, iy = fy + L, iw = fw - 2 * L, ih = fh - 2 * L - lh - lgap * 2;
 
     var edge = true;
     if (m.box) {
@@ -220,7 +220,7 @@
       tx.fillStyle = CFG.logoColor;
       tx.fillRect(0, 0, lw, lh);
       var lx = fx + fw - Math.round(Math.min(W, H) * CFG.logoRight) - lw;
-      ctx.drawImage(tint, lx, fy + fh + lgap);
+      ctx.drawImage(tint, lx, fy + fh - L - lgap - lh);
     }
     if (src.close) { try { src.close(); } catch (e) {} }
 
