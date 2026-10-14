@@ -1060,7 +1060,6 @@
       if (e.s && SRC_SHORT[e.s]) tags.push('<span class="tag from from-'+e.s+'">'+SRC_SHORT[e.s]+'</span>');
       if (kindOf(it) !== "塗り絵") tags.push('<span class="tag kind">'+kindOf(it)+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
-      more.push(labelDay(k) + " " + hhmm(e.t));
       more.push(howFound(e));
       if (!it) more.push("ファイル: " + e.f);
       if (e.d){
@@ -1070,8 +1069,6 @@
           (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>');
         var pv = lv ? prevVisit(e.d, k) : null;
         if (pv) tags.push('<span class="tag prev">前回 ' + fmtMD(pv.day) + (pv.gap === 1 ? "（昨日）" : "（" + pv.gap + "日ぶり）") + '</span>');
-        more.push(shortId(e.d) + (lv ? (lv === "reg" ? "(常連)" : "(リピーター)") + " " + ds.nDays + "日利用・" + ds.total + "件" : "(初回)") +
-          (pv ? "　前回の保存 " + fmtMD(pv.day) : ""));
       }
       var thumb = (imgDir === null)
         ? '<div class="thumb none">🖼</div>'
