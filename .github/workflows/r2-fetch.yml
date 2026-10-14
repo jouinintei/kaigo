@@ -1,0 +1,33 @@
+name: R2 fetch
+
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: images/ 以下のファイル名
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ENDPOINT: https://f2973a9b06bd5d30be681c629f19145e.r2.cloudflarestorage.com
+    steps:
+      - name: Fetch and push to temporary branch
+        env:
+          FILE: ${{ github.event.inputs.file }}
+        run: |
+          mkdir out && cd out
+          aws s3 cp "s3://rekupuri-img-apac/images/$FILE" "./$FILE" --endpoint-url "$R2_ENDPOINT" --no-progress
+          git init -q -b audit-tmp
+          git -c user.name=fetch -c user.email=fetch@example.com add -A
+          git -c user.name=fetch -c user.email=fetch@example.com commit -qm fetch
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" audit-tmp
