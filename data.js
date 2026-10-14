@@ -732,4 +732,5 @@ window.NURIE_LIST = [
   { season: "夏", genre: "風景", title: "ボトルの中の夏", diff: "初級", file: "up_1791945911174_2.png", added: "2026-10" },
   { season: "通年", genre: "人物", title: "暮らし", diff: "上級", file: "up_1791946117371_3.png", added: "2026-10" },
   { season: "通年", genre: "食べ物", title: "ケーキのお城", diff: "中級", file: "up_1791946551359_5.png", added: "2026-10" },
+  { season: "通年", genre: "食べ物", title: "あんみつ", diff: "中級", file: "up_1791946675358_6.png", added: "2026-10" },
 ];
