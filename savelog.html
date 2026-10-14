@@ -796,7 +796,7 @@
     if (c.di) f.push("難しさ：" + c.di);
     if (c.us) f.push(c.us);
     if (f.length) cp.push(f.join("・") + "に絞って");
-    if (!e.c) return base + "から保存";
+    if (!e.c) return base + "から保存（絞り込みは記録を始める前）";
     return base + "から、" + (cp.length ? cp.join("") : "絞り込みなしで探して") + "保存";
   }
   var SRC_SHORT = {
