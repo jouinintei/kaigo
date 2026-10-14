@@ -750,4 +750,12 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "こけし", diff: "中級", file: "up_1791959175837_22.png", added: "2026-10" },
   { season: "通年", genre: "花", title: "曼荼羅花", diff: "中級", file: "up_1791959554915_23.png", added: "2026-10" },
   { season: "秋", genre: "食べ物", title: "土瓶蒸し", diff: "中級", file: "up_1791961063969_24.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県クイズ その3", file: "todofuken_quiz3.png", answer: "todofuken_quiz3_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "県庁所在地クイズ", file: "kenchou_quiz.png", answer: "kenchou_quiz_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "お買い物計算 その3", file: "okaimono_keisan3.png", answer: "okaimono_keisan3_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "時間の計算", file: "jikan_keisan.png", answer: "jikan_keisan_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昔の言葉クイズ その3", file: "mukashi_kotoba3.png", answer: "mukashi_kotoba3_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "冬", genre: "クイズ", title: "冬の言葉クイズ", file: "fuyu_kotoba_quiz.png", answer: "fuyu_kotoba_quiz_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "たし算・ひき算", file: "tashizan_hikizan.png", answer: "tashizan_hikizan_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "冬", genre: "漢字", title: "難読漢字 冬編", file: "nandoku_fuyu.png", answer: "nandoku_fuyu_ans.png", added: "2026-10" },
 ];
