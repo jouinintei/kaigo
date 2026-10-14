@@ -738,4 +738,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "動物", title: "そろばんとねずみ", diff: "初級", file: "up_1791947081337_9.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "動物マンション", diff: "中級", file: "up_1791947188924_10.png", added: "2026-10" },
   { season: "秋", genre: "動物", title: "秋の森の空想", diff: "上級", file: "up_1791948959128_11.png", added: "2026-10" },
+  { season: "秋", genre: "動物", title: "秋の森の秘密基地", diff: "上級", file: "up_1791949090031_12.png", added: "2026-10" },
 ];
