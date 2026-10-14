@@ -2115,7 +2115,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       rest.forEach(n => { if (pick.length < 10 && !seenT.has(n.title)) { seenT.add(n.title); pick.push(n); } });
     }
     if (pick.length < 4) return;
-    document.getElementById("monthTitle").textContent = mon + "月の塗り絵";
+    document.getElementById("monthTitle").textContent = mon + "月のおすすめ塗り絵";
     const track = document.getElementById("monthTrack");
     pick.forEach(n => {
       const b = document.createElement("div");
