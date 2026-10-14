@@ -634,6 +634,72 @@
     padding-bottom: 30px;
   }
 
+
+  .monthbox { max-width: 1100px; margin: 18px auto 0; padding: 0 20px; }
+  .mb-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .mb-head h2 { font-size: 18px; color: #6b5535; border-left: 6px solid var(--autumn); padding-left: 10px; }
+  .mb-nav { display: flex; gap: 6px; }
+  .mb-nav button {
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--card); color: #6b5535; font-size: 20px; line-height: 1;
+    cursor: pointer; font-family: inherit; padding: 0;
+  }
+  .mb-nav button:hover { border-color: var(--accent); color: var(--accent); }
+  .mb-track {
+    display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-behavior: smooth; padding: 2px 2px 8px; scrollbar-width: none;
+  }
+  .mb-track::-webkit-scrollbar { display: none; }
+  .mb-item {
+    flex: 0 0 calc((100% - 48px) / 5); scroll-snap-align: start;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 8px 8px 10px; cursor: pointer; text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  }
+  .mb-item:hover { border-color: var(--accent); background: #fffaf4; }
+  .mb-item img {
+    display: block; width: 100%; aspect-ratio: 297/210; object-fit: contain;
+    background: #fff; border-radius: 6px;
+  }
+  .mb-item .ttl {
+    font-size: 14px; font-weight: bold; margin-top: 6px; line-height: 1.4;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .mb-item .sub { font-size: 12px; color: #8a8477; }
+  .mb-dots { display: flex; justify-content: center; gap: 6px; margin-top: 4px; }
+  .mb-dots span { width: 7px; height: 7px; border-radius: 50%; background: #ddd4c4; }
+  .mb-dots span.on { background: var(--accent); }
+  @media (max-width: 600px) {
+    .monthbox { padding: 0 12px; margin-top: 14px; }
+    .mb-item { flex-basis: 40%; }
+    .mb-item .ttl { font-size: 13px; }
+    .mb-nav button { width: 34px; height: 34px; font-size: 18px; }
+  }
+
+  #lightbox > :first-child { margin-top: auto; }
+  #lightbox .lb-bar, #lightbox.has-rel .lb-rel { margin-bottom: auto; }
+  #lightbox.has-rel .lb-bar { margin-bottom: 0; }
+  #lightbox.has-rel #lbImg { max-height: 66vh; }
+  .lb-rel { width: 100%; max-width: 900px; margin-top: 18px; cursor: default; }
+  .lb-rel h3 { color: #f3ead9; font-size: 15px; margin-bottom: 8px; text-align: center; }
+  .lb-rel-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; justify-content: safe center; }
+  .lb-rel-item {
+    flex: 0 0 128px; background: #fff; border-radius: 8px; padding: 5px 5px 6px;
+    cursor: pointer; text-align: center; border: 2px solid transparent;
+  }
+  .lb-rel-item:hover { border-color: var(--accent); }
+  .lb-rel-item img { display: block; width: 100%; aspect-ratio: 297/210; object-fit: contain; }
+  .lb-rel-item div {
+    font-size: 12.5px; font-weight: bold; color: var(--ink); margin-top: 3px;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  @media (max-width: 600px) {
+    #lightbox.has-rel #lbImg { max-height: 58vh; }
+    .lb-rel { margin-top: 12px; }
+    .lb-rel-item { flex-basis: 100px; }
+    .lb-rel-row { justify-content: flex-start; }
+  }
+
   #lightbox {
     display: none;
     position: fixed;
@@ -641,10 +707,11 @@
     background: rgba(40, 35, 28, .88);
     z-index: 200;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
     padding: 20px;
     cursor: zoom-out;
+    overflow-y: auto;
   }
   #lightbox.show { display: flex; }
   #lbImg {
@@ -786,6 +853,11 @@
 </header>
 
 <div class="week-added" id="weekAdded" style="display:none"></div>
+<div class="monthbox" id="monthBox" style="display:none">
+  <div class="mb-head"><h2 id="monthTitle"></h2><div class="mb-nav"><button type="button" id="mbPrev" title="前へ">‹</button><button type="button" id="mbNext" title="次へ">›</button></div></div>
+  <div class="mb-track" id="monthTrack"></div>
+  <div class="mb-dots" id="monthDots"></div>
+</div>
 <div class="rankbox" id="rankBox" style="display:none">
   <h2>今週の人気塗り絵</h2>
   <div class="rank" id="rankList"></div>
@@ -818,6 +890,10 @@
     <button class="lb-toggle" id="lbAnswer" style="display:none">答えを見る</button>
     <a class="lb-save" id="lbSave">💾 保存</a>
     <button class="lb-close" id="lbClose">✕ 閉じる</button>
+  </div>
+  <div class="lb-rel" id="lbRel" style="display:none">
+    <h3>似た塗り絵</h3>
+    <div class="lb-rel-row" id="lbRelRow"></div>
   </div>
 </div>
 
@@ -1205,6 +1281,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     wa.style.display = (wa.dataset.has && page === "list" && !seriesView && !qWord && curPage === 1) ? "" : "none";
     const rankBox = document.getElementById("rankBox");
     rankBox.style.display = (page === "list" && !seriesView && !qWord && curPage === 1 && rankBox.dataset.ready) ? "" : "none";
+    const monthBox = document.getElementById("monthBox");
+    monthBox.style.display = (page === "list" && !seriesView && !qWord && curPage === 1 && monthBox.dataset.ready) ? "" : "none";
     rankBox.querySelectorAll(".rfav").forEach(b => {
       const on = isFav(b.dataset.file);
       b.classList.toggle("on", on);
@@ -1557,10 +1635,71 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     tg.style.display = n.answer ? "inline-block" : "none";
     tg.textContent = lbShowingAnswer ? "問題に戻る" : "答えを見る";
   }
+  const relGrams = new Map();
+  function gramsOf(n) {
+    if (relGrams.has(n.file)) return relGrams.get(n.file);
+    const t = normQ(String(n.title || "").replace(/その\d+|\d+/g, ""));
+    const g = new Set();
+    for (let i = 0; i < t.length - 1; i++) {
+      const b = t.slice(i, i + 2);
+      if (/[のとや]/.test(b)) continue;
+      g.add(b);
+    }
+    if (t.length === 1) g.add(t);
+    relGrams.set(n.file, g);
+    return g;
+  }
+  function relatedOf(n, max) {
+    const mine = gramsOf(n);
+    const scored = [];
+    list.forEach(m => {
+      if (m.file === n.file || kindOf(m) !== "塗り絵") return;
+      let sc = 0;
+      if (n.genre && m.genre === n.genre) sc += 3;
+      if (m.season === n.season) sc += 2;
+      else if (m.season === "通年" || n.season === "通年") sc += 0.5;
+      const g = gramsOf(m);
+      for (const b of mine) { if (g.has(b)) { sc += 2; break; } }
+      if (n.diff && m.diff === n.diff) sc += 1;
+      if (sc >= 3) scored.push({ m: m, sc: sc + Math.random() * 0.9 });
+    });
+    scored.sort((a, b) => b.sc - a.sc);
+    const seen = new Set([n.title]);
+    return scored.filter(x => { if (seen.has(x.m.title)) return false; seen.add(x.m.title); return true; })
+      .slice(0, max).map(x => x.m);
+  }
+  function renderRelated(n) {
+    const box = document.getElementById("lbRel");
+    const row = document.getElementById("lbRelRow");
+    row.innerHTML = "";
+    const rel = kindOf(n) === "塗り絵" ? relatedOf(n, 8) : [];
+    rel.forEach(m => {
+      const it = document.createElement("div");
+      it.className = "lb-rel-item";
+      const img = document.createElement("img");
+      img.src = thumbPath(m, m.file);
+      img.alt = m.title;
+      img.loading = "lazy";
+      const t = document.createElement("div");
+      t.textContent = m.title;
+      it.append(img, t);
+      it.onclick = (e) => {
+        e.stopPropagation();
+        openLightbox(m);
+        syncState();
+        lb.scrollTop = 0;
+      };
+      row.appendChild(it);
+    });
+    row.scrollLeft = 0;
+    box.style.display = rel.length ? "" : "none";
+    lb.classList.toggle("has-rel", rel.length > 0);
+  }
   function openLightbox(n) {
     lbCurrent = n;
     lbShowingAnswer = false;
     lbUpdate();
+    renderRelated(n);
     lb.classList.add("show");
   }
   function closeLightbox() {
@@ -1919,10 +2058,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (st.lb) {
       const n = list.find(x => x.file === st.lb);
       if (n) {
-        lbCurrent = n;
-        lbShowingAnswer = false;
-        lbUpdate();
-        lb.classList.add("show");
+        openLightbox(n);
       } else {
         closeLightbox();
       }
@@ -1939,6 +2075,105 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("tabNoutore").textContent = "脳トレ";
     document.getElementById("tabCal").textContent = "カレンダー";
   }
+  const MONTH_WORDS = {
+    1: ["正月", "初詣", "元旦", "新年", "初日の出", "羽子板", "門松", "鏡もち", "雑煮", "七草", "成人", "餅", "だるま", "七福神", "ししまい", "正月鯛", "祝", "小槌", "年越し"],
+    2: ["節分", "バレンタイン", "建国記念", "天皇誕生日", "梅の花", "雪", "かまくら", "ツバキ", "椿", "スキー", "ロウバイ", "犬ぞり"],
+    3: ["ひなまつり", "春分", "梅の花", "菜の花", "つくし", "たんぽぽ", "モクレン", "メジロ", "ひよこ", "春の田舎", "春の散歩"],
+    4: ["桜", "さくら", "花見", "入学", "チューリップ", "つつじ", "芝桜", "たけのこ", "いちご", "ネモフィラ", "ハナミズキ", "花より団子", "てんとうむし"],
+    5: ["こどもの日", "こいのぼり", "かしわもち", "菖蒲", "藤", "みどりの日", "憲法記念日", "昭和の日", "カーネーション", "葵祭", "つばめ", "ボタン", "シャクヤク", "芍薬"],
+    6: ["あじさい", "アジサイ", "梅雨", "雨", "傘", "蛍", "衣替え", "ハナショウブ", "クチナシ"],
+    7: ["七夕", "織姫", "天の川", "海の日", "土用", "祇園祭", "ひまわり", "朝顔", "アサガオ", "かき氷", "すいか", "蓮", "ほおずき", "夏休み", "海"],
+    8: ["花火", "お盆", "盆踊り", "精霊馬", "送り火", "夏祭り", "夏まつり", "山の日", "金魚", "蝉", "カブトムシ", "流しそうめん", "浴衣", "夏休み", "ひまわり"],
+    9: ["月見", "名月", "敬老", "彼岸", "秋分", "すすき", "コスモス", "すずむし", "白露", "ぶどう", "梨", "ハギ", "秋の七草", "ホトトギス", "桔梗", "リンドウ", "月"],
+    10: ["ハロウィン", "紅葉", "運動会", "スポーツの日", "芋", "栗", "柿", "きんもくせい", "金木犀", "どんぐり", "まつぼっくり", "きのこ", "キノコ", "松茸", "稲刈り", "新米", "秋刀魚", "さんま", "読書の秋", "芸術の秋", "時代祭", "かかし", "赤とんぼ", "秋鮭", "かぼちゃ"],
+    11: ["七五三", "千歳飴", "文化の日", "勤労感謝", "紅葉", "もみじ", "いちょう", "銀杏", "落ち葉", "干し柿", "菊", "焼き芋", "おでん", "鹿と紅葉", "秋から冬へ"],
+    12: ["クリスマス", "サンタ", "ポインセチア", "冬至", "ゆず湯", "大掃除", "年越し", "除夜", "師走", "リース", "イルミネーション", "餅つき", "シクラメン", "スノードーム", "鍋", "こたつ", "マフラー"]
+  };
+  function monthSeason(m) {
+    return m >= 3 && m <= 5 ? "春" : m >= 6 && m <= 8 ? "夏" : m >= 9 && m <= 11 ? "秋" : "冬";
+  }
+  function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+  (function buildMonth() {
+    const jst = new Date(Date.now() + 9 * 3600e3);
+    const mon = jst.getUTCMonth() + 1;
+    const ssn = monthSeason(mon);
+    const words = (MONTH_WORDS[mon] || []).map(w => [normQ(w), normQ(toKana(w))]);
+    const pool = list.filter(n => kindOf(n) === "塗り絵" && (n.season === ssn || n.season === "通年"));
+    const hit = pool.filter(n => {
+      const t = String(n.title || "");
+      const hay = normQ(t) + "|" + normQ(toKana(t));
+      return words.some(w => hay.indexOf(w[0]) >= 0 || hay.indexOf(w[1]) >= 0);
+    });
+    let pick = shuffle(hit.slice());
+    const seenT = new Set();
+    pick = pick.filter(n => { if (seenT.has(n.title)) return false; seenT.add(n.title); return true; }).slice(0, 15);
+    if (pick.length < 10) {
+      const rest = shuffle(pool.filter(n => n.season === ssn && !seenT.has(n.title)));
+      rest.forEach(n => { if (pick.length < 10 && !seenT.has(n.title)) { seenT.add(n.title); pick.push(n); } });
+    }
+    if (pick.length < 4) return;
+    document.getElementById("monthTitle").textContent = mon + "月の塗り絵";
+    const track = document.getElementById("monthTrack");
+    pick.forEach(n => {
+      const b = document.createElement("div");
+      b.className = "mb-item";
+      const img = document.createElement("img");
+      img.src = thumbPath(n, n.file);
+      img.alt = n.title;
+      img.loading = "lazy";
+      const t = document.createElement("div");
+      t.className = "ttl";
+      t.textContent = n.title;
+      const sb = document.createElement("div");
+      sb.className = "sub";
+      sb.textContent = [n.genre, n.diff].filter(Boolean).join("・");
+      b.append(img, t, sb);
+      b.onclick = () => { openLightbox(n); pushNav(); };
+      track.appendChild(b);
+    });
+    const dots = document.getElementById("monthDots");
+    const items = () => Array.from(track.children);
+    function stepW() {
+      const it = track.children[0];
+      return it ? it.getBoundingClientRect().width + 12 : 200;
+    }
+    function pages() { return Math.max(1, Math.ceil((track.scrollWidth - track.clientWidth) / stepW()) + 1); }
+    function drawDots() {
+      const np = pages();
+      if (dots.children.length !== np) {
+        dots.innerHTML = "";
+        for (let i = 0; i < np; i++) dots.appendChild(document.createElement("span"));
+      }
+      const cur = Math.round(track.scrollLeft / stepW());
+      Array.from(dots.children).forEach((d, i) => d.classList.toggle("on", i === Math.min(cur, np - 1)));
+    }
+    function go(dir) {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      if (dir > 0 && track.scrollLeft >= max) track.scrollTo({ left: 0 });
+      else if (dir < 0 && track.scrollLeft <= 2) track.scrollTo({ left: track.scrollWidth });
+      else track.scrollBy({ left: dir * stepW() });
+    }
+    let pauseUntil = 0;
+    const pause = () => { pauseUntil = Date.now() + 12000; };
+    document.getElementById("mbPrev").onclick = () => { pause(); go(-1); };
+    document.getElementById("mbNext").onclick = () => { pause(); go(1); };
+    ["pointerdown", "touchstart", "wheel", "mouseenter"].forEach(ev => track.addEventListener(ev, pause, { passive: true }));
+    track.addEventListener("scroll", drawDots, { passive: true });
+    window.addEventListener("resize", drawDots);
+    const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!still) {
+      setInterval(() => {
+        const box = document.getElementById("monthBox");
+        if (Date.now() < pauseUntil || box.style.display === "none" || lb.classList.contains("show") || document.hidden) return;
+        go(1);
+      }, 5000);
+    }
+    document.getElementById("monthBox").dataset.ready = "1";
+    setTimeout(drawDots, 0);
+  })();
   fetch("api/popular", { cache: "no-store" })
     .then(r => r.ok ? r.json() : { files: [] })
     .then(res => {
