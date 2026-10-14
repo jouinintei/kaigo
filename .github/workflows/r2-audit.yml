@@ -1,0 +1,29 @@
+name: R2 audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_ENDPOINT: https://f2973a9b06bd5d30be681c629f19145e.r2.cloudflarestorage.com
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -q boto3 pillow numpy > pip.log 2>&1 || { echo "::error::pip $(tail -c 300 pip.log)"; exit 1; }
+          .venv/bin/python .github/scripts/audit_run.py 2> err.log || { echo "::error::$(tail -c 500 err.log | tr '\n' ' ')"; exit 1; }
+      - name: Push results to temporary branch
+        run: |
+          cd audit_out
+          git init -q -b audit-tmp
+          git -c user.name=audit -c user.email=audit@example.com add -A
+          git -c user.name=audit -c user.email=audit@example.com commit -qm audit
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" audit-tmp
