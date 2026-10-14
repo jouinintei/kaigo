@@ -997,18 +997,19 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
   const _saveQueue = [];
   let _saveTimer = null;
-  function logSave(file, src) {
-    _saveQueue.push([file, src || "unknown"]);
+  function logSave(file, src, ctx) {
+    _saveQueue.push([file, src || "unknown", ctx || null]);
     clearTimeout(_saveTimer);
     _saveTimer = setTimeout(() => {
       const q = _saveQueue.splice(0);
       const files = q.map(x => x[0]);
       const srcs = q.map(x => x[1]);
+      const ctxs = q.map(x => x[2]);
       try {
         fetch("api/log-save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ files: files, srcs: srcs, did: deviceId() }),
+          body: JSON.stringify({ files: files, srcs: srcs, ctxs: ctxs, did: deviceId() }),
           keepalive: true
         }).catch(() => {});
       } catch (e) {}
@@ -1017,12 +1018,22 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   function pageSrc() {
     return page === "list" ? "list" : page === "fav" ? "fav" : page === "noutore" ? "noutore" : page === "calendar" ? "calendar" : "unknown";
   }
-  function mark(file, kind, src) {
+  function filterCtx() {
+    const c = {};
+    if (selSeason) c.se = selSeason;
+    if (selGenre) c.ge = selGenre;
+    if (selDiff) c.di = selDiff;
+    if (selUsed) c.us = selUsed;
+    if (qWord && qWord.trim()) c.q = qWord.trim().slice(0, 30);
+    if (seriesView) c.sr = String(seriesView).slice(0, 30);
+    return c;
+  }
+  function mark(file, kind, src, ctx) {
     const h = loadHist();
     if (!h[file]) h[file] = {};
     h[file][kind] = today();
     saveJSON(STORE_KEY, h);
-    if (kind === "save") logSave(file, src || pageSrc());
+    if (kind === "save") logSave(file, src || pageSrc(), ctx || (src ? null : filterCtx()));
   }
   function unmark(file, kind) {
     const h = loadHist();
@@ -1534,7 +1545,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       d.href = dlPath(n, n.file);
       d.download = dlName(n);
       d.onclick = () => {
-        mark(n.file, "save", pageSrc());
+        mark(n.file, "save", pageSrc(), filterCtx());
         showToast("保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
         setTimeout(render, 100);
       };
@@ -1703,8 +1714,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     lb.classList.toggle("has-rel", rel.length > 0);
   }
   let lbSrc = "unknown";
+  let lbCtx = null;
   function openLightbox(n, src) {
     lbSrc = src || pageSrc();
+    lbCtx = src ? null : filterCtx();
     lbCurrent = n;
     lbShowingAnswer = false;
     lbUpdate();
@@ -1727,7 +1740,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   });
   document.getElementById("lbSave").onclick = () => {
     if (!lbCurrent) return;
-    if (!lbShowingAnswer) mark(lbCurrent.file, "save", lbSrc);
+    if (!lbShowingAnswer) mark(lbCurrent.file, "save", lbSrc, lbCtx);
     showToast((lbShowingAnswer ? "答えを" : "") + "保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
     setTimeout(render, 100);
   };

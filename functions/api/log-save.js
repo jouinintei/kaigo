@@ -86,13 +86,23 @@ export async function onRequest({ request, env }) {
   let files = [];
   let did = "";
   let srcs = [];
+  let ctxs = [];
   try {
     const b = await request.json();
     files = Array.isArray(b.files) ? b.files : [];
     srcs = Array.isArray(b.srcs) ? b.srcs : [];
+    ctxs = Array.isArray(b.ctxs) ? b.ctxs : [];
     did = String(b.did || "").replace(/[^a-z0-9]/gi, "").slice(0, 16);
   } catch (e) {}
-  const items = files.map((f, i) => [f, String(srcs[i] || "unknown").replace(/[^a-z]/g, "").slice(0, 12) || "unknown"])
+  const cleanCtx = c => {
+    if (!c || typeof c !== "object") return null;
+    const o = {};
+    ["se", "ge", "di", "us", "q", "sr"].forEach(k => {
+      if (typeof c[k] === "string" && c[k].trim()) o[k] = c[k].trim().slice(0, 30);
+    });
+    return o;
+  };
+  const items = files.map((f, i) => [f, String(srcs[i] || "unknown").replace(/[^a-z]/g, "").slice(0, 12) || "unknown", cleanCtx(ctxs[i])])
     .filter(x => typeof x[0] === "string" && x[0].length > 0 && x[0].length < 200).slice(0, 60);
   files = items.map(x => x[0]);
   if (!files.length) return json({ ok: false });
@@ -108,12 +118,14 @@ export async function onRequest({ request, env }) {
       if (!d.days[day]) d.days[day] = {};
       if (!d.devs[day]) d.devs[day] = {};
       if (!d.src[day]) d.src[day] = {};
-      items.forEach(([f, s]) => {
+      items.forEach(([f, s, c]) => {
         d.src[day][s] = (d.src[day][s] || 0) + 1;
         d.totals[f] = (d.totals[f] || 0) + 1;
         d.days[day][f] = (d.days[day][f] || 0) + 1;
         d.devs[day][did] = (d.devs[day][did] || 0) + 1;
-        d.events.push({ t: now, f: f, d: did, s: s });
+        const ev = { t: now, f: f, d: did, s: s };
+        if (c) ev.c = c;
+        d.events.push(ev);
       });
       if (d.events.length > KEEP_EVENTS) d.events = d.events.slice(d.events.length - KEEP_EVENTS);
       const keys = Object.keys(d.days).sort();

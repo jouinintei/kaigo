@@ -183,6 +183,7 @@
   .tag.dev{margin-left:auto;font-variant-numeric:tabular-nums;letter-spacing:.03em;color:var(--ink-3)}
   @media (prefers-color-scheme: dark){.tag.kind{color:#ffb87a}}
   .ev .tag.from{white-space:nowrap;color:var(--ink-2);background:var(--surface-2);border-color:transparent}
+  .ev .tag.ctx{white-space:normal;border-radius:6px}
   .ev .tag.from-osusume,.ev .tag.from-nita,.ev .tag.from-rank{color:#2e6f9e;background:#e3eff8}
   @media (prefers-color-scheme: dark){.ev .tag.from-osusume,.ev .tag.from-nita,.ev .tag.from-rank{color:#9cc8ec;background:#1f3445}}
   @keyframes flash{from{background:var(--accent-soft)}to{background:transparent}}
@@ -1036,6 +1037,16 @@
       var tags = [];
       var more = [];
       if (e.s && SRC_SHORT[e.s]) tags.push('<span class="tag from from-'+e.s+'">'+SRC_SHORT[e.s]+'</span>');
+      if (e.c){
+        var cp = [];
+        if (e.c.q) cp.push("検索：" + e.c.q);
+        if (e.c.se) cp.push("季節：" + e.c.se);
+        if (e.c.ge) cp.push("ジャンル：" + e.c.ge);
+        if (e.c.di) cp.push("難しさ：" + e.c.di);
+        if (e.c.us) cp.push(e.c.us);
+        if (e.c.sr) cp.push("シリーズ：" + e.c.sr);
+        tags.push('<span class="tag from ctx">' + esc(cp.length ? cp.join("・") : "絞り込みなし") + '</span>');
+      }
       if (kindOf(it) !== "塗り絵") tags.push('<span class="tag kind">'+kindOf(it)+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
       more.push(labelDay(k) + " " + hhmm(e.t));
