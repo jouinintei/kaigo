@@ -736,4 +736,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "動物", title: "カタツムリバス", diff: "中級", file: "up_1791946802790_7.png", added: "2026-10" },
   { season: "通年", genre: "人物", title: "赤ちゃん", diff: "初級", file: "up_1791946993194_8.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "そろばんとねずみ", diff: "初級", file: "up_1791947081337_9.png", added: "2026-10" },
+  { season: "通年", genre: "動物", title: "動物マンション", diff: "中級", file: "up_1791947188924_10.png", added: "2026-10" },
 ];
