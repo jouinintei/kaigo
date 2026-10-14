@@ -25,12 +25,13 @@ for t, f in items:
         data = s3.get_object(Bucket=B, Key="images/" + f)["Body"].read()
         out, meta = frame(Image.open(io.BytesIO(data)))
         out.thumbnail((700, 700))
-        b = io.BytesIO(); out.save(b, "JPEG", quality=80)
-        s3.put_object(Bucket=B, Key="audit/" + f + ".jpg", Body=b.getvalue(), ContentType="image/jpeg", CacheControl="no-store")
+        os.makedirs("audit_thumbs", exist_ok=True)
+        out.save("audit_thumbs/" + f + ".jpg", quality=80)
         meta["title"], meta["file"] = t, f
         res.append(meta)
     except Exception as e:
         res.append({"file": f, "title": t, "error": str(e)[:200]})
-s3.put_object(Bucket=B, Key="audit/meta.json", Body=json.dumps(res, ensure_ascii=False, default=float).encode(),
-              ContentType="application/json", CacheControl="no-store")
+os.makedirs("audit_out", exist_ok=True)
+json.dump([r for r in res if "error" not in r], open("audit_out/meta.json", "w"), ensure_ascii=False, default=float)
+json.dump([r for r in res if "error" in r], open("audit_out/errors.json", "w"), ensure_ascii=False)
 print(f"::notice::audit {len(res)}")

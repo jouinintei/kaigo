@@ -1,7 +1,8 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
-CFG = dict(inset=0.012, line=14, radius=28, pad=0.012, logoH=0.022, logoRight=0.035)
+CFG = dict(inset=0.012, line=14, radius=28, pad=0.012, logoH=0.02, logoRight=0.03,
+           ownCover=0.85, maxCut=0.02, maxStretch=0.05)
 A4L, A4P = (3508, 2480), (2480, 3508)
 LOGO = Image.open("logo.png").convert("RGBA")
 
@@ -13,118 +14,146 @@ def to_gray(im):
     return bg.convert("L")
 
 
-def analyze(g):
+def small_dark(g):
     w, h = g.size
-    s = min(1, 900 / max(w, h))
+    s = min(1, 1800 / max(w, h))
     aw, ah = max(1, round(w * s)), max(1, round(h * s))
-    small = g.resize((aw, ah), Image.BILINEAR)
-    dark = np.array(small) < 160
+    return np.array(g.resize((aw, ah), Image.BILINEAR)) < 200, s
+
+
+def bbox(dark):
     if not dark.any():
         return None
     ys = np.where(dark.any(1))[0]
     xs = np.where(dark.any(0))[0]
-    x0, x1, y0, y1 = xs[0], xs[-1], ys[0], ys[-1]
-    band = max(2, round(min(aw, ah) * 0.015))
+    return xs[0], xs[-1], ys[0], ys[-1]
+
+
+def try_strip(g):
+    """元の枠線を見つけたら、その内側の範囲(元画像の座標)を返す。無ければ None"""
+    dark, s = small_dark(g)
+    b = bbox(dark)
+    if not b:
+        return None
+    x0, x1, y0, y1 = b
     sub = dark[y0:y1 + 1, x0:x1 + 1]
+    ah, aw = sub.shape
+    band = max(2, round(min(dark.shape) * 0.015))
     cover = min(sub[:band].any(0).mean(), sub[-band:].any(0).mean(),
                 sub[:, :band].any(1).mean(), sub[:, -band:].any(1).mean())
-    own = cover >= 0.97
-    inner = None
-    strips = None
-    if own:
-        lim = round(min(x1 - x0, y1 - y0) * 0.08)
+    if cover < CFG["ownCover"]:
+        return None
+    lim = round(min(aw, ah) * 0.08)
+    rowf = sub.mean(1)
+    colf = sub.mean(0)
 
-        def strip(get, start, d):
-            seen, last = False, 0
-            for k in range(lim):
-                f = get(start + d * k)
-                if f >= 0.6:
-                    seen, last = True, k
-                elif seen and k - last > 2:
-                    break
-            return last + 2 if seen else 0
+    def strip(arr, rev):
+        a = arr[::-1] if rev else arr
+        seen, last = False, 0
+        for k in range(min(lim, len(a))):
+            if a[k] >= 0.6:
+                seen, last = True, k
+            elif seen and k - last > 2:
+                break
+        return last + 2 if seen else 0
 
-        rowf = lambda yy: dark[yy, x0:x1 + 1].mean()
-        colf = lambda xx: dark[y0:y1 + 1, xx].mean()
-        t0, t1 = strip(rowf, y0, 1), strip(rowf, y1, -1)
-        l0, l1 = strip(colf, x0, 1), strip(colf, x1, -1)
-        strips = (t0, t1, l0, l1, lim)
-        inner = ((x0 + l0) / s, (y0 + t0) / s, (x1 + 1 - l1) / s, (y1 + 1 - t1) / s)
-    tol = 0.01
-    edge = sum([x0 <= aw * tol, y0 <= ah * tol, aw - 1 - x1 <= aw * tol, ah - 1 - y1 <= ah * tol]) >= 2
-    return dict(x0=x0 / s, y0=y0 / s, x1=(x1 + 1) / s, y1=(y1 + 1) / s, own=own, edge=edge,
-                inner=inner, cover=float(cover), strips=strips)
+    t0, t1 = strip(rowf, False), strip(rowf, True)
+    l0, l1 = strip(colf, False), strip(colf, True)
+    if not (t0 and t1 and l0 and l1):
+        return None
+    inner = sub[t0:ah - t1, l0:aw - l1]
+    if inner.size == 0:
+        return None
+    ih, iw = inner.shape
+    mx, my = max(3, round(iw * 0.04)), max(3, round(ih * 0.04))
+    if (inner[:, mx:iw - mx].mean(0) >= 0.9).any():
+        return None
+    return ((x0 + l0) / s, (y0 + t0) / s, (x1 + 1 - l1) / s, (y1 + 1 - t1) / s)
 
 
 def frame(im):
     g = to_gray(im)
     w, h = g.size
     W, H = A4L if w >= h else A4P
-    info = analyze(g)
-    meta = dict(orig=(w, h), mode=None)
-    if info and info["own"] and info["inner"]:
-        meta["strips"] = info["strips"]
-        ib = info["inner"]
+    meta = dict(orig=(w, h), stripped=0)
+    for _ in range(3):
+        ib = try_strip(g)
+        if not ib:
+            break
         g = g.crop((round(ib[0]), round(ib[1]), round(ib[2]), round(ib[3])))
-        w, h = g.size
-        info2 = analyze(g)
-        meta["resid_cover"] = info2["cover"] if info2 else None
-        info = info2
-        if info:
-            info["own"] = False
-        meta["own"] = True
-    meta["cover"] = info["cover"] if info else None
-    out = Image.new("L", (W, H), 255)
-    m = round(min(W, H) * CFG["inset"])
-    fx, fy, fw, fh = m, m, W - 2 * m, H - 2 * m
+        meta["stripped"] += 1
+    w, h = g.size
+    dark, s = small_dark(g)
+    b = bbox(dark)
     L = CFG["line"]
+    m = round(min(W, H) * CFG["inset"])
+    lh = round(min(W, H) * CFG["logoH"])
+    lgap = round(lh * 0.3)
+    fx, fy = m, m
+    fw = W - 2 * m
+    fh = H - 2 * m - lh - lgap
     ix, iy, iw, ih = fx + L, fy + L, fw - 2 * L, fh - 2 * L
-    if not info:
-        meta["mode"] = "blank"
-    elif info["edge"]:
-        s2 = max(iw / w, ih / h)
-        ew, eh = w * s2, h * s2
-        r = g.resize((max(1, round(ew)), max(1, round(eh))), Image.LANCZOS)
-        inner = Image.new("L", (iw, ih), 255)
-        inner.paste(r, (round((iw - ew) / 2), round((ih - eh) / 2)))
-        out.paste(inner, (ix, iy))
-        meta["mode"] = "edge"
-        meta["cut"] = 1 - (iw * ih) / (ew * eh)
-        meta["cut_x"] = max(0, (ew - iw) / ew)
-        meta["cut_y"] = max(0, (eh - ih) / eh)
-        meta["scale"] = s2
+    out = Image.new("L", (W, H), 255)
+    aw_, ah_ = dark.shape[1], dark.shape[0]
+    if b:
+        x0, x1, y0, y1 = b
+        tol = 0.01
+        edge = sum([x0 <= aw_ * tol, y0 <= ah_ * tol, aw_ - 1 - x1 <= aw_ * tol, ah_ - 1 - y1 <= ah_ * tol]) >= 2
     else:
+        edge = True
+    if edge:
+        sc = max(iw / w, ih / h)
+        cut = max(1 - iw / (w * sc), 1 - ih / (h * sc))
+        stretch = abs((iw / ih) / (w / h) - 1)
+        if stretch <= CFG["maxStretch"]:
+            meta["mode"] = "edge-stretch"
+            meta["cut"] = 0
+            out.paste(g.resize((iw, ih), Image.LANCZOS), (ix, iy))
+            meta["fill"] = 1
+            sc = iw / w
+        elif cut > CFG["maxCut"]:
+            sc = min(iw / w, ih / h)
+            meta["mode"] = "edge-contain"
+        else:
+            meta["mode"] = "edge-cover"
+        if meta["mode"] != "edge-stretch":
+            meta["cut"] = max(0, max(1 - iw / (w * sc), 1 - ih / (h * sc)))
+            ew, eh = w * sc, h * sc
+            r = g.resize((max(1, round(ew)), max(1, round(eh))), Image.LANCZOS)
+            inner = Image.new("L", (iw, ih), 255)
+            inner.paste(r, (round((iw - ew) / 2), round((ih - eh) / 2)))
+            out.paste(inner, (ix, iy))
+            meta["fill"] = min(1, (ew * eh) / (iw * ih))
+    else:
+        x0, x1, y0, y1 = [v / s for v in b]
+        x1 += 1 / s
+        y1 += 1 / s
         px, py = w * 0.004, h * 0.004
-        sx, sy = max(0, info["x0"] - px), max(0, info["y0"] - py)
-        sw, sh = min(w, info["x1"] + px) - sx, min(h, info["y1"] + py) - sy
+        sx, sy = max(0, x0 - px), max(0, y0 - py)
+        sw, sh = min(w, x1 + px) - sx, min(h, y1 + py) - sy
         p = round(min(W, H) * CFG["pad"])
         aw, ah = iw - 2 * p, ih - 2 * p
-        s3 = min(aw / sw, ah / sh)
-        mw, mh = sw * s3, sh * s3
+        sc = min(aw / sw, ah / sh)
+        mw, mh = sw * sc, sh * sc
         r = g.crop((round(sx), round(sy), round(sx + sw), round(sy + sh))).resize(
             (max(1, round(mw)), max(1, round(mh))), Image.LANCZOS)
         out.paste(r, (round(ix + (iw - mw) / 2), round(iy + (ih - mh) / 2)))
         meta["mode"] = "margin"
         meta["fill"] = (mw * mh) / (iw * ih)
-        meta["scale"] = s3
+        meta["cut"] = 0
+    meta["scale"] = sc
     mask = Image.new("L", (W, H), 255)
     ImageDraw.Draw(mask).rounded_rectangle((fx, fy, fx + fw - 1, fy + fh - 1), radius=CFG["radius"], fill=0)
     out.paste(255, (0, 0), mask)
     ImageDraw.Draw(out).rounded_rectangle((fx, fy, fx + fw - 1, fy + fh - 1), radius=CFG["radius"], outline=0, width=L)
-    lh = round(min(W, H) * CFG["logoH"])
     lw = round(lh * LOGO.width / LOGO.height)
-    gap = round(lh * 0.35)
     lx = fx + fw - round(min(W, H) * CFG["logoRight"]) - lw
-    cy = fy + fh - L / 2
-    ly = round(cy - lh / 2)
-    vg = round(lh * 0.15)
-    box = (lx - gap, ly - vg, lx + lw + gap, ly + lh + vg)
-    region = np.array(out.crop((box[0], box[1], box[2], round(fy + fh - L))))
-    meta["under_logo"] = float((region < 128).mean())
-    ImageDraw.Draw(out).rectangle(box, fill=255)
+    ly = fy + fh + lgap
     tint = LOGO.resize((lw, lh), Image.LANCZOS)
-    a = tint.split()[3]
-    gray = Image.new("L", (lw, lh), 107)
-    out.paste(gray, (lx, ly), a)
-    meta["W"], meta["H"] = W, H
+    out.paste(Image.new("L", (lw, lh), 107), (lx, ly), tint.split()[3])
+    # 残った枠らしき線(二重枠)の検査
+    d2, _ = small_dark(out.crop((ix, iy, ix + iw, iy + ih)))
+    hh, ww = d2.shape
+    k = max(3, round(min(hh, ww) * 0.06))
+    meta["resid"] = float(max(d2[:k].mean(1).max(), d2[-k:].mean(1).max(), d2[:, :k].mean(0).max(), d2[:, -k:].mean(0).max()))
     return out, meta
