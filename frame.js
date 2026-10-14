@@ -4,7 +4,7 @@
     line: 14,
     radius: 28,
     pad: 0.012,
-    logo: "/logo.png",
+    label: "rekupuri.com",
     logoH: 0.022,
     logoColor: "#6b6b6b",
     logoRight: 0.035,
@@ -14,19 +14,6 @@
   };
   var A4L = [3508, 2480];
   var A4P = [2480, 3508];
-
-  var logoPromise = null;
-  function getLogo() {
-    if (!logoPromise) {
-      logoPromise = new Promise(function (res) {
-        var i = new Image();
-        i.onload = function () { res(i); };
-        i.onerror = function () { res(null); };
-        i.src = CFG.logo;
-      });
-    }
-    return logoPromise;
-  }
 
   function loadBitmap(blob) {
     if (window.createImageBitmap) {
@@ -207,24 +194,21 @@
     roundRect(ctx, fx + L / 2, fy + L / 2, fw - L, fh - L, Math.max(0, CFG.radius - L / 2));
     ctx.stroke();
 
-    var logo = await getLogo();
-    if (logo && logo.width) {
-      var lw = Math.round(lh * logo.width / logo.height);
-      var tint = document.createElement("canvas");
-      tint.width = lw; tint.height = lh;
-      var tx = tint.getContext("2d");
-      tx.imageSmoothingQuality = "high";
-      tx.drawImage(logo, 0, 0, lw, lh);
-      tx.globalCompositeOperation = "source-in";
-      tx.fillStyle = CFG.logoColor;
-      tx.fillRect(0, 0, lw, lh);
+    var label = CFG.label;
+    if (label) {
+      var fs = Math.round(lh * 0.95);
+      ctx.font = "bold " + fs + "px 'Helvetica Neue', Arial, 'Hiragino Sans', sans-serif";
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "left";
+      var lw = Math.ceil(ctx.measureText(label).width);
       var gap = Math.round(lh * 0.35);
       var vg = Math.round(lh * 0.15);
       var lx = fx + fw - Math.round(Math.min(W, H) * CFG.logoRight) - lw;
       var ly = Math.min(Math.round(fy + fh - L / 2 - lh / 2), H - lh - vg - 4);
       ctx.fillStyle = "#fff";
       ctx.fillRect(lx - gap, ly - vg, lw + gap * 2, lh + vg * 2);
-      ctx.drawImage(tint, lx, ly);
+      ctx.fillStyle = CFG.logoColor;
+      ctx.fillText(label, lx, ly + lh / 2 + 1);
     }
     if (src.close) { try { src.close(); } catch (e) {} }
 
