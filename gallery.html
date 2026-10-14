@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<script src="/entry.js"></script>
 <script>window.IMG_BASE="https://img.rekupuri.com/images/";window.THUMB_BASE="https://img.rekupuri.com/thumbs/";addEventListener("error",function(e){var t=e.target;if(!t||t.tagName!=="IMG")return;var s=t.src,T=window.THUMB_BASE,B=window.IMG_BASE;if(s.indexOf(T)===0){t.src=B+s.slice(T.length).replace(/\.jpg(\?.*)?$/,"");e.stopPropagation();return;}if(s.indexOf(B)===0&&!t.dataset.fb){t.dataset.fb="1";t.src="images/"+s.slice(B.length);e.stopPropagation();}},true);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>作品一覧(塗り絵・脳トレ・カレンダー)|介護のレクプリ</title>
@@ -1005,11 +1006,18 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       const files = q.map(x => x[0]);
       const srcs = q.map(x => x[1]);
       const ctxs = q.map(x => x[2]);
+      let ent = null;
+      try {
+        if (!sessionStorage.getItem("rk_ent_sent")) {
+          ent = JSON.parse(sessionStorage.getItem("rk_ent") || "null");
+          if (ent) sessionStorage.setItem("rk_ent_sent", "1");
+        }
+      } catch (e) {}
       try {
         fetch("api/log-save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ files: files, srcs: srcs, ctxs: ctxs, did: deviceId() }),
+          body: JSON.stringify({ files: files, srcs: srcs, ctxs: ctxs, ent: ent, did: deviceId() }),
           keepalive: true
         }).catch(() => {});
       } catch (e) {}

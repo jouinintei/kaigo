@@ -799,6 +799,11 @@
     if (!e.c) return base + "から保存（絞り込みは記録を始める前）";
     return base + "から、" + (cp.length ? cp.join("") : "絞り込みなしで探して") + "保存";
   }
+  function entLabel(k){
+    if (!k) return "";
+    if (k.indexOf("o:") === 0) return k.slice(2);
+    return { google: "Google検索", yahoo: "Yahoo!検索", bing: "Bing検索", note: "note", sns: "SNS", old: "旧アドレス", direct: "直接（お気に入り・URL入力）" }[k] || k;
+  }
   var SRC_SHORT = {
     list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
     fav: "お気に入りから", bulk: "まとめて保存", noutore: "脳トレ一覧から", calendar: "カレンダーから"
@@ -814,6 +819,13 @@
   /* ---------- 端末ごとの利用状況 ---------- */
   var devStats = {};
   var devShowAll = false;
+  function entStat(id){
+    var o = (lastData && lastData.ent && lastData.ent[id]) || null;
+    if (!o) return "";
+    var ks = Object.keys(o).sort(function(a, b){ return o[b] - o[a]; });
+    if (!ks.length) return "";
+    return '<span class="stat ent">入口 ' + ks.map(function(k){ return esc(entLabel(k)) + ' <b>' + o[k] + '</b>回'; }).join("・") + '</span>';
+  }
   function buildDevStats(devs){
     var st = {};
     Object.keys(devs || {}).forEach(function(k){
@@ -882,6 +894,7 @@
         '<span class="stat"><b>' + s.nDays + '</b>日利用</span>' +
         '<span class="stat"><b>' + s.total + '</b>件</span>' +
         '<span class="stat">初回 ' + fmtMD(s.first) + '　最終 ' + lastLbl + '</span>' +
+        entStat(id) +
         '<span class="strip">' + strip + '</span>' +
       '</div>';
     });
@@ -1060,6 +1073,7 @@
       if (e.s && SRC_SHORT[e.s]) tags.push('<span class="tag from from-'+e.s+'">'+SRC_SHORT[e.s]+'</span>');
       if (kindOf(it) !== "塗り絵") tags.push('<span class="tag kind">'+kindOf(it)+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
+      if (e.r) more.push("入口：" + entLabel(e.r) + "から来訪");
       more.push(howFound(e));
       if (!it) more.push("ファイル: " + e.f);
       if (e.d){

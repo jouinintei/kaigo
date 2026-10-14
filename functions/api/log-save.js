@@ -22,7 +22,7 @@ function ghHeaders(env) {
 }
 
 function blank() {
-  return { totals: {}, days: {}, devs: {}, events: [], src: {} };
+  return { totals: {}, days: {}, devs: {}, events: [], src: {}, ent: {} };
 }
 
 async function ghRead(env) {
@@ -40,6 +40,7 @@ async function ghRead(env) {
   if (!data.devs) data.devs = {};
   if (!Array.isArray(data.events)) data.events = [];
   if (!data.src) data.src = {};
+  if (!data.ent) data.ent = {};
   return { sha: j.sha, data: data };
 }
 
@@ -87,11 +88,17 @@ export async function onRequest({ request, env }) {
   let did = "";
   let srcs = [];
   let ctxs = [];
+  let ent = null;
   try {
     const b = await request.json();
     files = Array.isArray(b.files) ? b.files : [];
     srcs = Array.isArray(b.srcs) ? b.srcs : [];
     ctxs = Array.isArray(b.ctxs) ? b.ctxs : [];
+    if (b.ent && typeof b.ent === "object") {
+      const k = String(b.ent.k || "").replace(/[^a-z]/g, "").slice(0, 10);
+      const h = String(b.ent.h || "").toLowerCase().replace(/[^a-z0-9.-]/g, "").slice(0, 40);
+      if (k) ent = k === "other" && h ? "o:" + h : k;
+    }
     did = String(b.did || "").replace(/[^a-z0-9]/gi, "").slice(0, 16);
   } catch (e) {}
   const cleanCtx = c => {
@@ -118,13 +125,18 @@ export async function onRequest({ request, env }) {
       if (!d.days[day]) d.days[day] = {};
       if (!d.devs[day]) d.devs[day] = {};
       if (!d.src[day]) d.src[day] = {};
-      items.forEach(([f, s, c]) => {
+      if (ent) {
+        if (!d.ent[did]) d.ent[did] = {};
+        d.ent[did][ent] = (d.ent[did][ent] || 0) + 1;
+      }
+      items.forEach(([f, s, c], i) => {
         d.src[day][s] = (d.src[day][s] || 0) + 1;
         d.totals[f] = (d.totals[f] || 0) + 1;
         d.days[day][f] = (d.days[day][f] || 0) + 1;
         d.devs[day][did] = (d.devs[day][did] || 0) + 1;
         const ev = { t: now, f: f, d: did, s: s };
         if (c) ev.c = c;
+        if (ent && i === 0) ev.r = ent;
         d.events.push(ev);
       });
       if (d.events.length > KEEP_EVENTS) d.events = d.events.slice(d.events.length - KEEP_EVENTS);
