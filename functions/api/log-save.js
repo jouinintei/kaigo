@@ -22,7 +22,7 @@ function ghHeaders(env) {
 }
 
 function blank() {
-  return { totals: {}, days: {}, devs: {}, events: [] };
+  return { totals: {}, days: {}, devs: {}, events: [], src: {} };
 }
 
 async function ghRead(env) {
@@ -39,6 +39,7 @@ async function ghRead(env) {
   if (!data.days) data.days = {};
   if (!data.devs) data.devs = {};
   if (!Array.isArray(data.events)) data.events = [];
+  if (!data.src) data.src = {};
   return { sha: j.sha, data: data };
 }
 
@@ -84,12 +85,16 @@ export async function onRequest({ request, env }) {
   // 記録 (POST): { files: ["xxx.png", ...], did: "端末の符号" }
   let files = [];
   let did = "";
+  let srcs = [];
   try {
     const b = await request.json();
     files = Array.isArray(b.files) ? b.files : [];
+    srcs = Array.isArray(b.srcs) ? b.srcs : [];
     did = String(b.did || "").replace(/[^a-z0-9]/gi, "").slice(0, 16);
   } catch (e) {}
-  files = files.filter(f => typeof f === "string" && f.length > 0 && f.length < 200).slice(0, 60);
+  const items = files.map((f, i) => [f, String(srcs[i] || "unknown").replace(/[^a-z]/g, "").slice(0, 12) || "unknown"])
+    .filter(x => typeof x[0] === "string" && x[0].length > 0 && x[0].length < 200).slice(0, 60);
+  files = items.map(x => x[0]);
   if (!files.length) return json({ ok: false });
   if (!did) did = "unknown";
 
@@ -102,11 +107,13 @@ export async function onRequest({ request, env }) {
       const d = cur.data;
       if (!d.days[day]) d.days[day] = {};
       if (!d.devs[day]) d.devs[day] = {};
-      files.forEach(f => {
+      if (!d.src[day]) d.src[day] = {};
+      items.forEach(([f, s]) => {
+        d.src[day][s] = (d.src[day][s] || 0) + 1;
         d.totals[f] = (d.totals[f] || 0) + 1;
         d.days[day][f] = (d.days[day][f] || 0) + 1;
         d.devs[day][did] = (d.devs[day][did] || 0) + 1;
-        d.events.push({ t: now, f: f, d: did });
+        d.events.push({ t: now, f: f, d: did, s: s });
       });
       if (d.events.length > KEEP_EVENTS) d.events = d.events.slice(d.events.length - KEEP_EVENTS);
       const keys = Object.keys(d.days).sort();
@@ -114,6 +121,7 @@ export async function onRequest({ request, env }) {
         const old = keys.shift();
         delete d.days[old];
         delete d.devs[old];
+        delete d.src[old];
       }
       if (await ghWrite(env, cur.sha, d)) return json({ ok: true });
     } catch (e) {}

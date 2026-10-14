@@ -997,27 +997,32 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
   const _saveQueue = [];
   let _saveTimer = null;
-  function logSave(file) {
-    _saveQueue.push(file);
+  function logSave(file, src) {
+    _saveQueue.push([file, src || "unknown"]);
     clearTimeout(_saveTimer);
     _saveTimer = setTimeout(() => {
-      const files = _saveQueue.splice(0);
+      const q = _saveQueue.splice(0);
+      const files = q.map(x => x[0]);
+      const srcs = q.map(x => x[1]);
       try {
         fetch("api/log-save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ files: files, did: deviceId() }),
+          body: JSON.stringify({ files: files, srcs: srcs, did: deviceId() }),
           keepalive: true
         }).catch(() => {});
       } catch (e) {}
     }, 2000);
   }
-  function mark(file, kind) {
+  function pageSrc() {
+    return page === "list" ? "list" : page === "fav" ? "fav" : page === "noutore" ? "noutore" : page === "calendar" ? "calendar" : "unknown";
+  }
+  function mark(file, kind, src) {
     const h = loadHist();
     if (!h[file]) h[file] = {};
     h[file][kind] = today();
     saveJSON(STORE_KEY, h);
-    if (kind === "save") logSave(file);
+    if (kind === "save") logSave(file, src || pageSrc());
   }
   function unmark(file, kind) {
     const h = loadHist();
@@ -1529,7 +1534,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       d.href = dlPath(n, n.file);
       d.download = dlName(n);
       d.onclick = () => {
-        mark(n.file, "save");
+        mark(n.file, "save", pageSrc());
         showToast("保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
         setTimeout(render, 100);
       };
@@ -1687,7 +1692,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       it.append(img, t);
       it.onclick = (e) => {
         e.stopPropagation();
-        openLightbox(m);
+        openLightbox(m, "nita");
         syncState();
         lb.scrollTop = 0;
       };
@@ -1697,7 +1702,9 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     box.style.display = rel.length ? "" : "none";
     lb.classList.toggle("has-rel", rel.length > 0);
   }
-  function openLightbox(n) {
+  let lbSrc = "unknown";
+  function openLightbox(n, src) {
+    lbSrc = src || pageSrc();
     lbCurrent = n;
     lbShowingAnswer = false;
     lbUpdate();
@@ -1720,7 +1727,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   });
   document.getElementById("lbSave").onclick = () => {
     if (!lbCurrent) return;
-    if (!lbShowingAnswer) mark(lbCurrent.file, "save");
+    if (!lbShowingAnswer) mark(lbCurrent.file, "save", lbSrc);
     showToast((lbShowingAnswer ? "答えを" : "") + "保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
     setTimeout(render, 100);
   };
@@ -1867,7 +1874,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         a.remove();
       }, i * 400);
     });
-    shown.forEach(n => mark(n.file, "save"));
+    shown.forEach(n => mark(n.file, "save", "bulk"));
     showToast("保存を始めました。「複数のファイルのダウンロード」を聞かれたら「許可」を押してください");
     setTimeout(render, shown.length * 400 + 100);
   }
@@ -1893,7 +1900,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       try {
         await add(n.file, dlName(n));
         if (n.answer) await add(n.answer, dlNameAns(n));
-        mark(n.file, "save");
+        mark(n.file, "save", "bulk");
         ok++;
         if (shown.length > 5) {
           showToast("画像をまとめています… " + ok + " / " + shown.length + " 枚");
@@ -1933,7 +1940,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       try {
         await writeOne(n.file, dlName(n));
         if (n.answer) await writeOne(n.answer, dlNameAns(n));
-        mark(n.file, "save");
+        mark(n.file, "save", "bulk");
         ok++;
       } catch (e) {}
     }
@@ -2137,7 +2144,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       sb.className = "sub";
       sb.textContent = [n.genre, n.diff].filter(Boolean).join("・");
       b.append(img, t, sb);
-      b.onclick = () => { openLightbox(n); pushNav(); };
+      b.onclick = () => { openLightbox(n, "osusume"); pushNav(); };
       track.appendChild(b);
     });
     const dots = document.getElementById("monthDots");
@@ -2217,7 +2224,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         s.className = "sub";
         s.textContent = [n.season, n.genre, n.diff].filter(Boolean).join("・");
         b.append(no, fav, img, t, s);
-        b.onclick = () => { openLightbox(n); pushNav(); };
+        b.onclick = () => { openLightbox(n, "rank"); pushNav(); };
         box.appendChild(b);
       });
       document.getElementById("rankBox").dataset.ready = "1";
