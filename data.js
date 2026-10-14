@@ -749,4 +749,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "和の女性", diff: "中級", file: "up_1791958991077_21.png", added: "2026-10" },
   { season: "通年", genre: "その他", title: "こけし", diff: "中級", file: "up_1791959175837_22.png", added: "2026-10" },
   { season: "通年", genre: "花", title: "曼荼羅花", diff: "中級", file: "up_1791959554915_23.png", added: "2026-10" },
+  { season: "秋", genre: "食べ物", title: "土瓶蒸し", diff: "中級", file: "up_1791961063969_24.png", added: "2026-10" },
 ];
