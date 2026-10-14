@@ -5,9 +5,9 @@
     radius: 28,
     pad: 0.012,
     logo: "/logo.png",
-    logoH: 0.02,
+    logoH: 0.022,
     logoColor: "#6b6b6b",
-    logoRight: 0.03,
+    logoRight: 0.035,
     ownCover: 0.85,
     maxCut: 0.02,
     maxStretch: 0.05
@@ -159,9 +159,8 @@
     var L = CFG.line;
     var mg = Math.round(Math.min(W, H) * CFG.inset);
     var lh = Math.round(Math.min(W, H) * CFG.logoH);
-    var lgap = Math.round(lh * 0.3);
     var fx = mg, fy = mg, fw = W - 2 * mg, fh = H - 2 * mg;
-    var ix = fx + L, iy = fy + L, iw = fw - 2 * L, ih = fh - 2 * L - lh - lgap * 2;
+    var ix = fx + L, iy = fy + L, iw = fw - 2 * L, ih = fh - 2 * L;
 
     var edge = true;
     if (m.box) {
@@ -219,8 +218,13 @@
       tx.globalCompositeOperation = "source-in";
       tx.fillStyle = CFG.logoColor;
       tx.fillRect(0, 0, lw, lh);
+      var gap = Math.round(lh * 0.35);
+      var vg = Math.round(lh * 0.15);
       var lx = fx + fw - Math.round(Math.min(W, H) * CFG.logoRight) - lw;
-      ctx.drawImage(tint, lx, fy + fh - L - lgap - lh);
+      var ly = Math.min(Math.round(fy + fh - L / 2 - lh / 2), H - lh - vg - 4);
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(lx - gap, ly - vg, lw + gap * 2, lh + vg * 2);
+      ctx.drawImage(tint, lx, ly);
     }
     if (src.close) { try { src.close(); } catch (e) {} }
 
