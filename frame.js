@@ -59,6 +59,30 @@
     return { dark: dark, aw: aw, ah: ah, s: s, box: x1 < 0 ? null : [x0, y0, x1, y1] };
   }
 
+  function hasGutter(get, start, n, short) {
+    var arr = new Array(n);
+    for (var i = 0; i < n; i++) arr[i] = get(start + i);
+    var m = Math.max(3, Math.round(n * 0.08));
+    var k = Math.max(2, Math.round(short * 0.03));
+    var i2 = m;
+    while (i2 < n - m) {
+      if (arr[i2] === 0) {
+        var j = i2;
+        while (j < n && arr[j] === 0) j++;
+        if (j - i2 >= n * 0.01) {
+          var before = 0, after = 0;
+          for (var a = Math.max(0, i2 - k); a < i2; a++) before = Math.max(before, arr[a]);
+          for (var b2 = j; b2 < Math.min(n, j + k); b2++) after = Math.max(after, arr[b2]);
+          if (before >= 0.95 && after >= 0.95) return true;
+        }
+        i2 = j;
+      } else {
+        i2++;
+      }
+    }
+    return false;
+  }
+
   function tryStrip(src, r) {
     var m = darkMap(src, r[0], r[1], r[2] - r[0], r[3] - r[1]);
     if (!m.box) return null;
@@ -82,6 +106,7 @@
     if (cover < CFG.ownCover) return null;
     function rowMean(yy) { var n = 0; for (var xx = x0; xx <= x1; xx++) n += dark[yy * aw + xx]; return n / bw; }
     function colMean(xx) { var n = 0; for (var yy = y0; yy <= y1; yy++) n += dark[yy * aw + xx]; return n / bh; }
+    if (hasGutter(rowMean, y0, bh, Math.min(bw, bh)) || hasGutter(colMean, x0, bw, Math.min(bw, bh))) return null;
     var lim = Math.round(Math.min(bw, bh) * 0.08);
     function strip(get, start, dir, len) {
       var seen = false, last = 0;
