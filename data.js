@@ -743,4 +743,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "風景", title: "ティーポットハウス", diff: "上級", file: "up_1791949519701_14.png", added: "2026-10" },
   { season: "秋", genre: "動物", title: "かぼちゃハウス", diff: "初級", file: "up_1791950027165_15.png", added: "2026-10" },
   { season: "秋", genre: "動物", title: "リスときのこ", diff: "初級", file: "up_1791950230078_16.png", added: "2026-10" },
+  { season: "通年", genre: "風景", title: "ティーカップの小さな世界", diff: "中級", file: "up_1791950727881_18.png", added: "2026-10" },
 ];
