@@ -2111,13 +2111,17 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     });
     let pick = shuffle(hit.slice());
     const seenT = new Set();
-    pick = pick.filter(n => { if (seenT.has(n.title)) return false; seenT.add(n.title); return true; }).slice(0, 15);
+    pick = pick.filter(n => n.season !== "通年")
+      .filter(n => { if (seenT.has(n.title)) return false; seenT.add(n.title); return true; }).slice(0, 10);
     if (pick.length < 10) {
       const rest = shuffle(pool.filter(n => n.season === ssn && !seenT.has(n.title)));
       rest.forEach(n => { if (pick.length < 10 && !seenT.has(n.title)) { seenT.add(n.title); pick.push(n); } });
     }
+    const allYear = shuffle(pool.filter(n => n.season === "通年" && !seenT.has(n.title)));
+    allYear.forEach(n => { if (pick.length < 15 && !seenT.has(n.title)) { seenT.add(n.title); pick.push(n); } });
+    pick = shuffle(pick);
     if (pick.length < 4) return;
-    document.getElementById("monthTitle").innerHTML = mon + '月のおすすめ塗り絵<span class="mb-note">開くたびにランダムで入れ替わります</span>';
+    document.getElementById("monthTitle").innerHTML = 'おすすめ塗り絵<span class="mb-note">開くたびにランダムで入れ替わります</span>';
     const track = document.getElementById("monthTrack");
     pick.forEach(n => {
       const b = document.createElement("div");
