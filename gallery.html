@@ -17,6 +17,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="/analytics.js" defer></script>
+<script src="/frame.js?v=1"></script>
 <style>
   :root {
     --bg: #faf6ef;
@@ -1632,7 +1633,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (!r || !r.ok) { try { r = await fetch("api/dl?f=" + encodeURIComponent(file), { cache: "no-store" }); } catch (e) { r = null; } }
     if (!r || !r.ok) r = await fetch("images/" + file);
     if (!r.ok) throw new Error("読み込めません: " + file);
-    return await r.blob();
+    const blob = await r.blob();
+    const n = list.find(x => x.file === file);
+    if (n && kindOf(n) === "塗り絵" && window.rekupuriFrame) return await window.rekupuriFrame(blob);
+    return blob;
   }
 
   document.addEventListener("click", async (e) => {

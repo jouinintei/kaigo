@@ -120,6 +120,7 @@ export async function onRequest(context) {
     "<meta property=\"og:image\" content=\"" + esc(img) + "\">\n" +
     "<link rel=\"icon\" href=\"/favicon.ico\" sizes=\"48x48\">\n" +
     "<script src=\"/analytics.js\" defer></script>\n" +
+    "<script src=\"/frame.js?v=1\"></script>\n" +
     "<script type=\"application/ld+json\">" + JSON.stringify(ld) + "</script>\n" +
     "<style>\n" +
     "body{font-family:\"Hiragino Maru Gothic ProN\",\"BIZ UDGothic\",\"Yu Gothic\",\"Meiryo\",sans-serif;background:#faf6ef;color:#3a3a3a;line-height:1.7;margin:0}\n" +
@@ -145,14 +146,14 @@ export async function onRequest(context) {
     "<div class=\"pic\"><img src=\"" + esc(IMGB + n.file) + "\" alt=\"" + esc(n.title + (kind === "脳トレ" ? " 脳トレプリント" : " 塗り絵")) + "\"></div>\n" +
     "<p class=\"txt\">" + esc(desc) + "</p>\n" +
     "<div class=\"btns\">\n" +
-    "<a class=\"b1\" href=\"" + esc(IMGB + n.file) + "\" download=\"" + esc(n.title + (n.diff && kind !== "脳トレ" ? "(" + n.diff + ")" : "")) + esc(n.file.substring(n.file.lastIndexOf("."))) + "\">💾 この" + (kind === "脳トレ" ? "プリント" : kind === "カレンダー" ? "カレンダー" : "塗り絵") + "を保存</a>\n" +
+    "<a class=\"b1\"" + (kind === "塗り絵" ? " data-frame=\"1\"" : "") + " href=\"" + esc(IMGB + n.file) + "\" download=\"" + esc(n.title + (n.diff && kind !== "脳トレ" ? "(" + n.diff + ")" : "")) + esc(n.file.substring(n.file.lastIndexOf("."))) + "\">💾 この" + (kind === "脳トレ" ? "プリント" : kind === "カレンダー" ? "カレンダー" : "塗り絵") + "を保存</a>\n" +
     (n.answer ? "<a class=\"b2\" href=\"" + esc(IMGB + n.answer) + "\" download=\"" + esc(n.title + " 答え") + esc(n.answer.substring(n.answer.lastIndexOf("."))) + "\">💾 答えを保存</a>\n" : "") +
     "<a class=\"b3\" href=\"" + backHref + "\">" + backLabel + " →</a>\n" +
     "</div>\n" +
     "<p class=\"txt\">保存した画像をA4サイズで印刷すると、そのままレクリエーションで使えます。ほかにも塗り絵・脳トレ・カレンダーを無料で配布しています。</p>\n" +
     "</div>\n" +
     "<footer><a href=\"/\">" + SITE + "</a> — 高齢者向けの無料塗り絵・脳トレ・カレンダー素材</footer>\n" +
-    "<script>document.addEventListener(\"click\",async function(e){var a=e.target.closest&&e.target.closest(\"a[download]\");if(!a||a.dataset.direct)return;e.preventDefault();var h=a.getAttribute(\"href\"),nm=a.getAttribute(\"download\");try{var r=await fetch(h,{mode:\"cors\",cache:\"no-cache\"});if(!r.ok)throw 0;var u=URL.createObjectURL(await r.blob());var t=document.createElement(\"a\");t.href=u;t.download=nm;t.dataset.direct=\"1\";document.body.appendChild(t);t.click();t.remove();setTimeout(function(){URL.revokeObjectURL(u)},30000);}catch(x){location.href=\"/api/dl?f=\"+encodeURIComponent(h.slice(h.lastIndexOf(\"/\")+1))+\"&n=\"+encodeURIComponent(nm);}});</script>\n" +
+    "<script>document.addEventListener(\"click\",async function(e){var a=e.target.closest&&e.target.closest(\"a[download]\");if(!a||a.dataset.direct)return;e.preventDefault();var h=a.getAttribute(\"href\"),nm=a.getAttribute(\"download\");try{var r=await fetch(h,{mode:\"cors\",cache:\"no-cache\"});if(!r.ok)throw 0;var bl=await r.blob();if(a.dataset.frame&&window.rekupuriFrame)bl=await window.rekupuriFrame(bl);var u=URL.createObjectURL(bl);var t=document.createElement(\"a\");t.href=u;t.download=nm;t.dataset.direct=\"1\";document.body.appendChild(t);t.click();t.remove();setTimeout(function(){URL.revokeObjectURL(u)},30000);}catch(x){location.href=\"/api/dl?f=\"+encodeURIComponent(h.slice(h.lastIndexOf(\"/\")+1))+\"&n=\"+encodeURIComponent(nm);}});</script>\n" +
     "</body>\n</html>";
 
   return new Response(html, {
