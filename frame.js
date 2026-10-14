@@ -5,10 +5,16 @@
     radius: 28,
     pad: 0.012,
     logo: "/logo.png",
-    logoH: 0.022,
+    logoH: 0.02,
     logoColor: "#6b6b6b",
-    logoRight: 0.035
+    logoRight: 0.03,
+    ownCover: 0.85,
+    maxCut: 0.02,
+    maxStretch: 0.05
   };
+  var A4L = [3508, 2480];
+  var A4P = [2480, 3508];
+
   var logoPromise = null;
   function getLogo() {
     if (!logoPromise) {
@@ -21,8 +27,6 @@
     }
     return logoPromise;
   }
-  var A4L = [3508, 2480];
-  var A4P = [2480, 3508];
 
   function loadBitmap(blob) {
     if (window.createImageBitmap) {
@@ -40,23 +44,23 @@
     });
   }
 
-  function analyze(src, w, h) {
-    var s = Math.min(1, 900 / Math.max(w, h));
-    var aw = Math.max(1, Math.round(w * s)), ah = Math.max(1, Math.round(h * s));
+  function darkMap(src, sx, sy, sw, sh) {
+    var s = Math.min(1, 1800 / Math.max(sw, sh));
+    var aw = Math.max(1, Math.round(sw * s)), ah = Math.max(1, Math.round(sh * s));
     var c = document.createElement("canvas");
     c.width = aw; c.height = ah;
     var x = c.getContext("2d", { willReadFrequently: true });
     x.fillStyle = "#fff";
     x.fillRect(0, 0, aw, ah);
-    x.drawImage(src, 0, 0, aw, ah);
+    x.imageSmoothingQuality = "high";
+    x.drawImage(src, sx, sy, sw, sh, 0, 0, aw, ah);
     var d = x.getImageData(0, 0, aw, ah).data;
     var dark = new Uint8Array(aw * ah);
     var x0 = aw, y0 = ah, x1 = -1, y1 = -1;
     for (var yy = 0; yy < ah; yy++) {
       for (var xx = 0; xx < aw; xx++) {
         var i = (yy * aw + xx) * 4;
-        var v = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
-        if (v < 160) {
+        if (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114 < 200) {
           dark[yy * aw + xx] = 1;
           if (xx < x0) x0 = xx;
           if (xx > x1) x1 = xx;
@@ -65,53 +69,55 @@
         }
       }
     }
-    if (x1 < 0) return null;
-    var band = Math.max(2, Math.round(Math.min(aw, ah) * 0.015));
-    function rowCover(ya, yb) {
+    return { dark: dark, aw: aw, ah: ah, s: s, box: x1 < 0 ? null : [x0, y0, x1, y1] };
+  }
+
+  function tryStrip(src, r) {
+    var m = darkMap(src, r[0], r[1], r[2] - r[0], r[3] - r[1]);
+    if (!m.box) return null;
+    var dark = m.dark, aw = m.aw;
+    var x0 = m.box[0], y0 = m.box[1], x1 = m.box[2], y1 = m.box[3];
+    var bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+    var band = Math.max(2, Math.round(Math.min(m.aw, m.ah) * 0.015));
+    function rowAny(ya, yb) {
       var n = 0;
-      for (var xx = x0; xx <= x1; xx++) {
-        for (var yy = ya; yy <= yb; yy++) { if (dark[yy * aw + xx]) { n++; break; } }
-      }
-      return n / (x1 - x0 + 1);
+      for (var xx = x0; xx <= x1; xx++) for (var yy = ya; yy <= yb; yy++) if (dark[yy * aw + xx]) { n++; break; }
+      return n / bw;
     }
-    function colCover(xa, xb) {
+    function colAny(xa, xb) {
       var n = 0;
-      for (var yy = y0; yy <= y1; yy++) {
-        for (var xx = xa; xx <= xb; xx++) { if (dark[yy * aw + xx]) { n++; break; } }
-      }
-      return n / (y1 - y0 + 1);
+      for (var yy = y0; yy <= y1; yy++) for (var xx = xa; xx <= xb; xx++) if (dark[yy * aw + xx]) { n++; break; }
+      return n / bh;
     }
-    var own = Math.min(
-      rowCover(y0, Math.min(y1, y0 + band - 1)),
-      rowCover(Math.max(y0, y1 - band + 1), y1),
-      colCover(x0, Math.min(x1, x0 + band - 1)),
-      colCover(Math.max(x0, x1 - band + 1), x1)
-    ) >= 0.97;
-    var inner = null;
-    if (own) {
-      var lim = Math.round(Math.min(x1 - x0, y1 - y0) * 0.08);
-      function rowFull(yy) { var n = 0; for (var xx = x0; xx <= x1; xx++) if (dark[yy * aw + xx]) n++; return n / (x1 - x0 + 1); }
-      function colFull(xx) { var n = 0; for (var yy = y0; yy <= y1; yy++) if (dark[yy * aw + xx]) n++; return n / (y1 - y0 + 1); }
-      function strip(get, start, dir) {
-        var k = 0, seen = false, last = 0;
-        for (; k < lim; k++) {
-          var f = get(start + dir * k);
-          if (f >= 0.6) { seen = true; last = k; }
-          else if (seen && k - last > 2) break;
-        }
-        return seen ? last + 2 : 0;
+    var cover = Math.min(
+      rowAny(y0, Math.min(y1, y0 + band - 1)), rowAny(Math.max(y0, y1 - band + 1), y1),
+      colAny(x0, Math.min(x1, x0 + band - 1)), colAny(Math.max(x0, x1 - band + 1), x1));
+    if (cover < CFG.ownCover) return null;
+    function rowMean(yy) { var n = 0; for (var xx = x0; xx <= x1; xx++) n += dark[yy * aw + xx]; return n / bw; }
+    function colMean(xx) { var n = 0; for (var yy = y0; yy <= y1; yy++) n += dark[yy * aw + xx]; return n / bh; }
+    var lim = Math.round(Math.min(bw, bh) * 0.08);
+    function strip(get, start, dir, len) {
+      var seen = false, last = 0;
+      for (var k = 0; k < Math.min(lim, len); k++) {
+        if (get(start + dir * k) >= 0.6) { seen = true; last = k; }
+        else if (seen && k - last > 2) break;
       }
-      var t0 = strip(rowFull, y0, 1), t1 = strip(rowFull, y1, -1);
-      var l0 = strip(colFull, x0, 1), l1 = strip(colFull, x1, -1);
-      inner = { x0: (x0 + l0) / s, y0: (y0 + t0) / s, x1: (x1 + 1 - l1) / s, y1: (y1 + 1 - t1) / s };
+      return seen ? last + 2 : 0;
     }
-    var tol = 0.01;
-    var edge = [x0 <= aw * tol, y0 <= ah * tol, aw - 1 - x1 <= aw * tol, ah - 1 - y1 <= ah * tol]
-      .filter(Boolean).length >= 2;
-    return {
-      x0: x0 / s, y0: y0 / s, x1: (x1 + 1) / s, y1: (y1 + 1) / s,
-      own: own, edge: edge, inner: inner
-    };
+    var t0 = strip(rowMean, y0, 1, bh), t1 = strip(rowMean, y1, -1, bh);
+    var l0 = strip(colMean, x0, 1, bw), l1 = strip(colMean, x1, -1, bw);
+    if (!(t0 && t1 && l0 && l1)) return null;
+    var ix0 = x0 + l0, ix1 = x1 - l1, iy0 = y0 + t0, iy1 = y1 - t1;
+    if (ix1 <= ix0 || iy1 <= iy0) return null;
+    var iw = ix1 - ix0 + 1, ih = iy1 - iy0 + 1;
+    var mx = Math.max(3, Math.round(iw * 0.04));
+    for (var xx = ix0 + mx; xx <= ix1 - mx; xx++) {
+      var n = 0;
+      for (var yy = iy0; yy <= iy1; yy++) n += dark[yy * aw + xx];
+      if (n / ih >= 0.9) return null;
+    }
+    var s = m.s;
+    return [r[0] + ix0 / s, r[1] + iy0 / s, r[0] + (ix1 + 1) / s, r[1] + (iy1 + 1) / s];
   }
 
   function roundRect(ctx, x, y, w, h, r) {
@@ -130,24 +136,18 @@
 
   async function frameBlob(blob) {
     var src = await loadBitmap(blob);
-    var w = src.width, h = src.height;
-    var size = w >= h ? A4L : A4P;
+    var size = src.width >= src.height ? A4L : A4P;
     var W = size[0], H = size[1];
-    var info = analyze(src, w, h);
-    if (info && info.own && info.inner) {
-      var ib = info.inner;
-      var cc = document.createElement("canvas");
-      cc.width = Math.max(1, Math.round(ib.x1 - ib.x0));
-      cc.height = Math.max(1, Math.round(ib.y1 - ib.y0));
-      var cx = cc.getContext("2d");
-      cx.fillStyle = "#fff";
-      cx.fillRect(0, 0, cc.width, cc.height);
-      cx.drawImage(src, ib.x0, ib.y0, cc.width, cc.height, 0, 0, cc.width, cc.height);
-      if (src.close) { try { src.close(); } catch (e) {} }
-      src = cc; w = cc.width; h = cc.height;
-      info = analyze(src, w, h);
-      if (info) info.own = false;
+
+    var r = [0, 0, src.width, src.height];
+    for (var it = 0; it < 3; it++) {
+      var nr = tryStrip(src, r);
+      if (!nr) break;
+      r = nr;
     }
+    var w = r[2] - r[0], h = r[3] - r[1];
+    var m = darkMap(src, r[0], r[1], w, h);
+
     var c = document.createElement("canvas");
     c.width = W; c.height = H;
     var ctx = c.getContext("2d");
@@ -155,45 +155,51 @@
     ctx.imageSmoothingQuality = "high";
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, W, H);
-    var m = Math.round(Math.min(W, H) * CFG.inset);
-    var fx = m, fy = m, fw = W - 2 * m, fh = H - 2 * m;
+
     var L = CFG.line;
+    var mg = Math.round(Math.min(W, H) * CFG.inset);
+    var lh = Math.round(Math.min(W, H) * CFG.logoH);
+    var lgap = Math.round(lh * 0.3);
+    var fx = mg, fy = mg, fw = W - 2 * mg, fh = H - 2 * mg - lh - lgap;
+    var ix = fx + L, iy = fy + L, iw = fw - 2 * L, ih = fh - 2 * L;
+
+    var edge = true;
+    if (m.box) {
+      var tol = 0.01;
+      edge = [m.box[0] <= m.aw * tol, m.box[1] <= m.ah * tol,
+        m.aw - 1 - m.box[2] <= m.aw * tol, m.ah - 1 - m.box[3] <= m.ah * tol].filter(Boolean).length >= 2;
+    }
 
     ctx.save();
     roundRect(ctx, fx, fy, fw, fh, CFG.radius);
     ctx.clip();
-    if (!info) {
-      ctx.drawImage(src, fx, fy, fw, fh);
-    } else if (info.own) {
-      var cw = info.x1 - info.x0, ch = info.y1 - info.y0;
-      if (Math.abs((cw / ch) / (fw / fh) - 1) < 0.06) {
-        ctx.drawImage(src, info.x0, info.y0, cw, ch, fx, fy, fw, fh);
+    if (edge) {
+      var stretch = Math.abs((iw / ih) / (w / h) - 1);
+      if (stretch <= CFG.maxStretch) {
+        ctx.drawImage(src, r[0], r[1], w, h, ix, iy, iw, ih);
       } else {
-        var s1 = Math.min(fw / cw, fh / ch);
-        var dw = cw * s1, dh = ch * s1;
-        ctx.drawImage(src, info.x0, info.y0, cw, ch, fx + (fw - dw) / 2, fy + (fh - dh) / 2, dw, dh);
-      }
-    } else {
-      var ix = fx + L, iy = fy + L, iw = fw - 2 * L, ih = fh - 2 * L;
-      if (info.edge) {
-        var s2 = Math.max(iw / w, ih / h);
-        var ew = w * s2, eh = h * s2;
+        var sc = Math.max(iw / w, ih / h);
+        var cut = Math.max(1 - iw / (w * sc), 1 - ih / (h * sc));
+        if (cut > CFG.maxCut) sc = Math.min(iw / w, ih / h);
+        var ew = w * sc, eh = h * sc;
         ctx.save();
         ctx.beginPath();
         ctx.rect(ix, iy, iw, ih);
         ctx.clip();
-        ctx.drawImage(src, 0, 0, w, h, ix + (iw - ew) / 2, iy + (ih - eh) / 2, ew, eh);
+        ctx.drawImage(src, r[0], r[1], w, h, ix + (iw - ew) / 2, iy + (ih - eh) / 2, ew, eh);
         ctx.restore();
-      } else {
-        var px = w * 0.004, py = h * 0.004;
-        var sx = Math.max(0, info.x0 - px), sy = Math.max(0, info.y0 - py);
-        var sw = Math.min(w, info.x1 + px) - sx, sh = Math.min(h, info.y1 + py) - sy;
-        var p = Math.round(Math.min(W, H) * CFG.pad);
-        var aw = iw - 2 * p, ah = ih - 2 * p;
-        var s3 = Math.min(aw / sw, ah / sh);
-        var mw = sw * s3, mh = sh * s3;
-        ctx.drawImage(src, sx, sy, sw, sh, ix + (iw - mw) / 2, iy + (ih - mh) / 2, mw, mh);
       }
+    } else {
+      var s = m.s;
+      var bx0 = m.box[0] / s, by0 = m.box[1] / s, bx1 = (m.box[2] + 1) / s, by1 = (m.box[3] + 1) / s;
+      var px = w * 0.004, py = h * 0.004;
+      var sx = Math.max(0, bx0 - px), sy = Math.max(0, by0 - py);
+      var sw = Math.min(w, bx1 + px) - sx, sh = Math.min(h, by1 + py) - sy;
+      var p = Math.round(Math.min(W, H) * CFG.pad);
+      var aw = iw - 2 * p, ah = ih - 2 * p;
+      var s3 = Math.min(aw / sw, ah / sh);
+      var mw = sw * s3, mh = sh * s3;
+      ctx.drawImage(src, r[0] + sx, r[1] + sy, sw, sh, ix + (iw - mw) / 2, iy + (ih - mh) / 2, mw, mh);
     }
     ctx.restore();
 
@@ -204,7 +210,6 @@
 
     var logo = await getLogo();
     if (logo && logo.width) {
-      var lh = Math.round(Math.min(W, H) * CFG.logoH);
       var lw = Math.round(lh * logo.width / logo.height);
       var tint = document.createElement("canvas");
       tint.width = lw; tint.height = lh;
@@ -214,14 +219,8 @@
       tx.globalCompositeOperation = "source-in";
       tx.fillStyle = CFG.logoColor;
       tx.fillRect(0, 0, lw, lh);
-      var gap = Math.round(lh * 0.35);
       var lx = fx + fw - Math.round(Math.min(W, H) * CFG.logoRight) - lw;
-      var cy = fy + fh - L / 2;
-      var ly = Math.round(cy - lh / 2);
-      ctx.fillStyle = "#fff";
-      var vg = Math.round(lh * 0.15);
-      ctx.fillRect(lx - gap, ly - vg, lw + gap * 2, lh + vg * 2);
-      ctx.drawImage(tint, lx, ly);
+      ctx.drawImage(tint, lx, fy + fh + lgap);
     }
     if (src.close) { try { src.close(); } catch (e) {} }
 
