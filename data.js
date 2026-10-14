@@ -760,4 +760,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "冬", genre: "漢字", title: "難読漢字 冬編", file: "nandoku_fuyu.png", answer: "nandoku_fuyu_ans.png", added: "2026-10" },
   { season: "冬", genre: "花", title: "冬の花壇", diff: "中級", file: "up_1791979070743_26.png", added: "2026-10" },
   { season: "冬", genre: "動物", title: "動物達とスノードーム", diff: "上級", file: "up_1791979205050_27.png", added: "2026-10" },
+  { season: "冬", genre: "花", title: "椿と木の実", diff: "初級", file: "up_1791979330102_28.png", added: "2026-10" },
 ];
