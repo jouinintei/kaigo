@@ -777,4 +777,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "風物詩", title: "秋の公園で遊ぶ子供達", diff: "上級", file: "up_1791982534695_42.png", added: "2026-10" },
   { season: "秋", genre: "風景", title: "秋麗", diff: "上級", file: "up_1791983023934_43.png", added: "2026-10" },
   { season: "秋", genre: "風物詩", title: "秋鮭", diff: "中級", file: "up_1791984199751_44.png", added: "2026-10" },
+  { season: "通年", genre: "風景", title: "昭和の駄菓子屋", diff: "上級", file: "up_1791984663194_45.png", added: "2026-10" },
 ];
