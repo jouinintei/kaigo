@@ -147,6 +147,13 @@
   .tag.dev.rep{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
   @media (prefers-color-scheme: dark){.tag.dev.rep{color:#ffb87a}}
   @media (max-width:600px){.dv .strip{margin-left:0;width:100%}}
+  .tag.dev.rep[data-id]{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
+  .devpop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:16px}
+  .devpop.show{display:flex}
+  .devpop .dp-card{background:var(--surface);border-radius:var(--radius);padding:14px 16px;width:100%;max-width:640px;max-height:86vh;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+  .devpop .dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .devpop .dp-head h2{font-size:15px;margin:0}
+  .devpop .dv{border-bottom:0}
 
   /* --- アクセス解析 --- */
   .ins{border-top:1px solid var(--line);padding:14px 0 6px;margin-top:6px}
@@ -264,6 +271,13 @@
   </header>
 
   <div class="tiles" id="tiles"></div>
+
+  <div class="devpop" id="devPop">
+    <div class="dp-card">
+      <div class="dp-head"><h2>リピーターの端末</h2><button class="btn-ghost dp-close">閉じる</button></div>
+      <div id="devPopBody"></div>
+    </div>
+  </div>
 
   <section class="card">
     <div class="card-head">
@@ -948,7 +962,13 @@
     moreBtn.style.display = ids.length > LIMIT ? "" : "none";
     moreBtn.textContent = devShowAll ? "上位" + LIMIT + "件だけにする" : "すべて表示（" + ids.length + "台）";
     var html = "";
-    shown.forEach(function(id){
+    shown.forEach(function(id){ html += devRowHtml(id, keys, t); });
+    wrap.innerHTML = html;
+  }
+  function devRowHtml(id, keys, t){
+      t = t || todayKey();
+      if (!keys){ keys = []; for (var j = 29; j >= 0; j--) keys.push(shiftKey(t, -j)); }
+      var html = "";
       var s = devStats[id];
       var lv = devLevel(id);
       var badge = lv === "reg" ? '<span class="badge reg">常連</span>' : '<span class="badge rep">リピーター</span>';
@@ -967,8 +987,7 @@
         '<span class="strip">' + strip + '</span>' +
         devFilesHtml(id) +
       '</div>';
-    });
-    wrap.innerHTML = html;
+      return html;
   }
   function devFiles(id){
     var m = {};
@@ -1195,7 +1214,7 @@
       if (e.d){
         var lv = devLevel(e.d);
         var ds = devStats[e.d];
-        tags.push('<span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(e.d)) +
+        tags.push('<span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(e.d) + '">' + esc(shortId(e.d)) +
           (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>');
         var pv = lv ? prevVisit(e.d, k) : null;
         if (pv) tags.push('<span class="tag prev">前回 ' + fmtMD(pv.day) + (pv.gap === 1 ? "（昨日）" : "（" + pv.gap + "日ぶり）") + '</span>');
@@ -1248,7 +1267,7 @@
         '<span class="tag ' + (type === "不具合" ? "bug" : "kind") + '">' + esc(type) + '</span>';
       if (it.d && it.d !== "unknown"){
         var lv = (typeof devLevel === "function") ? devLevel(it.d) : "";
-        tags += '<span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(it.d)) +
+        tags += '<span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(it.d) + '">' + esc(shortId(it.d)) +
           (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>';
       } else {
         tags += '<span class="tag dev">端末不明</span>';
@@ -1403,6 +1422,23 @@
   document.getElementById("inqReloadBtn").addEventListener("click", function(){ loadInquiries(); });
   document.getElementById("fbReloadBtn").addEventListener("click", function(){ loadFeedback(); });
   // タイルを押すと詳細(日時・分類・端末の利用状況)を開閉(スマホ向け)
+  function openDevPop(id){
+    var pop = document.getElementById("devPop");
+    document.getElementById("devPopBody").innerHTML = '<div class="dv">' + devRowHtml(id) + '</div>';
+    pop.classList.add("show");
+  }
+  document.addEventListener("click", function(e){
+    var tg = e.target.closest && e.target.closest(".tag.dev.rep[data-id]");
+    if (!tg || !devStats[tg.getAttribute("data-id")]) return;
+    e.stopPropagation();
+    openDevPop(tg.getAttribute("data-id"));
+  }, true);
+  document.getElementById("devPop").addEventListener("click", function(e){
+    if (e.target === this || e.target.closest(".dp-close")) this.classList.remove("show");
+  });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape") document.getElementById("devPop").classList.remove("show");
+  });
   document.getElementById("feedWrap").addEventListener("click", function(e){
     var ev = e.target.closest(".ev");
     if (!ev) return;
