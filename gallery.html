@@ -767,6 +767,18 @@
   .lb-toggle:hover { background: #5c7f6b; }
   .lb-close { background: #efe9dd; color: #6b6455; }
   .lb-close:hover { background: #e0d8c6; }
+  .lb-vote { background: #efe9dd; color: #6b6455; min-width: 54px; font-size: 20px !important; padding: 7px 14px !important; line-height: 1.2; }
+  .lb-vote:hover { background: #e0d8c6; }
+  .lb-vote.on { background: #fff3e6; box-shadow: 0 0 0 3px var(--accent) inset; }
+  .lb-fb { display: none; margin-top: 12px; width: 100%; max-width: 520px; background: #fffaf3; border-radius: 12px; padding: 14px 16px; cursor: default; box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+  .lb-fb.show { display: block; }
+  .lb-fb p { font-size: 15px; font-weight: bold; color: #4a4237; margin-bottom: 8px; }
+  .lb-fb textarea { width: 100%; min-height: 76px; font-family: inherit; font-size: 15px; border: 1px solid #d8cdbb; border-radius: 8px; padding: 8px 10px; resize: vertical; background: #fff; color: #333; }
+  .lb-fb .fb-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+  .lb-fb button { font-family: inherit; font-size: 15px; font-weight: bold; padding: 8px 18px; border: none; border-radius: 9px; cursor: pointer; }
+  .lb-fb .fb-send { background: var(--accent); color: #fff; }
+  .lb-fb .fb-skip { background: #efe9dd; color: #6b6455; }
+  .lb-fb .fb-thanks { font-size: 15px; color: #4a4237; text-align: center; padding: 6px 0; }
   .thumb img { cursor: zoom-in; }
 
   @media (max-width: 600px) {
@@ -908,7 +920,20 @@
     <span class="lb-title" id="lbTitle"></span>
     <button class="lb-toggle" id="lbAnswer" style="display:none">答えを見る</button>
     <a class="lb-save" id="lbSave">💾 保存</a>
+    <button class="lb-vote" id="lbUp" title="よかった" aria-label="よかった">👍</button>
+    <button class="lb-vote" id="lbDown" title="惜しい" aria-label="惜しい">👎</button>
     <button class="lb-close" id="lbClose">✕ 閉じる</button>
+  </div>
+  <div class="lb-fb" id="lbFb">
+    <div id="lbFbForm">
+      <p id="lbFbQ"></p>
+      <textarea id="lbFbText" maxlength="300"></textarea>
+      <div class="fb-row">
+        <button class="fb-skip" id="lbFbSkip">書かずに閉じる</button>
+        <button class="fb-send" id="lbFbSend">送る</button>
+      </div>
+    </div>
+    <div class="fb-thanks" id="lbFbThanks" style="display:none">ありがとうございます。改善に使わせていただきます。</div>
   </div>
   <div class="lb-rel" id="lbRel" style="display:none">
     <h3>似た塗り絵</h3>
@@ -1729,6 +1754,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const tg = document.getElementById("lbAnswer");
     tg.style.display = n.answer ? "inline-block" : "none";
     tg.textContent = lbShowingAnswer ? "問題に戻る" : "答えを見る";
+    fbSync();
   }
   const relGrams = new Map();
   function gramsOf(n) {
@@ -1798,6 +1824,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     lbCtx = src ? null : filterCtx();
     lbCurrent = n;
     lbShowingAnswer = false;
+    fbHide();
     lbUpdate();
     renderRelated(n);
     lb.classList.add("show");
@@ -1823,6 +1850,63 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     showToast((lbShowingAnswer ? "答えを" : "") + "保存しました。ブラウザ右上の ↓ マーク →「フォルダに表示」で保存先が開けます");
     setTimeout(render, 100);
   };
+
+  const VOTE_KEY = "rekupuri_vote_v1";
+  let fbVote = "";
+  function fbSync() {
+    const v = lbCurrent ? (loadJSON(VOTE_KEY, {})[lbCurrent.file] || "") : "";
+    document.getElementById("lbUp").classList.toggle("on", v === "up");
+    document.getElementById("lbDown").classList.toggle("on", v === "down");
+  }
+  function fbHide() {
+    document.getElementById("lbFb").classList.remove("show");
+  }
+  function fbSend(file, v, c) {
+    return fetch("api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ f: file, v: v, c: c || "", did: deviceId() }),
+      keepalive: true
+    }).catch(() => {});
+  }
+  function fbVoteClick(v) {
+    if (!lbCurrent) return;
+    const file = lbCurrent.file;
+    const votes = loadJSON(VOTE_KEY, {});
+    if (votes[file] !== v) {
+      votes[file] = v;
+      saveJSON(VOTE_KEY, votes);
+      fbSend(file, v, "");
+    }
+    fbVote = v;
+    fbSync();
+    document.getElementById("lbFbQ").textContent = v === "up"
+      ? "ありがとうございます！ 次にほしい題材があれば教えてください(任意)"
+      : "どこが惜しかったか教えてください(任意)";
+    const ta = document.getElementById("lbFbText");
+    ta.value = "";
+    ta.placeholder = v === "up"
+      ? "例: お正月の塗り絵がほしい、もっと大きな絵がいい など"
+      : "例: 線が切れている、難しすぎる、紙に収まらない など";
+    document.getElementById("lbFbForm").style.display = "";
+    document.getElementById("lbFbThanks").style.display = "none";
+    document.getElementById("lbFb").classList.add("show");
+  }
+  function fbThanks() {
+    document.getElementById("lbFbForm").style.display = "none";
+    document.getElementById("lbFbThanks").style.display = "";
+    setTimeout(fbHide, 2500);
+  }
+  document.getElementById("lbUp").onclick = () => fbVoteClick("up");
+  document.getElementById("lbDown").onclick = () => fbVoteClick("down");
+  document.getElementById("lbFbSkip").onclick = fbThanks;
+  document.getElementById("lbFbSend").onclick = () => {
+    if (!lbCurrent) return;
+    const c = document.getElementById("lbFbText").value.trim();
+    if (c) fbSend(lbCurrent.file, fbVote, c);
+    fbThanks();
+  };
+  document.getElementById("lbFbText").addEventListener("keydown", e => e.stopPropagation());
 
   let toastTimer = null;
   function showToast(msg) {
