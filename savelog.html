@@ -215,6 +215,7 @@
   .fbi .cnt{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
   .fbi .cm{font-size:13.5px;line-height:1.7;margin-top:5px;padding:6px 9px;background:var(--surface-2);border-radius:8px;white-space:pre-wrap;word-break:break-word}
   .fbi .cm small{display:block;font-size:11px;color:var(--ink-3)}
+  .fbi .vt{font-size:12px;color:var(--ink-2);margin-top:4px;font-variant-numeric:tabular-nums}
   .inq{padding:11px 2px;border-bottom:1px solid var(--line)}
   .inq:last-child{border-bottom:0}
   .inq .top{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
@@ -295,7 +296,7 @@
     <div class="card-head">
       <div>
         <h2>👍👎の声</h2>
-        <p class="note" id="fbNote">拡大表示の👍👎で集まった評価とコメント。👎が多い絵ほど上に出ます</p>
+        <p class="note" id="fbNote">拡大表示の👍👎で集まった評価とコメント。押した端末も出ます（★常連・↻リピーター）。👎が多い絵ほど上に出ます</p>
       </div>
       <div class="tools">
         <button class="btn-ghost" id="fbReloadBtn">更新</button>
@@ -1322,7 +1323,8 @@
       if (x.v === "up") { g.up++; up++; } else { g.down++; down++; }
       var t = Date.parse(x.t) || 0;
       if (t > g.last) g.last = t;
-      if (x.c) { g.cms.push(x); cms++; }
+      g.cms.push(x);
+      if (x.c) cms++;
     });
     var groups = Object.keys(by).map(function(k){ return by[k]; });
     groups.sort(function(a,b){ return (b.down - a.down) || (b.cms.length - a.cms.length) || (b.last - a.last); });
@@ -1332,8 +1334,14 @@
       var title = it ? it.title : g.f;
       var cm = g.cms.slice().sort(function(a,b){ return Date.parse(b.t) - Date.parse(a.t); }).map(function(x){
         var t = Date.parse(x.t);
-        return '<div class="cm"><small>' + (x.v === "up" ? "👍" : "👎") + ' ' + fmtMD(dayKey(t)) + ' ' + hhmm(t) +
-          (x.d && x.d !== "unknown" ? ' ・ ' + esc(shortId(x.d)) : '') + '</small>' + esc(x.c) + '</div>';
+        var dv = '端末不明';
+        if (x.d && x.d !== "unknown") {
+          var lv = (typeof devLevel === "function") ? devLevel(x.d) : "";
+          dv = esc(shortId(x.d)) + (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "");
+        }
+        var head = (x.v === "up" ? "👍" : "👎") + ' ' + dv + ' ・ ' + fmtMD(dayKey(t)) + ' ' + hhmm(t);
+        return x.c ? '<div class="cm"><small>' + head + '</small>' + esc(x.c) + '</div>'
+                   : '<div class="vt">' + head + '</div>';
       }).join("");
       html += '<div class="fbi">' + fbThumb(g.f) + '<div class="body"><div class="ttl">' + esc(title) +
         '</div><div class="cnt">👍 ' + g.up + '　👎 ' + g.down + (it && it.season ? '　・ ' + esc(it.season) : '') +
