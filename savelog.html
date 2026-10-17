@@ -185,8 +185,10 @@
   .ev .more{display:none;font-size:11.5px;color:var(--ink-2);line-height:1.6;border-top:1px dashed var(--line);padding-top:5px;margin-top:2px}
   .ev.open{border-color:var(--accent)}
   .ev.open .more{display:block}
-  .ev .tag.newdev{background:#e8f5e9;color:#1b5e20;border-color:#a5d6a7;font-weight:600}
-  .ev .more .newmark{display:inline-block;background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7;border-radius:6px;padding:1px 7px;margin-bottom:3px;font-weight:600}
+  .ev .tag.entry{font-weight:600}
+  .ev .tag.entry.e-search{background:#e3f2fd;color:#0d47a1;border-color:#90caf9}
+  .ev .tag.entry.e-direct{background:#fff8e1;color:#8d5a00;border-color:#ffe082}
+  .ev .tag.entry.e-other{background:#f3e5f5;color:#6a1b9a;border-color:#ce93d8}
   @media (max-width:600px){#feedWrap{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
   .tag{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;color:var(--ink-2)}
   .tag.kind{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
@@ -810,6 +812,22 @@
     if (!e.c) return base + "から保存（絞り込みは記録を始める前）";
     return base + "から、" + (cp.length ? cp.join("") : "絞り込みなしで探して") + "保存";
   }
+  function entClass(k){
+    if (k === "google" || k === "yahoo" || k === "bing") return "e-search";
+    if (k === "direct") return "e-direct";
+    return "e-other";
+  }
+  function entShort(k){
+    if (k === "google") return "🔍 Google";
+    if (k === "yahoo") return "🔍 Yahoo!";
+    if (k === "bing") return "🔍 Bing";
+    if (k === "direct") return "🔖 ブックマーク・直接";
+    if (k === "note") return "📝 note";
+    if (k === "sns") return "💬 SNS";
+    if (k === "old") return "旧アドレス";
+    if (k.indexOf("o:") === 0) return "🔗 " + k.slice(2);
+    return k;
+  }
   function entLabel(k){
     if (!k) return "";
     if (k.indexOf("o:") === 0) return k.slice(2);
@@ -1132,8 +1150,8 @@
       if (e.s && SRC_SHORT[e.s]) tags.push('<span class="tag from from-'+e.s+'">'+SRC_SHORT[e.s]+'</span>');
       if (kindOf(it) !== "塗り絵") tags.push('<span class="tag kind">'+kindOf(it)+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
-      var isNew = !!(e.d && devStats[e.d] && devStats[e.d].first === k);
-      if (isNew) tags.push('<span class="tag newdev">🔰 はじめて</span>');
+      var er = e.r || (entOf.has(e) ? entOf.get(e) : "");
+      if (er) tags.push('<span class="tag entry ' + entClass(er) + '">' + esc(entShort(er)) + '</span>');
       if (e.r) more.push("入口：" + entLabel(e.r) + "から来訪");
       else if (entOf.has(e)) more.push("入口：" + entLabel(entOf.get(e)) + "から来訪（同じ端末のこの日の先の保存で記録）");
       else if (e.d) more.push("入口：記録なし（入口はその訪問の最初の保存にだけ記録されます）");
@@ -1154,7 +1172,7 @@
         thumb+
         '<div class="body"><div class="ttl" title="'+esc(ttl)+'">'+esc(ttl)+'</div>'+
         '<div class="meta"><span class="time">'+hhmm(e.t)+'</span>'+tags.join("")+'</div>'+
-        '<div class="more">'+(isNew ? '<div class="newmark">🔰 この端末は' + (k === todayKey() ? '今日' : 'この日') + 'がはじめての保存</div>' : '')+more.map(function(x){ return esc(x); }).join("<br>")+'</div></div>'+
+        '<div class="more">'+more.map(function(x){ return esc(x); }).join("<br>")+'</div></div>'+
       '</div>';
     });
     wrap.innerHTML = html;
