@@ -780,4 +780,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風景", title: "昭和の駄菓子屋", diff: "上級", file: "up_1791984663194_45.png", added: "2026-10" },
   { season: "通年", genre: "食べ物", title: "プリンアラモード", diff: "初級", file: "up_1792200040960_1.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "蝶 曼荼羅", diff: "中級", file: "up_1792200222854_2.png", added: "2026-10" },
+  { season: "通年", genre: "食べ物", title: "アップルパイ", diff: "中級", file: "up_1792200320852_3.png", added: "2026-10" },
 ];
