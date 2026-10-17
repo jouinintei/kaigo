@@ -1808,9 +1808,25 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       if (sc >= 3) scored.push({ m: m, sc: sc + Math.random() * 0.9 });
     });
     scored.sort((a, b) => b.sc - a.sc);
-    const seen = new Set([n.title]);
-    return scored.filter(x => { if (seen.has(x.m.title)) return false; seen.add(x.m.title); return true; })
-      .slice(0, max).map(x => x.m);
+    const DORD = { "初級": 1, "中級": 2, "上級": 3 };
+    const norm = s => String(s || "").replace(/[\s　]/g, "");
+    const nt = norm(n.title);
+    const others = list.filter(m => m.file !== n.file && kindOf(m) === "塗り絵");
+    const same = others.filter(m => norm(m.title) === nt)
+      .sort((a, b) => (DORD[a.diff] || 9) - (DORD[b.diff] || 9));
+    const near = nt.length >= 2 ? others.filter(m => {
+      const mt = norm(m.title);
+      return mt !== nt && mt.length >= 2 && (mt.indexOf(nt) >= 0 || nt.indexOf(mt) >= 0);
+    }).sort((a, b) => (DORD[a.diff] || 9) - (DORD[b.diff] || 9)) : [];
+    const out = [];
+    const used = new Set([n.file]);
+    same.concat(near).forEach(m => { if (!used.has(m.file)) { used.add(m.file); out.push(m); } });
+    const seen = new Set(out.map(m => m.title).concat([n.title]));
+    scored.forEach(x => {
+      if (used.has(x.m.file) || seen.has(x.m.title)) return;
+      seen.add(x.m.title); used.add(x.m.file); out.push(x.m);
+    });
+    return out.slice(0, max);
   }
   function renderRelated(n) {
     const box = document.getElementById("lbRel");
@@ -1825,7 +1841,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       img.alt = m.title;
       img.loading = "lazy";
       const t = document.createElement("div");
-      t.textContent = m.title;
+      t.textContent = m.title === n.title && m.diff ? m.title + "(" + m.diff + ")" : m.title;
       it.append(img, t);
       it.onclick = (e) => {
         e.stopPropagation();
