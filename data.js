@@ -788,4 +788,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "食べ物", title: "秋の収穫", diff: "中級", file: "up_1792201306137_8.png", added: "2026-10" },
   { season: "秋", genre: "風物詩", title: "ハロウィンのかぼちゃ", diff: "中級", file: "up_1792201455695_9.png", added: "2026-10" },
   { season: "秋", genre: "食べ物", title: "柿を剥く手", diff: "初級", file: "up_1792202199999_12.png", added: "2026-10" },
+  { season: "通年", genre: "動物", title: "うさぎと亀", diff: "中級", file: "up_1792216520848_13.png", added: "2026-10" },
 ];
