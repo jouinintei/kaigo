@@ -300,6 +300,7 @@
         <p class="note" id="inqNote">新しい順。送った端末が分かります。</p>
       </div>
       <div class="tools">
+        <button class="btn-ghost" id="inqMoreBtn" style="display:none">すべて表示</button>
         <button class="btn-ghost" id="inqReloadBtn">更新</button>
       </div>
     </div>
@@ -1246,6 +1247,7 @@
 
   /* ---------- お問い合わせ・要望 ---------- */
   var inqItems = null;
+  var inqShowAll = false;
   function drawInquiries(){
     var wrap = document.getElementById("inqWrap");
     var note = document.getElementById("inqNote");
@@ -1257,6 +1259,11 @@
     }
     var items = inqItems.slice().sort(function(a,b){ return Date.parse(b.date) - Date.parse(a.date); });
     note.textContent = "新しい順。全" + items.length + "件。送った端末が分かります。";
+    var INQ_LIMIT = 2;
+    var moreBtn = document.getElementById("inqMoreBtn");
+    moreBtn.style.display = items.length > INQ_LIMIT ? "" : "none";
+    moreBtn.textContent = inqShowAll ? "新しい" + INQ_LIMIT + "件だけにする" : "すべて表示（" + items.length + "件）";
+    if (!inqShowAll) items = items.slice(0, INQ_LIMIT);
     var html = "", curDay = "";
     items.forEach(function(it){
       var t = Date.parse(it.date);
@@ -1420,6 +1427,7 @@
   });
   document.getElementById("reloadBtn").addEventListener("click", function(){ load(true); schedule(); loadInquiries(); });
   document.getElementById("inqReloadBtn").addEventListener("click", function(){ loadInquiries(); });
+  document.getElementById("inqMoreBtn").addEventListener("click", function(){ inqShowAll = !inqShowAll; drawInquiries(); });
   document.getElementById("fbReloadBtn").addEventListener("click", function(){ loadFeedback(); });
   // タイルを押すと詳細(日時・分類・端末の利用状況)を開閉(スマホ向け)
   function openDevPop(id){
