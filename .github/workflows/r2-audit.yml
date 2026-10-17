@@ -1,0 +1,51 @@
+name: R2 image audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/r2-audit.yml"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_ENDPOINT: https://f2973a9b06bd5d30be681c629f19145e.r2.cloudflarestorage.com
+      R2_BUCKET: rekupuri-img-apac
+    steps:
+      - name: Download low-resolution images
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -q boto3 pillow
+          cat > audit.py <<'PY'
+          import io, os, json, boto3
+          from botocore.config import Config
+          from PIL import Image
+          s3 = boto3.client("s3", endpoint_url=os.environ["R2_ENDPOINT"], region_name="auto",
+              config=Config(request_checksum_calculation="when_required", response_checksum_validation="when_required"))
+          os.makedirs("low", exist_ok=True)
+          rows = []
+          for page in s3.get_paginator("list_objects_v2").paginate(Bucket=os.environ["R2_BUCKET"], Prefix="images/"):
+              for o in page.get("Contents", []):
+                  k = o["Key"]; name = k[len("images/"):]
+                  if not name or "/" in name: continue
+                  data = s3.get_object(Bucket=os.environ["R2_BUCKET"], Key=k)["Body"].read()
+                  try:
+                      im = Image.open(io.BytesIO(data)); w, h = im.size; mode = im.mode; dpi = im.info.get("dpi")
+                  except Exception as e:
+                      rows.append({"file": name, "error": str(e)}); continue
+                  rows.append({"file": name, "w": w, "h": h, "mode": mode, "dpi": [round(x) for x in dpi] if dpi else None, "bytes": len(data)})
+                  if max(w, h) < 3400:
+                      open(os.path.join("low", name), "wb").write(data)
+          json.dump(rows, open("low/_report.json", "w"), ensure_ascii=False, indent=0)
+          print("total", len(rows), "low", len(os.listdir("low")) - 1)
+          PY
+          .venv/bin/python audit.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r2-low
+          path: low
+          retention-days: 3
