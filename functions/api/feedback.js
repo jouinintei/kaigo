@@ -88,7 +88,7 @@ export async function onRequest({ request, env }) {
   try { b = await request.json(); } catch (e) {}
   if (!b) return json({ ok: false }, 400);
   const f = String(b.f || "").trim();
-  const v = b.v === "up" || b.v === "down" ? b.v : "";
+  const v = b.v === "up" || b.v === "down" || b.v === "none" ? b.v : "";
   const c = String(b.c || "").trim().slice(0, 300);
   const d = String(b.did || "").replace(/[^a-z0-9]/gi, "").slice(0, 16) || "unknown";
   if (!f || f.length > 200 || !v) return json({ ok: false }, 400);
@@ -100,7 +100,11 @@ export async function onRequest({ request, env }) {
       // 同じ端末が同じ絵に押したものは1件にまとめる(押し直し・コメント追加は上書き)
       const i = d === "unknown" ? -1 : items.findIndex(x => x.f === f && x.d === d);
       const now = new Date().toISOString();
-      if (i >= 0) {
+      if (v === "none") {
+        // もう一度押して取り消した: その端末のその絵の評価を消す
+        if (i < 0) return json({ ok: true });
+        items.splice(i, 1);
+      } else if (i >= 0) {
         const old = items[i];
         items.splice(i, 1);
         items.push({ t: now, f: f, v: v, c: c || (old.v === v ? old.c || "" : ""), d: d });
@@ -108,7 +112,7 @@ export async function onRequest({ request, env }) {
         items.push({ t: now, f: f, v: v, c: c, d: d });
       }
       if (items.length > KEEP) items.splice(0, items.length - KEEP);
-      const r = await ghWrite(env, cur.sha, items, (v === "up" ? "👍" : "👎") + (c ? " コメントあり" : ""));
+      const r = await ghWrite(env, cur.sha, items, v === "none" ? "評価の取り消し" : (v === "up" ? "👍" : "👎") + (c ? " コメントあり" : ""));
       if (r.ok) return json({ ok: true });
       if (r.status === 409 || r.status === 422) continue;
       return json({ ok: false, error: "gh_" + r.status }, 500);

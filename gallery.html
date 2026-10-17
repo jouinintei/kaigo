@@ -1891,11 +1891,18 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (!lbCurrent) return;
     const file = lbCurrent.file;
     const votes = loadJSON(VOTE_KEY, {});
-    if (votes[file] !== v) {
-      votes[file] = v;
+    if (votes[file] === v) {
+      delete votes[file];
       saveJSON(VOTE_KEY, votes);
-      fbSend(file, v, "");
+      fbSend(file, "none", "");
+      fbVote = "";
+      fbSync();
+      fbHide();
+      return;
     }
+    votes[file] = v;
+    saveJSON(VOTE_KEY, votes);
+    fbSend(file, v, "");
     fbVote = v;
     fbSync();
     document.getElementById("lbFbQ").textContent = v === "up"
@@ -1921,7 +1928,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   document.getElementById("lbFbSend").onclick = () => {
     if (!lbCurrent) return;
     const c = document.getElementById("lbFbText").value.trim();
-    if (c) fbSend(lbCurrent.file, fbVote, c);
+    if (c && fbVote) fbSend(lbCurrent.file, fbVote, c);
     fbThanks();
   };
   document.getElementById("lbFbText").addEventListener("keydown", e => e.stopPropagation());
