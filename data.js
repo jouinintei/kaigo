@@ -801,4 +801,10 @@ window.NURIE_LIST = [
   { season: "秋", genre: "動物", title: "秋の葉と小鳥", diff: "初級", file: "up_1792219373359_24.png", added: "2026-10" },
   { season: "秋", genre: "風物詩", title: "秋のかかし", diff: "初級", file: "up_1792219574163_25.png", added: "2026-10" },
   { season: "秋", genre: "動物", title: "秋の大木", diff: "初級", file: "up_1792220039654_26.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の大スター穴埋め 俳優編", file: "showa_star_haiyu.png", answer: "showa_star_haiyu_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県クイズ その4", file: "todofuken_quiz4.png", answer: "todofuken_quiz4_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 海の幸編", file: "nandoku_uminosachi.png", answer: "nandoku_uminosachi_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昔の言葉クイズ その4", file: "mukashi_kotoba4.png", answer: "mukashi_kotoba4_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "お買い物計算 その4", file: "okaimono_keisan4.png", answer: "okaimono_keisan4_ans.png", added: "2026-10" },
+  { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "仲間はずれ探し その3", file: "nakamahazure3.png", answer: "nakamahazure3_ans.png", added: "2026-10" },
 ];
