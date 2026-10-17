@@ -592,6 +592,22 @@
   }
   .hist-badge:hover { text-decoration: line-through; opacity: .7; }
 
+  .new-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    background: #e53935;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: .06em;
+    padding: 3px 11px;
+    border-radius: 999px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.25);
+    pointer-events: none;
+  }
+  .used-ribbon.below { top: 42px; }
   .used-ribbon {
     position: absolute;
     top: 10px;
@@ -941,6 +957,23 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const s = String(t).replace(/\s*その\d+(\s*[((][^))]*[))])?$/, "");
     const m = s.match(/^[^\s　((_＿]+/);
     return m ? m[0] : s;
+  }
+  const NEW_DAYS = 14;
+  function addedTime(n) {
+    const m = /^up_(\d{13})_/.exec(n.file || "");
+    if (m) return Number(m[1]);
+    if (n.date) { const t = Date.parse(n.date + "T00:00:00+09:00"); if (!isNaN(t)) return t; }
+    return 0;
+  }
+  function isNewItem(n) {
+    const t = addedTime(n);
+    return t > 0 && Date.now() - t < NEW_DAYS * 86400e3;
+  }
+  function newBadge(card) {
+    const nb = document.createElement("div");
+    nb.className = "new-badge";
+    nb.textContent = "NEW";
+    card.appendChild(nb);
   }
   function seriesNum(t) {
     const m = String(t).match(/その(\d+)(?:\s*[((][^))]*[))])?$/);
@@ -1357,6 +1390,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     let all = currentShown();
 
     const seriesCounts = {};
+    const seriesNew = {};
     let seriesGrouped = false;
     // シリーズにまとめるのは脳トレだけ (塗り絵はすべて単独で表示)
     // キーワード検索中は、探しているものが埋もれないよう1枚ずつ出します
@@ -1365,8 +1399,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       if (seriesView) {
         all = all.filter(n => seriesBase(n.title) === seriesView)
                  .slice().sort((a, b) =>
-                   (seriesNum(a.title) - seriesNum(b.title)) ||
-                   (list.indexOf(b) - list.indexOf(a)));
+                   (list.indexOf(a) - list.indexOf(b)));
       } else {
         seriesGrouped = true;
         const groups = new Map();
@@ -1378,9 +1411,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         all = [];
         groups.forEach((arr, b) => {
           seriesCounts[b] = arr.length;
-          arr.sort((a, c) =>
-            (seriesNum(a.title) - seriesNum(c.title)) ||
-            (list.indexOf(c) - list.indexOf(a)));
+          seriesNew[b] = arr.some(isNewItem);
+          arr.sort((a, c) => list.indexOf(a) - list.indexOf(c));
           all.push(arr[0]);
         });
       }
@@ -1463,6 +1495,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         meta.appendChild(btns);
         card.appendChild(thumb);
         card.appendChild(meta);
+        if (seriesNew[sBase]) newBadge(card);
         grid.appendChild(card);
         return;
       }
@@ -1494,9 +1527,11 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       fav.onclick = () => toggleFav(n.file);
       card.appendChild(fav);
 
+      const itemNew = isNewItem(n);
+      if (itemNew) newBadge(card);
       if (h.print || h.save) {
         const rb = document.createElement("div");
-        rb.className = "used-ribbon";
+        rb.className = "used-ribbon" + (itemNew ? " below" : "");
         rb.textContent = "✓ 使用済み";
         card.appendChild(rb);
       }
