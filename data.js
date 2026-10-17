@@ -792,4 +792,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "動物", title: "三毛猫", diff: "中級", file: "up_1792217187836_14.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "三毛猫", diff: "上級", file: "up_1792217442691_16.png", added: "2026-10" },
   { season: "通年", genre: "動物", title: "三毛猫", diff: "初級", file: "up_1792217527348_17.png", added: "2026-10" },
+  { season: "通年", genre: "動物", title: "三毛猫の子供", diff: "初級", file: "up_1792217730830_18.png", added: "2026-10" },
 ];
