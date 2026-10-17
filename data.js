@@ -795,4 +795,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "動物", title: "三毛猫の子供", diff: "初級", file: "up_1792217730830_18.png", added: "2026-10" },
   { season: "通年", genre: "食べ物", title: "お菓子の詰め合わせ", diff: "中級", file: "up_1792217934508_19.png", added: "2026-10" },
   { season: "通年", genre: "その他", title: "ハート", diff: "上級", file: "up_1792218235192_20.png", added: "2026-10" },
+  { season: "通年", genre: "花", title: "花と小鳥", diff: "中級", file: "up_1792218340497_21.png", added: "2026-10" },
 ];
