@@ -5,6 +5,7 @@
 const FILE_PATH = "data/save-log.json";
 const KEEP_DAYS = 120;
 const KEEP_EVENTS = 300;
+const KEEP_DEV_FILES = 200;
 
 function cleanRepo(r) {
   return String(r || "")
@@ -22,7 +23,7 @@ function ghHeaders(env) {
 }
 
 function blank() {
-  return { totals: {}, days: {}, devs: {}, events: [], src: {}, ent: {} };
+  return { totals: {}, days: {}, devs: {}, events: [], src: {}, ent: {}, dfiles: {} };
 }
 
 async function ghRead(env) {
@@ -41,6 +42,7 @@ async function ghRead(env) {
   if (!Array.isArray(data.events)) data.events = [];
   if (!data.src) data.src = {};
   if (!data.ent) data.ent = {};
+  if (!data.dfiles) data.dfiles = {};
   return { sha: j.sha, data: data };
 }
 
@@ -138,6 +140,15 @@ export async function onRequest({ request, env }) {
         if (c) ev.c = c;
         if (ent && i === 0) ev.r = ent;
         d.events.push(ev);
+        if (!d.dfiles[did]) d.dfiles[did] = {};
+        const df = d.dfiles[did][f] || [0, 0];
+        d.dfiles[did][f] = [df[0] + 1, now];
+      });
+      Object.keys(d.dfiles).forEach(id => {
+        const fs = Object.keys(d.dfiles[id]);
+        if (fs.length > KEEP_DEV_FILES) {
+          fs.sort((a, b) => d.dfiles[id][b][1] - d.dfiles[id][a][1]).slice(KEEP_DEV_FILES).forEach(x => delete d.dfiles[id][x]);
+        }
       });
       if (d.events.length > KEEP_EVENTS) d.events = d.events.slice(d.events.length - KEEP_EVENTS);
       const keys = Object.keys(d.days).sort();

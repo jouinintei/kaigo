@@ -135,6 +135,14 @@
   .dv .strip{display:flex;gap:2px;margin-left:auto}
   .dv .strip i{display:block;width:9px;height:14px;border-radius:2px;background:var(--surface-2);border:1px solid var(--line)}
   .dv .strip i.on{background:var(--accent);border-color:var(--accent)}
+  .dv .dfl{flex-basis:100%;font-size:12px;color:var(--ink-2)}
+  .dv .dfl summary{cursor:pointer;color:var(--accent);font-weight:600;padding:2px 0}
+  .dv .dfg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:8px;max-height:340px;overflow:auto}
+  .dv .dfi{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px;min-width:0}
+  .dv .dfi .thumb{width:100%;aspect-ratio:1/1.1;object-fit:contain;background:#fff;border-radius:4px;display:block}
+  .dv .dfi .thumb.none{display:flex;align-items:center;justify-content:center}
+  .dv .dft{font-size:12px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+  .dv .dfm{font-size:11px;color:var(--ink-3)}
   .dv .strip i.today{outline:1px dashed var(--ink-3);outline-offset:1px}
   .tag.dev.rep{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
   @media (prefers-color-scheme: dark){.tag.dev.rep{color:#ffb87a}}
@@ -304,7 +312,7 @@
     <div class="card-head">
       <div>
         <h2>リピーターの端末</h2>
-        <p class="note">利用日数の多い順。2日以上＝リピーター、5日以上＝常連。右の帯は直近30日で保存があった日</p>
+        <p class="note">最近使った順。2日以上使った端末だけ表示（5日以上＝常連）。右の帯は直近30日で保存があった日。「保存したもの」を押すと中身が見られます</p>
       </div>
       <div class="tools">
         <button class="btn-ghost" id="devMoreBtn" style="display:none">すべて表示</button>
@@ -475,6 +483,7 @@
     drawFeed(events, devs);
     lastData = d;
     drawRank(d);
+    lastEvents = events;
     drawDevices();
     drawInquiries();
 
@@ -484,7 +493,7 @@
       for (var i = events.length - 1; i >= 0 && samples.length < 5; i--){
         if (samples.indexOf(events[i].f) < 0) samples.push(events[i].f);
       }
-      detectImgDir(samples, function(){ drawFeed(events, devs); drawRank(lastData); });
+      detectImgDir(samples, function(){ drawFeed(events, devs); drawRank(lastData); drawDevices(); });
     }
 
     var ks = Object.keys(dayTotal).sort();
@@ -818,6 +827,8 @@
 
   /* ---------- 端末ごとの利用状況 ---------- */
   var devStats = {};
+  var lastEvents = [];
+  var devOpen = {};
   var devShowAll = false;
   function entStat(id){
     var o = (lastData && lastData.ent && lastData.ent[id]) || null;
@@ -860,11 +871,13 @@
   function drawDevices(){
     var wrap = document.getElementById("devWrap");
     var moreBtn = document.getElementById("devMoreBtn");
-    var ids = Object.keys(devStats).sort(function(a, b){
-      return (devStats[b].nDays - devStats[a].nDays) || (devStats[b].last > devStats[a].last ? 1 : devStats[b].last < devStats[a].last ? -1 : 0) || (devStats[b].total - devStats[a].total);
+    var lastT = {};
+    (lastEvents || []).forEach(function(e){ if (e.d && (!lastT[e.d] || e.t > lastT[e.d])) lastT[e.d] = e.t; });
+    var ids = Object.keys(devStats).filter(function(id){ return devStats[id].nDays >= 2; }).sort(function(a, b){
+      return (devStats[b].last > devStats[a].last ? 1 : devStats[b].last < devStats[a].last ? -1 : 0) || ((lastT[b] || 0) - (lastT[a] || 0)) || (devStats[b].nDays - devStats[a].nDays);
     });
     if (!ids.length){
-      wrap.innerHTML = '<p class="empty">まだ端末の記録がありません</p>';
+      wrap.innerHTML = '<p class="empty">まだリピーターの端末はありません</p>';
       moreBtn.style.display = "none";
       return;
     }
@@ -880,9 +893,7 @@
     shown.forEach(function(id){
       var s = devStats[id];
       var lv = devLevel(id);
-      var badge = lv === "reg" ? '<span class="badge reg">常連</span>'
-                : lv === "rep" ? '<span class="badge rep">リピーター</span>'
-                : '<span class="badge">1回のみ</span>';
+      var badge = lv === "reg" ? '<span class="badge reg">常連</span>' : '<span class="badge rep">リピーター</span>';
       var lastLbl = s.last === t ? "今日" : s.last === shiftKey(t, -1) ? "昨日" : fmtMD(s.last);
       var strip = keys.map(function(k){
         var on = s.days[k] ? " on" : "";
@@ -896,10 +907,45 @@
         '<span class="stat">初回 ' + fmtMD(s.first) + '　最終 ' + lastLbl + '</span>' +
         entStat(id) +
         '<span class="strip">' + strip + '</span>' +
+        devFilesHtml(id) +
       '</div>';
     });
     wrap.innerHTML = html;
   }
+  function devFiles(id){
+    var m = {};
+    var df = ((lastData || {}).dfiles || {})[id] || {};
+    Object.keys(df).forEach(function(f){ m[f] = { n: df[f][0], t: df[f][1] }; });
+    (lastEvents || []).forEach(function(e){
+      if (e.d !== id || !e.f) return;
+      if (!m[e.f]) m[e.f] = { n: 0, t: 0, ev: 0 };
+      if (df[e.f] === undefined) m[e.f].n++;
+      if (e.t > m[e.f].t) m[e.f].t = e.t;
+    });
+    return Object.keys(m).map(function(f){ return { f: f, n: m[f].n, t: m[f].t }; })
+      .sort(function(a, b){ return b.t - a.t; });
+  }
+  function devFilesHtml(id){
+    var L = devFiles(id);
+    if (!L.length) return '<details class="dfl" data-id="' + esc(id) + '"' + (devOpen[id] ? ' open' : '') + '><summary>保存したもの</summary><p class="empty">記録がまだありません（これからの保存分から溜まります）</p></details>';
+    var items = L.map(function(x){
+      var it = info(x.f);
+      var ttl = it ? it.title : x.f;
+      var sub = [kindOf(it)];
+      if (it && it.diff) sub.push(it.diff);
+      var thumb = (imgDir === null)
+        ? '<div class="thumb none">🖼</div>'
+        : '<img class="thumb" src="' + imgDir + encodeURIComponent(x.f) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
+      var when = x.t ? fmtMD(dayKey(x.t)) : "";
+      return '<div class="dfi">' + thumb + '<div class="dft" title="' + esc(ttl) + '">' + esc(ttl) + '</div>' +
+        '<div class="dfm">' + esc(sub.join("・")) + (when ? '　' + when : '') + (x.n > 1 ? '　' + x.n + '回' : '') + '</div></div>';
+    }).join("");
+    return '<details class="dfl" data-id="' + esc(id) + '"' + (devOpen[id] ? ' open' : '') + '><summary>保存したもの（' + L.length + '種類）</summary><div class="dfg">' + items + '</div></details>';
+  }
+  document.getElementById("devWrap").addEventListener("toggle", function(ev){
+    var el = ev.target;
+    if (el && el.classList && el.classList.contains("dfl")) devOpen[el.getAttribute("data-id")] = el.open;
+  }, true);
   document.getElementById("devMoreBtn").addEventListener("click", function(){
     devShowAll = !devShowAll;
     drawDevices();
