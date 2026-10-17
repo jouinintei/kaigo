@@ -808,4 +808,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "計算", title: "お買い物計算 その4", file: "okaimono_keisan4.png", answer: "okaimono_keisan4_ans.png", added: "2026-10" },
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "仲間はずれ探し その3", file: "nakamahazure3.png", answer: "nakamahazure3_ans.png", added: "2026-10" },
   { season: "秋", genre: "風景", title: "神社参道", diff: "上級", file: "up_1792246990753_28.png", added: "2026-10" },
+  { season: "秋", genre: "風物詩", title: "読書の秋", diff: "上級", file: "up_1792247091335_29.png", added: "2026-10" },
 ];
