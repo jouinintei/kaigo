@@ -317,6 +317,8 @@
       </select>
       <button id="bulkApply">全部に適用</button>
       <label style="white-space:nowrap"><input type="checkbox" id="a4Conv" checked> A4・300dpiに変換して投稿する</label>
+      <label style="white-space:nowrap" title="線の太さは変えずに、フチのぼやけ・ギザギザだけを整えます（画像の差し替えにも効きます）"><input type="checkbox" id="crispLine" checked> 線をくっきりさせる（弱め）</label>
+      <script>(function(){var c=document.getElementById("crispLine");try{var v=localStorage.getItem("crispLine");if(v!==null)c.checked=v==="1";}catch(e){}c.addEventListener("change",function(){try{localStorage.setItem("crispLine",c.checked?"1":"0");}catch(e){}});})();</script>
     </div>
 
     <table id="newTable" style="display:none">
@@ -666,6 +668,42 @@
     }
     return src;
   }
+  function crispLines(g, w, h) {
+    const sigma = 0.5, r = 2, k = [];
+    let ks = 0;
+    for (let i = -r; i <= r; i++) { const v = Math.exp(-(i * i) / (2 * sigma * sigma)); k.push(v); ks += v; }
+    for (let i = 0; i < k.length; i++) k[i] /= ks;
+    const orig = Float32Array.from(g);
+    const tmp = new Float32Array(w * h);
+    for (let y = 0; y < h; y++) {
+      const row = y * w;
+      for (let x = 0; x < w; x++) {
+        let s = 0;
+        for (let i = -r; i <= r; i++) {
+          let xx = x + i; if (xx < 0) xx = 0; else if (xx >= w) xx = w - 1;
+          s += orig[row + xx] * k[i + r];
+        }
+        tmp[row + x] = s;
+      }
+    }
+    const lo = 0.25, hi = 0.75, mix = 0.75, white = 0.94;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        let s = 0;
+        for (let i = -r; i <= r; i++) {
+          let yy = y + i; if (yy < 0) yy = 0; else if (yy >= h) yy = h - 1;
+          s += tmp[yy * w + x] * k[i + r];
+        }
+        const p = y * w + x, a = s / 255;
+        if (a >= white) { g[p] = 255; continue; }
+        let t = (a - lo) / (hi - lo); t = t < 0 ? 0 : (t > 1 ? 1 : t);
+        t = t * t * (3 - 2 * t);
+        const o = mix * t + (1 - mix) * a;
+        g[p] = Math.round(Math.max(0, Math.min(1, o)) * 255);
+      }
+    }
+  }
+
   // 絵を伸ばさず、白い余白を足してA4比率にしてから300dpiの画素数へ
   async function toA4Image(file, forceExt) {
     const src = await loadImageAny(file);
@@ -693,10 +731,16 @@
     cx.drawImage(pad, 0, 0, tw, th);
 
     const id = cx.getImageData(0, 0, tw, th), dd = id.data;
-    for (let i = 0; i < dd.length; i += 4) {
+    const gray = new Float32Array(tw * th);
+    for (let i = 0, p = 0; i < dd.length; i += 4, p++) {
       let g = dd[i] * 0.299 + dd[i + 1] * 0.587 + dd[i + 2] * 0.114;
       if (dd[i + 3] < 128) g = 255;
-      const v = g < 105 ? 0 : (g > 205 ? 255 : g);
+      gray[p] = g < 105 ? 0 : (g > 205 ? 255 : g);
+    }
+    const crispEl = document.getElementById("crispLine");
+    if (crispEl && crispEl.checked) crispLines(gray, tw, th);
+    for (let i = 0, p = 0; i < dd.length; i += 4, p++) {
+      const v = gray[p];
       dd[i] = dd[i + 1] = dd[i + 2] = v; dd[i + 3] = 255;
     }
     cx.putImageData(id, 0, 0);
