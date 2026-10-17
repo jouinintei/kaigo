@@ -307,6 +307,16 @@
   <section class="card">
     <div class="card-head">
       <div>
+        <h2>☆お気に入り</h2>
+        <p class="note">☆を押した記録（10月17日から）。付けた・外したの両方を記録します</p>
+      </div>
+    </div>
+    <div id="favWrap"><p class="empty">読み込み中…</p></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
         <h2>人気ランキング</h2>
         <p class="note" id="rankNote">保存件数の多い順（上位20件）</p>
       </div>
@@ -471,6 +481,7 @@
       .then(function(d){
         wrap.classList.remove("fading");
         render(d);
+        try { drawFav(d.fav); } catch(e){}
         setStatus(null);
       })
       .catch(function(e){
@@ -1260,6 +1271,40 @@
       .catch(function(e){
         document.getElementById("inqWrap").innerHTML = '<p class="empty">' + esc(String(e.message || e)) + '</p>';
       });
+  }
+
+  /* ---------- ☆お気に入り ---------- */
+  function drawFav(F){
+    var wrap = document.getElementById("favWrap");
+    F = F || {};
+    var days = F.days || {}, ev = Array.isArray(F.ev) ? F.ev.slice() : [], tot = F.tot || {};
+    var t = todayKey(), add7 = 0, rm7 = 0, dev7 = {}, addAll = 0;
+    Object.keys(days).forEach(function(k){
+      var D = days[k];
+      addAll += D.add || 0;
+      if (k > shiftKey(t, -7)) {
+        add7 += D.add || 0; rm7 += D.rm || 0;
+        Object.keys(D.devs || {}).forEach(function(id){ dev7[id] = 1; });
+      }
+    });
+    var html = '<div class="fbsum"><div>7日で付けた<b>' + add7 + '</b></div><div>7日で外した<b>' + rm7 + '</b></div><div>使った端末(7日)<b>' + Object.keys(dev7).length + '</b></div><div>累計で付けた<b>' + addAll + '</b></div></div>';
+    if (!ev.length) { wrap.innerHTML = html + '<p class="empty">まだ記録はありません。</p>'; return; }
+    var top = Object.keys(tot).sort(function(a,b){ return tot[b] - tot[a]; }).slice(0, 10);
+    if (top.length) {
+      html += '<div class="fbh">よく☆が付く作品</div>';
+      top.forEach(function(f){
+        var it = info(f);
+        html += '<div class="fbi">' + fbThumb(f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : f) + '</div><div class="cnt">☆ ' + tot[f] + '回</div></div></div>';
+      });
+    }
+    html += '<div class="fbh">最近の記録</div>';
+    ev.sort(function(a,b){ return b.t - a.t; }).slice(0, 30).forEach(function(e){
+      var it = info(e.f);
+      html += '<div class="fbi">' + fbThumb(e.f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : e.f) + '</div><div class="cnt">' +
+        (e.on ? '☆ 付けた' : '外した') + '　' + fmtMD(dayKey(e.t)) + ' ' + hhmm(e.t) +
+        (e.d && e.d !== "unknown" ? ' ・ ' + esc(shortId(e.d)) : '') + '</div></div></div>';
+    });
+    wrap.innerHTML = html;
   }
 
   /* ---------- 👍👎の声 ---------- */

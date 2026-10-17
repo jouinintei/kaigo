@@ -22,8 +22,12 @@ function ghHeaders(env) {
   };
 }
 
+function blankFav() {
+  return { days: {}, tot: {}, ev: [] };
+}
+
 function blank() {
-  return { totals: {}, days: {}, devs: {}, events: [], src: {}, ent: {}, dfiles: {} };
+  return { totals: {}, days: {}, devs: {}, events: [], src: {}, ent: {}, dfiles: {}, fav: blankFav() };
 }
 
 async function ghRead(env) {
@@ -43,6 +47,10 @@ async function ghRead(env) {
   if (!data.src) data.src = {};
   if (!data.ent) data.ent = {};
   if (!data.dfiles) data.dfiles = {};
+  if (!data.fav || typeof data.fav !== "object") data.fav = blankFav();
+  if (!data.fav.days) data.fav.days = {};
+  if (!data.fav.tot) data.fav.tot = {};
+  if (!Array.isArray(data.fav.ev)) data.fav.ev = [];
   return { sha: j.sha, data: data };
 }
 
@@ -84,6 +92,40 @@ export async function onRequest({ request, env }) {
   }
 
   if (request.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
+
+  // ☆の記録 (POST): { favs: [["xxx.png", 1(付けた)|0(外した), "ページ"], ...], did: "端末の符号" }
+  let favBody = null;
+  try { favBody = await request.clone().json(); } catch (e) {}
+  if (favBody && Array.isArray(favBody.favs)) {
+    const fdid = String(favBody.did || "").replace(/[^a-z0-9]/gi, "").slice(0, 16) || "unknown";
+    const favs = favBody.favs
+      .filter(x => Array.isArray(x) && typeof x[0] === "string" && x[0].length > 0 && x[0].length < 200)
+      .slice(0, 60)
+      .map(x => [x[0], x[1] ? 1 : 0, String(x[2] || "").replace(/[^a-z]/g, "").slice(0, 12)]);
+    if (!favs.length) return json({ ok: false });
+    const fnow = Date.now();
+    const fday = new Date(fnow + 9 * 3600 * 1000).toISOString().slice(0, 10);
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const cur = await ghRead(env);
+        const F = cur.data.fav;
+        if (!F.days[fday]) F.days[fday] = { add: 0, rm: 0, devs: {} };
+        const D = F.days[fday];
+        favs.forEach(([f, on, pg]) => {
+          if (on) { D.add++; F.tot[f] = (F.tot[f] || 0) + 1; } else D.rm++;
+          D.devs[fdid] = (D.devs[fdid] || 0) + 1;
+          const ev = { t: fnow, f: f, d: fdid, on: on };
+          if (pg) ev.p = pg;
+          F.ev.push(ev);
+        });
+        if (F.ev.length > KEEP_EVENTS) F.ev = F.ev.slice(F.ev.length - KEEP_EVENTS);
+        const fk = Object.keys(F.days).sort();
+        while (fk.length > KEEP_DAYS) delete F.days[fk.shift()];
+        if (await ghWrite(env, cur.sha, cur.data)) return json({ ok: true });
+      } catch (e) {}
+    }
+    return json({ ok: false }, 500);
+  }
 
   // 記録 (POST): { files: ["xxx.png", ...], did: "端末の符号" }
   let files = [];

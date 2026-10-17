@@ -1148,11 +1148,29 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 
   const loadFav = () => loadJSON(FAV_KEY, []);
   function isFav(file) { return loadFav().includes(file); }
+  const _favQueue = [];
+  let _favTimer = null;
+  function logFav(file, on) {
+    _favQueue.push([file, on ? 1 : 0, page === "fav" ? "fav" : page]);
+    clearTimeout(_favTimer);
+    _favTimer = setTimeout(() => {
+      const q = _favQueue.splice(0);
+      if (!q.length) return;
+      fetch("api/log-save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ favs: q, did: deviceId() }),
+        keepalive: true
+      }).catch(() => {});
+    }, 1500);
+  }
   function toggleFav(file) {
     let f = loadFav();
-    if (f.includes(file)) f = f.filter(x => x !== file);
+    const on = !f.includes(file);
+    if (!on) f = f.filter(x => x !== file);
     else f.push(file);
     saveJSON(FAV_KEY, f);
+    logFav(file, on);
     render();
   }
 
@@ -2130,6 +2148,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const n = loadFav().length;
     if (!n) return;
     if (!window.confirm("お気に入り " + n + " 件をすべて外します。よろしいですか?")) return;
+    loadFav().slice(0, 60).forEach(f => logFav(f, false));
     saveJSON(FAV_KEY, []);
     curPage = 1;
     render();
