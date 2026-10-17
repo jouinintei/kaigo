@@ -1152,9 +1152,6 @@
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
       var er = e.r || (entOf.has(e) ? entOf.get(e) : "");
       if (er) tags.push('<span class="tag entry ' + entClass(er) + '">' + esc(entShort(er)) + '</span>');
-      if (e.r) more.push("入口：" + entLabel(e.r) + "から来訪");
-      else if (entOf.has(e)) more.push("入口：" + entLabel(entOf.get(e)) + "から来訪（同じ端末のこの日の先の保存で記録）");
-      else if (e.d) more.push("入口：記録なし（入口はその訪問の最初の保存にだけ記録されます）");
       more.push(howFound(e));
       if (!it) more.push("ファイル: " + e.f);
       if (e.d){
