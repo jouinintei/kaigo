@@ -1100,6 +1100,17 @@
       return;
     }
     events.sort(function(a,b){ return b.t - a.t; });
+    var entOf = new Map();
+    (function(){
+      var cur = {};
+      for (var i = events.length - 1; i >= 0; i--){
+        var e = events[i];
+        if (!e.d) continue;
+        var dk = dayKey(e.t);
+        if (e.r) cur[e.d] = { r: e.r, k: dk };
+        else if (cur[e.d] && cur[e.d].k === dk) entOf.set(e, cur[e.d].r);
+      }
+    })();
 
     var newestBefore = lastTop;
     var html = "", curDay = "";
@@ -1124,6 +1135,8 @@
       var isNew = !!(e.d && devStats[e.d] && devStats[e.d].first === k);
       if (isNew) tags.push('<span class="tag newdev">🔰 はじめて</span>');
       if (e.r) more.push("入口：" + entLabel(e.r) + "から来訪");
+      else if (entOf.has(e)) more.push("入口：" + entLabel(entOf.get(e)) + "から来訪（同じ端末のこの日の先の保存で記録）");
+      else if (e.d) more.push("入口：記録なし（入口はその訪問の最初の保存にだけ記録されます）");
       more.push(howFound(e));
       if (!it) more.push("ファイル: " + e.f);
       if (e.d){
