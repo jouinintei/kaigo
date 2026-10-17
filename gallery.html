@@ -966,10 +966,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   let qWord = "";
 
   function imgPath(n, file) {
-    return window.IMG_BASE + file;
+    return window.IMG_BASE + file + verQ(n, file);
+  }
+  function verQ(n, file) {
+    if (!n || !n.v) return "";
+    const e = list.find(x => x.file === file || x.answer === file);
+    return (e && e.v) ? "?v=" + encodeURIComponent(e.v) : "?v=" + encodeURIComponent(n.v);
   }
   function thumbPath(n, file) {
-    return window.THUMB_BASE + file + ".jpg";
+    return window.THUMB_BASE + file + ".jpg" + verQ(n, file);
   }
   function dlPath(n, file) {
     return "images/" + file;
@@ -1542,7 +1547,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
           if (!img.dataset.retry) {
             // 古いキャッシュが残っている場合に備えて、キャッシュを無視して1回だけ読み直す
             img.dataset.retry = "1";
-            img.src = imgPath(n, n.file) + "?r=" + Date.now();
+            img.src = imgPath(n, n.file) + (n.v ? "&" : "?") + "r=" + Date.now();
             return;
           }
           thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
@@ -1589,7 +1594,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         if (!img.dataset.retry) {
           // 古いキャッシュが残っている場合に備えて、キャッシュを無視して1回だけ読み直す
           img.dataset.retry = "1";
-          img.src = imgPath(n, n.file) + "?r=" + Date.now();
+          img.src = imgPath(n, n.file) + (n.v ? "&" : "?") + "r=" + Date.now();
           return;
         }
         thumb.innerHTML = '<div class="noimg">画像が見つかりません<br>(' + n.file + ')</div>';
@@ -1761,7 +1766,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     li.onerror = () => {
       if (li.dataset.retry === file) return;
       li.dataset.retry = file;
-      li.src = imgPath(n, file) + "?r=" + Date.now();
+      li.src = imgPath(n, file) + (n.v ? "&" : "?") + "r=" + Date.now();
     };
     li.src = imgPath(n, file);
     document.getElementById("lbTitle").textContent =
@@ -1978,7 +1983,8 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
 
   async function fetchImageBlob(file) {
     let r = null;
-    try { r = await fetch(window.IMG_BASE + file, { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
+    const vn = list.find(x => x.file === file || x.answer === file);
+    try { r = await fetch(window.IMG_BASE + file + verQ(vn, file), { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
     if (!r || !r.ok) { try { r = await fetch("api/dl?f=" + encodeURIComponent(file), { cache: "no-store" }); } catch (e) { r = null; } }
     if (!r || !r.ok) r = await fetch("images/" + file);
     if (!r.ok) throw new Error("読み込めません: " + file);

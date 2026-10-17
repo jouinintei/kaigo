@@ -480,6 +480,8 @@
            'file: "' + esc(e.file) + '"' +
            (e.answer ? ', answer: "' + esc(e.answer) + '"' : "") +
            (e.added ? ', added: "' + esc(e.added) + '"' : "") +
+           (e.date ? ', date: "' + esc(e.date) + '"' : "") +
+           (e.v ? ', v: "' + esc(e.v) + '"' : "") +
            ' },\n';
     });
     s += "];\n";
@@ -1298,6 +1300,8 @@
           const conv = await toA4Image(f, ext);
           listStatus("差し替え中...");
           await overwriteFile("images/" + e.file, conv.blob, "画像差し替え: " + e.title);
+          e.v = String(Date.now());
+          try { await saveDataJs("画像差し替えの表示更新: " + e.title); } catch (e2) {}
           img.style.display = "";
           img.src = imgSrc(e.file) + "?t=" + Date.now();
           listStatus("✓ 「" + e.title + "」の絵を差し替えました(1〜2分で反映)");
@@ -1329,6 +1333,8 @@
             const conv2 = await toA4Image(f, ext2);
             listStatus("差し替え中...");
             await overwriteFile("images/" + e.answer, conv2.blob, "答え差し替え: " + e.title);
+            e.v = String(Date.now());
+            try { await saveDataJs("答え差し替えの表示更新: " + e.title); } catch (e3) {}
             renderList();
             listStatus("✓ 「" + e.title + "」の答えを差し替えました(1〜2分で反映)");
             return;
