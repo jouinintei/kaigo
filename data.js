@@ -800,7 +800,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "少女と絵具", diff: "上級", file: "up_1792219013482_23.png", added: "2026-10" },
   { season: "秋", genre: "動物", title: "秋の葉と小鳥", diff: "初級", file: "up_1792219373359_24.png", added: "2026-10" },
   { season: "秋", genre: "風物詩", title: "秋のかかし", diff: "初級", file: "up_1792219574163_25.png", added: "2026-10" },
-  { season: "秋", genre: "動物", title: "秋の大木", diff: "初級", file: "up_1792220039654_26.png", added: "2026-10" },
+  { season: "秋", genre: "動物", title: "秋の大木", diff: "初級", file: "aki_no_taiboku.png", added: "2026-10" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の大スター穴埋め 俳優編", file: "showa_star_haiyu.png", answer: "showa_star_haiyu_ans.png", added: "2026-10", date: "2026-10-17" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県クイズ その4", file: "todofuken_quiz4.png", answer: "todofuken_quiz4_ans.png", added: "2026-10", date: "2026-10-17" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 海の幸編", file: "nandoku_uminosachi.png", answer: "nandoku_uminosachi_ans.png", added: "2026-10", date: "2026-10-17" },
