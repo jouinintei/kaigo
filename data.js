@@ -814,4 +814,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "葉舞う妖精", diff: "初級", file: "up_1792249554757_1.png", added: "2026-10", v: "1792249756583" },
   { season: "通年", genre: "人物", title: "少女（レトロ風）", diff: "中級", file: "up_1792250370516_2.png", added: "2026-10", v: "1792250718736" },
   { season: "通年", genre: "風景", title: "五重塔見える街並み", diff: "上級", file: "up_1792250598166_3.png", added: "2026-10" },
+  { season: "通年", genre: "人物", title: "薔薇とドレス", diff: "初級", file: "up_1792251359286_4.png", added: "2026-10" },
 ];
