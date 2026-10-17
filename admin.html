@@ -256,6 +256,9 @@
     td input[type=text] { min-width: 130px; }
     .cfg-grid { grid-template-columns: 1fr; gap: 4px; }
   }
+  .margin-warn { margin-top: 4px; font-size: 12px; color: #b45309; background: #fff7e6; border: 1px solid #f5c26b; border-radius: 6px; padding: 3px 6px; max-width: 220px; line-height: 1.4; }
+  .margin-warn.ok { color: #555; background: #f1f1f1; border-color: #ddd; text-decoration: line-through; }
+  .margin-fill { display: block; margin-top: 3px; font-size: 12px; max-width: 220px; cursor: pointer; }
 </style>
 </head>
 <body class="locked">
@@ -707,7 +710,30 @@
   }
 
   // 絵を伸ばさず、白い余白を足してA4比率にしてから300dpiの画素数へ
-  async function toA4Image(file, forceExt) {
+  // A4にしたとき片側にできる白い余白の割合と、その向き(上下 or 左右)
+  const MARGIN_WARN = 0.01;
+  function a4MarginOf(w, h) {
+    const land = w >= h;
+    const L = Math.max(w, h), S = Math.min(w, h), A = 297 / 210;
+    if (L / S > A) {
+      const fs = L / A;
+      return { pct: (fs - S) / 2 / fs, where: land ? "上下" : "左右", cut: land ? "左右" : "上下" };
+    }
+    const fl = S * A;
+    return { pct: (fl - L) / 2 / fl, where: land ? "左右" : "上下", cut: land ? "上下" : "左右" };
+  }
+  async function measureMargin(file) {
+    try {
+      const src = await loadImageAny(file);
+      const w = src.width || src.naturalWidth, h = src.height || src.naturalHeight;
+      return Object.assign({ w: w, h: h }, a4MarginOf(w, h));
+    } catch (e) { return null; }
+  }
+  function marginMsg(m) {
+    return "A4にすると" + m.where + "に白い余白ができます(片側 約" + Math.round(m.pct * 1000) / 10 + "%)";
+  }
+
+  async function toA4Image(file, forceExt, fill) {
     const src = await loadImageAny(file);
     const w = src.width || src.naturalWidth;
     const h = src.height || src.naturalHeight;
@@ -716,13 +742,26 @@
 
     const ta = tw / th, ca = w / h;
     let nw, nh;
+    let pad;
+    if (fill) {
+      // 余白を作らず、はみ出た端を少し切ってA4いっぱいに合わせる
+      let sx = 0, sy = 0, sw = w, sh = h;
+      if (ca > ta) { sw = Math.round(h * ta); sx = Math.floor((w - sw) / 2); }
+      else { sh = Math.round(w / ta); sy = Math.floor((h - sh) / 2); }
+      pad = document.createElement("canvas");
+      pad.width = sw; pad.height = sh;
+      const pc0 = pad.getContext("2d");
+      pc0.fillStyle = "#fff"; pc0.fillRect(0, 0, sw, sh);
+      pc0.drawImage(src, sx, sy, sw, sh, 0, 0, sw, sh);
+    } else {
     if (ca > ta) { nw = w; nh = Math.round(w / ta); }
     else { nw = Math.round(h * ta); nh = h; }
-    const pad = document.createElement("canvas");
+    pad = document.createElement("canvas");
     pad.width = nw; pad.height = nh;
     const pc = pad.getContext("2d");
     pc.fillStyle = "#fff"; pc.fillRect(0, 0, nw, nh);
     pc.drawImage(src, Math.floor((nw - w) / 2), Math.floor((nh - h) / 2));
+    }
 
     const cv = document.createElement("canvas");
     cv.width = tw; cv.height = th;
@@ -955,6 +994,8 @@
         diff: g.diff,
         url: URL.createObjectURL(f)
       });
+      const it = newItems[newItems.length - 1];
+      measureMargin(f).then(m => { it.margin = m; renderNew(); });
     }
     renderNew();
   }
@@ -976,6 +1017,20 @@
       img.className = "pv";
       img.src = it.url;
       tdImg.appendChild(img);
+      if (it.margin && it.margin.pct >= MARGIN_WARN && it.kind !== "脳トレ") {
+        const wn = document.createElement("div");
+        wn.className = "margin-warn";
+        wn.textContent = "⚠ " + marginMsg(it.margin);
+        const lb = document.createElement("label");
+        lb.className = "margin-fill";
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = !!it.fill;
+        cb.onchange = () => { it.fill = cb.checked; renderNew(); };
+        lb.append(cb, document.createTextNode(" " + it.margin.cut + "の端を少し切って余白をなくす"));
+        tdImg.append(wn, lb);
+        if (it.fill) wn.classList.add("ok");
+      }
 
       const tdTitle = document.createElement("td");
       const inp = document.createElement("input");
@@ -1078,6 +1133,17 @@
         return;
       }
     }
+    if (document.getElementById("a4Conv").checked) {
+      const warn = newItems.filter(it => it.kind !== "脳トレ" && !it.fill && it.margin && it.margin.pct >= MARGIN_WARN);
+      if (warn.length && !window.confirm(
+        "A4にすると白い余白ができる画像が " + warn.length + "枚 あります。\n" +
+        warn.slice(0, 5).map(it => "・" + (it.title || it.origName) + ":" + marginMsg(it.margin)).join("\n") +
+        "\n\nこのまま投稿しますか?\n(キャンセルして、各画像の下の「端を少し切って余白をなくす」を選ぶこともできます)")) {
+        st.className = "status ng";
+        st.textContent = "投稿をやめました。余白の出る画像を確認してください";
+        return;
+      }
+    }
     const btn = document.getElementById("saveBtn");
     btn.disabled = true;
     st.className = "status";
@@ -1086,7 +1152,7 @@
       for (const it of newItems) {
         st.textContent = "画像を変換中... (" + (done + 1) + "/" + newItems.length + ")";
         const useA4 = document.getElementById("a4Conv").checked;
-        const conv = useA4 ? await toA4Image(it.blob) : await toWebImage(it.blob);
+        const conv = useA4 ? await toA4Image(it.blob, undefined, !!it.fill) : await toWebImage(it.blob);
         st.textContent = "アップロード中... (" + (done + 1) + "/" + newItems.length + ")";
         const name = await uniqueFileName(autoName(conv.ext));
         await uploadImage(conv.blob, name);
@@ -1293,11 +1359,18 @@
           repInput.value = "";
           return;
         }
+        let repFill = false;
+        const rm = (e.kind || "塗り絵") === "塗り絵" ? await measureMargin(f) : null;
+        if (rm && rm.pct >= MARGIN_WARN) {
+          repFill = window.confirm("⚠ " + marginMsg(rm) + "。\n\n" +
+            "OK → " + rm.cut + "の端を少し切って、余白なしでA4いっぱいにする\n" +
+            "キャンセル → 余白ありのまま差し替える");
+        }
         const dot = e.file.lastIndexOf(".");
         const ext = dot >= 0 ? e.file.slice(dot).toLowerCase() : ".png";
         try {
           listStatus("画像をA4・300dpiに変換中...");
-          const conv = await toA4Image(f, ext);
+          const conv = await toA4Image(f, ext, repFill);
           listStatus("差し替え中...");
           await overwriteFile("images/" + e.file, conv.blob, "画像差し替え: " + e.title);
           e.v = String(Date.now());
