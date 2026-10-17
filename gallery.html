@@ -965,9 +965,42 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     if (n.date) { const t = Date.parse(n.date + "T00:00:00+09:00"); if (!isNaN(t)) return t; }
     return 0;
   }
+  const SEEN_KEY = "nurie_seen_v1";
+  const SEEN_BASE_KEY = "nurie_seen_base_v1";
+  const seenSess = (function () {
+    try {
+      let s = sessionStorage.getItem("nurie_seen_sess");
+      if (!s) { s = String(Date.now()); sessionStorage.setItem("nurie_seen_sess", s); }
+      return s;
+    } catch (e) { return String(Date.now()); }
+  })();
+  const seenBase = (function () {
+    try {
+      let b = Number(localStorage.getItem(SEEN_BASE_KEY));
+      if (!b) { b = Date.now() - NEW_DAYS * 86400e3; localStorage.setItem(SEEN_BASE_KEY, String(b)); }
+      return b;
+    } catch (e) { return Date.now() - NEW_DAYS * 86400e3; }
+  })();
+  let seenMap = loadJSON(SEEN_KEY, {});
+  let seenDirty = false;
+  function markSeen(file, now) {
+    if (!file) return;
+    const v = now ? "x" : seenSess;
+    if (seenMap[file] === "x" || seenMap[file] === v) return;
+    seenMap[file] = v;
+    if (!seenDirty) { seenDirty = true; setTimeout(flushSeen, 300); }
+  }
+  let needRerender = false;
+  function flushSeen() {
+    if (!seenDirty) return;
+    seenDirty = false;
+    saveJSON(SEEN_KEY, seenMap);
+  }
   function isNewItem(n) {
     const t = addedTime(n);
-    return t > 0 && Date.now() - t < NEW_DAYS * 86400e3;
+    if (!(t > seenBase)) return false;
+    const s = seenMap[n.file];
+    return !s || s === seenSess;
   }
   function newBadge(card) {
     const nb = document.createElement("div");
@@ -1070,6 +1103,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     return c;
   }
   function mark(file, kind, src, ctx) {
+    markSeen(file, true); flushSeen();
     const h = loadHist();
     if (!h[file]) h[file] = {};
     h[file][kind] = today();
@@ -1528,7 +1562,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       card.appendChild(fav);
 
       const itemNew = isNewItem(n);
-      if (itemNew) newBadge(card);
+      if (itemNew) { newBadge(card); markSeen(n.file); }
       if (h.print || h.save) {
         const rb = document.createElement("div");
         rb.className = "used-ribbon" + (itemNew ? " below" : "");
@@ -1759,6 +1793,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   let lbSrc = "unknown";
   let lbCtx = null;
   function openLightbox(n, src) {
+    if (n && isNewItem(n)) { markSeen(n.file, true); flushSeen(); needRerender = true; }
     lbSrc = src || pageSrc();
     lbCtx = src ? null : filterCtx();
     lbCurrent = n;
@@ -1770,6 +1805,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   function closeLightbox() {
     lb.classList.remove("show");
     lbCurrent = null;
+    if (needRerender) { needRerender = false; render(); }
   }
   document.getElementById("lbAnswer").onclick = () => {
     if (!lbCurrent || !lbCurrent.answer) return;
