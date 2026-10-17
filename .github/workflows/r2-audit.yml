@@ -7,6 +7,9 @@ on:
       - ".github/workflows/r2-audit.yml"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -44,8 +47,11 @@ jobs:
           print("total", len(rows), "low", len(os.listdir("low")) - 1)
           PY
           .venv/bin/python audit.py
-      - uses: actions/upload-artifact@v4
-        with:
-          name: r2-low
-          path: low
-          retention-days: 3
+      - name: Push results to r2-audit branch
+        run: |
+          cd low
+          git init -q -b r2-audit
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A && git commit -qm "R2 audit"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" r2-audit
