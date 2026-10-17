@@ -866,7 +866,7 @@
     return base + "から、" + (cp.length ? cp.join("") : "絞り込みなしで探して") + "保存";
   }
   function entClass(k){
-    if (k === "google" || k === "yahoo" || k === "bing") return "e-search";
+    if (k === "google" || k === "yahoo" || k === "bing" || k === "yjapp" || k === "gapp") return "e-search";
     if (k === "direct") return "e-direct";
     return "e-other";
   }
@@ -878,13 +878,23 @@
     if (k === "note") return "📝 note";
     if (k === "sns") return "💬 SNS";
     if (k === "old") return "旧アドレス";
+    if (k === "yjapp") return "🔍 Yahoo!アプリ";
+    if (k === "gapp") return "🔍 Googleアプリ";
+    if (k === "line") return "💬 LINE";
+    if (k === "insta") return "💬 Instagram";
+    if (k === "fb") return "💬 Facebook";
+    if (k === "qr") return "📱 QRコード";
+    if (k === "chatgpt") return "🤖 ChatGPT";
+    if (k === "copilot") return "🤖 Copilot";
+    if (k === "perplexity") return "🤖 Perplexity";
+    if (k === "gemini") return "🤖 Gemini";
     if (k.indexOf("o:") === 0) return "🔗 " + k.slice(2);
     return k;
   }
   function entLabel(k){
     if (!k) return "";
     if (k.indexOf("o:") === 0) return k.slice(2);
-    return { google: "Google検索", yahoo: "Yahoo!検索", bing: "Bing検索", note: "note", sns: "SNS", old: "旧アドレス", direct: "直接（お気に入り・URL入力）" }[k] || k;
+    return { google: "Google検索", yahoo: "Yahoo!検索", bing: "Bing検索", note: "note", sns: "SNS", old: "旧アドレス", direct: "直接（お気に入り・URL入力など）", yjapp: "Yahoo!アプリ", gapp: "Googleアプリ", line: "LINE", insta: "Instagram", fb: "Facebook", qr: "QRコード", chatgpt: "ChatGPT", copilot: "Copilot", perplexity: "Perplexity", gemini: "Gemini" }[k] || k;
   }
   var SRC_SHORT = {
     list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
