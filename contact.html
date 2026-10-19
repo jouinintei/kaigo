@@ -51,6 +51,11 @@
   .contact button:disabled { opacity:0.5; cursor:default; }
   .cmsg { font-size:15px; color:#4a9b6e; font-weight:bold; }
   .count { font-size:13px; color:#8a8477; text-align:right; margin-top:-6px; }
+  .mailbox { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:6px; }
+  .mailaddr { font-size:18px; font-weight:bold; color:#6b5535; letter-spacing:.5px; background:var(--accent-soft); border-radius:10px; padding:8px 14px; word-break:break-all; }
+  .mailbtn { display:inline-block; font-family:inherit; font-size:16px; font-weight:bold; padding:10px 22px; border-radius:999px; text-decoration:none; cursor:pointer; border:none; }
+  .mailbtn.go { background:var(--accent); color:#fff; }
+  .mailbtn.copy { background:#efe9dd; color:#6b5535; }
   details { border-top:1px solid var(--line); padding:10px 0; }
   details:first-of-type { border-top:none; padding-top:2px; }
   summary { font-size:15.5px; font-weight:bold; cursor:pointer; color:#6b5535; }
@@ -98,6 +103,18 @@
     <button id="cSend">送信する</button>
     <div id="cMsg" class="cmsg" role="status"></div>
   </div>
+</div>
+
+<div class="card">
+  <h2>メールで直接送る</h2>
+  <p>写真や資料を添付したいとき、やり取りしながら相談したいときは、こちらのアドレスへ直接メールをお送りください。</p>
+  <div class="mailbox">
+    <span class="mailaddr" id="mAddr">info＠rekupuri.com</span>
+    <a class="mailbtn go" id="mGo" href="#">✉ メールを作成</a>
+    <button class="mailbtn copy" id="mCopy" type="button">アドレスをコピー</button>
+  </div>
+  <p class="cmsg" id="mMsg" role="status" style="margin-top:8px"></p>
+  <p style="font-size:14px;color:#8a8477">ふだん数日以内にお返事しています。届かないときは、迷惑メールフォルダもご確認ください。</p>
 </div>
 
 <div class="card">
@@ -197,5 +214,19 @@
 })();
 </script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a9863d837944405fb5b7d52eafc53b9e"}'></script>
+<script>
+(function(){
+  var a = ["info", "rekupuri.com"].join("@");
+  var el = document.getElementById("mAddr");
+  el.textContent = a;
+  document.getElementById("mGo").href = "mailto:" + a + "?subject=" + encodeURIComponent("介護のレクプリへのお問い合わせ");
+  document.getElementById("mCopy").onclick = function(){
+    var msg = document.getElementById("mMsg");
+    var done = function(){ msg.textContent = "コピーしました"; setTimeout(function(){ msg.textContent = ""; }, 2500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(a).then(done, function(){ msg.textContent = a; });
+    else { msg.textContent = a; }
+  };
+})();
+</script>
 </body>
 </html>
