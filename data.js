@@ -180,7 +180,7 @@ window.NURIE_LIST = [
   { season: "秋", genre: "花", title: "皇帝ダリア", diff: "中級", file: "kotei_dahlia_chu.png" },
   { season: "冬", genre: "花", title: "カトレア", diff: "中級", file: "cattleya_chu.png" },
   { season: "冬", genre: "花", title: "クリスマスローズ", diff: "中級", file: "christmasrose_chu.png" },
-  { season: "冬", genre: "花", title: "シクラメン", diff: "中級", file: "cyclamen_chu.png" },
+  { season: "冬", genre: "花", title: "シクラメン", diff: "中級", file: "cyclamen_chu.png", sample: "cyclamen_chu_sample.jpg", v: "1792433917994" },
   { season: "冬", genre: "花", title: "スイセン", diff: "初級", file: "suisen_sho.png" },
   { season: "冬", genre: "花", title: "スイセン", diff: "中級", file: "suisen_chu.png" },
   { season: "冬", genre: "花", title: "ツバキ", diff: "中級", file: "tsubaki_chu.png" },
