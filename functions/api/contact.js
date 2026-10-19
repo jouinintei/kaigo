@@ -62,6 +62,29 @@ async function ghPut(repo, token, data, sha) {
   });
 }
 
+// 新しいお問い合わせをスマホに通知する（ntfy）。本文やメールアドレスは送らない
+async function notifyPhone(repo, token, type) {
+  try {
+    const r = await fetch("https://api.github.com/repos/" + repo + "/contents/data/notify.json", {
+      headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json", "User-Agent": "rekupuri-contact-fn", "X-GitHub-Api-Version": "2022-11-28" }
+    });
+    if (!r.ok) return;
+    const j = await r.json();
+    const cfg = JSON.parse(b64decodeUtf8(j.content || ""));
+    const topic = String(cfg.ntfyTopic || "").replace(/[^a-zA-Z0-9_-]/g, "");
+    if (!topic) return;
+    await fetch("https://ntfy.sh/" + topic, {
+      method: "POST",
+      headers: {
+        "Title": "=?UTF-8?B?" + b64encodeUtf8("レクプリに新しいお問い合わせ") + "?=",
+        "Tags": "envelope",
+        "Click": "https://rekupuri.com/savelog.html"
+      },
+      body: "種類: " + type + "（保存ログで内容を確認できます）"
+    });
+  } catch (e) {}
+}
+
 export async function onRequest(context) {
   const { request, env } = context;
   const headers = { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" };
@@ -122,6 +145,7 @@ export async function onRequest(context) {
       if (data.length > 500) data.splice(0, data.length - 500);
       const r = await ghPut(repo, token, data, sha);
       if (r.ok) {
+        await notifyPhone(repo, token, type);
         return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
       }
       if (r.status === 409 || r.status === 422) continue;
