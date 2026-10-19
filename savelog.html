@@ -205,7 +205,11 @@
   .odevs{display:flex;flex-direction:column;gap:10px}
   .odevs.scroll{max-height:720px;overflow-y:auto;padding-right:6px}
   .odev{border:1px solid var(--line,#e5ddd0);border-radius:10px;padding:8px 10px}
-  .ohead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .ohead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer;list-style:none}
+  .ohead::-webkit-details-marker{display:none}
+  .ohead .ochev{margin-left:auto;color:var(--ink-3,#888);transition:transform .15s}
+  details.odev[open] .ochev{transform:rotate(90deg)}
+  details.odev[open] .ohead{margin-bottom:8px}
   .oitems{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
   .oit{display:flex;gap:8px;align-items:center}
   .oit .thumb{width:44px;height:44px;flex:0 0 44px;object-fit:contain;border-radius:6px;background:#fff}
@@ -319,7 +323,7 @@
     <div class="card-head">
       <div>
         <h2>開いた数（塗り絵・色見本）</h2>
-        <p class="note">今日の端末ごとに、開いた塗り絵・色見本と、保存したものをまとめています。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
+        <p class="note">今日の端末ごとに、入口と開いた数・保存数をまとめています。端末を押すと、開いた絵と保存した絵が出ます。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
       </div>
       <div class="tools">
         <span class="status" id="openStatus"></span>
@@ -1372,6 +1376,7 @@
 
   /* ---------- 開いた数 ---------- */
   function isMine(id){ return Object.keys(DEV_NAMES).some(function(k){ return DEV_NAMES[k] === "自分" && String(id).indexOf(k) === 0; }); }
+  var openDevs = {};
   function drawOpens(d){
     var wrap = document.getElementById("openWrap");
     var O = d.opens || {}, days = O.days || {}, tot = O.tot || {};
@@ -1415,14 +1420,25 @@
       per[e.d].save++; per[e.d].last = Math.max(per[e.d].last, e.t);
     });
     var ids = Object.keys(per).sort(function(a,b){ return per[b].last - per[a].last; });
+    // 端末の入口: 今日の保存に記録された入口 → なければこれまでで一番多い入口
+    var entToday = {};
+    (d.events || []).forEach(function(e){ if (e.r && e.d && dayKey(e.t) === t) entToday[e.d] = e.r; });
+    function entOfDev(id){
+      if (entToday[id]) return entToday[id];
+      var m = (d.ent || {})[id]; if (!m) return "";
+      return Object.keys(m).sort(function(a,b){ return m[b] - m[a]; })[0] || "";
+    }
     if (!ids.length) { html += '<p class="empty">今日はまだ記録がありません。</p>'; }
     else {
       html += '<div class="fbh">端末ごと（今日・新しい順）</div><div class="odevs' + (ids.length > 10 ? ' scroll' : '') + '">';
       ids.forEach(function(id){
         var P = per[id], lv = devLevel(id);
         var files = Object.keys(P.items).sort(function(a,b){ return P.items[b].last - P.items[a].last; });
-        html += '<div class="odev"><div class="ohead"><span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(id) + '">' + esc(shortId(id)) +
-          (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span><span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + '　最終 ' + hhmm(P.last) + '</span></div><div class="oitems">';
+        var en = entOfDev(id), sm = 0; files.forEach(function(f){ sm += P.items[f].smp; });
+        html += '<details class="odev" data-dev="' + esc(id) + '"' + (openDevs[id] ? ' open' : '') + '><summary class="ohead"><span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(id)) +
+          (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
+          (en ? '<span class="tag entry ' + entClass(en) + '">' + esc(entShort(en)) + '</span>' : '<span class="tag">入口の記録なし</span>') +
+          '<span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + (sm ? '・<b style="color:#b5602a">🎨見本 ' + sm + '</b>' : '') + '　最終 ' + hhmm(P.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">';
         files.forEach(function(f){
           var x = P.items[f], it = info(f), b = [];
           if (x.lb) b.push('<span class="ob">開いた' + (x.lb > 1 ? '×' + x.lb : '') + '</span>');
@@ -1431,11 +1447,14 @@
           if (x.smpSave) b.push('<span class="ob sm">🎨見本を保存</span>');
           html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
         });
-        html += '</div></div>';
+        html += '</div></details>';
       });
       html += '</div>';
     }
     wrap.innerHTML = html;
+    wrap.querySelectorAll("details.odev").forEach(function(el){
+      el.addEventListener("toggle", function(){ if (el.open) openDevs[el.dataset.dev] = 1; else delete openDevs[el.dataset.dev]; });
+    });
     var os = document.getElementById("openStatus"); if (os) os.textContent = "最終更新 " + hhmm(Date.now());
   }
 
