@@ -51,6 +51,9 @@ async function ghRead(env) {
   if (!data.fav.days) data.fav.days = {};
   if (!data.fav.tot) data.fav.tot = {};
   if (!Array.isArray(data.fav.ev)) data.fav.ev = [];
+  if (!data.opens || typeof data.opens !== "object") data.opens = { days: {}, tot: { lb: {}, smp: {} } };
+  if (!data.opens.days) data.opens.days = {};
+  if (!data.opens.tot) data.opens.tot = { lb: {}, smp: {} };
   return { sha: j.sha, data: data };
 }
 
@@ -92,6 +95,35 @@ export async function onRequest({ request, env }) {
   }
 
   if (request.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
+
+  // 開いた記録 (POST): { opens: [["xxx.png", "lb"(塗り絵の拡大)|"smp"(色見本)], ...], did }
+  let openBody = null;
+  try { openBody = await request.clone().json(); } catch (e) {}
+  if (openBody && Array.isArray(openBody.opens)) {
+    const odid = String(openBody.did || "").replace(/[^a-z0-9]/gi, "").slice(0, 16) || "unknown";
+    const ops = openBody.opens
+      .filter(x => Array.isArray(x) && typeof x[0] === "string" && x[0].length > 0 && x[0].length < 200 && (x[1] === "lb" || x[1] === "smp"))
+      .slice(0, 60);
+    if (!ops.length) return json({ ok: false });
+    const oday = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const cur = await ghRead(env);
+        const O = cur.data.opens;
+        if (!O.days[oday]) O.days[oday] = { lb: {}, smp: {} };
+        const D = O.days[oday];
+        ops.forEach(([f, k]) => {
+          D[k][odid] = (D[k][odid] || 0) + 1;
+          if (!O.tot[k]) O.tot[k] = {};
+          O.tot[k][f] = (O.tot[k][f] || 0) + 1;
+        });
+        const ok = Object.keys(O.days).sort();
+        while (ok.length > KEEP_DAYS) delete O.days[ok.shift()];
+        if (await ghWrite(env, cur.sha, cur.data)) return json({ ok: true });
+      } catch (e) {}
+    }
+    return json({ ok: false }, 500);
+  }
 
   // ☆の記録 (POST): { favs: [["xxx.png", 1(付けた)|0(外した), "ページ"], ...], did: "端末の符号" }
   let favBody = null;

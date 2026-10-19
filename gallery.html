@@ -1229,6 +1229,24 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       }).catch(() => {});
     }, 1500);
   }
+  // 塗り絵の拡大表示・色見本を開いた回数を記録
+  const _openQueue = [];
+  let _openTimer = null;
+  function logOpen(file, kind) {
+    if (!file) return;
+    _openQueue.push([file, kind]);
+    clearTimeout(_openTimer);
+    _openTimer = setTimeout(() => {
+      const q = _openQueue.splice(0);
+      if (!q.length) return;
+      fetch("api/log-save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ opens: q, did: deviceId() }),
+        keepalive: true
+      }).catch(() => {});
+    }, 3000);
+  }
   function toggleFav(file) {
     let f = loadFav();
     const on = !f.includes(file);
@@ -1793,6 +1811,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
   function openSample(n) {
     smpCurrent = n;
+    logOpen(n.sample, "smp");
     const v = document.getElementById("smpView");
     const img = document.getElementById("smpImg");
     img.dataset.fb = "";
@@ -1977,6 +1996,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     lbCtx = src ? null : filterCtx();
     lbCurrent = n;
     lbShowingAnswer = false;
+    if (n && kindOf(n) === "塗り絵") logOpen(n.file, "lb");
     fbHide();
     lbUpdate();
     renderRelated(n);
