@@ -2435,16 +2435,29 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     };
   })();
 
+  // タブごとに、開いていたページ番号や絞り込みを覚えておく
+  const tabMemory = {};
   function switchPage(p) {
     const clean = !seriesView && !calMonth && !selSeason && !selGenre &&
                   !selDiff && !selUsed && !qWord && curPage === 1;
     if (p === page && clean) { render(); return; }
-    seriesView = null;
-    page = p;
-    qWord = "";
-    selSeason = selGenre = selDiff = selUsed = null;
-    curPage = 1;
-    calMonth = null;
+    if (p === page) {
+      // 今いるタブをもう一度押したときは、最初の状態に戻す
+      seriesView = null; qWord = ""; selSeason = selGenre = selDiff = selUsed = null; curPage = 1; calMonth = null;
+      delete tabMemory[p];
+    } else {
+      tabMemory[page] = { seriesView, calMonth, curPage, selSeason, selGenre, selDiff, selUsed, qWord };
+      const m = tabMemory[p] || {};
+      seriesView = m.seriesView || null;
+      calMonth = m.calMonth || null;
+      curPage = m.curPage || 1;
+      selSeason = m.selSeason || null;
+      selGenre = m.selGenre || null;
+      selDiff = m.selDiff || null;
+      selUsed = m.selUsed || null;
+      qWord = m.qWord || "";
+      page = p;
+    }
     render();
     pushNav();
   }
