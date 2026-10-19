@@ -1794,7 +1794,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const v = document.getElementById("smpView");
     const img = document.getElementById("smpImg");
     img.dataset.fb = "";
-    img.onerror = () => { if (!img.dataset.fb) { img.dataset.fb = "1"; img.src = "api/dl?f=" + encodeURIComponent(n.sample); } };
+    img.onerror = () => {
+      if (!img.dataset.fb) { img.dataset.fb = "1"; img.src = "api/dl?f=" + encodeURIComponent(n.sample); }
+      else if (img.dataset.fb === "1") { img.dataset.fb = "2"; img.src = "images/" + n.sample; }
+    };
     img.src = (window.IMG_BASE || "images/") + n.sample + (n.v ? "?v=" + n.v : "");
     img.alt = n.title + " 色見本";
     document.getElementById("smpTitle").textContent = "🎨 " + n.title + " の色見本";
