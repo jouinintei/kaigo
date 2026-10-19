@@ -1403,7 +1403,7 @@
     // 端末ごとに、今日なにを開いて、なにを保存したか
     var per = {};
     function slot(id, f){
-      var it = info(f), base = (it && it.isSample) ? it.base : f;
+      var base = f;   // 色見本は見本そのものとして分けて表示する
       if (!per[id]) per[id] = { last: 0, items: {}, open: 0, save: 0 };
       if (!per[id].items[base]) per[id].items[base] = { lb: 0, smp: 0, save: 0, smpSave: 0, last: 0 };
       return per[id].items[base];
