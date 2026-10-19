@@ -1496,7 +1496,7 @@
         if (!f) return;
         try {
           listStatus("色見本をアップロード中...");
-          const conv = await stampLogo(await toWebImage(f));
+          const conv = await toWebImage(f);
           const smpName = await uniqueFileName(autoName(conv.ext));
           await uploadImage(conv.blob, smpName);
           e.sample = smpName;
