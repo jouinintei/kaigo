@@ -297,7 +297,6 @@
   <header>
     <h1>保存ログ</h1>
     <span class="hicons">
-      <button class="hicon" id="icFb" title="👍👎の声">👍👎<i class="hnew" id="icFbNew" style="display:none">NEW</i></button>
       <button class="hicon" id="icInq" title="お問い合わせ・要望">📩<i class="hnew" id="icInqNew" style="display:none">NEW</i></button>
     </span>
     <span class="sub" id="range"></span>
@@ -342,19 +341,6 @@
     <div id="openWrap"><p class="empty">読み込み中…</p></div>
   </section>
 
-  <section class="card pop" id="popFb">
-    <div class="card-head">
-      <div>
-        <h2>👍👎の声</h2>
-        <p class="note" id="fbNote">拡大表示の👍👎で集まった評価とコメント。押した端末も出ます（★常連・↻リピーター）。👎が多い絵ほど上に出ます</p>
-      </div>
-      <div class="tools">
-        <button class="btn-ghost" id="fbReloadBtn">更新</button>
-        <button class="btn-ghost pop-close">✕ 閉じる</button>
-      </div>
-    </div>
-    <div id="fbWrap"><p class="empty">読み込み中…</p></div>
-  </section>
 
   <section class="card pop" id="popInq">
     <div class="card-head">
@@ -566,7 +552,7 @@
 
   function schedule(){
     clearInterval(timer);
-    timer = setInterval(function(){ load(true); try { loadInquiries(); loadFeedback(); } catch(e){} }, POLL_MS);
+    timer = setInterval(function(){ load(true); try { loadInquiries(); } catch(e){} }, POLL_MS);
   }
 
   /* ---------- 描画 ---------- */
@@ -1332,13 +1318,12 @@
     if (!fbItemsCache) return;
     var latest = fbLatest();
     if (!fbSeen() && latest) setFbSeen(latest);
-    document.getElementById("icFbNew").style.display = latest > fbSeen() ? "" : "none";
+    return;
     updateTitle();
   }
   function updateTitle(){
     var n = 0;
     if (document.getElementById("icInqNew").style.display === "") n++;
-    if (document.getElementById("icFbNew").style.display === "") n++;
     document.title = (n ? "(NEW) " : "") + baseTitle;
   }
   var popOpen = null;
@@ -1353,11 +1338,9 @@
     document.getElementById(popOpen).classList.remove("show");
     document.getElementById("popBg").classList.remove("show");
     if (popOpen === "popInq") { setInqSeen(inqLatest()); inqShowAll = false; updateInqAlert(); drawInquiries(); }
-    if (popOpen === "popFb") { setFbSeen(fbLatest()); updateFbAlert(); if (fbItemsCache) drawFeedback(fbItemsCache); }
     popOpen = null;
   }
   document.getElementById("icInq").addEventListener("click", function(){ drawInquiries(); openPop("popInq"); });
-  document.getElementById("icFb").addEventListener("click", function(){ if (fbItemsCache) drawFeedback(fbItemsCache); openPop("popFb"); });
   document.getElementById("popBg").addEventListener("click", closePop);
   document.querySelectorAll(".pop-close").forEach(function(b){ b.addEventListener("click", closePop); });
   document.addEventListener("keydown", function(e){ if (e.key === "Escape") closePop(); });
@@ -1595,7 +1578,6 @@
     load(false);
     schedule();
     loadInquiries();
-    loadFeedback();
     loadInsights();
   }
 
@@ -1628,7 +1610,6 @@
   document.getElementById("openReloadBtn").addEventListener("click", function(){ load(true); schedule(); });
   document.getElementById("inqReloadBtn").addEventListener("click", function(){ loadInquiries(); });
   document.getElementById("inqMoreBtn").addEventListener("click", function(){ inqShowAll = !inqShowAll; drawInquiries(); });
-  document.getElementById("fbReloadBtn").addEventListener("click", function(){ loadFeedback(); });
   // タイルを押すと詳細(日時・分類・端末の利用状況)を開閉(スマホ向け)
   function openDevPop(id){
     var pop = document.getElementById("devPop");

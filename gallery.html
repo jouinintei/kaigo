@@ -637,10 +637,6 @@
   .btn-dl:hover { background: #d3722c; }
   .btn-ans { background: #6b8f7a; color: #fff; font-weight: bold; flex: 0 0 32%; }
   .btn-ans:hover { background: #5c7f6b; }
-  .tag-vote { background: #f3ede2; border: 1px solid #ddd2bf; border-radius: 999px; padding: 2px 9px; font-size: 16px; line-height: 1.25; cursor: pointer; font-family: inherit; }
-  .tag-vote:hover { background: #fff3e6; border-color: var(--accent); }
-  .tag-vote.on { background: #fff3e6; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
-  .vote-grp { margin-left: auto; display: inline-flex; gap: 6px; flex-shrink: 0; white-space: nowrap; }
   .btn-smp { background: #fff; color: #b5602a; border: 2px solid #e8a36d !important; font-weight: bold; flex: 0 0 34%; }
   .btn-smp:hover { background: #fff3e6; }
   .tag.smp { background: #fff3e6; color: #b5602a; }
@@ -666,9 +662,6 @@
   #smpView a, #smpView button { font-family: inherit; font-size: 15px; font-weight: bold; padding: 9px 18px; border-radius: 9px; border: none; cursor: pointer; text-decoration: none; }
   #smpView a { background: var(--accent); color: #fff; }
   #smpView button { background: #efe9dd; color: #6b6455; }
-  #cardFb { display: none; position: fixed; inset: 0; z-index: 1200; background: rgba(0,0,0,.35); align-items: center; justify-content: center; padding: 16px; }
-  #cardFb.show { display: flex; }
-  #cardFb .lb-fb { display: block; margin: 0; }
 
   .empty {
     text-align: center;
@@ -955,20 +948,7 @@
     <span class="lb-title" id="lbTitle"></span>
     <button class="lb-toggle" id="lbAnswer" style="display:none">答えを見る</button>
     <a class="lb-save" id="lbSave">💾 保存</a>
-    <button class="lb-vote" id="lbUp" title="よかった" aria-label="よかった">👍</button>
-    <button class="lb-vote" id="lbDown" title="惜しい" aria-label="惜しい">👎</button>
     <button class="lb-close" id="lbClose">✕ 閉じる</button>
-  </div>
-  <div class="lb-fb" id="lbFb">
-    <div id="lbFbForm">
-      <p id="lbFbQ"></p>
-      <textarea id="lbFbText" maxlength="300"></textarea>
-      <div class="fb-row">
-        <button class="fb-skip" id="lbFbSkip">書かずに閉じる</button>
-        <button class="fb-send" id="lbFbSend">送る</button>
-      </div>
-    </div>
-    <div class="fb-thanks" id="lbFbThanks" style="display:none">ありがとうございます。改善に使わせていただきます。</div>
   </div>
   <div class="lb-rel" id="lbRel" style="display:none">
     <h3>似た塗り絵</h3>
@@ -986,19 +966,6 @@
     <span class="smp-note">※細かいところは塗り絵と違う場合があります。色の参考としてお使いください</span>
     <a id="smpSave">💾 色見本を保存</a>
     <button id="smpClose">✕ 閉じる</button>
-  </div>
-</div>
-<div id="cardFb">
-  <div class="lb-fb" role="dialog" aria-modal="true">
-    <div id="cfForm">
-      <p id="cfQ"></p>
-      <textarea id="cfText" maxlength="300"></textarea>
-      <div class="fb-row">
-        <button class="fb-skip" id="cfSkip">書かずに閉じる</button>
-        <button class="fb-send" id="cfSend">送る</button>
-      </div>
-    </div>
-    <div class="fb-thanks" id="cfThanks" style="display:none">ありがとうございます。改善に使わせていただきます。</div>
   </div>
 </div>
 <div id="toast"></div>
@@ -1443,7 +1410,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
        (selUsed === "未使用" && !isUsed(n.file))));
   }
 
-  const VOTE_KEY = "rekupuri_vote_v1";
   function render() {
     const nFav = loadFav().length;
     document.getElementById("tabNoutore").classList.toggle("active", page === "noutore");
@@ -1728,18 +1694,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
           (n.answer ? '<span class="tag">答え付き</span>' : '');
       }
 
-      const myV = loadJSON(VOTE_KEY, {})[n.file] || "";
-      const vg = document.createElement("span");
-      vg.className = "vote-grp";
-      tags.appendChild(vg);
-      [["up","👍","よかった"],["down","👎","惜しい"]].forEach(([v, ic, tt]) => {
-        const b = document.createElement("button");
-        b.className = "tag-vote" + (myV === v ? " on" : "");
-        b.dataset.v = v;
-        b.textContent = ic; b.title = tt; b.setAttribute("aria-label", tt);
-        b.onclick = () => cardVote(n, v, vg);
-        vg.appendChild(b);
-      });
 
       const histBox = document.createElement("div");
       histBox.className = "history";
@@ -1910,7 +1864,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     tg.textContent = lbShowingAnswer ? "問題に戻る" : "答えを見る";
     document.getElementById("lbToSmp").style.display = n.sample ? "" : "none";
     document.getElementById("lbToSmp").parentNode.classList.toggle("has-jump", !!n.sample);
-    fbSync();
   }
   const relGrams = new Map();
   function gramsOf(n) {
@@ -1997,7 +1950,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     lbCurrent = n;
     lbShowingAnswer = false;
     if (n && (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ")) logOpen(n.file, "lb");
-    fbHide();
     lbUpdate();
     renderRelated(n);
     lb.classList.add("show");
@@ -2024,113 +1976,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     setTimeout(render, 100);
   };
 
-  let fbVote = "";
-  function fbSync() {
-    const v = lbCurrent ? (loadJSON(VOTE_KEY, {})[lbCurrent.file] || "") : "";
-    document.getElementById("lbUp").classList.toggle("on", v === "up");
-    document.getElementById("lbDown").classList.toggle("on", v === "down");
-  }
-  function fbHide() {
-    document.getElementById("lbFb").classList.remove("show");
-  }
-  function fbSend(file, v, c) {
-    return fetch("api/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ f: file, v: v, c: c || "", did: deviceId() }),
-      keepalive: true
-    }).catch(() => {});
-  }
-  function fbVoteClick(v) {
-    if (!lbCurrent) return;
-    const file = lbCurrent.file;
-    const votes = loadJSON(VOTE_KEY, {});
-    if (votes[file] === v) {
-      delete votes[file];
-      saveJSON(VOTE_KEY, votes);
-      fbSend(file, "none", "");
-      fbVote = "";
-      fbSync();
-      fbHide();
-      return;
-    }
-    votes[file] = v;
-    saveJSON(VOTE_KEY, votes);
-    fbSend(file, v, "");
-    fbVote = v;
-    fbSync();
-    document.getElementById("lbFbQ").textContent = v === "up"
-      ? "ありがとうございます！ 次にほしい題材があれば教えてください(任意)"
-      : "どこが惜しかったか教えてください(任意)";
-    const ta = document.getElementById("lbFbText");
-    ta.value = "";
-    ta.placeholder = v === "up"
-      ? "例: お正月の塗り絵がほしい、もっと大きな絵がいい など"
-      : "例: 線が切れている、難しすぎる、紙に収まらない など";
-    document.getElementById("lbFbForm").style.display = "";
-    document.getElementById("lbFbThanks").style.display = "none";
-    document.getElementById("lbFb").classList.add("show");
-  }
-  let cfFile = "", cfVote = "";
-  function cardVote(n, v, box) {
-    const file = n.file;
-    const votes = loadJSON(VOTE_KEY, {});
-    const off = votes[file] === v;
-    if (off) delete votes[file]; else votes[file] = v;
-    saveJSON(VOTE_KEY, votes);
-    fbSend(file, off ? "none" : v, "");
-    box.querySelectorAll(".tag-vote").forEach(b => b.classList.toggle("on", !off && b.dataset.v === v));
-    if (off) return;
-    cfFile = file; cfVote = v;
-    document.getElementById("cfQ").textContent = (v === "up"
-      ? "ありがとうございます！ 次にほしい題材があれば教えてください(任意)"
-      : "どこが惜しかったか教えてください(任意)");
-    const ta = document.getElementById("cfText");
-    ta.value = "";
-    ta.placeholder = v === "up"
-      ? "例: お正月の塗り絵がほしい、もっと大きな絵がいい など"
-      : "例: 線が切れている、難しすぎる、紙に収まらない など";
-    document.getElementById("cfForm").style.display = "";
-    document.getElementById("cfThanks").style.display = "none";
-    document.getElementById("cardFb").classList.add("show");
-    setTimeout(() => ta.focus(), 50);
-  }
-  document.getElementById("smpClose").onclick = closeSample;
-  document.getElementById("smpView").onclick = e => { if (e.target.id === "smpView" || e.target.classList.contains("lb-imgwrap")) closeSample(); };
-  document.getElementById("smpSave").addEventListener("click", () => {
-    if (smpCurrent && smpCurrent.sample) logSave(smpCurrent.sample, "sample", null);
-    showToast("色見本を保存しました");
-  });
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSample(); });
-  function cfClose() { document.getElementById("cardFb").classList.remove("show"); }
-  function cfThanks() {
-    document.getElementById("cfForm").style.display = "none";
-    document.getElementById("cfThanks").style.display = "";
-    setTimeout(cfClose, 1800);
-  }
-  document.getElementById("cfSkip").onclick = cfThanks;
-  document.getElementById("cfSend").onclick = () => {
-    const c = document.getElementById("cfText").value.trim();
-    if (c && cfFile && cfVote) fbSend(cfFile, cfVote, c);
-    cfThanks();
-  };
-  document.getElementById("cardFb").onclick = e => { if (e.target.id === "cardFb") cfClose(); };
-  document.getElementById("cfText").addEventListener("keydown", e => { e.stopPropagation(); if (e.key === "Escape") cfClose(); });
-  function fbThanks() {
-    document.getElementById("lbFbForm").style.display = "none";
-    document.getElementById("lbFbThanks").style.display = "";
-    setTimeout(fbHide, 2500);
-  }
-  document.getElementById("lbUp").onclick = () => fbVoteClick("up");
-  document.getElementById("lbDown").onclick = () => fbVoteClick("down");
-  document.getElementById("lbFbSkip").onclick = fbThanks;
-  document.getElementById("lbFbSend").onclick = () => {
-    if (!lbCurrent) return;
-    const c = document.getElementById("lbFbText").value.trim();
-    if (c && fbVote) fbSend(lbCurrent.file, fbVote, c);
-    fbThanks();
-  };
-  document.getElementById("lbFbText").addEventListener("keydown", e => e.stopPropagation());
 
   let toastTimer = null;
   function showToast(msg) {
