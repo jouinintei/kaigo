@@ -231,7 +231,15 @@ export async function onRequest({ request, env }) {
           fs.sort((a, b) => d.dfiles[id][b][1] - d.dfiles[id][a][1]).slice(KEEP_DEV_FILES).forEach(x => delete d.dfiles[id][x]);
         }
       });
-      if (d.events.length > KEEP_EVENTS) d.events = d.events.slice(d.events.length - KEEP_EVENTS);
+      // 今日と昨日(日本時間)の保存はすべて残す。それより前は最新KEEP_EVENTS件まで（全体の上限3000件）
+      {
+        const keepFrom = Date.parse(day + "T00:00:00+09:00") - 24 * 3600 * 1000;
+        const recent = d.events.filter(e => e.t >= keepFrom);
+        const older = d.events.filter(e => e.t < keepFrom);
+        const room = Math.max(0, KEEP_EVENTS - recent.length);
+        d.events = (room ? older.slice(Math.max(0, older.length - room)) : []).concat(recent);
+        if (d.events.length > 3000) d.events = d.events.slice(d.events.length - 3000);
+      }
       const keys = Object.keys(d.days).sort();
       while (keys.length > KEEP_DAYS) {
         const old = keys.shift();

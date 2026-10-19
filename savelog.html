@@ -200,8 +200,19 @@
   .tag{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;color:var(--ink-2)}
   .tag.kind{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
   .tag.smpk{color:#b5602a;border-color:#e8a36d;background:#fff3e6}
-  .odevs{display:flex;flex-direction:column;gap:4px}
-  .odev{display:flex;align-items:center;gap:10px;font-size:13px;padding:3px 0;border-bottom:1px solid var(--line, #eee)}
+  .odevs{display:flex;flex-direction:column;gap:10px}
+  .odevs.scroll{max-height:720px;overflow-y:auto;padding-right:6px}
+  .odev{border:1px solid var(--line,#e5ddd0);border-radius:10px;padding:8px 10px}
+  .ohead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .oitems{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
+  .oit{display:flex;gap:8px;align-items:center}
+  .oit .thumb{width:44px;height:44px;flex:0 0 44px;object-fit:contain;border-radius:6px;background:#fff}
+  .oit .ttl{font-size:13px;line-height:1.3}
+  .odf{font-size:11px;color:var(--ink-3,#888);margin-left:4px}
+  .obs{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
+  .ob{font-size:11px;padding:0 6px;border-radius:999px;background:#efe9dd;color:#6b6455}
+  .ob.sv{background:#e3f1e7;color:#2f6b45}
+  .ob.sm{background:#fff3e6;color:#b5602a}
   .odev .tag.dev{margin-left:0}
   .odev .ocnt{color:var(--ink-2, #555)}
   .tag.dev{margin-left:auto;font-variant-numeric:tabular-nums;letter-spacing:.03em;color:var(--ink-3)}
@@ -302,7 +313,7 @@
     <div class="card-head">
       <div>
         <h2>開いた数（塗り絵・色見本）</h2>
-        <p class="note">今日、拡大表示された塗り絵と、開かれた色見本。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
+        <p class="note">今日の端末ごとに、開いた塗り絵・色見本と、保存したものをまとめています。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
       </div>
       <div class="tools">
         <span class="status" id="openStatus"></span>
@@ -449,7 +460,7 @@
       // 色見本は「(作品名) 色見本」として表示する
       if (it.sample) {
         var sm = {}; for (var k in it) sm[k] = it[k];
-        sm.file = it.sample; sm.title = it.title + "（見本）"; sm.isSample = true;
+        sm.file = it.sample; sm.title = it.title + "（見本）"; sm.isSample = true; sm.base = it.file;
         INFO[it.sample] = sm;
       }
     });
@@ -556,7 +567,7 @@
     drawChart(dayTotal);
     drawTable(dayTotal, devs);
     devStats = buildDevStats(devs);
-    drawFeed(events, devs);
+    drawFeed(events.slice(-300), devs);
     lastData = d;
     drawRank(d);
     lastEvents = events;
@@ -569,7 +580,7 @@
       for (var i = events.length - 1; i >= 0 && samples.length < 5; i--){
         if (samples.indexOf(events[i].f) < 0) samples.push(events[i].f);
       }
-      detectImgDir(samples, function(){ drawFeed(events, devs); drawRank(lastData); drawDevices(); });
+      detectImgDir(samples, function(){ drawFeed(events.slice(-300), devs); drawRank(lastData); drawDevices(); });
     }
 
     var ks = Object.keys(dayTotal).sort();
@@ -1355,21 +1366,45 @@
       '<div>塗り絵を開いた<b>' + lbT[0] + '</b></div>' +
       '<div>色見本を開いた<b>' + smT[0] + '</b></div>' +
       '</div>';
-    var ev = (Array.isArray(O.ev) ? O.ev : []).filter(function(e){ return dayKey(e.t) === t && !isMine(e.d); })
-      .sort(function(a,b){ return b.t - a.t; });
-    if (!ev.length) { html += '<p class="empty">今日はまだ記録がありません。</p>'; }
+    // 端末ごとに、今日なにを開いて、なにを保存したか
+    var per = {};
+    function slot(id, f){
+      var it = info(f), base = (it && it.isSample) ? it.base : f;
+      if (!per[id]) per[id] = { last: 0, items: {}, open: 0, save: 0 };
+      if (!per[id].items[base]) per[id].items[base] = { lb: 0, smp: 0, save: 0, smpSave: 0, last: 0 };
+      return per[id].items[base];
+    }
+    (Array.isArray(O.ev) ? O.ev : []).forEach(function(e){
+      if (dayKey(e.t) !== t || isMine(e.d)) return;
+      var x = slot(e.d, e.f); x[e.k === "smp" ? "smp" : "lb"]++; x.last = Math.max(x.last, e.t);
+      per[e.d].open++; per[e.d].last = Math.max(per[e.d].last, e.t);
+    });
+    (d.events || []).forEach(function(e){
+      if (!e.d || dayKey(e.t) !== t || isMine(e.d)) return;
+      var it = info(e.f);
+      var x = slot(e.d, e.f); if (it && it.isSample) x.smpSave++; else x.save++; x.last = Math.max(x.last, e.t);
+      per[e.d].save++; per[e.d].last = Math.max(per[e.d].last, e.t);
+    });
+    var ids = Object.keys(per).sort(function(a,b){ return per[b].last - per[a].last; });
+    if (!ids.length) { html += '<p class="empty">今日はまだ記録がありません。</p>'; }
     else {
-      html += '<div class="fbh">今日開かれたもの（新しい順）</div>';
-      ev.forEach(function(e){
-        var it = info(e.f);
-        var lv = devLevel(e.d);
-        html += '<div class="fbi">' + fbThumb(e.f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : e.f) + '</div><div class="cnt">' +
-          (e.k === "smp" ? '<span class="tag smpk">🎨 色見本</span> ' : '<span class="tag">塗り絵</span> ') +
-          (it && it.diff ? '<span class="tag">' + esc(it.diff) + '</span> ' : '') +
-          hhmm(e.t) + ' ' +
-          '<span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(e.d) + '">' + esc(shortId(e.d)) + (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
-          '</div></div></div>';
+      html += '<div class="fbh">端末ごと（今日・新しい順）</div><div class="odevs' + (ids.length > 10 ? ' scroll' : '') + '">';
+      ids.forEach(function(id){
+        var P = per[id], lv = devLevel(id);
+        var files = Object.keys(P.items).sort(function(a,b){ return P.items[b].last - P.items[a].last; });
+        html += '<div class="odev"><div class="ohead"><span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(id) + '">' + esc(shortId(id)) +
+          (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span><span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + '　最終 ' + hhmm(P.last) + '</span></div><div class="oitems">';
+        files.forEach(function(f){
+          var x = P.items[f], it = info(f), b = [];
+          if (x.lb) b.push('<span class="ob">開いた' + (x.lb > 1 ? '×' + x.lb : '') + '</span>');
+          if (x.save) b.push('<span class="ob sv">💾保存' + (x.save > 1 ? '×' + x.save : '') + '</span>');
+          if (x.smp) b.push('<span class="ob sm">🎨見本を開いた' + (x.smp > 1 ? '×' + x.smp : '') + '</span>');
+          if (x.smpSave) b.push('<span class="ob sm">🎨見本を保存</span>');
+          html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
+        });
+        html += '</div></div>';
       });
+      html += '</div>';
     }
     wrap.innerHTML = html;
     var os = document.getElementById("openStatus"); if (os) os.textContent = "最終更新 " + hhmm(Date.now());
