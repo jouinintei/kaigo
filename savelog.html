@@ -332,7 +332,7 @@
     <div class="card-head">
       <div>
         <h2>開いた数（塗り絵・色見本）</h2>
-        <p class="note">今日の端末ごとに、入口と開いた数・保存数をまとめています。端末を押すと、開いた絵と保存した絵が出ます。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
+        <p class="note">今日の端末ごとに、入口と開いた数・保存数をまとめています（色見本も含みます）。端末を押すと、開いた絵と保存した絵が出ます。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
       </div>
       <div class="tools">
         <span class="status" id="openStatus"></span>
@@ -1437,10 +1437,7 @@
       return n;
     }
     var lbT = sum("lb", t), smT = sum("smp", t);
-    var html = '<div class="fbsum">' +
-      '<div>塗り絵を開いた<b>' + lbT[0] + '</b></div>' +
-      '<div>色見本を開いた<b>' + smT[0] + '</b></div>' +
-      '</div>';
+    var html = '<div class="fbsum"><div>今日開いた<b>' + (lbT[0] + smT[0]) + '</b></div></div>';
     // 端末ごとに、今日なにを開いて、なにを保存したか
     var per = {};
     function slot(id, f){
@@ -1479,13 +1476,15 @@
         html += '<details class="odev" data-dev="' + esc(id) + '"' + (openDevs[id] ? ' open' : '') + '><summary class="ohead"><span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(id)) +
           (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
           (en ? '<span class="tag entry ' + entClass(en) + '">' + esc(entShort(en)) + '</span>' : '<span class="tag">入口の記録なし</span>') +
-          '<span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + (sm ? '・<b style="color:#b5602a">🎨見本 ' + sm + '</b>' : '') + '　最終 ' + hhmm(P.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">';
+          '<span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + '　最終 ' + hhmm(P.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">';
         files.forEach(function(f){
           var x = P.items[f], it = info(f), b = [];
           if (x.lb) b.push('<span class="ob">開いた' + (x.lb > 1 ? '×' + x.lb : '') + '</span>');
           if (x.save) b.push('<span class="ob sv">💾保存' + (x.save > 1 ? '×' + x.save : '') + '</span>');
-          if (x.smp) b.push('<span class="ob sm">🎨見本を開いた' + (x.smp > 1 ? '×' + x.smp : '') + '</span>');
-          if (x.smpSave) b.push('<span class="ob sm">🎨見本を保存</span>');
+          var op = x.lb + x.smp, sv = x.save + x.smpSave;
+          b = [];
+          if (op) b.push('<span class="ob">開いた' + (op > 1 ? '×' + op : '') + '</span>');
+          if (sv) b.push('<span class="ob sv">💾保存' + (sv > 1 ? '×' + sv : '') + '</span>');
           html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
         });
         html += '</div></details>';
