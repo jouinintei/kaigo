@@ -482,6 +482,7 @@
            (e.diff ? 'diff: "' + esc(e.diff) + '", ' : "") +
            'file: "' + esc(e.file) + '"' +
            (e.answer ? ', answer: "' + esc(e.answer) + '"' : "") +
+           (e.sample ? ', sample: "' + esc(e.sample) + '"' : "") +
            (e.added ? ', added: "' + esc(e.added) + '"' : "") +
            (e.date ? ', date: "' + esc(e.date) + '"' : "") +
            (e.v ? ', v: "' + esc(e.v) + '"' : "") +
@@ -504,7 +505,7 @@
   async function uniqueFileName(name) {
     const safe = name.replace(/[^\w.\-ぁ-んァ-ヶ一-龠ー()]/g, "_");
     const exists = async (n) => {
-      if (entries.some(e => e.file === n || e.answer === n)) return true;
+      if (entries.some(e => e.file === n || e.answer === n || e.sample === n)) return true;
       return await r2Exists(n);
     };
     if (!(await exists(safe))) return safe;
@@ -1258,6 +1259,18 @@
         aimg.onerror = () => { if (!aimg.dataset.fb) { aimg.dataset.fb = "1"; aimg.src = "images/" + e.answer; return; } aimg.style.display = "none"; };
         tdImg.appendChild(aimg);
       }
+      if (e.sample) {
+        const lab = document.createElement("div");
+        lab.className = "ans-label";
+        lab.textContent = "▼色見本";
+        tdImg.appendChild(lab);
+        const simg = document.createElement("img");
+        simg.className = "pv-ans";
+        simg.loading = "lazy";
+        simg.src = imgSrc(e.sample);
+        simg.onerror = () => { if (!simg.dataset.fb) { simg.dataset.fb = "1"; simg.src = "images/" + e.sample; return; } simg.style.display = "none"; };
+        tdImg.appendChild(simg);
+      }
 
       const updBtn = document.createElement("button");
       updBtn.className = "upd-btn";
@@ -1446,6 +1459,53 @@
           }
         };
         tdOps.appendChild(ansOff);
+      }
+
+      // 色見本(カラーの完成見本)。白黒変換やA4変換はせず、色のまま載せる
+      const smpInput = document.createElement("input");
+      smpInput.type = "file";
+      smpInput.accept = "image/*";
+      smpInput.style.display = "none";
+      smpInput.onchange = async () => {
+        const f = smpInput.files[0];
+        if (!f) return;
+        try {
+          listStatus("色見本をアップロード中...");
+          const conv = await toWebImage(f);
+          const smpName = await uniqueFileName(autoName(conv.ext));
+          await uploadImage(conv.blob, smpName);
+          e.sample = smpName;
+          e.v = String(Date.now());
+          await saveDataJs("色見本設定: " + e.title);
+          renderList();
+          listStatus("✓ 「" + e.title + "」に色見本をセットしました(1〜2分で反映)");
+        } catch (err) {
+          listStatus(err.message, true);
+        }
+        smpInput.value = "";
+      };
+      const smpBtn = document.createElement("button");
+      smpBtn.className = "mini-btn";
+      smpBtn.textContent = e.sample ? "色見本を差し替え" : "色見本を設定";
+      smpBtn.onclick = () => smpInput.click();
+      tdOps.appendChild(smpBtn);
+      tdOps.appendChild(smpInput);
+      if (e.sample) {
+        const smpOff = document.createElement("button");
+        smpOff.className = "mini-btn";
+        smpOff.textContent = "色見本を外す";
+        smpOff.onclick = async () => {
+          if (!window.confirm("「" + e.title + "」の色見本を外しますか?")) return;
+          delete e.sample;
+          try {
+            await saveDataJs("色見本解除: " + e.title);
+            renderList();
+            listStatus("✓ 色見本を外しました");
+          } catch (err) {
+            listStatus(err.message, true);
+          }
+        };
+        tdOps.appendChild(smpOff);
       }
 
       tr.appendChild(tdImg);

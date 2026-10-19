@@ -637,10 +637,21 @@
   .btn-dl:hover { background: #d3722c; }
   .btn-ans { background: #6b8f7a; color: #fff; font-weight: bold; flex: 0 0 32%; }
   .btn-ans:hover { background: #5c7f6b; }
-  .tag-vote { background: none; border: none; padding: 0 2px; font-size: 14px; line-height: 1; cursor: pointer; opacity: .55; filter: grayscale(.6); font-family: inherit; }
-  .tag-vote:hover { opacity: 1; filter: none; }
-  .tag-vote.on { opacity: 1; filter: none; transform: scale(1.15); }
+  .tag-vote { background: #f3ede2; border: 1px solid #ddd2bf; border-radius: 999px; padding: 2px 9px; font-size: 16px; line-height: 1.25; cursor: pointer; font-family: inherit; }
+  .tag-vote:hover { background: #fff3e6; border-color: var(--accent); }
+  .tag-vote.on { background: #fff3e6; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
   .tags .tag-vote:first-of-type { margin-left: auto; }
+  .btn-smp { background: #fff; color: #b5602a; border: 2px solid #e8a36d !important; font-weight: bold; flex: 0 0 34%; }
+  .btn-smp:hover { background: #fff3e6; }
+  .tag.smp { background: #fff3e6; color: #b5602a; }
+  #smpView { display: none; position: fixed; inset: 0; z-index: 1150; background: rgba(30,25,20,.82); flex-direction: column; align-items: center; justify-content: center; padding: 16px; gap: 12px; }
+  #smpView.show { display: flex; }
+  #smpView img { max-width: 100%; max-height: calc(100vh - 120px); background: #fff; border-radius: 6px; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+  #smpView .smp-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
+  #smpView .smp-title { color: #fff; font-weight: bold; font-size: 16px; }
+  #smpView a, #smpView button { font-family: inherit; font-size: 15px; font-weight: bold; padding: 9px 18px; border-radius: 9px; border: none; cursor: pointer; text-decoration: none; }
+  #smpView a { background: var(--accent); color: #fff; }
+  #smpView button { background: #efe9dd; color: #6b6455; }
   #cardFb { display: none; position: fixed; inset: 0; z-index: 1200; background: rgba(0,0,0,.35); align-items: center; justify-content: center; padding: 16px; }
   #cardFb.show { display: flex; }
   #cardFb .lb-fb { display: block; margin: 0; }
@@ -948,6 +959,14 @@
   </div>
 </div>
 
+<div id="smpView">
+  <img id="smpImg" alt="">
+  <div class="smp-bar">
+    <span class="smp-title" id="smpTitle"></span>
+    <a id="smpSave">💾 色見本を保存</a>
+    <button id="smpClose">✕ 閉じる</button>
+  </div>
+</div>
 <div id="cardFb">
   <div class="lb-fb" role="dialog" aria-modal="true">
     <div id="cfForm">
@@ -1661,13 +1680,15 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         tags.innerHTML =
           '<span class="tag kind">脳トレ</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
-          (n.answer ? '<span class="tag">答え付き</span>' : '');
+          (n.answer ? '<span class="tag">答え付き</span>' : '') +
+          (n.sample ? '<span class="tag smp">🎨 色見本</span>' : '');
       } else {
         tags.innerHTML =
           '<span class="tag season-' + n.season + '">' + n.season + '</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
           (n.diff ? '<span class="tag diff-' + n.diff + '">' + n.diff + '</span>' : '') +
-          (n.answer ? '<span class="tag">答え付き</span>' : '');
+          (n.answer ? '<span class="tag">答え付き</span>' : '') +
+          (n.sample ? '<span class="tag smp">🎨 色見本</span>' : '');
       }
 
       const myV = loadJSON(VOTE_KEY, {})[n.file] || "";
@@ -1717,6 +1738,14 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         };
         btns.appendChild(da);
       }
+      if (n.sample) {
+        const ds = document.createElement("button");
+        ds.className = "btn-smp";
+        ds.textContent = "🎨 色見本";
+        ds.title = "色をぬった見本を見る";
+        ds.onclick = () => openSample(n);
+        btns.appendChild(ds);
+      }
 
       meta.appendChild(title);
       meta.appendChild(tags);
@@ -1736,6 +1765,24 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const d = (kindOf(n) === "脳トレ") ? "" : (n.diff ? "(" + n.diff + ")" : "");
     return n.title + " 答え" + d + n.answer.substring(n.answer.lastIndexOf("."));
   }
+
+  function dlNameSmp(n) {
+    return n.title + " 色見本" + n.sample.substring(n.sample.lastIndexOf("."));
+  }
+  function openSample(n) {
+    const v = document.getElementById("smpView");
+    const img = document.getElementById("smpImg");
+    img.dataset.fb = "";
+    img.onerror = () => { if (!img.dataset.fb) { img.dataset.fb = "1"; img.src = "api/dl?f=" + encodeURIComponent(n.sample); } };
+    img.src = (window.IMG_BASE || "images/") + n.sample + (n.v ? "?v=" + n.v : "");
+    img.alt = n.title + " 色見本";
+    document.getElementById("smpTitle").textContent = "🎨 " + n.title + " の色見本";
+    const a = document.getElementById("smpSave");
+    a.href = dlPath(n, n.sample);
+    a.download = dlNameSmp(n);
+    v.classList.add("show");
+  }
+  function closeSample() { document.getElementById("smpView").classList.remove("show"); }
 
   function renderPager(totalPages) {
     const pager = document.getElementById("pager");
@@ -1992,6 +2039,10 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     document.getElementById("cardFb").classList.add("show");
     setTimeout(() => ta.focus(), 50);
   }
+  document.getElementById("smpClose").onclick = closeSample;
+  document.getElementById("smpView").onclick = e => { if (e.target.id === "smpView") closeSample(); };
+  document.getElementById("smpSave").addEventListener("click", () => showToast("色見本を保存しました"));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSample(); });
   function cfClose() { document.getElementById("cardFb").classList.remove("show"); }
   function cfThanks() {
     document.getElementById("cfForm").style.display = "none";
