@@ -210,9 +210,6 @@
   .pop-bg.show{display:block}
   .inq-alert{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px;padding:12px 16px;border-radius:12px;background:#fff3e6;border:2px solid #e8833a;color:#8a4a1c;font-weight:bold}
   .tag.newinq{background:#e8833a;color:#fff;border-color:#e8833a}
-  .nowdevs{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;margin:2px 0 10px}
-  .nowdevs .tag.dev{margin-left:0}
-  .nowago{font-size:11px;color:var(--ink-3,#888);margin-right:8px}
   .odevs{display:flex;flex-direction:column;gap:10px}
   .odevs.scroll{max-height:720px;overflow-y:auto;padding-right:6px}
   .odev{border:1px solid var(--line,#e5ddd0);border-radius:10px;padding:8px 10px}
@@ -1440,18 +1437,7 @@
       return n;
     }
     var lbT = sum("lb", t), smT = sum("smp", t);
-    // いま使っている端末: 5分以内に「開いた」か「保存した」端末
-    var nowT = Date.now(), act = {};
-    (Array.isArray(O.ev) ? O.ev : []).forEach(function(e){ if (nowT - e.t < 5 * 60000 && !isMine(e.d)) act[e.d] = Math.max(act[e.d] || 0, e.t); });
-    (d.events || []).forEach(function(e){ if (e.d && nowT - e.t < 5 * 60000 && !isMine(e.d)) act[e.d] = Math.max(act[e.d] || 0, e.t); });
-    var actIds = Object.keys(act).sort(function(a,b){ return act[b] - act[a]; });
-    var html = '<div class="fbsum"><div>🟢 いま使っている<b>' + actIds.length + '</b><span style="font-size:11px">台（5分以内）</span></div><div>今日開いた<b>' + (lbT[0] + smT[0]) + '</b></div></div>';
-    if (actIds.length) {
-      html += '<div class="nowdevs">' + actIds.map(function(id){
-        var lv = devLevel(id), ago = Math.max(0, Math.round((nowT - act[id]) / 60000));
-        return '<span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(id) + '">' + esc(shortId(id)) + (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span><span class="nowago">' + (ago ? ago + '分前' : 'たった今') + '</span>';
-      }).join('') + '</div>';
-    }
+    var html = '<div class="fbsum"><div>今日開いた<b>' + (lbT[0] + smT[0]) + '</b></div></div>';
     // 端末ごとに、今日なにを開いて、なにを保存したか
     var per = {};
     function slot(id, f){
