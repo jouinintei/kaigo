@@ -1782,11 +1782,23 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     v.classList.add("show");
   }
   let smpCurrent = null;
-  function closeSample() { document.getElementById("smpView").classList.remove("show"); }
+  function hideSample() { document.getElementById("smpView").classList.remove("show"); }
+  // 色見本を閉じるときは、後ろの拡大表示もまとめて閉じる
+  function closeSample() {
+    hideSample();
+    if (lb.classList.contains("show")) lbSmartClose();
+  }
+  document.getElementById("smpClose").onclick = closeSample;
+  document.getElementById("smpView").onclick = e => { if (e.target.id === "smpView" || e.target.classList.contains("lb-imgwrap")) closeSample(); };
+  document.getElementById("smpSave").addEventListener("click", () => {
+    if (smpCurrent && smpCurrent.sample) logSave(smpCurrent.sample, "sample", null);
+    showToast("色見本を保存しました");
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && document.getElementById("smpView").classList.contains("show")) closeSample(); });
   document.getElementById("lbToSmp").onclick = () => { if (lbCurrent && lbCurrent.sample) openSample(lbCurrent); };
   document.getElementById("smpToLb").onclick = () => {
     const n = smpCurrent;
-    closeSample();
+    hideSample();
     if (!n) return;
     if (!(lb.classList.contains("show") && lbCurrent && lbCurrent.file === n.file)) { openLightbox(n); pushNav(); }
   };
