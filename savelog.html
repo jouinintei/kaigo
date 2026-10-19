@@ -200,6 +200,8 @@
   .tag{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;color:var(--ink-2)}
   .tag.kind{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
   .tag.smpk{color:#b5602a;border-color:#e8a36d;background:#fff3e6}
+  .inq-alert{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px;padding:12px 16px;border-radius:12px;background:#fff3e6;border:2px solid #e8833a;color:#8a4a1c;font-weight:bold}
+  .tag.newinq{background:#e8833a;color:#fff;border-color:#e8833a}
   .odevs{display:flex;flex-direction:column;gap:10px}
   .odevs.scroll{max-height:720px;overflow-y:auto;padding-right:6px}
   .odev{border:1px solid var(--line,#e5ddd0);border-radius:10px;padding:8px 10px}
@@ -285,6 +287,10 @@
     <span class="sub" id="range"></span>
     <a class="back" href="gallery.html">ギャラリーへ</a>
   </header>
+  <div id="inqAlert" class="inq-alert" style="display:none">
+    <span id="inqAlertText"></span>
+    <button class="btn-ghost" id="inqAlertBtn">見る</button>
+  </div>
 
   <div class="tiles" id="tiles"></div>
 
@@ -545,7 +551,7 @@
 
   function schedule(){
     clearInterval(timer);
-    timer = setInterval(function(){ load(true); }, POLL_MS);
+    timer = setInterval(function(){ load(true); try { loadInquiries(); } catch(e){} }, POLL_MS);
   }
 
   /* ---------- 描画 ---------- */
@@ -1289,6 +1295,27 @@
   /* ---------- お問い合わせ・要望 ---------- */
   var inqItems = null;
   var inqShowAll = false;
+  var INQ_SEEN_KEY = "rk_inq_seen";
+  function inqSeen(){ try { return Number(localStorage.getItem(INQ_SEEN_KEY)) || 0; } catch(e){ return 0; } }
+  function setInqSeen(v){ try { localStorage.setItem(INQ_SEEN_KEY, String(v)); } catch(e){} }
+  var baseTitle = document.title;
+  function updateInqAlert(){
+    if (!inqItems || !inqItems.length) return;
+    var latest = 0; inqItems.forEach(function(it){ latest = Math.max(latest, Date.parse(it.date) || 0); });
+    if (!inqSeen()) setInqSeen(latest);      // 初めて開いたときは、今までの分は既読にする
+    var seen = inqSeen();
+    var n = inqItems.filter(function(it){ return (Date.parse(it.date) || 0) > seen; }).length;
+    var al = document.getElementById("inqAlert");
+    al.style.display = n ? "" : "none";
+    document.getElementById("inqAlertText").textContent = "📩 新しいお問い合わせが " + n + " 件あります";
+    document.title = (n ? "(" + n + ") " : "") + baseTitle;
+  }
+  document.getElementById("inqAlertBtn").addEventListener("click", function(){
+    document.getElementById("inqWrap").scrollIntoView({ behavior: "smooth", block: "start" });
+    var latest = 0; (inqItems || []).forEach(function(it){ latest = Math.max(latest, Date.parse(it.date) || 0); });
+    setTimeout(function(){ setInqSeen(latest); updateInqAlert(); drawInquiries(); }, 2500);
+    inqShowAll = false; drawInquiries();
+  });
   function drawInquiries(){
     var wrap = document.getElementById("inqWrap");
     var note = document.getElementById("inqNote");
@@ -1298,6 +1325,8 @@
       wrap.innerHTML = '<p class="empty">まだお問い合わせはありません。</p>';
       return;
     }
+    updateInqAlert();
+    var seenAt = inqSeen();
     var items = inqItems.slice().sort(function(a,b){ return Date.parse(b.date) - Date.parse(a.date); });
     note.textContent = "新しい順。全" + items.length + "件。送った端末が分かります。";
     var INQ_LIMIT = 2;
@@ -1311,7 +1340,7 @@
       var k = dayKey(t);
       if (k !== curDay){ curDay = k; html += '<div class="daysep" style="grid-column:auto;padding:12px 2px 2px">' + labelDay(k) + '</div>'; }
       var type = it.type || "その他";
-      var tags = '<span class="when">' + hhmm(t) + '</span>' +
+      var tags = (t > seenAt ? '<span class="tag newinq">NEW</span>' : '') + '<span class="when">' + hhmm(t) + '</span>' +
         '<span class="tag ' + (type === "不具合" ? "bug" : "kind") + '">' + esc(type) + '</span>';
       if (it.d && it.d !== "unknown"){
         var lv = (typeof devLevel === "function") ? devLevel(it.d) : "";
