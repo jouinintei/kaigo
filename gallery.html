@@ -1768,12 +1768,12 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     logOpen(n.sample, "smp");
     const v = document.getElementById("smpView");
     const img = document.getElementById("smpImg");
-    img.dataset.fb = "";
-    img.onerror = () => {
-      if (!img.dataset.fb) { img.dataset.fb = "1"; img.src = "api/dl?f=" + encodeURIComponent(n.sample); }
-      else if (img.dataset.fb === "1") { img.dataset.fb = "2"; img.src = "images/" + n.sample; }
-    };
-    img.src = (window.IMG_BASE || "images/") + n.sample + (n.v ? "?v=" + n.v : "");
+    progressive(img, thumbPath(n, n.sample), (window.IMG_BASE || "images/") + n.sample + (n.v ? "?v=" + n.v : ""), () => {
+      img.dataset.fb = "1";
+      img.onerror = () => { if (img.dataset.fb === "1") { img.dataset.fb = "2"; img.src = "images/" + n.sample; } };
+      img.src = "api/dl?f=" + encodeURIComponent(n.sample);
+      img.style.width = ""; img.style.height = ""; img.style.visibility = "";
+    });
     img.alt = n.title + " 色見本";
     document.getElementById("smpTitle").textContent = "🎨 " + n.title + " の色見本";
     const a = document.getElementById("smpSave");
@@ -1853,6 +1853,39 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     pager.appendChild(next);
   }
 
+  // 拡大表示：まず軽いサムネイルを即表示し、原寸が読み込めたら差し替える（前の画像が残らないように）
+  let progTok = 0;
+  function fitLow(el) {
+    const cs = getComputedStyle(el);
+    const px = (v, base) => /%$/.test(v) ? parseFloat(v) / 100 * base : (/px$/.test(v) ? parseFloat(v) : NaN);
+    const par = el.parentNode;
+    const mw = px(cs.maxWidth, par ? par.clientWidth : innerWidth), mh = px(cs.maxHeight, innerHeight);
+    const w = el.naturalWidth, h = el.naturalHeight;
+    if (!w || !h || !(mw > 0) || !(mh > 0)) return;
+    const k = Math.min(mw / w, mh / h);
+    el.style.width = Math.round(w * k) + "px";
+    el.style.height = Math.round(h * k) + "px";
+  }
+  function progressive(el, low, high, onFail) {
+    const tok = ++progTok;
+    el.dataset.tok = tok;
+    el.style.width = ""; el.style.height = "";
+    el.onerror = null; el.onload = null;
+    el.removeAttribute("src");
+    el.style.visibility = "hidden";
+    const showHigh = () => {
+      const hi = new Image();
+      hi.onload = () => { if (el.dataset.tok != tok) return; el.onload = null; el.src = high; el.style.width = ""; el.style.height = ""; el.style.visibility = ""; };
+      hi.onerror = () => { if (el.dataset.tok != tok) return; onFail && onFail(); };
+      hi.src = high;
+    };
+    if (low) {
+      el.onload = () => { if (el.dataset.tok != tok) return; el.onload = null; fitLow(el); el.style.visibility = ""; };
+      el.onerror = () => { if (el.dataset.tok != tok) return; el.onerror = null; };
+      el.src = low;
+    }
+    showHigh();
+  }
   const lb = document.getElementById("lightbox");
   let lbCurrent = null;
   let lbShowingAnswer = false;
@@ -1860,12 +1893,12 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const n = lbCurrent;
     const file = lbShowingAnswer ? n.answer : n.file;
     const li = document.getElementById("lbImg");
-    li.onerror = () => {
-      if (li.dataset.retry === file) return;
-      li.dataset.retry = file;
+    progressive(li, thumbPath(n, file), imgPath(n, file), () => {
+      li.onerror = null;
       li.src = imgPath(n, file) + (n.v ? "&" : "?") + "r=" + Date.now();
-    };
-    li.src = imgPath(n, file);
+      li.style.width = ""; li.style.height = ""; li.style.visibility = "";
+    });
+    if (n.sample && !lbShowingAnswer) { const p = new Image(); p.src = thumbPath(n, n.sample); }
     document.getElementById("lbTitle").textContent =
       n.title + (lbShowingAnswer ? " 答え" : "") + ((n.diff && kindOf(n) !== "脳トレ") ? "(" + n.diff + ")" : "");
     const save = document.getElementById("lbSave");
