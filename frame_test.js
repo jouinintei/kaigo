@@ -195,7 +195,7 @@
     var top = Math.round(cy - boxH / 2);
     // 角の飾りや絵にかぶらない位置まで左へずらす
     var bandTop = dy + dh - bandH - 2, bandBot = dy + dh + 2;
-    var scanW = Math.min(W, Math.round(Math.min(W, H) * 0.3) + boxW);
+    var scanW = Math.min(W, Math.round(Math.min(W, H) * 0.15) + boxW);
     var sx0 = Math.round(dx + dw - scanW);
     var img = ctx.getImageData(sx0, top, scanW, boxH).data;
     function busy(right) {
@@ -213,10 +213,10 @@
       return t ? n / t : 0;
     }
     var right = Math.round(dx + dw - Math.min(W, H) * CFG.logoRight);
-    var minRight = Math.round(dx + dw - Math.min(W, H) * 0.3);
+    var minRight = Math.round(dx + dw - Math.min(W, H) * 0.15);
     var step = Math.max(4, Math.round(lh * 0.25));
     var r0 = right;
-    while (right > minRight && busy(right) > 0.01) right -= step;
+    while (right > minRight && busy(right) > 0.08) right -= step;
     if (right <= minRight) right = r0;
     ctx.fillStyle = "#fff";
     ctx.fillRect(right - boxW, top, boxW, boxH);
