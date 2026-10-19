@@ -558,6 +558,31 @@
 
   // どんな画像(iPhoneのHEIC写真など)でも、ブラウザで確実に表示できる
   // PNG/JPEGに変換し、大きすぎる写真は縮小する
+  // 色見本の右下に、塗り絵と同じ位置・見た目で rekupuri.com を入れる
+  async function stampLogo(conv) {
+    const bmp = await createImageBitmap(conv.blob);
+    const w = bmp.width, h = bmp.height;
+    const cv = document.createElement("canvas");
+    cv.width = w; cv.height = h;
+    const ctx = cv.getContext("2d");
+    ctx.drawImage(bmp, 0, 0);
+    const text = "rekupuri.com";
+    const fs = Math.round(h * 0.0245);
+    ctx.font = "bold " + fs + "px Arial, Helvetica, sans-serif";
+    const tw = ctx.measureText(text).width;
+    const right = w * 0.9696, base = h * 0.990, pad = fs * 0.3;
+    const top = base - fs * 0.95;
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(right - tw - pad, top, tw + pad * 2, h - top);
+    ctx.fillStyle = "#666";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(text, right, base);
+    const isJpg = conv.ext === ".jpg";
+    const blob = await new Promise(res => cv.toBlob(res, isJpg ? "image/jpeg" : "image/png", 0.92));
+    return { blob: blob, ext: isJpg ? ".jpg" : ".png" };
+  }
+
   async function toWebImage(file) {
     let source = null;
     try { source = await createImageBitmap(file); } catch (e) {}
@@ -1471,7 +1496,7 @@
         if (!f) return;
         try {
           listStatus("色見本をアップロード中...");
-          const conv = await toWebImage(f);
+          const conv = await stampLogo(await toWebImage(f));
           const smpName = await uniqueFileName(autoName(conv.ext));
           await uploadImage(conv.blob, smpName);
           e.sample = smpName;
