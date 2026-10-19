@@ -1474,7 +1474,11 @@
       });
       html += '</div>';
     }
+    // 自動更新で一覧やページが上に戻らないよう、スクロール位置を保つ
+    var prevBox = wrap.querySelector(".odevs"), prevTop = prevBox ? prevBox.scrollTop : 0, prevY = window.scrollY;
     wrap.innerHTML = html;
+    var newBox = wrap.querySelector(".odevs"); if (newBox && prevTop) newBox.scrollTop = prevTop;
+    if (Math.abs(window.scrollY - prevY) > 1) window.scrollTo(0, prevY);
     wrap.querySelectorAll("details.odev").forEach(function(el){
       el.addEventListener("toggle", function(){ if (el.open) openDevs[el.dataset.dev] = 1; else delete openDevs[el.dataset.dev]; });
     });
