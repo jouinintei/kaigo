@@ -1,0 +1,31 @@
+name: Fetch images for audit
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      R2_ENDPOINT: https://f2973a9b06bd5d30be681c629f19145e.r2.cloudflarestorage.com
+      R2_BUCKET: rekupuri-img-apac
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/audit
+      - name: Download
+        run: |
+          mkdir out
+          while read f; do
+            [ -z "$f" ] && continue
+            aws s3 cp "s3://$R2_BUCKET/images/$f" "out/$f" --endpoint-url "$R2_ENDPOINT" --only-show-errors || echo "miss $f"
+          done < .github/audit/need.txt
+          ls out | wc -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audit-images
+          path: out
+          retention-days: 1
