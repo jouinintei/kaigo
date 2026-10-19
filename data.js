@@ -810,7 +810,7 @@ window.NURIE_LIST = [
   { season: "秋", genre: "風景", title: "神社参道", diff: "上級", file: "up_1792246990753_28.png", added: "2026-10", v: "1792248889725" },
   { season: "秋", genre: "風物詩", title: "読書の秋", diff: "上級", file: "up_1792247091335_29.png", added: "2026-10", v: "1792248361587" },
   { season: "通年", genre: "花", title: "花", diff: "初級", file: "up_1792247396235_31.png", added: "2026-10", v: "1792249346004" },
-  { season: "秋", genre: "風景", title: "秋（イラスト風）", diff: "初級", file: "up_1792248972664_1.png", added: "2026-10" },
+  { season: "秋", genre: "風景", title: "秋（イラスト風）", diff: "初級", file: "up_1792248972664_1.png", sample: "up_1792379987920_6.png", added: "2026-10", v: "1792379991062" },
   { season: "通年", genre: "その他", title: "葉舞う妖精", diff: "初級", file: "up_1792249554757_1.png", added: "2026-10", v: "1792249756583" },
   { season: "通年", genre: "人物", title: "少女（レトロ風）", diff: "中級", file: "up_1792250370516_2.png", added: "2026-10", v: "1792250718736" },
   { season: "通年", genre: "風景", title: "五重塔見える街並み", diff: "上級", file: "up_1792250598166_3.png", added: "2026-10" },
