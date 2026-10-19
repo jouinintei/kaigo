@@ -439,7 +439,7 @@
       // 色見本は「(作品名) 色見本」として表示する
       if (it.sample) {
         var sm = {}; for (var k in it) sm[k] = it[k];
-        sm.file = it.sample; sm.title = it.title + " 色見本"; sm.isSample = true;
+        sm.file = it.sample; sm.title = it.title + "（見本）"; sm.isSample = true;
         INFO[it.sample] = sm;
       }
     });

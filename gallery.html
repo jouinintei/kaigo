@@ -1789,7 +1789,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
 
   function dlNameSmp(n) {
-    return n.title + " 色見本.jpg";
+    return dlName(n).replace(/\.[^.]+$/, "") + "（見本）.jpg";
   }
   function openSample(n) {
     smpCurrent = n;
