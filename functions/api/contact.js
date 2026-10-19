@@ -73,12 +73,14 @@ async function notifyPhone(repo, token, type) {
     const cfg = JSON.parse(b64decodeUtf8(j.content || ""));
     const topic = String(cfg.ntfyTopic || "").replace(/[^a-zA-Z0-9_-]/g, "");
     if (!topic) return;
+    const k = String(cfg.savelogKey || "").replace(/[^a-zA-Z0-9_-]/g, "");
+    const click = "https://rekupuri.com/savelog.html" + (k ? "#key=" + k : "");
     await fetch("https://ntfy.sh/" + topic, {
       method: "POST",
       headers: {
         "Title": "=?UTF-8?B?" + b64encodeUtf8("レクプリに新しいお問い合わせ") + "?=",
         "Tags": "envelope",
-        "Click": "https://rekupuri.com/savelog.html"
+        "Click": click
       },
       body: "種類: " + type + "（保存ログで内容を確認できます）"
     });

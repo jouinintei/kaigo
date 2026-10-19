@@ -1651,6 +1651,11 @@
   // URLに ?key=... が付いていればそれで開く
   var urlKey = "";
   try { urlKey = new URLSearchParams(location.search).get("key") || ""; } catch(e){}
+  // 通知から開いたとき: #key=... を受け取り、覚えたうえでアドレス欄からは消す
+  try {
+    var hk = (location.hash.match(/key=([^&]+)/) || [])[1];
+    if (hk) { urlKey = decodeURIComponent(hk); try { localStorage.setItem(KEY_STORE, urlKey); } catch(e){} history.replaceState(null, "", location.pathname + location.search); }
+  } catch(e){}
   var saved = urlKey || localStorage.getItem(KEY_STORE);
   if (saved) start(saved);
   else document.getElementById("keyInput").focus();
