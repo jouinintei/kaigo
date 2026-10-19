@@ -199,6 +199,10 @@
   @media (max-width:600px){#feedWrap{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
   .tag{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;color:var(--ink-2)}
   .tag.kind{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+  .odevs{display:flex;flex-direction:column;gap:4px}
+  .odev{display:flex;align-items:center;gap:10px;font-size:13px;padding:3px 0;border-bottom:1px solid var(--line, #eee)}
+  .odev .tag.dev{margin-left:0}
+  .odev .ocnt{color:var(--ink-2, #555)}
   .tag.dev{margin-left:auto;font-variant-numeric:tabular-nums;letter-spacing:.03em;color:var(--ink-3)}
   @media (prefers-color-scheme: dark){.tag.kind{color:#ffb87a}}
   .ev .tag.from{white-space:nowrap;color:var(--ink-2);background:var(--surface-2);border-color:transparent}
@@ -297,7 +301,7 @@
     <div class="card-head">
       <div>
         <h2>開いた数（塗り絵・色見本）</h2>
-        <p class="note">塗り絵を拡大表示した数と、色見本を開いた数（10月19日から）。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
+        <p class="note">今日、塗り絵を拡大表示した数と、色見本を開いた数。開いた端末も出ます。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
       </div>
       <div class="tools">
         <span class="status" id="openStatus"></span>
@@ -1345,15 +1349,29 @@
       (d.events || []).forEach(function(e){ if (e.s === "sample" && dayKey(e.t) >= from && !isMine(e.d)) n++; });
       return n;
     }
-    var lbT = sum("lb", t), smT = sum("smp", t), lbW = sum("lb", shiftKey(w0, 1)), smW = sum("smp", shiftKey(w0, 1));
-    var html = '<div class="fbh">今日</div><div class="fbsum">' +
+    var lbT = sum("lb", t), smT = sum("smp", t);
+    var html = '<div class="fbsum">' +
       '<div>塗り絵を開いた<b>' + lbT[0] + '</b><span style="font-size:11px">' + lbT[1] + '台</span></div>' +
       '<div>色見本を開いた<b>' + smT[0] + '</b><span style="font-size:11px">' + smT[1] + '台</span></div>' +
-      '</div>' +
-      '<div class="fbh">直近7日</div><div class="fbsum">' +
-      '<div>塗り絵を開いた<b>' + lbW[0] + '</b><span style="font-size:11px">' + lbW[1] + '台</span></div>' +
-      '<div>色見本を開いた<b>' + smW[0] + '</b><span style="font-size:11px">' + smW[1] + '台</span></div>' +
       '</div>';
+    var td = days[t] || {}, per = {};
+    ["lb", "smp"].forEach(function(kind){
+      var m = td[kind] || {};
+      Object.keys(m).forEach(function(id){ if (isMine(id)) return; if (!per[id]) per[id] = { lb: 0, smp: 0 }; per[id][kind] += m[id]; });
+    });
+    var ids = Object.keys(per).sort(function(a,b){ return (per[b].smp - per[a].smp) || (per[b].lb - per[a].lb); });
+    if (ids.length) {
+      html += '<div class="fbh">開いた端末（今日・' + ids.length + '台）</div><div class="odevs">';
+      ids.forEach(function(id){
+        var lv = (typeof devLevel === "function") ? devLevel(id) : null;
+        html += '<div class="odev"><span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(id) + '">' + esc(shortId(id)) +
+          (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
+          '<span class="ocnt">塗り絵 ' + per[id].lb + (per[id].smp ? '　<b>🎨 色見本 ' + per[id].smp + '</b>' : '') + '</span></div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<p class="empty">今日はまだ記録がありません。</p>';
+    }
     var st = tot.smp || {};
     var top = Object.keys(st).sort(function(a,b){ return st[b] - st[a]; }).slice(0, 10);
     if (top.length) {
