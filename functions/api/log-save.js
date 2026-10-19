@@ -120,7 +120,10 @@ export async function onRequest({ request, env }) {
           O.tot[k][f] = (O.tot[k][f] || 0) + 1;
           O.ev.push({ t: onow, f: f, k: k, d: odid });
         });
-        if (O.ev.length > 400) O.ev = O.ev.slice(O.ev.length - 400);
+        // 今日と昨日(日本時間)の分はすべて残す。それより古い記録は消す（念のため上限5000件）
+        const keepFrom = Date.parse(oday + "T00:00:00+09:00") - 24 * 3600 * 1000;
+        O.ev = O.ev.filter(e => e.t >= keepFrom);
+        if (O.ev.length > 5000) O.ev = O.ev.slice(O.ev.length - 5000);
         const ok = Object.keys(O.days).sort();
         while (ok.length > KEEP_DAYS) delete O.days[ok.shift()];
         if (await ghWrite(env, cur.sha, cur.data)) return json({ ok: true });
