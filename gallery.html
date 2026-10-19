@@ -661,6 +661,7 @@
   #smpView.show { display: flex; }
   #smpView img { max-width: 100%; max-height: calc(100vh - 120px); background: #fff; border-radius: 6px; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
   #smpView .smp-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
+  #smpView .smp-note { flex-basis: 100%; text-align: center; color: #f3ead9; font-size: 14px; order: 9; }
   #smpView .smp-title { color: #fff; font-weight: bold; font-size: 16px; }
   #smpView a, #smpView button { font-family: inherit; font-size: 15px; font-weight: bold; padding: 9px 18px; border-radius: 9px; border: none; cursor: pointer; text-decoration: none; }
   #smpView a { background: var(--accent); color: #fff; }
@@ -982,6 +983,7 @@
   </div>
   <div class="smp-bar">
     <span class="smp-title" id="smpTitle"></span>
+    <span class="smp-note">※細かいところは塗り絵と違う場合があります。色の参考としてお使いください</span>
     <a id="smpSave">💾 色見本を保存</a>
     <button id="smpClose">✕ 閉じる</button>
   </div>

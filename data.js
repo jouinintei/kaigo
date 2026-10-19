@@ -817,6 +817,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "薔薇とドレス", diff: "初級", file: "up_1792251359286_4.png", added: "2026-10", v: "1792377342811" },
   { season: "通年", genre: "人物", title: "薔薇とドレス", diff: "中級", file: "up_1792251408316_5.png", sample: "up_1792377095464_2.png", added: "2026-10", v: "1792377098856" },
   { season: "通年", genre: "風景", title: "花園読書会", diff: "上級", file: "up_1792251499436_6.png", sample: "up_1792373581580_1.png", added: "2026-10", v: "1792373585287" },
-  { season: "冬", genre: "風物詩", title: "こたつで編み物", diff: "中級", file: "kotatsu_amimono_chu.png", sample: "kotatsu_amimono_chu_sample.jpg", added: "2026-10" },
+  { season: "冬", genre: "風物詩", title: "こたつで編み物", diff: "中級", file: "kotatsu_amimono_chu.png", sample: "kotatsu_amimono_chu_sample.jpg", added: "2026-10", v: "2" },
   { season: "冬", genre: "風物詩", title: "笠地蔵", diff: "中級", file: "kasajizo_chu.png", sample: "kasajizo_chu_sample.jpg", added: "2026-10" },
 ];
