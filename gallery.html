@@ -1789,7 +1789,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
   }
 
   function dlNameSmp(n) {
-    return n.title + " 色見本" + n.sample.substring(n.sample.lastIndexOf("."));
+    return n.title + " 色見本.jpg";
   }
   function openSample(n) {
     smpCurrent = n;
@@ -2155,9 +2155,33 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     } catch (e) { return false; }
   }
 
+  // 色見本を保存するときだけ、右下に rekupuri.com を入れる
+  async function stampSample(blob) {
+    try {
+      const bmp = await createImageBitmap(blob);
+      const w = bmp.width, h = bmp.height;
+      const cv = document.createElement("canvas");
+      cv.width = w; cv.height = h;
+      const ctx = cv.getContext("2d");
+      ctx.drawImage(bmp, 0, 0);
+      const text = "rekupuri.com";
+      const fs = Math.round(Math.min(w, h) * 0.0245);
+      ctx.font = "bold " + fs + "px Arial, Helvetica, sans-serif";
+      const tw = ctx.measureText(text).width;
+      const right = w - Math.min(w, h) * 0.043, base = h - Math.min(w, h) * 0.022, pad = fs * 0.35;
+      ctx.fillStyle = "rgba(255,255,255,.88)";
+      ctx.fillRect(right - tw - pad, base - fs * 0.95, tw + pad * 2, fs * 1.25);
+      ctx.fillStyle = "#666";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillText(text, right, base);
+      return await new Promise(res => cv.toBlob(b => res(b || blob), "image/jpeg", 0.92));
+    } catch (e) { return blob; }
+  }
+
   async function fetchImageBlob(file) {
     let r = null;
-    const vn = list.find(x => x.file === file || x.answer === file);
+    const vn = list.find(x => x.file === file || x.answer === file || x.sample === file);
     try { r = await fetch(window.IMG_BASE + file + verQ(vn, file), { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
     if (!r || !r.ok) { try { r = await fetch("api/dl?f=" + encodeURIComponent(file), { cache: "no-store" }); } catch (e) { r = null; } }
     if (!r || !r.ok) r = await fetch("images/" + file);
@@ -2165,6 +2189,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     const blob = await r.blob();
     const n = list.find(x => x.file === file);
     if (n && kindOf(n) === "塗り絵" && window.rekupuriFrame) return await window.rekupuriFrame(blob);
+    if (list.some(x => x.sample === file)) return await stampSample(blob);
     return blob;
   }
 
