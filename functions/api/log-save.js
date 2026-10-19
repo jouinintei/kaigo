@@ -54,6 +54,7 @@ async function ghRead(env) {
   if (!data.opens || typeof data.opens !== "object") data.opens = { days: {}, tot: { lb: {}, smp: {} } };
   if (!data.opens.days) data.opens.days = {};
   if (!data.opens.tot) data.opens.tot = { lb: {}, smp: {} };
+  if (!Array.isArray(data.opens.ev)) data.opens.ev = [];
   return { sha: j.sha, data: data };
 }
 
@@ -105,7 +106,8 @@ export async function onRequest({ request, env }) {
       .filter(x => Array.isArray(x) && typeof x[0] === "string" && x[0].length > 0 && x[0].length < 200 && (x[1] === "lb" || x[1] === "smp"))
       .slice(0, 60);
     if (!ops.length) return json({ ok: false });
-    const oday = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+    const onow = Date.now();
+    const oday = new Date(onow + 9 * 3600 * 1000).toISOString().slice(0, 10);
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         const cur = await ghRead(env);
@@ -116,7 +118,9 @@ export async function onRequest({ request, env }) {
           D[k][odid] = (D[k][odid] || 0) + 1;
           if (!O.tot[k]) O.tot[k] = {};
           O.tot[k][f] = (O.tot[k][f] || 0) + 1;
+          O.ev.push({ t: onow, f: f, k: k, d: odid });
         });
+        if (O.ev.length > 400) O.ev = O.ev.slice(O.ev.length - 400);
         const ok = Object.keys(O.days).sort();
         while (ok.length > KEEP_DAYS) delete O.days[ok.shift()];
         if (await ghWrite(env, cur.sha, cur.data)) return json({ ok: true });

@@ -199,6 +199,7 @@
   @media (max-width:600px){#feedWrap{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
   .tag{border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11px;color:var(--ink-2)}
   .tag.kind{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+  .tag.smpk{color:#b5602a;border-color:#e8a36d;background:#fff3e6}
   .odevs{display:flex;flex-direction:column;gap:4px}
   .odev{display:flex;align-items:center;gap:10px;font-size:13px;padding:3px 0;border-bottom:1px solid var(--line, #eee)}
   .odev .tag.dev{margin-left:0}
@@ -301,7 +302,7 @@
     <div class="card-head">
       <div>
         <h2>開いた数（塗り絵・色見本）</h2>
-        <p class="note">今日、塗り絵を拡大表示した数と、色見本を開いた数。開いた端末も出ます。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
+        <p class="note">今日、拡大表示された塗り絵と、開かれた色見本。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
       </div>
       <div class="tools">
         <span class="status" id="openStatus"></span>
@@ -1351,35 +1352,25 @@
     }
     var lbT = sum("lb", t), smT = sum("smp", t);
     var html = '<div class="fbsum">' +
-      '<div>塗り絵を開いた<b>' + lbT[0] + '</b><span style="font-size:11px">' + lbT[1] + '台</span></div>' +
-      '<div>色見本を開いた<b>' + smT[0] + '</b><span style="font-size:11px">' + smT[1] + '台</span></div>' +
+      '<div>塗り絵を開いた<b>' + lbT[0] + '</b></div>' +
+      '<div>色見本を開いた<b>' + smT[0] + '</b></div>' +
       '</div>';
-    var td = days[t] || {}, per = {};
-    ["lb", "smp"].forEach(function(kind){
-      var m = td[kind] || {};
-      Object.keys(m).forEach(function(id){ if (isMine(id)) return; if (!per[id]) per[id] = { lb: 0, smp: 0 }; per[id][kind] += m[id]; });
-    });
-    var ids = Object.keys(per).sort(function(a,b){ return (per[b].smp - per[a].smp) || (per[b].lb - per[a].lb); });
-    if (ids.length) {
-      html += '<div class="fbh">開いた端末（今日・' + ids.length + '台）</div><div class="odevs">';
-      ids.forEach(function(id){
-        var lv = (typeof devLevel === "function") ? devLevel(id) : null;
-        html += '<div class="odev"><span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(id) + '">' + esc(shortId(id)) +
-          (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
-          '<span class="ocnt">塗り絵 ' + per[id].lb + (per[id].smp ? '　<b>🎨 色見本 ' + per[id].smp + '</b>' : '') + '</span></div>';
+    var ev = (Array.isArray(O.ev) ? O.ev : []).filter(function(e){ return dayKey(e.t) === t && !isMine(e.d); })
+      .sort(function(a,b){ return b.t - a.t; });
+    if (!ev.length) { html += '<p class="empty">今日はまだ記録がありません。</p>'; }
+    else {
+      html += '<div class="fbh">今日開かれたもの（新しい順）</div>';
+      ev.slice(0, 80).forEach(function(e){
+        var it = info(e.f);
+        var lv = devLevel(e.d);
+        html += '<div class="fbi">' + fbThumb(e.f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : e.f) + '</div><div class="cnt">' +
+          (e.k === "smp" ? '<span class="tag smpk">🎨 色見本</span> ' : '<span class="tag">塗り絵</span> ') +
+          (it && it.diff ? '<span class="tag">' + esc(it.diff) + '</span> ' : '') +
+          hhmm(e.t) + ' ' +
+          '<span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(e.d) + '">' + esc(shortId(e.d)) + (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
+          '</div></div></div>';
       });
-      html += '</div>';
-    } else {
-      html += '<p class="empty">今日はまだ記録がありません。</p>';
-    }
-    var st = tot.smp || {};
-    var top = Object.keys(st).sort(function(a,b){ return st[b] - st[a]; }).slice(0, 10);
-    if (top.length) {
-      html += '<div class="fbh">よく開かれる色見本（累計）</div>';
-      top.forEach(function(f){
-        var it = info(f);
-        html += '<div class="fbi">' + fbThumb(f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : f) + '</div><div class="cnt">🎨 ' + st[f] + '回</div></div></div>';
-      });
+      if (ev.length > 80) html += '<p class="note">ほか ' + (ev.length - 80) + '件</p>';
     }
     wrap.innerHTML = html;
     var os = document.getElementById("openStatus"); if (os) os.textContent = "最終更新 " + hhmm(Date.now());
@@ -1423,7 +1414,7 @@
   function fbThumb(f){
     return (imgDir === null)
       ? '<div class="thumb none">🖼</div>'
-      : '<img class="thumb" src="' + imgDir + encodeURIComponent(f) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
+      : '<img class="thumb" src="' + imgDir + encodeURIComponent(f) + '" alt="" loading="lazy" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=\'images/' + encodeURIComponent(f) + '\';}else{this.style.visibility=\'hidden\'}">';
   }
   function drawFeedback(items){
     var wrap = document.getElementById("fbWrap");
