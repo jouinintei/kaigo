@@ -283,7 +283,7 @@
     <div class="card-head">
       <div>
         <h2><span class="dot live"></span>いま保存されたもの</h2>
-        <p class="note" id="feedNote">新しい順。約30秒ごとに自動で更新します。</p>
+        <p class="note" id="feedNote">新しい順。約1分ごとに自動で更新します。</p>
       </div>
       <div class="tools">
         <span class="status" id="status"></span>
@@ -297,7 +297,11 @@
     <div class="card-head">
       <div>
         <h2>開いた数（塗り絵・色見本）</h2>
-        <p class="note">塗り絵を拡大表示した数と、色見本を開いた数（10月19日から）。自分の端末は数えていません</p>
+        <p class="note">塗り絵を拡大表示した数と、色見本を開いた数（10月19日から）。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
+      </div>
+      <div class="tools">
+        <span class="status" id="openStatus"></span>
+        <button class="btn-ghost" id="openReloadBtn">更新</button>
       </div>
     </div>
     <div id="openWrap"><p class="empty">読み込み中…</p></div>
@@ -411,7 +415,7 @@
 
   var KEY_STORE = "rekupuri_savelog_key";
   var DIR_STORE = "rekupuri_img_dir2";
-  var POLL_MS = 30000;
+  var POLL_MS = 60000;
   var IMG_DIRS = ["https://img.rekupuri.com/images/","images/","img/","nurie/","imgs/","pics/","picture/","photos/",""];
 
   var key = "";
@@ -1257,8 +1261,8 @@
     if (!firstDraw && lastTop !== null) events.forEach(function(e){ if (e.t > lastTop) newCount++; });
     if (newCount > 0){
       var note = document.getElementById("feedNote");
-      note.textContent = "新しく " + newCount + "件 保存されました（新しい順・約30秒ごとに自動更新）";
-      setTimeout(function(){ note.textContent = "新しい順。約30秒ごとに自動で更新します。"; }, 8000);
+      note.textContent = "新しく " + newCount + "件 保存されました（新しい順・約1分ごとに自動更新）";
+      setTimeout(function(){ note.textContent = "新しい順。約1分ごとに自動で更新します。"; }, 8000);
     }
     lastTop = events[0].t;
     firstDraw = false;
@@ -1345,11 +1349,11 @@
     var html = '<div class="fbh">今日</div><div class="fbsum">' +
       '<div>塗り絵を開いた<b>' + lbT[0] + '</b><span style="font-size:11px">' + lbT[1] + '台</span></div>' +
       '<div>色見本を開いた<b>' + smT[0] + '</b><span style="font-size:11px">' + smT[1] + '台</span></div>' +
-      '<div>色見本を保存<b>' + smpSaves(t) + '</b></div></div>' +
+      '</div>' +
       '<div class="fbh">直近7日</div><div class="fbsum">' +
       '<div>塗り絵を開いた<b>' + lbW[0] + '</b><span style="font-size:11px">' + lbW[1] + '台</span></div>' +
       '<div>色見本を開いた<b>' + smW[0] + '</b><span style="font-size:11px">' + smW[1] + '台</span></div>' +
-      '<div>色見本を保存<b>' + smpSaves(shiftKey(w0, 1)) + '</b></div></div>';
+      '</div>';
     var st = tot.smp || {};
     var top = Object.keys(st).sort(function(a,b){ return st[b] - st[a]; }).slice(0, 10);
     if (top.length) {
@@ -1360,6 +1364,7 @@
       });
     }
     wrap.innerHTML = html;
+    var os = document.getElementById("openStatus"); if (os) os.textContent = "最終更新 " + hhmm(Date.now());
   }
 
   /* ---------- ☆お気に入り（表示は終了） ---------- */
@@ -1488,6 +1493,7 @@
     if (e.key === "Enter") document.getElementById("goBtn").click();
   });
   document.getElementById("reloadBtn").addEventListener("click", function(){ load(true); schedule(); loadInquiries(); });
+  document.getElementById("openReloadBtn").addEventListener("click", function(){ load(true); schedule(); });
   document.getElementById("inqReloadBtn").addEventListener("click", function(){ loadInquiries(); });
   document.getElementById("inqMoreBtn").addEventListener("click", function(){ inqShowAll = !inqShowAll; drawInquiries(); });
   document.getElementById("fbReloadBtn").addEventListener("click", function(){ loadFeedback(); });
