@@ -173,13 +173,24 @@
     ctx.imageSmoothingQuality = "high";
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, W, H);
-    var b = of.box, w = b[2] - b[0], h = b[3] - b[1];
-    var mg = Math.round(Math.min(W, H) * 0.02);
-    var aw = W - 2 * mg, ah = H - 2 * mg;
-    var dx, dy, dw, dh;
-    if (Math.abs((aw / ah) / (w / h) - 1) <= CFG.maxStretch) { dx = mg; dy = mg; dw = aw; dh = ah; }
-    else { var k = Math.min(aw / w, ah / h); dw = w * k; dh = h * k; dx = (W - dw) / 2; dy = (H - dh) / 2; }
+    var b, dx, dy, dw, dh;
+    if (Math.abs((src.width / src.height) / (W / H) - 1) <= 0.03) {
+      // もともとA4の比率なら、余白も枠の位置もそのまま使う（伸ばさない）
+      b = [0, 0, src.width, src.height];
+      dx = 0; dy = 0; dw = W; dh = H;
+    } else {
+      b = of.box;
+      var bw0 = b[2] - b[0], bh0 = b[3] - b[1];
+      var mg = Math.round(Math.min(W, H) * 0.02);
+      var aw = W - 2 * mg, ah = H - 2 * mg;
+      var k = Math.min(aw / bw0, ah / bh0);
+      dw = bw0 * k; dh = bh0 * k; dx = (W - dw) / 2; dy = (H - dh) / 2;
+    }
+    var w = b[2] - b[0], h = b[3] - b[1];
     ctx.drawImage(src, b[0], b[1], w, h, dx, dy, dw, dh);
+    var ky = dh / h, kx = dw / w;
+    var fBot = dy + (of.box[3] - b[1]) * ky;
+    var fRight = dx + (of.box[2] - b[0]) * kx;
 
     var label = CFG.label;
     var lh = Math.round(Math.min(W, H) * CFG.logoH);
@@ -189,14 +200,14 @@
     ctx.textAlign = "left";
     var lw = Math.ceil(ctx.measureText(label).width);
     var gap = Math.round(lh * 0.35), vg = Math.round(lh * 0.15);
-    var bandH = of.bottom * dh / h;
-    var cy = Math.round(dy + dh - bandH / 2);
+    var bandH = of.bottom * ky;
+    var cy = Math.round(fBot - bandH / 2);
     var boxW = lw + gap * 2, boxH = lh + vg * 2;
-    var top = Math.round(cy - boxH / 2);
+    var top = Math.max(0, Math.min(H - boxH, Math.round(cy - boxH / 2)));
     // 角の飾りや絵にかぶらない位置まで左へずらす
-    var bandTop = dy + dh - bandH - 2, bandBot = dy + dh + 2;
+    var bandTop = fBot - bandH - 2, bandBot = fBot + 2;
     var scanW = Math.min(W, Math.round(Math.min(W, H) * 0.15) + boxW);
-    var sx0 = Math.round(dx + dw - scanW);
+    var sx0 = Math.round(fRight - scanW);
     var img = ctx.getImageData(sx0, top, scanW, boxH).data;
     function busy(right) {
       var n = 0, t = 0;
@@ -212,8 +223,8 @@
       }
       return t ? n / t : 0;
     }
-    var right = Math.round(dx + dw - Math.min(W, H) * CFG.logoRight);
-    var minRight = Math.round(dx + dw - Math.min(W, H) * 0.15);
+    var right = Math.round(fRight - Math.min(W, H) * CFG.logoRight);
+    var minRight = Math.round(fRight - Math.min(W, H) * 0.15);
     var step = Math.max(4, Math.round(lh * 0.25));
     var r0 = right;
     while (right > minRight && busy(right) > 0.08) right -= step;
