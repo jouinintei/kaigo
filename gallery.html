@@ -1996,7 +1996,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     lbCtx = src ? null : filterCtx();
     lbCurrent = n;
     lbShowingAnswer = false;
-    if (n && kindOf(n) === "塗り絵") logOpen(n.file, "lb");
+    if (n && (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ")) logOpen(n.file, "lb");
     fbHide();
     lbUpdate();
     renderRelated(n);

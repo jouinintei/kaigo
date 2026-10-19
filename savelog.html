@@ -331,7 +331,7 @@
   <section class="card">
     <div class="card-head">
       <div>
-        <h2>開いた数（塗り絵・色見本）</h2>
+        <h2>開いた数（塗り絵・脳トレ・色見本）</h2>
         <p class="note">今日の端末ごとに、入口と開いた数・保存数をまとめています（色見本も含みます）。端末を押すと、開いた絵と保存した絵が出ます。自分の端末は数えていません。約1分ごとに自動で更新します。</p>
       </div>
       <div class="tools">
@@ -1485,7 +1485,7 @@
           b = [];
           if (op) b.push('<span class="ob">開いた' + (op > 1 ? '×' + op : '') + '</span>');
           if (sv) b.push('<span class="ob sv">💾保存' + (sv > 1 ? '×' + sv : '') + '</span>');
-          html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
+          html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + (it && kindOf(it) === "脳トレ" ? '<span class="odf" style="margin:0 4px 0 0">脳トレ</span>' : '') + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
         });
         html += '</div></details>';
       });
