@@ -640,7 +640,7 @@
   .tag-vote { background: #f3ede2; border: 1px solid #ddd2bf; border-radius: 999px; padding: 2px 9px; font-size: 16px; line-height: 1.25; cursor: pointer; font-family: inherit; }
   .tag-vote:hover { background: #fff3e6; border-color: var(--accent); }
   .tag-vote.on { background: #fff3e6; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
-  .tags .tag-vote:first-of-type { margin-left: auto; }
+  .vote-grp { margin-left: auto; display: inline-flex; gap: 6px; flex-shrink: 0; white-space: nowrap; }
   .btn-smp { background: #fff; color: #b5602a; border: 2px solid #e8a36d !important; font-weight: bold; flex: 0 0 34%; }
   .btn-smp:hover { background: #fff3e6; }
   .tag.smp { background: #fff3e6; color: #b5602a; }
@@ -1680,25 +1680,26 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
         tags.innerHTML =
           '<span class="tag kind">脳トレ</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
-          (n.answer ? '<span class="tag">答え付き</span>' : '') +
-          (n.sample ? '<span class="tag smp">🎨 色見本</span>' : '');
+          (n.answer ? '<span class="tag">答え付き</span>' : '');
       } else {
         tags.innerHTML =
           '<span class="tag season-' + n.season + '">' + n.season + '</span>' +
           (n.genre ? '<span class="tag genre">' + n.genre + '</span>' : '') +
           (n.diff ? '<span class="tag diff-' + n.diff + '">' + n.diff + '</span>' : '') +
-          (n.answer ? '<span class="tag">答え付き</span>' : '') +
-          (n.sample ? '<span class="tag smp">🎨 色見本</span>' : '');
+          (n.answer ? '<span class="tag">答え付き</span>' : '');
       }
 
       const myV = loadJSON(VOTE_KEY, {})[n.file] || "";
+      const vg = document.createElement("span");
+      vg.className = "vote-grp";
+      tags.appendChild(vg);
       [["up","👍","よかった"],["down","👎","惜しい"]].forEach(([v, ic, tt]) => {
         const b = document.createElement("button");
         b.className = "tag-vote" + (myV === v ? " on" : "");
         b.dataset.v = v;
         b.textContent = ic; b.title = tt; b.setAttribute("aria-label", tt);
-        b.onclick = () => cardVote(n, v, tags);
-        tags.appendChild(b);
+        b.onclick = () => cardVote(n, v, vg);
+        vg.appendChild(b);
       });
 
       const histBox = document.createElement("div");
