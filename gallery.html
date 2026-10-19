@@ -644,7 +644,7 @@
   .btn-smp { background: #fff; color: #b5602a; border: 2px solid #e8a36d !important; font-weight: bold; flex: 0 0 34%; }
   .btn-smp:hover { background: #fff3e6; }
   .tag.smp { background: #fff3e6; color: #b5602a; }
-  .lb-imgwrap { display: flex; align-items: center; justify-content: center; gap: 14px; max-width: 100%; cursor: default; }
+  .lb-imgwrap { display: flex; align-items: center; justify-content: center; gap: 14px; max-width: 100%; cursor: zoom-out; }
   .lb-imgwrap img { min-width: 0; }
   .lb-imgwrap.has-jump #lbImg { max-width: calc(94vw - 150px); }
   .lb-imgwrap #smpImg { max-width: calc(100vw - 182px); }
@@ -1992,7 +1992,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     lbShowingAnswer = !lbShowingAnswer;
     lbUpdate();
   };
-  lb.onclick = e => { if (e.target === lb) lbSmartClose(); };
+  lb.onclick = e => { if (e.target === lb || e.target.classList.contains("lb-imgwrap")) lbSmartClose(); };
   document.getElementById("lbClose").onclick = lbSmartClose;
   document.addEventListener("keydown", e => {
     if (e.key === "Escape" && lb.classList.contains("show") && !document.getElementById("smpView").classList.contains("show")) lbSmartClose();
@@ -2076,7 +2076,7 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     setTimeout(() => ta.focus(), 50);
   }
   document.getElementById("smpClose").onclick = closeSample;
-  document.getElementById("smpView").onclick = e => { if (e.target.id === "smpView") closeSample(); };
+  document.getElementById("smpView").onclick = e => { if (e.target.id === "smpView" || e.target.classList.contains("lb-imgwrap")) closeSample(); };
   document.getElementById("smpSave").addEventListener("click", () => {
     if (smpCurrent && smpCurrent.sample) logSave(smpCurrent.sample, "sample", null);
     showToast("色見本を保存しました");
