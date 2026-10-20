@@ -828,5 +828,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "観葉植物", diff: "上級", file: "up_1792501323966_11.png", sample: "up_1792501336303_12.png", added: "2026-10", v: "1792501338554" },
   { season: "通年", genre: "動物", title: "猫カフェ2", diff: "上級", file: "up_1792508558780_1.png", sample: "up_1792508569499_2.png", added: "2026-10", v: "1792508572224" },
   { season: "秋", genre: "風景", title: "川辺紅葉", diff: "上級", file: "up_1792508702587_3.png", sample: "up_1792508715145_4.png", added: "2026-10", v: "1792508718013" },
-  { season: "通年", genre: "人物", title: "立てば芍薬、座れば牡丹、歩く姿は百合の花", diff: "上級", file: "up_1792510043010_6.png", added: "2026-10" },
+  { season: "通年", genre: "人物", title: "立てば芍薬、座れば牡丹、歩く姿は百合の花", diff: "上級", file: "up_1792510043010_6.png", sample: "up_1792510054834_7.png", added: "2026-10", v: "1792510057734" },
 ];
