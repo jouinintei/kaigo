@@ -825,4 +825,5 @@ window.NURIE_LIST = [
   { season: "冬", genre: "動物", title: "冬キャンプ", diff: "上級", file: "up_1792500029915_5.png", sample: "up_1792500042590_6.png", added: "2026-10", v: "1792500045529" },
   { season: "秋", genre: "動物", title: "動物達のティータイム", diff: "上級", file: "up_1792500154296_7.png", sample: "up_1792500165530_8.png", added: "2026-10", v: "1792500168385" },
   { season: "秋", genre: "食べ物", title: "モンブラン", diff: "中級", file: "up_1792500851122_9.png", sample: "up_1792500875889_10.png", added: "2026-10", v: "1792500880026" },
+  { season: "通年", genre: "人物", title: "観葉植物", diff: "上級", file: "up_1792501323966_11.png", added: "2026-10" },
 ];
