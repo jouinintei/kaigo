@@ -1455,6 +1455,7 @@
     var ids = Object.keys(per).sort(function(a,b){ return per[b].last - per[a].last; });
     // 端末の入口: 今日の保存に記録された入口 → なければこれまでで一番多い入口
     var entToday = {};
+    (Array.isArray(O.ev) ? O.ev : []).forEach(function(e){ if (e.r && e.d && dayKey(e.t) === t && !entToday[e.d]) entToday[e.d] = e.r; });
     (d.events || []).forEach(function(e){ if (e.r && e.d && dayKey(e.t) === t) entToday[e.d] = e.r; });
     function entOfDev(id){
       if (entToday[id]) return entToday[id];

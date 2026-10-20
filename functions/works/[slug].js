@@ -119,6 +119,7 @@ export async function onRequest(context) {
     "<meta property=\"og:url\" content=\"" + esc(url) + "\">\n" +
     "<meta property=\"og:image\" content=\"" + esc(img) + "\">\n" +
     "<link rel=\"icon\" href=\"/favicon.ico\" sizes=\"48x48\">\n" +
+    "<script src=\"/entry.js\"></script>\n" +
     "<script src=\"/analytics.js\" defer></script>\n" +
     "<script src=\"/frame.js?v=10\"></script>\n" +
     "<script type=\"application/ld+json\">" + JSON.stringify(ld) + "</script>\n" +

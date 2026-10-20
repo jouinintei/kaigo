@@ -1206,10 +1206,17 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
     _openTimer = setTimeout(() => {
       const q = _openQueue.splice(0);
       if (!q.length) return;
+      let ent = null;
+      try {
+        if (!sessionStorage.getItem("rk_ent_osent")) {
+          ent = JSON.parse(sessionStorage.getItem("rk_ent") || "null");
+          if (ent) sessionStorage.setItem("rk_ent_osent", "1");
+        }
+      } catch (e) {}
       fetch("api/log-save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ opens: q, did: deviceId() }),
+        body: JSON.stringify({ opens: q, ent: ent, did: deviceId() }),
         keepalive: true
       }).catch(() => {});
     }, 3000);

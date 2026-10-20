@@ -106,6 +106,12 @@ export async function onRequest({ request, env }) {
       .filter(x => Array.isArray(x) && typeof x[0] === "string" && x[0].length > 0 && x[0].length < 200 && (x[1] === "lb" || x[1] === "smp"))
       .slice(0, 60);
     if (!ops.length) return json({ ok: false });
+    let oent = null;
+    if (openBody.ent && typeof openBody.ent === "object") {
+      const k = String(openBody.ent.k || "").replace(/[^a-z]/g, "").slice(0, 10);
+      const h = String(openBody.ent.h || "").toLowerCase().replace(/[^a-z0-9.-]/g, "").slice(0, 40);
+      if (k) oent = k === "other" && h ? "o:" + h : k;
+    }
     const onow = Date.now();
     const oday = new Date(onow + 9 * 3600 * 1000).toISOString().slice(0, 10);
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -114,12 +120,18 @@ export async function onRequest({ request, env }) {
         const O = cur.data.opens;
         if (!O.days[oday]) O.days[oday] = { lb: {}, smp: {} };
         const D = O.days[oday];
-        ops.forEach(([f, k]) => {
+        ops.forEach(([f, k], i) => {
           D[k][odid] = (D[k][odid] || 0) + 1;
           if (!O.tot[k]) O.tot[k] = {};
           O.tot[k][f] = (O.tot[k][f] || 0) + 1;
-          O.ev.push({ t: onow, f: f, k: k, d: odid });
+          const oe = { t: onow, f: f, k: k, d: odid };
+          if (oent && i === 0) oe.r = oent;
+          O.ev.push(oe);
         });
+        if (oent) {
+          if (!cur.data.ent[odid]) cur.data.ent[odid] = {};
+          cur.data.ent[odid][oent] = (cur.data.ent[odid][oent] || 0) + 1;
+        }
         // 今日と昨日(日本時間)の分はすべて残す。それより古い記録は消す（念のため上限5000件）
         const keepFrom = Date.parse(oday + "T00:00:00+09:00") - 24 * 3600 * 1000;
         O.ev = O.ev.filter(e => e.t >= keepFrom);
