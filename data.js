@@ -77,7 +77,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "動物", title: "猫", diff: "初級", file: "neko_sho.png", sample: "neko_sho_sample.jpg", v: "1792473408369" },
   { season: "通年", genre: "動物", title: "猫", diff: "中級", file: "neko_chu.png", sample: "neko_chu_sample.jpg", v: "1792473408369" },
   { season: "通年", genre: "動物", title: "猫", diff: "上級", file: "neko_jo.png", sample: "neko_jo_sample.jpg", v: "1792473408369" },
-  { season: "通年", genre: "動物", title: "猫カフェ", diff: "上級", file: "neko_cafe_jo.png", sample: "neko_cafe_jo_sample.jpg", v: "1792473408369" },
+  { season: "通年", genre: "動物", title: "猫カフェ", diff: "上級", file: "neko_cafe_jo.png", sample: "neko_cafe_jo_sample.jpg", v: "1792508384496" },
   { season: "通年", genre: "動物", title: "羊", diff: "中級", file: "hitsuji_chu.png", sample: "hitsuji_chu_sample.jpg", v: "1792473697775" },
   { season: "通年", genre: "動物", title: "羊", diff: "上級", file: "hitsuji_jo.png", sample: "hitsuji_jo_sample.jpg", v: "1792473697775" },
   { season: "通年", genre: "動物", title: "蝶を追いかける猫", diff: "中級", file: "chou_neko_chu.png", sample: "chou_neko_chu_sample.jpg", v: "1792473697775" },
