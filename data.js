@@ -393,7 +393,7 @@ window.NURIE_LIST = [
   { season: "春", genre: "行事", title: "こどもの日 その2", diff: "初級", file: "kodomonohi2_sho.png", sample: "kodomonohi2_sho_sample.jpg", added: "2026-08", v: "1792459410083" },
   { season: "春", genre: "行事", title: "こどもの日", diff: "中級", file: "kodomonohi_chu.png", sample: "kodomonohi_chu_sample.jpg", added: "2026-08", v: "1792459410083" },
   { season: "秋", genre: "食べ物", title: "さつまいも料理", diff: "中級", file: "satsumaimo_ryori_chu.png", sample: "satsumaimo_ryori_chu_sample.jpg", added: "2026-08", v: "1792459410083" },
-  { season: "秋", genre: "行事", title: "スポーツの日", diff: "初級", file: "sports_no_hi_sho.png", added: "2026-08" },
+  { season: "秋", genre: "行事", title: "スポーツの日", diff: "初級", file: "sports_no_hi_sho.png", sample: "sports_no_hi_sho_sample.jpg", added: "2026-08", v: "1792459542491" },
   { season: "春", genre: "動物", title: "つばめ", diff: "中級", file: "tsubame_chu.png", sample: "tsubame_chu_sample.jpg", added: "2026-08", v: "1792459410083" },
   { season: "秋", genre: "風物詩", title: "どんぐり", diff: "中級", file: "donguri_chu.png", sample: "donguri_chu_sample.jpg", added: "2026-08", v: "1792459410083" },
   { season: "春", genre: "動物", title: "ひよことたんぽぽ", diff: "初級", file: "hiyoko_tanpopo_sho.png", sample: "hiyoko_tanpopo_sho_sample.jpg", added: "2026-08", v: "1792459410083" },
