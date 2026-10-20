@@ -28,7 +28,7 @@ window.NURIE_LIST = [
   { season: "夏", genre: "食べ物", title: "夏の果物", diff: "初級", file: "natsu_kudamono_sho.png", sample: "natsu_kudamono_sho_sample.jpg", v: "1792494189037" },
   { season: "夏", genre: "食べ物", title: "夏野菜", diff: "初級", file: "natsu_yasai_sho.png", sample: "natsu_yasai_sho_sample.jpg", v: "1792494189037" },
   { season: "夏", genre: "食べ物", title: "夏野菜", diff: "中級", file: "natsu_yasai_chu.png", sample: "natsu_yasai_chu_sample.jpg", v: "1792494189037" },
-  { season: "夏", genre: "食べ物", title: "夏野菜", diff: "上級", file: "natsu_yasai_jo.png", sample: "natsu_yasai_jo_sample.jpg", v: "1792494189037" },
+  { season: "夏", genre: "食べ物", title: "夏野菜", diff: "上級", file: "natsu_yasai_jo.png", sample: "natsu_yasai_jo_sample.jpg", v: "1792507997804" },
   { season: "夏", genre: "食べ物", title: "とうもろこし", diff: "初級", file: "toumorokoshi_sho.png", sample: "toumorokoshi_sho_sample.jpg", v: "1792504506998" },
   { season: "夏", genre: "風物詩", title: "うちわ", diff: "初級", file: "uchiwa_sho.png", sample: "uchiwa_sho_sample.jpg", v: "1792504506998" },
   { season: "夏", genre: "風物詩", title: "うちわと金魚鉢", diff: "初級", file: "uchiwa_kingyo_sho.png", sample: "uchiwa_kingyo_sho_sample.jpg", v: "1792504506998" },
