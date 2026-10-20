@@ -300,7 +300,7 @@ window.NURIE_LIST = [
   { season: "春", genre: "食べ物", title: "春の食材", diff: "初級", file: "haru_shokuzai_sho.png", sample: "haru_shokuzai_sho_sample.jpg", added: "2026-08", v: "1792491088288" },
   { season: "春", genre: "風景", title: "春の田舎", diff: "上級", file: "haru_inaka_jo.png", sample: "haru_inaka_jo_sample.jpg", added: "2026-08", v: "1792491088288" },
   { season: "冬", genre: "行事", title: "初詣", diff: "上級", file: "hatsumoude_jo.png", sample: "hatsumoude_jo_sample.jpg", added: "2026-08", v: "1792437763182" },
-  { season: "冬", genre: "行事", title: "除夜の鐘", diff: "上級", file: "joya_no_kane_jo.png", sample: "joya_no_kane_jo_sample.jpg", added: "2026-08", v: "1792437763182" },
+  { season: "冬", genre: "行事", title: "除夜の鐘", diff: "上級", file: "joya_no_kane_jo.png", sample: "joya_no_kane_jo_sample.jpg", added: "2026-08", v: "1792509317635" },
   { season: "冬", genre: "行事", title: "正月", diff: "上級", file: "shogatsu_jo.png", sample: "shogatsu_jo_sample.jpg", added: "2026-08", v: "1792454522297" },
   { season: "冬", genre: "行事", title: "正月の遊び", diff: "初級", file: "shogatsu_asobi_sho.png", sample: "shogatsu_asobi_sho_sample.jpg", added: "2026-08", v: "1792454522297" },
   { season: "冬", genre: "行事", title: "節分", diff: "初級", file: "setsubun_sho.png", sample: "setsubun_sho_sample.jpg", added: "2026-08", v: "1792460896491" },
