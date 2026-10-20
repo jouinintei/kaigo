@@ -361,7 +361,7 @@ window.NURIE_LIST = [
   { season: "秋", genre: "食べ物", title: "松茸", diff: "初級", file: "matsutake_sho.png", added: "2026-08" },
   { season: "春", genre: "行事", title: "菖蒲湯", diff: "中級", file: "shobuyu_chu.png", added: "2026-08" },
   { season: "冬", genre: "行事", title: "成人の日", diff: "初級", file: "seijin_no_hi_sho.png", sample: "seijin_no_hi_sho_sample.jpg", added: "2026-08", v: "1792462049329" },
-  { season: "冬", genre: "行事", title: "成人式", diff: "中級", file: "seijinshiki_chu.png", added: "2026-08" },
+  { season: "冬", genre: "行事", title: "成人式", diff: "中級", file: "seijinshiki_chu.png", sample: "seijinshiki_chu_sample.jpg", added: "2026-08", v: "1792463163032" },
   { season: "秋", genre: "動物", title: "赤とんぼ", diff: "初級", file: "akatonbo_sho.png", added: "2026-08" },
   { season: "冬", genre: "動物", title: "雪だるまと犬", diff: "初級", file: "yukidaruma_inu_sho.png", added: "2026-08" },
   { season: "冬", genre: "風物詩", title: "雪だるま作り", diff: "初級", file: "yukidaruma_zukuri_sho.png", sample: "yukidaruma_zukuri_sho_sample.jpg", added: "2026-08", v: "1792462430570" },
