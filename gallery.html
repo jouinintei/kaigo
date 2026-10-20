@@ -908,7 +908,6 @@
   </div>
 </header>
 
-<div class="week-added" id="weekAdded" style="display:none"></div>
 <div class="monthbox" id="monthBox" style="display:none">
   <div class="mb-head"><h2 id="monthTitle"></h2><div class="mb-nav"><button type="button" id="mbPrev" title="前へ">‹</button><button type="button" id="mbNext" title="次へ">›</button></div></div>
   <div class="mb-track" id="monthTrack"></div>
@@ -1447,31 +1446,6 @@ document.write('<script src="data.js?t=' + Date.now() + '"><\/script>');
       intro.textContent = introTxt;
     }
     intro.style.display = introTxt ? "" : "none";
-    const wa = document.getElementById("weekAdded");
-    if (!wa.dataset.built) {
-      wa.dataset.built = "1";
-      const jst = new Date(Date.now() + 9 * 3600e3);
-      const dow = (jst.getUTCDay() + 6) % 7;
-      const weekStart = Date.UTC(jst.getUTCFullYear(), jst.getUTCMonth(), jst.getUTCDate() - dow) - 9 * 3600e3;
-      const wc = {};
-      let total = 0;
-      list.forEach(n => {
-        const m = /^up_(\d{13})_/.exec(n.file || "");
-        if (!m || Number(m[1]) < weekStart) return;
-        const k = kindOf(n) === "塗り絵" ? (n.season || "通年") : kindOf(n);
-        wc[k] = (wc[k] || 0) + 1;
-        total++;
-      });
-      if (total > 0) {
-        const order = ["春", "夏", "秋", "冬", "通年", "脳トレ", "カレンダー"];
-        const chips = order.filter(k => wc[k]).map(k =>
-          '<span class="wa-chip c-' + k + '">' + k + ' <span>' + wc[k] + '</span>枚</span>').join("");
-        wa.innerHTML = '<div class="wa-head">🆕 今週は<b>' + total + '</b>枚追加しました</div>' +
-          '<div class="wa-chips">' + chips + '</div>';
-        wa.dataset.has = "1";
-      }
-    }
-    wa.style.display = (wa.dataset.has && page === "list" && !seriesView && !qWord && curPage === 1) ? "" : "none";
     const rankBox = document.getElementById("rankBox");
     rankBox.style.display = (page === "list" && !seriesView && !qWord && curPage === 1 && rankBox.dataset.ready) ? "" : "none";
     const monthBox = document.getElementById("monthBox");
