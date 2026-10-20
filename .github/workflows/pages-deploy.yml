@@ -1,0 +1,40 @@
+name: Cloudflare Pages deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "images/**"
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PROJECT: rekupuri
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /*
+            !/images/
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Prepare site files
+        run: |
+          mkdir -p dist
+          rsync -a --exclude .git --exclude .github --exclude dist --exclude functions \
+            --exclude images --exclude SETUP.txt --exclude node_modules ./ dist/
+          ls dist | head -50
+      - name: Create project (first time only)
+        run: npx --yes wrangler@3 pages project create "$PROJECT" --production-branch main || true
+      - name: Deploy
+        run: npx --yes wrangler@3 pages deploy dist --project-name "$PROJECT" --branch main --commit-dirty=true
