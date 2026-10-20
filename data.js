@@ -107,7 +107,7 @@ window.NURIE_LIST = [
   { season: "秋", genre: "花", title: "バラ", diff: "中級", file: "bara_aki_chu.png", sample: "bara_aki_chu_sample.jpg", v: "1792464793703" },
   { season: "秋", genre: "花", title: "ホトトギス", diff: "中級", file: "hototogisu_chu.png", sample: "hototogisu_chu_sample.jpg", v: "1792465253597" },
   { season: "秋", genre: "花", title: "リンドウ", diff: "中級", file: "rindou_chu.png", sample: "rindou_chu_sample.jpg", v: "1792465253597" },
-  { season: "秋", genre: "花", title: "孔雀草", diff: "中級", file: "kujakusou_chu.png", sample: "kujakusou_chu_sample.jpg", v: "1792465253597" },
+  { season: "秋", genre: "花", title: "孔雀草", diff: "中級", file: "kujakusou_chu.png", sample: "kujakusou_chu_sample.jpg", v: "1792466198668" },
   { season: "秋", genre: "花", title: "桔梗", diff: "中級", file: "kikyou_chu.png", sample: "kikyou_chu_sample.jpg", v: "1792465253597" },
   { season: "秋", genre: "花", title: "秋の七草", diff: "中級", file: "aki_nanakusa_chu.png", sample: "aki_nanakusa_chu_sample.jpg", v: "1792465253597" },
   { season: "秋", genre: "花", title: "菊", diff: "中級", file: "kiku_aki_chu.png", sample: "kiku_aki_chu_sample.jpg", v: "1792465663106" },
