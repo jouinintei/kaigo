@@ -135,6 +135,7 @@
   .dv .strip{display:flex;gap:2px;margin-left:auto}
   .dv .strip i{display:block;width:9px;height:14px;border-radius:2px;background:var(--surface-2);border:1px solid var(--line)}
   .dv .strip i.on{background:var(--accent);border-color:var(--accent)}
+  .dv .strip i.op{background:var(--accent-soft);border-color:var(--accent)}
   .dv .dfl{flex-basis:100%;font-size:12px;color:var(--ink-2)}
   .dv .dfl summary{cursor:pointer;color:var(--accent);font-weight:600;padding:2px 0}
   .dv .dfg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:8px;max-height:340px;overflow:auto}
@@ -147,6 +148,7 @@
   .tag.dev.rep{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
   @media (prefers-color-scheme: dark){.tag.dev.rep{color:#ffb87a}}
   @media (max-width:600px){.dv .strip{margin-left:0;width:100%}}
+  #openWrap .tag.dev[data-id]{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
   .tag.dev.rep[data-id]{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
   .devpop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:16px}
   .devpop.show{display:flex}
@@ -1018,25 +1020,35 @@
       t = t || todayKey();
       if (!keys){ keys = []; for (var j = 29; j >= 0; j--) keys.push(shiftKey(t, -j)); }
       var html = "";
-      var s = devStats[id];
+      var s = devStats[id] || { days: {}, total: 0, nDays: 0, first: "", last: "" };
       var lv = devLevel(id);
-      var badge = lv === "reg" ? '<span class="badge reg">常連</span>' : '<span class="badge rep">リピーター</span>';
-      var lastLbl = s.last === t ? "今日" : s.last === shiftKey(t, -1) ? "昨日" : fmtMD(s.last);
+      var badge = lv === "reg" ? '<span class="badge reg">常連</span>' : lv === "rep" ? '<span class="badge rep">リピーター</span>' : '';
+      var lastLbl = !s.last ? "—" : s.last === t ? "今日" : s.last === shiftKey(t, -1) ? "昨日" : fmtMD(s.last);
+      var os = openStat(id);
       var strip = keys.map(function(k){
-        var on = s.days[k] ? " on" : "";
+        var on = s.days[k] ? " on" : os.days[k] ? " op" : "";
         var td = k === t ? " today" : "";
         return '<i class="' + on + td + '" title="' + fmtMD(k) + (s.days[k] ? " " + s.days[k] + "件" : "") + '"></i>';
       }).join("");
       html += '<div class="dv">' +
         '<span class="id">' + esc(shortId(id)) + '</span>' + badge +
-        '<span class="stat"><b>' + s.nDays + '</b>日利用</span>' +
-        '<span class="stat"><b>' + s.total + '</b>件</span>' +
-        '<span class="stat">初回 ' + fmtMD(s.first) + '　最終 ' + lastLbl + '</span>' +
+        '<span class="stat">保存 <b>' + s.nDays + '</b>日・<b>' + s.total + '</b>件</span>' +
+        (s.first ? '<span class="stat">保存の初回 ' + fmtMD(s.first) + '　最終 ' + lastLbl + '</span>' : '') +
+        '<span class="stat">開いた <b>' + os.nDays + '</b>日・<b>' + os.total + '</b>回' + (os.first ? '（初回 ' + fmtMD(os.first) + '）' : '') + '</span>' +
         entStat(id) +
         '<span class="strip">' + strip + '</span>' +
         devFilesHtml(id) +
       '</div>';
       return html;
+  }
+  function openStat(id){
+    var days = (((lastData || {}).opens || {}).days) || {}, r = { nDays: 0, total: 0, first: "", days: {} };
+    Object.keys(days).sort().forEach(function(k){
+      var n = 0, m = days[k] || {};
+      Object.keys(m).forEach(function(kind){ n += (m[kind] || {})[id] || 0; });
+      if (n){ r.nDays++; r.total += n; r.days[k] = n; if (!r.first) r.first = k; }
+    });
+    return r;
   }
   function devFiles(id){
     var m = {};
@@ -1456,7 +1468,7 @@
         var P = per[id], lv = devLevel(id);
         var files = Object.keys(P.items).sort(function(a,b){ return P.items[b].last - P.items[a].last; });
         var en = entOfDev(id), sm = 0; files.forEach(function(f){ sm += P.items[f].smp; });
-        html += '<details class="odev" data-dev="' + esc(id) + '"' + (openDevs[id] ? ' open' : '') + '><summary class="ohead"><span class="tag dev' + (lv ? " rep" : "") + '">' + esc(shortId(id)) +
+        html += '<details class="odev" data-dev="' + esc(id) + '"' + (openDevs[id] ? ' open' : '') + '><summary class="ohead"><span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(id) + '">' + esc(shortId(id)) +
           (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
           (en ? '<span class="tag entry ' + entClass(en) + '">' + esc(entShort(en)) + '</span>' : '<span class="tag">入口の記録なし</span>') +
           '<span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + '　最終 ' + hhmm(P.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">';
@@ -1621,9 +1633,12 @@
     pop.classList.add("show");
   }
   document.addEventListener("click", function(e){
-    var tg = e.target.closest && e.target.closest(".tag.dev.rep[data-id]");
-    if (!tg || !devStats[tg.getAttribute("data-id")]) return;
-    e.stopPropagation();
+    var tg = e.target.closest && e.target.closest(".tag.dev[data-id]");
+    if (!tg) return;
+    var inOpens = !!tg.closest("#openWrap");
+    if (!inOpens && !devStats[tg.getAttribute("data-id")]) return;
+    if (!inOpens && !tg.classList.contains("rep")) return;
+    e.stopPropagation(); e.preventDefault();
     openDevPop(tg.getAttribute("data-id"));
   }, true);
   document.getElementById("devPop").addEventListener("click", function(e){
