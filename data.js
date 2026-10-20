@@ -147,7 +147,6 @@ window.NURIE_LIST = [
   { season: "秋", genre: "風物詩", title: "白露", diff: "中級", file: "hakuro_chu.png", sample: "hakuro_chu_sample.jpg", v: "1792469231362" },
   { season: "秋", genre: "風物詩", title: "白露2", diff: "中級", file: "hakuro2_chu.png", sample: "hakuro2_chu_sample.jpg", v: "1792469231362" },
   { season: "秋", genre: "風物詩", title: "稲刈り", diff: "上級", file: "inekari_jo.png", sample: "inekari_jo_sample.jpg", v: "1792469231362" },
-  { season: "秋", genre: "風物詩", title: "紅葉", diff: "中級", file: "kouyou_chu.png", sample: "kouyou_chu_sample.jpg", v: "1792469231362" },
   { season: "秋", genre: "風物詩", title: "読書の秋", diff: "中級", file: "dokusho_aki_chu.png", sample: "dokusho_aki_chu_sample.jpg", added: "2026-10", date: "2026-10-17", v: "1792469683448" },
   { season: "秋", genre: "風物詩", title: "赤とんぼとすすき", diff: "中級", file: "akatonbo_susuki_chu.png", sample: "akatonbo_susuki_chu_sample.jpg", v: "1792469683448" },
   { season: "秋", genre: "風景", title: "川辺のすすき", diff: "上級", file: "kawabe_susuki_jo.png", sample: "kawabe_susuki_jo_sample.jpg", v: "1792471649907" },
