@@ -720,7 +720,7 @@
   }
   function insErr(msg){
     return '<p class="err">取得できませんでした: ' + esc(msg) +
-      '<br><span style="color:var(--ink-3)">EdgeOne の環境変数と、Google Cloud 側の権限(サービスアカウントの追加)を確認してください</span></p>';
+      '<br><span style="color:var(--ink-3)">続く場合は Cloudflare の環境変数と、Google Cloud 側の権限(サービスアカウントの追加)を確認してください</span></p>';
   }
   function insFetch(src){
     return fetch("api/insights?src=" + src + "&key=" + encodeURIComponent(key) + "&_=" + (insForce ? Date.now() : Math.floor(Date.now() / 600000)), {cache:"no-store"})
@@ -800,6 +800,7 @@
       '</tbody></table></div></div>';
     if (!daily.length) html += '<p class="sub" style="margin:8px 0 0">まだBing側にデータがありません(登録から数日かかります)</p>';
     if (d.site) html += '<p class="sub" style="margin:8px 0 0">Bing のサイトURL: ' + esc(d.site) + '</p>';
+    if (d.stale) html += '<p class="sub" style="margin:8px 0 0">' + esc(d.stale) + '</p>';
     box.innerHTML = html;
   }
   function loadInsights(){

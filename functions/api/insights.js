@@ -25,7 +25,7 @@ export async function onRequest({ request, env }) {
   try {
     if (src === "ga")  return json(await fetchGA(env));
     if (src === "gsc") return json(await fetchGSC(env));
-    if (src === "bing") return json(await fetchBing(env));
+    if (src === "bing") return json(await bingCached(env));
     if (src === "version") return json({ version: VERSION });
     return json({ error: "src は ga / gsc / bing のどれかを指定してください" }, 400);
   } catch (e) {
@@ -196,6 +196,25 @@ async function fetchGSC(env) {
 }
 
 /* ---------- Bing Webmaster Tools ---------- */
+// Bing は呼び出し元IPごとに回数制限(ThrottleIP)があり、Cloudflare の共有IPだと当たりやすい。
+// 取れた結果を6時間使い回し、制限中は前回の結果(最大7日前)を出す。
+async function bingCached(env) {
+  const cache = (typeof caches !== "undefined") ? caches.default : null;
+  const ck = new Request("https://rekupuri.com/__cache/insights-bing-v1");
+  let old = null;
+  if (cache) { try { const r = await cache.match(ck); if (r) old = await r.json(); } catch (e) {} }
+  if (old && Date.now() - (old.savedAt || 0) < 6 * 3600e3) return old;
+  try {
+    const d = await fetchBing(env);
+    d.savedAt = Date.now();
+    if (cache) { try { await cache.put(ck, new Response(JSON.stringify(d), { headers: { "Content-Type": "application/json", "Cache-Control": "max-age=604800" } })); } catch (e) {} }
+    return d;
+  } catch (e) {
+    if (old) { old.stale = "Bing側の回数制限のため前回の結果を表示中(" + new Date(old.savedAt + 9 * 3600e3).toISOString().slice(5, 16).replace("T", " ") + " 取得)"; return old; }
+    throw e;
+  }
+}
+
 async function fetchBing(env) {
   if (!env.BING_API_KEY) throw new Error("BING_API_KEY がありません");
   const base = "https://ssl.bing.com/webmaster/api.svc/json/";
@@ -222,8 +241,9 @@ async function fetchBing(env) {
   let site = null, lastErr = null, traffic = null;
   for (const c of candidates) {
     try { traffic = await call("GetRankAndTrafficStats", c); site = c; break; }
-    catch (e) { lastErr = e; if (e.status && e.status !== 400) break; }
+    catch (e) { lastErr = e; if (/Throttle/i.test(e.message) || (e.status && e.status !== 400)) break; }
   }
+  if (!site && lastErr && /Throttle/i.test(lastErr.message)) throw new Error("Bing側の回数制限(ThrottleIP)に当たっています。数時間おいて開き直すと出ます(設定の問題ではありません)");
   if (!site) throw new Error((lastErr && lastErr.message) + "(siteUrl 候補: " + candidates.join(", ") + " はいずれも不可。Bing Webmaster Tools のサイト一覧のURLを BING_SITE に登録してください)");
   const get = (method) => call(method, site);
   // "/Date(1694649600000-0000)/" 形式 → YYYY-MM-DD (UTC基準の日付をそのまま使う)
