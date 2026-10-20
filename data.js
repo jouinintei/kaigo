@@ -822,6 +822,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "風物詩", title: "11月", diff: "初級", file: "up_1792495470267_1.png", sample: "up_1792495485381_2.png", added: "2026-10", v: "1792495894892" },
   { season: "冬", genre: "風物詩", title: "12月", diff: "初級", file: "up_1792495632943_3.png", sample: "up_1792495649797_4.png", added: "2026-10", v: "1792495730690" },
   { season: "通年", genre: "食べ物", title: "朝ごはん", diff: "中級", file: "up_1792497963499_1.png", sample: "up_1792497989494_2.png", added: "2026-10", v: "1792497992122" },
-  { season: "秋", genre: "動物", title: "動物のティータイム", diff: "上級", file: "up_1792499703617_3.png", sample: "up_1792499716875_4.png", added: "2026-10", v: "1792499809309" },
   { season: "冬", genre: "動物", title: "冬キャンプ", diff: "上級", file: "up_1792500029915_5.png", sample: "up_1792500042590_6.png", added: "2026-10", v: "1792500045529" },
 ];
