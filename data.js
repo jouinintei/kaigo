@@ -818,4 +818,5 @@ window.NURIE_LIST = [
   { season: "冬", genre: "風物詩", title: "笠地蔵", diff: "中級", file: "kasajizo_chu.png", sample: "kasajizo_chu_sample.jpg", added: "2026-10", v: "1792381585511" },
   { season: "通年", genre: "曼荼羅", title: "曼荼羅", diff: "中級", file: "up_1792484847554_1.png", sample: "up_1792484910094_2.png", added: "2026-10", v: "1792484913808" },
   { season: "通年", genre: "曼荼羅", title: "曼荼羅", diff: "上級", file: "up_1792485808374_3.png", sample: "up_1792485843782_4.png", added: "2026-10", v: "1792485846747" },
+  { season: "秋", genre: "曼荼羅", title: "秋曼荼羅", diff: "上級", file: "up_1792488832290_1.png", added: "2026-10" },
 ];
