@@ -11,7 +11,7 @@
     brain: '<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a2 2 0 0 0-3-1z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/>',
     cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
     check: '<path d="M5 12l5 5 9-10"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
-    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', left: '<path d="M15 6l-6 6 6 6"/>', right: '<path d="M9 6l6 6-6 6"/>', home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', full: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', left: '<path d="M15 6l-6 6 6 6"/>', right: '<path d="M9 6l6 6-6 6"/>', home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'
   };
   const PROD = location.pathname.indexOf("/preview/") < 0;
   const L = k => PROD ? ({ nurie: "/gallery.html", noutore: "/gallery.html?page=noutore", cal: "/gallery.html?page=calendar", fav: "/gallery.html?page=fav" }[k] || "/gallery.html") : "list.html?k=" + k;
@@ -207,18 +207,33 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     const rel = related(n);
     document.querySelector(".md .box").innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
 <div class="scr">
-<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, f)}" data-full="${full(n, f)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"></div>
+<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, f)}" data-full="${full(n, f)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"><button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button></div>
 
 ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2"><button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button></div>
 </div>`;
     upgradeMd();
   }
 
+  /* ---------- 全画面表示（スマホで横長を大きく） ---------- */
+  function openFs() {
+    const im = document.querySelector(".md .view img"); if (!im) return;
+    const src = im.dataset.full && im.dataset.up ? im.dataset.full : im.src;
+    const o = document.createElement("div"); o.className = "fsv"; o.setAttribute("role", "dialog"); o.setAttribute("aria-label", "全画面表示");
+    o.innerHTML = `<img alt="" src="${src}"><button class="fsx" aria-label="閉じる">${ico("x", 22)}</button><span class="fsh">画面を押すと閉じます</span>`;
+    const fit = () => { const i = o.querySelector("img"), w = i.naturalWidth || 1414, h = i.naturalHeight || 1000, vw = innerWidth, vh = innerHeight, rot = w > h && vh > vw;
+      i.style.transform = rot ? "translate(-50%,-50%) rotate(90deg)" : "translate(-50%,-50%)";
+      const s = rot ? Math.min(vh / w, vw / h) : Math.min(vw / w, vh / h); i.style.width = w * s * .96 + "px"; i.style.height = h * s * .96 + "px"; };
+    o.querySelector("img").onload = fit; addEventListener("resize", fit);
+    const close = () => { removeEventListener("resize", fit); o.remove(); };
+    o.addEventListener("click", close); document.body.appendChild(o); fit();
+    if (!im.dataset.up && im.dataset.full) { const f = new Image(); f.onload = () => { const i = o.querySelector("img"); if (i) { i.src = im.dataset.full; } }; f.src = im.dataset.full; }
+  }
   /* ---------- events ---------- */
   document.addEventListener("click", e => {
     if (e.target.classList && e.target.classList.contains("md")) { closeMd(); return; }
     const t = e.target.closest("button,[data-chk]"); if (!t) return;
     if (t.dataset.close !== undefined) return closeMd();
+    if (t.dataset.fs !== undefined) { openFs(); return; }
     if (t.dataset.fav) {
       const on = toggleFav(t.dataset.fav); logFav(t.dataset.fav, on);
       document.querySelectorAll(`[data-fav="${CSS.escape(t.dataset.fav)}"]`).forEach(b => b.setAttribute("aria-pressed", on));
@@ -234,5 +249,5 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
   document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
   document.addEventListener("dragstart", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
 
-  window.RK = { sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
+  window.RK = { isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
 })();

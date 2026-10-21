@@ -21,7 +21,7 @@
 <script src="/frame.js?v=10"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792619330">
+<link rel="stylesheet" href="/rk.css?v=1792619945">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -57,7 +57,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792619330"></script>
+<script src="/rk.js?v=1792619945"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -65,12 +65,21 @@
   const K=qs.get("k")||({noutore:"noutore",calendar:"cal",fav:"fav"})[qs.get("page")]||"nurie";
   window.RK_SRC=window.RK_PAGE=({nurie:"list",noutore:"noutore",cal:"calendar",fav:"fav"})[K];
   const KIND={nurie:"塗り絵",noutore:"脳トレ",cal:"カレンダー"}[K];
+  (()=>{const cnt=k=>RK.LIST.filter(n=>RK.kindOf(n)===k).length;
+    const M={nurie:[`高齢者向け 無料の塗り絵一覧（${cnt("塗り絵")}枚）｜季節・ジャンル・難しさで探せる｜介護のレクプリ`,`高齢者向けの無料塗り絵${cnt("塗り絵")}枚。季節・ジャンル・難しさで絞り込んで、A4サイズでそのまま印刷できます。色見本つき。`,"gallery.html"],
+      noutore:[`高齢者向け 無料の脳トレプリント一覧（${cnt("脳トレ")}枚）｜答えつき・A4印刷｜介護のレクプリ`,`漢字・計算・言葉遊び・クイズなど、高齢者向けの無料脳トレプリント${cnt("脳トレ")}枚。すべて答えつきで、A4でそのまま印刷できます。`,"gallery.html?page=noutore"],
+      cal:[`塗って飾れる 無料の月間カレンダー（${cnt("カレンダー")}種類）｜高齢者向け｜介護のレクプリ`,`塗り絵になった月間カレンダーを無料で配布しています。毎月の行事に合わせた絵柄を、A4でそのまま印刷できます。`,"gallery.html?page=calendar"],
+      fav:["お気に入り｜介護のレクプリ","お気に入りに入れた素材の一覧です。","gallery.html?page=fav"]}[K];
+    const set=(sel,attr,val)=>{let e=document.head.querySelector(sel);if(!e){e=document.createElement(sel.startsWith("link")?"link":"meta");const m=sel.match(/\[(\w+)="?([^"\]]+)"?\]/);e.setAttribute(m[1],m[2]);document.head.appendChild(e);}e.setAttribute(attr,val);};
+    document.title=M[0];set('meta[name="description"]',"content",M[1]);set('meta[property="og:title"]',"content",M[0]);set('meta[property="og:description"]',"content",M[1]);
+    set('link[rel="canonical"]',"href","https://rekupuri.com/"+M[2]);set('meta[property="og:url"]',"content","https://rekupuri.com/"+M[2]);
+    if(K==="fav")set('meta[name="robots"]',"content","noindex");})();
   document.getElementById("hd").innerHTML=RK.header(K);
   document.getElementById("tb").innerHTML=RK.tabs(K);
   document.getElementById("ft").innerHTML=RK.footer(K);
   RK.updFavCount();
   const main=document.getElementById("main");
-  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:"new",page:1,month:null,sel:new Set()};
+  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:"new",page:1,month:null,sel:new Set(),unused:false};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
   let pop=[],seed=Math.random()*1e9|0;
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
@@ -93,8 +102,9 @@
     if(K==="nurie"&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
     if(st.diff)a=a.filter(n=>n.diff===st.diff);
+    if(st.unused)a=a.filter(n=>!RK.isUsed(n.file));
     if(st.q){const ws=st.q.trim().split(/[\s,、]+/).filter(Boolean);a=a.filter(n=>{const b=[n.title,n.genre,n.season,n.diff].join(" ");const hay=norm(b)+"|"+norm(toKana(b))+"|"+norm(withYomi(b))+"|"+norm(AUTO_T[n.file]||"");return ws.every(w=>synOf(w).some(v=>hay.includes(norm(v))||hay.includes(norm(toKana(v)))));});}
-    window.RK_CTX=(()=>{const c={};if(K==="nurie"&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);if(K!=="cal")c.so=st.sort;return c;})();window.RK_SORT=K!=="cal"?st.sort:"";
+    window.RK_CTX=(()=>{const c={};if(K==="nurie"&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);if(st.unused)c.us="未使用だけ";if(K!=="cal")c.so=st.sort;return c;})();window.RK_SORT=K!=="cal"?st.sort:"";
     if(st.sort==="pop"){const r=new Map(pop.map((f,i)=>[f,i]));a=a.map((n,i)=>[r.has(n.file)?r.get(n.file):1e6+i,n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     else if(st.sort==="rand"){a=a.map(n=>[rk(n.file),n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     return a;
@@ -106,10 +116,10 @@
   }
   const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K!=="fav"&&K!=="cal"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
   function filters(){
-    if(K==="nurie")return `<div class="fl">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}<span class="sp"></span>
+    if(K==="nurie")return `<div class="fl"><div class="chr">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}</div><span class="sp"></span><div class="slr">
 <label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option value="${g}"${st.genre===g?" selected":""}>ジャンル：${g}</option>`).join("")}</select></label>
-<label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option value="${g}"${st.diff===g?" selected":""}>難しさ：${g}</option>`).join("")}</select></label></div>`;
-    if(K==="noutore")return `<div class="fl"><button class="chip" data-genre="" aria-pressed="${!st.genre}">すべて</button>${genres().map(g=>`<button class="chip" data-genre="${g}" aria-pressed="${st.genre===g}">${g}</button>`).join("")}</div>`;
+<label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option value="${g}"${st.diff===g?" selected":""}>難しさ：${g}</option>`).join("")}</select></label><button class="uchk" data-unused aria-pressed="${st.unused}"><span class="bx">${st.unused?ico("check",15):""}</span>まだ使っていないものだけ</button></div></div>`;
+    if(K==="noutore")return `<div class="fl"><div class="chr"><button class="chip" data-genre="" aria-pressed="${!st.genre}">すべて</button>${genres().map(g=>`<button class="chip" data-genre="${g}" aria-pressed="${st.genre===g}">${g}</button>`).join("")}</div><span class="sp"></span><div class="slr"><button class="uchk" data-unused aria-pressed="${st.unused}"><span class="bx">${st.unused?ico("check",15):""}</span>まだ使っていないものだけ</button></div></div>`;
     return "";
   }
   function countLine(tot){
@@ -118,6 +128,7 @@
     if(st.genre)cond.push(["genre",st.genre]);
     if(st.diff)cond.push(["diff",st.diff]);
     if(st.q)cond.push(["q","「"+st.q+"」"]);
+    if(st.unused)cond.push(["unused","まだ使っていないもの"]);
     const chips=cond.map(([k,t])=>`<button class="cc" data-clr="${k}" aria-label="${esc(t)}の条件を外す">${esc(t)}${ico("x",14)}</button>`).join("");
     return `<div class="n"><div class="cl">${cond.length?chips+`<span class="of">の${KIND}</span>`:`<span class="of">すべての${KIND}</span>`}</div><div class="big"><b>${tot}</b><span>枚</span>${cond.length?`<small>（全${all}枚中）</small>`:""}${cond.length>0?`<button class="clr" data-reset>すべて外す</button>`:""}</div></div>`;
   }
@@ -149,9 +160,10 @@
     if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
     else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;render();}
     else if(t.dataset.pg){st.page=+t.dataset.pg;render();const el=main.querySelector(".bar")||main.querySelector(".fl")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
-    else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1});render();}
+    else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1,unused:false});try{localStorage.setItem("rk_unused","0");}catch(e){}render();}
     else if(t.dataset.sort){if(t.dataset.sort==="rand"&&st.sort==="rand")seed=Math.random()*1e9|0;st.sort=t.dataset.sort;st.page=1;render();}
-    else if(t.dataset.clr){const k=t.dataset.clr;if(k==="season")st.season="すべて";else st[k]="";st.page=1;render();}
+    else if(t.dataset.unused!==undefined){st.unused=!st.unused;try{localStorage.setItem("rk_unused",st.unused?"1":"0");}catch(e){}st.page=1;render();}
+    else if(t.dataset.clr){const k=t.dataset.clr;if(k==="season")st.season="すべて";else if(k==="unused"){st.unused=false;try{localStorage.setItem("rk_unused","0");}catch(e){}}else st[k]="";st.page=1;render();}
     else if(t.dataset.month){st.month=t.dataset.month;render();}
     else if(t.dataset.chk){st.sel.has(t.dataset.chk)?st.sel.delete(t.dataset.chk):st.sel.add(t.dataset.chk);render();}
     else if(t.dataset.all!==undefined){const f=favs();st.sel=st.sel.size===f.length?new Set():new Set(f);render();}
