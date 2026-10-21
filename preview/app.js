@@ -1,6 +1,6 @@
 /* 介護のレクプリ 新デザイン（確認用） 共通スクリプト */
 (function () {
-  const IMG = "https://img.rekupuri.com/images/", TH = "https://img.rekupuri.com/thumbs/";
+  const IMG = "https://img.rekupuri.com/images/", TH = "https://img.rekupuri.com/thumbs/", THS = "https://img.rekupuri.com/thumbs_s/";
   const P = {
     heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
     star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
@@ -23,8 +23,10 @@
   const ver = n => n.v ? "?v=" + encodeURIComponent(n.v) : "";
   const full = (n, f) => IMG + (f || n.file) + ver(n);
   const thumb = (n, f) => TH + (f || n.file) + ".jpg" + ver(n);
+  const sthumb = (n, f) => THS + (f || n.file) + ".jpg" + ver(n);
   addEventListener("error", e => {
     const t = e.target; if (!t || t.tagName !== "IMG") return;
+    if (t.src.indexOf(THS) === 0) { t.src = TH + t.src.slice(THS.length); return; }
     if (t.src.indexOf(TH) === 0) { t.src = IMG + t.src.slice(TH.length).replace(/\.jpg(\?.*)?$/, "$1"); }
   }, true);
   const seen = new Set();
@@ -84,7 +86,7 @@ ${cur===""?`<nav class="gnav" aria-label="メインメニュー">${nav.map(([t, 
     const lab1 = k === "脳トレ" ? "問題を保存" : "保存する";
     const used = isUsed(f);
     return `<article class="card wk${k !== "塗り絵" ? " v" : ""}" data-f="${esc(f)}">
-<div style="position:relative"><button class="ph" data-open="${esc(f)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" src="${thumb(n)}" onload="this.classList.remove('sk')"></button>
+<div style="position:relative"><button class="ph" data-open="${esc(f)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" src="${sthumb(n)}" onload="this.classList.remove('sk')"></button>
 ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.on ? "true" : "false"}" data-chk="${esc(f)}" aria-label="選ぶ">${opt.on ? ico("check", 20) : ""}</span>` : (isNew(n) ? '<span class="new">NEW</span>' : "")}
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
@@ -205,7 +207,7 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
 <div class="scr">
 <div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, f)}" data-full="${full(n, f)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"></div>
 
-${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${thumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2"><button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button></div>
+${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2"><button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button></div>
 </div>`;
     upgradeMd();
   }
@@ -230,5 +232,5 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
   document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
   document.addEventListener("dragstart", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
 
-  window.RK = { LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
+  window.RK = { sthumb, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
 })();

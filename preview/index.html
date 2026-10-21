@@ -6,8 +6,8 @@
 <meta name="robots" content="noindex,nofollow">
 <title>介護のレクプリ｜高齢者向けの無料塗り絵・脳トレ・カレンダー（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792564979">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1792565245">
 <style>
 .hero{padding:52px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -155,7 +155,7 @@
 </main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792564979"></script>
+<script src="app.js?v=1792565245"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -176,7 +176,7 @@
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
   const mix=[];for(let i=0;i<4;i++){if(se[i])mix.push(se[i]);if(al[i])mix.push(al[i]);}
-  const rec=n=>`<button class="rec" data-open="${esc(n.file)}" data-src="top"><div class="card c"><img loading="lazy" alt="" src="${thumb(n)}"><span class="lbl ${n.season==="通年"?"always":"season"}">${n.season==="通年"?"通年":"季節"}</span></div><b>${esc(n.title)}</b><span class="m">${esc([n.genre,n.diff].filter(Boolean).join(" ・ "))}</span></button>`;
+  const rec=n=>`<button class="rec" data-open="${esc(n.file)}" data-src="top"><div class="card c"><img loading="lazy" alt="" src="${RK.sthumb(n)}"><span class="lbl ${n.season==="通年"?"always":"season"}">${n.season==="通年"?"通年":"季節"}</span></div><b>${esc(n.title)}</b><span class="m">${esc([n.genre,n.diff].filter(Boolean).join(" ・ "))}</span></button>`;
 
   (function(){
     const V=new URLSearchParams(location.search).get("ab")||"a";

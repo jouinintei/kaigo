@@ -6,8 +6,8 @@
 <meta name="robots" content="noindex,nofollow">
 <title>素材をえらぶ｜介護のレクプリ（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792564979">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1792565245">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -43,7 +43,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792564979"></script>
+<script src="app.js?v=1792565245"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -117,7 +117,7 @@
     const a=items(),groups={};a.forEach(n=>{const k=n.year+"-"+String(n.month).padStart(2,"0");(groups[k]=groups[k]||[]).push(n);});
     const keys=Object.keys(groups).sort();const now=new Date().toISOString().slice(0,7);
     if(!st.month)st.month=groups[now]?now:keys[keys.length-1];
-    main.innerHTML=head()+`<div class="months" style="margin:20px 0 32px">${keys.map(k=>{const g=groups[k],m=+k.slice(5),n=g.find(x=>!/貼り付け|blank/.test(x.title+x.file))||g[0];return `<button class="mo" data-month="${k}" aria-current="${st.month===k}"><b>${m}<span style="font-size:14px">月</span></b>${k===now?'<span class="lbl season">今月</span>':""}<img loading="lazy" alt="" src="${thumb(n)}"><span style="font-size:12px;color:var(--mute)">${k.slice(0,4)}年・${g.length}種類</span></button>`;}).join("")}</div>
+    main.innerHTML=head()+`<div class="months" style="margin:20px 0 32px">${keys.map(k=>{const g=groups[k],m=+k.slice(5),n=g.find(x=>!/貼り付け|blank/.test(x.title+x.file))||g[0];return `<button class="mo" data-month="${k}" aria-current="${st.month===k}"><b>${m}<span style="font-size:14px">月</span></b>${k===now?'<span class="lbl season">今月</span>':""}<img loading="lazy" alt="" src="${RK.sthumb(n)}"><span style="font-size:12px;color:var(--mute)">${k.slice(0,4)}年・${g.length}種類</span></button>`;}).join("")}</div>
 <div class="h2"><h2>${+st.month.slice(0,4)}年${+st.month.slice(5)}月のカレンダー</h2></div><div class="grid">${groups[st.month].map(n=>card(n)).join("")}</div>`;
   }
   function renderFav(){
