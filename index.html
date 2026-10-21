@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792575930">
+<link rel="stylesheet" href="/rk.css?v=1792576005">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -192,7 +192,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792575930"></script>
+<script src="/rk.js?v=1792576005"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -227,6 +227,7 @@
   pics.addEventListener("pointerup",end);pics.addEventListener("pointercancel",()=>{if(sx!==null){sx=null;dragging=false;pics.classList.remove("drag");go(cur);play();}});
   pics.addEventListener("click",e=>{if(eat){e.preventDefault();e.stopPropagation();}},true);
   pics.addEventListener("dragstart",e=>e.preventDefault());
+  let wx=0,wl=0;pics.addEventListener("wheel",e=>{if(N<2||Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();const t=Date.now();if(t-wl<600){return;}wx+=e.deltaX;if(Math.abs(wx)>40){go(cur+(wx>0?1:-1));play();wx=0;wl=t;}},{passive:false});
   document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);

@@ -194,6 +194,7 @@
   pics.addEventListener("pointerup",end);pics.addEventListener("pointercancel",()=>{if(sx!==null){sx=null;dragging=false;pics.classList.remove("drag");go(cur);play();}});
   pics.addEventListener("click",e=>{if(eat){e.preventDefault();e.stopPropagation();}},true);
   pics.addEventListener("dragstart",e=>e.preventDefault());
+  let wx=0,wl=0;pics.addEventListener("wheel",e=>{if(N<2||Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();const t=Date.now();if(t-wl<600){return;}wx+=e.deltaX;if(Math.abs(wx)>40){go(cur+(wx>0?1:-1));play();wx=0;wl=t;}},{passive:false});
   document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
