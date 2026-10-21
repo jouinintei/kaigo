@@ -13,6 +13,10 @@
     check: '<path d="M5 12l5 5 9-10"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
     arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'
   };
+  const PROD = location.pathname.indexOf("/preview/") < 0;
+  const L = k => PROD ? ({ nurie: "/gallery.html", noutore: "/gallery.html?page=noutore", cal: "/gallery.html?page=calendar", fav: "/gallery.html?page=fav" }[k] || "/gallery.html") : "list.html?k=" + k;
+  const ROOT = PROD ? "/" : "../";
+  window.RK_L = L;
   const ico = (n, s) => `<svg class="ico" ${s ? `style="width:${s}px;height:${s}px"` : ""} viewBox="0 0 24 24" aria-hidden="true">${P[n]}</svg>`;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const kindOf = n => n.kind || "塗り絵";
@@ -46,23 +50,23 @@
 
   /* ---------- layout ---------- */
   function header(cur) {
-    const nav = [["塗り絵", "list.html?k=nurie", "nurie"], ["脳トレ", "list.html?k=noutore", "noutore"], ["カレンダー", "list.html?k=cal", "cal"]];
-    return `<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>
-<header class="hd"><div class="wrap"><a class="logo" href="index.html"><span class="a">介護の</span><span class="b">レクプリ</span></a>
+    const nav = [["塗り絵", L("nurie"), "nurie"], ["脳トレ", L("noutore"), "noutore"], ["カレンダー", L("cal"), "cal"]];
+    return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
+<header class="hd"><div class="wrap"><a class="logo" href="${PROD ? "/" : "index.html"}"><span class="a">介護の</span><span class="b">レクプリ</span></a>
 ${cur===""?`<nav class="gnav" aria-label="メインメニュー">${nav.map(([t, h, k]) => `<a href="${h}"${cur === k ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</nav>`:""}
-${cur===""?`<a class="favbtn" href="list.html?k=fav">${ico("heart", 18)}お気に入り<span class="n" data-favn></span></a>`:`<a class="favbtn" href="../contact.html">${ico("mail", 18)}お問い合わせ・要望</a>`}</div></header>`;
+${cur===""?`<a class="favbtn" href="${L("fav")}">${ico("heart", 18)}お気に入り<span class="n" data-favn></span></a>`:`<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a>`}</div></header>`;
   }
   function tabs(cur) {
     const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["お気に入り", "fav", "star", "FAVORITE"]];
     const cnt = k => k === "fav" ? favs().length : LIST.filter(n => kindOf(n) === { nurie: "塗り絵", noutore: "脳トレ", cal: "カレンダー" }[k]).length;
     const v = new URLSearchParams(location.search).get("tab") || "bc";
-    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="list.html?k=${k}${v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc">${cnt(k)}</span></a>`).join("")}</div></nav>`;
+    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc">${cnt(k)}</span></a>`).join("")}</div></nav>`;
   }
   function footer(cur) {
     const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["お気に入り", "fav", "heart"]];
-    return `<section class="req"><div class="wrap"><div><h3>「こんな塗り絵がほしい」をお聞かせください</h3><p>ご要望・不具合のご連絡はこちらから。いただいた声をもとに素材を増やしています。</p></div><a class="btn p" href="../contact.html" style="height:52px">ご要望を送る</a></div></section>
-<footer class="ft"><div class="wrap"><span>© 介護のレクプリ</span><nav aria-label="サイトについて"><a href="../terms.html">素材のご利用について</a><a href="../privacy.html">プライバシーポリシー</a><a href="../contact.html">お問い合わせ</a></nav></div></footer>
-<nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="list.html?k=${k}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}</a>`).join("")}</nav>
+    return `<section class="req"><div class="wrap"><div><h3>「こんな${cur === "noutore" ? "脳トレ" : cur === "cal" ? "カレンダー" : cur === "fav" ? "素材" : "塗り絵"}がほしい」をお聞かせください</h3><p>ご要望・不具合のご連絡はこちらから。いただいた声をもとに素材を増やしています。</p></div><a class="btn p" href="${ROOT}contact.html" style="height:52px">ご要望を送る</a></div></section>
+<footer class="ft"><div class="wrap"><span>© 介護のレクプリ</span><nav aria-label="サイトについて"><a href="${ROOT}terms.html">素材のご利用について</a><a href="${ROOT}privacy.html">プライバシーポリシー</a><a href="${ROOT}contact.html">お問い合わせ</a></nav></div></footer>
+<nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="${L(k)}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}</a>`).join("")}</nav>
 <div class="toast" role="status" aria-live="polite"><span class="ok">${ico("check", 18)}</span><span class="tx"></span></div>
 <div class="md" role="dialog" aria-modal="true" aria-labelledby="mdT"><div class="box"></div></div>`;
   }
@@ -97,17 +101,76 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     el.querySelector(".tx").innerHTML = `<b>${esc(t)}</b>${s ? `<small>${esc(s)}</small>` : ""}`;
     el.classList.add("on"); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("on"), 3200);
   }
-  async function save(file) {
-    const n = LIST.find(x => x.file === file || x.answer === file || x.sample === file);
-    const name = (n ? n.title : "rekupuri") + (n && n.answer === file ? "（答え）" : n && n.sample === file ? "（色見本）" : "") + file.slice(file.lastIndexOf("."));
+  /* ---------- logging (same as old gallery) ---------- */
+  function deviceId() {
+    let id = ""; try { id = localStorage.getItem("rekupuri_did") || ""; } catch (e) {}
+    if (!id) { id = Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 4); try { localStorage.setItem("rekupuri_did", id); } catch (e) {} }
+    return id;
+  }
+  function entOnce(flag) {
+    try { if (!sessionStorage.getItem(flag)) { const e = JSON.parse(sessionStorage.getItem("rk_ent") || "null"); if (e) sessionStorage.setItem(flag, "1"); return e; } } catch (e) {}
+    return null;
+  }
+  const API = ROOT + "api/log-save";
+  const post = body => { if (!PROD) return; try { fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), keepalive: true }).catch(() => {}); } catch (e) {} };
+  const sq = []; let st = null;
+  function logSave(file, src, ctx) {
+    sq.push([file, src || "unknown", ctx || null]); clearTimeout(st);
+    st = setTimeout(() => { const q = sq.splice(0); post({ files: q.map(x => x[0]), srcs: q.map(x => x[1]), ctxs: q.map(x => x[2]), ent: entOnce("rk_ent_sent"), did: deviceId() }); }, 2000);
+  }
+  const oq = []; let ot = null;
+  function logOpen(file, kind) {
+    if (!file) return; oq.push([file, kind]); clearTimeout(ot);
+    ot = setTimeout(() => { const q = oq.splice(0); post({ opens: q, ent: entOnce("rk_ent_osent"), did: deviceId() }); }, 3000);
+  }
+  const fq = []; let ft = null;
+  function logFav(file, on) {
+    fq.push([file, on ? 1 : 0, window.RK_PAGE || "list"]); clearTimeout(ft);
+    ft = setTimeout(() => { const q = fq.splice(0); post({ favs: q, did: deviceId() }); }, 1500);
+  }
+  window.RK_SRC = "list"; window.RK_CTX = null;
+
+  /* ---------- save ---------- */
+  function dlName(n, file) {
+    const d = kindOf(n) === "脳トレ" ? "" : (n.diff ? "(" + n.diff + ")" : "");
+    if (file === n.answer) return n.title + " 答え" + d + file.slice(file.lastIndexOf("."));
+    if (file === n.sample) return n.title + d + "（見本）.jpg";
+    return n.title + d + file.slice(file.lastIndexOf("."));
+  }
+  async function stampSample(blob) {
     try {
-      const r = await fetch(full(n || {}, file), { mode: "cors" }); if (!r.ok) throw 0;
-      const b = await r.blob(), u = URL.createObjectURL(b), a = document.createElement("a");
-      a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
-    } catch (e) { window.open(full(n || {}, file), "_blank"); }
-    if (n) { markUsed(n.file); }
-    toast(`「${n ? n.title : ""}」を保存しました`, "A4サイズで印刷してお使いください");
-    document.querySelectorAll(`article[data-f="${CSS.escape(n ? n.file : file)}"] [data-save="${CSS.escape(n ? n.file : file)}"]`).forEach(b => { b.className = "btn done"; b.innerHTML = ico("check", 17) + "保存済み"; });
+      const bmp = await createImageBitmap(blob), w = bmp.width, h = bmp.height, cv = document.createElement("canvas");
+      cv.width = w; cv.height = h; const c = cv.getContext("2d"); c.drawImage(bmp, 0, 0);
+      const text = "rekupuri.com", fs = Math.round(Math.min(w, h) * 0.0245); c.font = "bold " + fs + "px Arial, Helvetica, sans-serif";
+      const tw = c.measureText(text).width, right = w - Math.min(w, h) * 0.043, base = h - Math.min(w, h) * 0.022, pad = fs * 0.35;
+      c.fillStyle = "rgba(255,255,255,.88)"; c.fillRect(right - tw - pad, base - fs * 0.95, tw + pad * 2, fs * 1.25);
+      c.fillStyle = "#666"; c.textAlign = "right"; c.textBaseline = "alphabetic"; c.fillText(text, right, base);
+      return await new Promise(res => cv.toBlob(b => res(b || blob), "image/jpeg", 0.92));
+    } catch (e) { return blob; }
+  }
+  async function getBlob(n, file) {
+    let r = null;
+    try { r = await fetch(full(n, file), { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
+    if ((!r || !r.ok) && PROD) { try { r = await fetch("/api/dl?f=" + encodeURIComponent(file), { cache: "no-store" }); } catch (e) { r = null; } }
+    if (!r || !r.ok) throw new Error("load");
+    const b = await r.blob();
+    if (file === n.file && kindOf(n) === "塗り絵" && window.rekupuriFrame) return await window.rekupuriFrame(b);
+    if (file === n.sample) return await stampSample(b);
+    return b;
+  }
+  const busy = new Set();
+  async function save(file, src, ctx) {
+    const n = LIST.find(x => x.file === file || x.answer === file || x.sample === file); if (!n || busy.has(file)) return;
+    busy.add(file);
+    const name = dlName(n, file);
+    const go = (url, direct) => { const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); };
+    try { const b = await getBlob(n, file), u = URL.createObjectURL(b); go(u); setTimeout(() => URL.revokeObjectURL(u), 30000); }
+    catch (e) { if (PROD) go("/api/dl?f=" + encodeURIComponent(file) + "&n=" + encodeURIComponent(name), true); else window.open(full(n, file), "_blank"); }
+    busy.delete(file);
+    if (file === n.file) { markUsed(n.file); logSave(n.file, src || window.RK_SRC, ctx === undefined ? window.RK_CTX : ctx); }
+    else logSave(file, src || window.RK_SRC, null);
+    toast(`「${n.title}」を保存しました`, "A4サイズで印刷してお使いください");
+    if (file === n.file) document.querySelectorAll(`article[data-f="${CSS.escape(n.file)}"] [data-save="${CSS.escape(n.file)}"]`).forEach(b => { b.className = "btn done"; b.innerHTML = ico("check", 17) + "保存済み"; });
   }
 
   /* ---------- modal ---------- */
@@ -118,9 +181,11 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     const sc = x => (head(x.title) === head(n.title) ? 8 : 0) + (x.genre && x.genre === n.genre ? 4 : 0) + (x.season === n.season ? 2 : 0) + (x.diff === n.diff ? 1 : 0) + Math.random();
     return pool.map(x => [sc(x), x]).sort((a, b) => b[0] - a[0]).slice(0, 6).map(a => a[1]);
   }
-  function openMd(file, tab) {
+  let mdSrc = "list", mdCtx = null;
+  function openMd(file, tab, src) {
     const n = LIST.find(x => x.file === file); if (!n) return;
-    mdN = n; mdTab = tab || "l"; zoom = 100; renderMd();
+    mdN = n; mdTab = tab || "l"; zoom = 100; mdSrc = src || window.RK_SRC; mdCtx = src ? null : window.RK_CTX; renderMd();
+    if (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ") logOpen(n.file, "lb"); if (mdTab === "s") logOpen(n.sample, "smp");
     const md = document.querySelector(".md"); if (!md.classList.contains("on")) { try { history.pushState({ md: 1 }, ""); } catch (e) {} } md.classList.add("on"); document.body.style.overflow = "hidden";
     const bx = md.querySelector(".box"); bx.setAttribute("tabindex", "-1"); bx.focus({ preventScroll: true });
   }
@@ -136,7 +201,7 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
 <div class="scr">
 <div class="body"><div class="view"><img alt="${esc(n.title)}" src="${full(n, f)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"></div>
 
-${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}"><img loading="lazy" alt="" src="${thumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2"><button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button></div>
+${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${thumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2"><button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button></div>
 </div>`;
   }
 
@@ -146,15 +211,15 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     const t = e.target.closest("button,[data-chk]"); if (!t) return;
     if (t.dataset.close !== undefined) return closeMd();
     if (t.dataset.fav) {
-      const on = toggleFav(t.dataset.fav);
+      const on = toggleFav(t.dataset.fav); logFav(t.dataset.fav, on);
       document.querySelectorAll(`[data-fav="${CSS.escape(t.dataset.fav)}"]`).forEach(b => b.setAttribute("aria-pressed", on));
       if (t.closest(".md")) renderMd();
       toast(on ? "お気に入りに追加しました" : "お気に入りから外しました", on ? "お気に入りページからまとめて保存できます" : "");
       document.dispatchEvent(new CustomEvent("favchange")); return;
     }
-    if (t.dataset.save) { save(t.dataset.save); return; }
-    if (t.dataset.open) { openMd(t.dataset.open, t.dataset.tab); return; }
-    if (t.dataset.mtab) { mdTab = t.dataset.mtab; renderMd(); return; }
+    if (t.dataset.save) { const inMd = !!t.closest(".md"); save(t.dataset.save, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : undefined); return; }
+    if (t.dataset.open) { openMd(t.dataset.open, t.dataset.tab, t.dataset.src || (t.closest(".md") ? "nita" : null)); return; }
+    if (t.dataset.mtab) { mdTab = t.dataset.mtab; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp"); return; }
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeMd(); });
 

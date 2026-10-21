@@ -7,7 +7,7 @@
 <title>素材をえらぶ｜介護のレクプリ（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792554362">
+<link rel="stylesheet" href="style.css?v=1792554611">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -34,7 +34,7 @@
 .mo b{font-family:var(--mincho);font-size:22px}.mo img{display:block;width:100%;aspect-ratio:.707;object-fit:contain;background:#fff;margin-top:4px}
 .mo .lbl{float:right;margin-top:6px}
 @media (max-width:900px){.months{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (max-width:640px){.ph1{padding-top:18px}.ph1 h1{font-size:26px}.months{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
+@media (max-width:640px){.bar{flex-direction:column;align-items:stretch}.bar .big small,.bar .clr{white-space:nowrap}.seg{align-self:flex-start}.ph1{padding-top:18px}.ph1 h1{font-size:26px}.months{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
 </style>
 </head>
 <body>
@@ -43,34 +43,41 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792554362"></script>
+<script src="app.js?v=1792554611"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
   const qs=new URLSearchParams(location.search);
-  const K=qs.get("k")||"nurie";
+  const K=qs.get("k")||({noutore:"noutore",calendar:"cal",fav:"fav"})[qs.get("page")]||"nurie";
+  window.RK_SRC=window.RK_PAGE=({nurie:"list",noutore:"noutore",cal:"calendar",fav:"fav"})[K];
   const KIND={nurie:"塗り絵",noutore:"脳トレ",cal:"カレンダー"}[K];
   document.getElementById("hd").innerHTML=RK.header(K);
   document.getElementById("tb").innerHTML=RK.tabs(K);
   document.getElementById("ft").innerHTML=RK.footer(K);
   RK.updFavCount();
   const main=document.getElementById("main");
-  const st={season:qs.get("s")||"すべて",genre:"",diff:"",q:qs.get("q")||"",sort:"new",page:1,month:null,sel:new Set()};
+  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:"new",page:1,month:null,sel:new Set()};
   let pop=[],seed=Math.random()*1e9|0;
-  fetch("../api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
+  fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
   const PER=K==="cal"?12:12;
   const SEASONS=["すべて","春","夏","秋","冬","通年"];
   const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
   const items=()=>LIST.filter(n=>kindOf(n)===KIND);
   const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
+  let YOMI={},YK=[],AUTO_T={};
+  fetch("https://img.rekupuri.com/search/yomi.json",{mode:"cors"}).then(r=>r.ok?r.json():null).then(j=>{if(!j)return;AUTO_T=j.t||{};YOMI=j.w||{};YK=Object.keys(YOMI).sort((a,b)=>b.length-a.length);if(st.q)render();}).catch(()=>{});
+  const withYomi=t=>{let a="";YK.forEach(k=>{if(t.indexOf(k)>=0)a+=YOMI[k];});return t+a;};
+  const toKana=t=>{let s=String(t);YK.forEach(k=>{s=s.split(k).join(YOMI[k]);});return s;};
+  const norm=s=>String(s).normalize("NFKC").toLowerCase().replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).replace(/\s+/g,"");
   const hira=s=>String(s).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
   function filtered(){
     let a=items();
     if(K==="nurie"&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
     if(st.diff)a=a.filter(n=>n.diff===st.diff);
-    if(st.q){const w=hira(st.q.trim());a=a.filter(n=>hira([n.title,n.genre,n.season].join(" ")).includes(w));}
+    if(st.q){const ws=st.q.trim().split(/[\s,、]+/).filter(Boolean);a=a.filter(n=>{const b=[n.title,n.genre,n.season,n.diff].join(" ");const hay=norm(b)+"|"+norm(toKana(b))+"|"+norm(withYomi(b))+"|"+norm(AUTO_T[n.file]||"");return ws.every(w=>hay.includes(norm(w))||hay.includes(norm(toKana(w))));});}
+    window.RK_CTX=(()=>{const c={};if(K==="nurie"&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);return c;})();
     if(st.sort==="pop"){const r=new Map(pop.map((f,i)=>[f,i]));a=a.map((n,i)=>[r.has(n.file)?r.get(n.file):1e6+i,n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     else if(st.sort==="rand"){a=a.map(n=>[rk(n.file),n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     return a;
@@ -131,7 +138,7 @@
     else if(t.dataset.month){st.month=t.dataset.month;render();}
     else if(t.dataset.chk){st.sel.has(t.dataset.chk)?st.sel.delete(t.dataset.chk):st.sel.add(t.dataset.chk);render();}
     else if(t.dataset.all!==undefined){const f=favs();st.sel=st.sel.size===f.length?new Set():new Set(f);render();}
-    else if(t.dataset.bulk!==undefined){for(const f of st.sel){await RK.save(f);await new Promise(r=>setTimeout(r,600));}RK.toast(`${st.sel.size}枚を保存しました`,"A4サイズで印刷してお使いください");}
+    else if(t.dataset.bulk!==undefined){for(const f of st.sel){await RK.save(f,"bulk",null);await new Promise(r=>setTimeout(r,600));}RK.toast(`${st.sel.size}枚を保存しました`,"A4サイズで印刷してお使いください");}
   });
   main.addEventListener("change",e=>{if(e.target.id==="genre")st.genre=e.target.value;if(e.target.id==="diff")st.diff=e.target.value;st.page=1;render();});
   let qt;main.addEventListener("input",e=>{if(e.target.id!=="q")return;clearTimeout(qt);qt=setTimeout(()=>{st.q=e.target.value;st.page=1;const pos=e.target.selectionStart;render();const q=document.getElementById("q");q.focus();q.setSelectionRange(pos,pos);},300);});
