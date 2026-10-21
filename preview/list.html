@@ -7,14 +7,23 @@
 <title>素材をえらぶ｜介護のレクプリ（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792552906">
+<link rel="stylesheet" href="style.css?v=1792552995">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
 .ph1 p{margin:0;color:var(--sub);font-size:15px}
 .ph1 .search{width:min(420px,100%)}
 .bar{display:flex;justify-content:space-between;align-items:center;margin:22px 0 18px;gap:12px}
-.bar .n{color:var(--sub)}.bar .n b{color:var(--ink);font-size:19px}
+.bar{align-items:flex-end}
+.bar .n{color:var(--sub);display:flex;flex-direction:column;gap:6px}
+.bar .cl{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.bar .cc{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px 0 14px;border-radius:999px;border:1px solid #EBD3C2;background:#F7EBE2;color:var(--btn);font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.bar .of{font-size:15px;color:var(--sub)}
+.bar .big{display:flex;align-items:baseline;gap:4px;flex-wrap:wrap}
+.bar .big b{font-family:var(--mincho);font-size:40px;line-height:1;color:var(--ink)}
+.bar .big span{font-size:17px;color:var(--ink);font-weight:700}
+.bar .big small{font-size:14px;color:var(--mute);margin-left:6px}
+.bar .clr{margin-left:12px;border:0;background:none;font:inherit;font-size:14px;color:var(--btn);text-decoration:underline;cursor:pointer;padding:6px}
 .sp{flex:1}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;background:#fff;padding:3px}
 .seg button{height:40px;padding:0 16px;border:0;border-radius:8px;background:transparent;font:inherit;font-size:15px;color:var(--ink);cursor:pointer;white-space:nowrap}
@@ -34,7 +43,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792552906"></script>
+<script src="app.js?v=1792552995"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -74,17 +83,26 @@
   const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K!=="fav"&&K!=="cal"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
   function filters(){
     if(K==="nurie")return `<div class="fl">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}<span class="sp"></span>
-<label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option${st.genre===g?" selected":""}>${g}</option>`).join("")}</select></label>
-<label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option${st.diff===g?" selected":""}>${g}</option>`).join("")}</select></label></div>`;
+<label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option value="${g}"${st.genre===g?" selected":""}>ジャンル：${g}</option>`).join("")}</select></label>
+<label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option value="${g}"${st.diff===g?" selected":""}>難しさ：${g}</option>`).join("")}</select></label></div>`;
     if(K==="noutore")return `<div class="fl"><button class="chip" data-genre="" aria-pressed="${!st.genre}">すべて</button>${genres().map(g=>`<button class="chip" data-genre="${g}" aria-pressed="${st.genre===g}">${g}</button>`).join("")}</div>`;
     return "";
+  }
+  function countLine(tot){
+    const all=items().length,cond=[];
+    if(K==="nurie"&&st.season!=="すべて")cond.push(["season",st.season]);
+    if(st.genre)cond.push(["genre",st.genre]);
+    if(st.diff)cond.push(["diff",st.diff]);
+    if(st.q)cond.push(["q","「"+st.q+"」"]);
+    const chips=cond.map(([k,t])=>`<button class="cc" data-clr="${k}" aria-label="${esc(t)}の条件を外す">${esc(t)}${ico("x",14)}</button>`).join("");
+    return `<div class="n"><div class="cl">${cond.length?chips+`<span class="of">の${KIND}</span>`:`<span class="of">すべての${KIND}</span>`}</div><div class="big"><b>${tot}</b><span>枚</span>${cond.length?`<small>（全${all}枚中）</small>`:""}${cond.length>0?`<button class="clr" data-reset>すべて外す</button>`:""}</div></div>`;
   }
   function render(){
     if(K==="fav")return renderFav();
     if(K==="cal")return renderCal();
     const a=filtered(),tot=a.length,pages=Math.max(1,Math.ceil(tot/PER));if(st.page>pages)st.page=pages;
     const pageItems=a.slice((st.page-1)*PER,st.page*PER);
-    main.innerHTML=head()+filters()+`<div class="bar"><span class="n"><b>${tot}</b> 枚</span><div class="seg" role="group" aria-label="並び順">${[["pop","人気順"],["rand","ランダム"],["new","新着順"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
+    main.innerHTML=head()+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["pop","人気順"],["rand","ランダム"],["new","新着順"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
       (tot?`<div class="grid">${pageItems.map(n=>card(n)).join("")}</div>${pager(tot)}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><button class="btn p" data-reset>条件をリセット</button></div>`);
   }
@@ -99,7 +117,7 @@
     const f=favs(),a=f.map(x=>LIST.find(n=>n.file===x)).filter(Boolean);
     if(!a.length){main.innerHTML=head()+`<div class="empty"><div class="ic">${ico("star",34)}</div><h3>お気に入りはまだありません</h3><p style="color:var(--sub)">素材の右上の星を押すと、ここに集まります。</p><a class="btn p" href="list.html?k=nurie">塗り絵を探す</a></div>`;return;}
     const sel=st.sel;[...sel].forEach(x=>{if(!f.includes(x))sel.delete(x)});
-    main.innerHTML=head()+`<div class="bar"><span class="n"><b>${a.length}</b> 件</span><button class="btn g" data-all>${sel.size===a.length?"選択を外す":"すべて選ぶ"}</button></div><div class="grid">${a.map(n=>card(n,{chk:true,on:sel.has(n.file)})).join("")}</div>
+    main.innerHTML=head()+`<div class="bar"><div class="n"><div class="big"><b>${a.length}</b><span>件</span></div></div><button class="btn g" data-all>${sel.size===a.length?"選択を外す":"すべて選ぶ"}</button></div><div class="grid">${a.map(n=>card(n,{chk:true,on:sel.has(n.file)})).join("")}</div>
 <div class="fbar"><span><b>${sel.size}</b> 枚を選択中</span><button class="btn p" data-bulk ${sel.size?"":"disabled"} style="height:50px">${ico("down",18)}選んだ${sel.size}枚をまとめて保存</button></div>`;
   }
   main.addEventListener("click",async e=>{
@@ -109,6 +127,7 @@
     else if(t.dataset.pg){st.page=+t.dataset.pg;render();scrollTo({top:0,behavior:"smooth"});}
     else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1});render();}
     else if(t.dataset.sort){if(t.dataset.sort==="rand"&&st.sort==="rand")seed=Math.random()*1e9|0;st.sort=t.dataset.sort;st.page=1;render();}
+    else if(t.dataset.clr){const k=t.dataset.clr;if(k==="season")st.season="すべて";else st[k]="";st.page=1;render();}
     else if(t.dataset.month){st.month=t.dataset.month;render();}
     else if(t.dataset.chk){st.sel.has(t.dataset.chk)?st.sel.delete(t.dataset.chk):st.sel.add(t.dataset.chk);render();}
     else if(t.dataset.all!==undefined){const f=favs();st.sel=st.sel.size===f.length?new Set():new Set(f);render();}
