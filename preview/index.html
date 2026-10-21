@@ -7,7 +7,7 @@
 <title>介護のレクプリ｜高齢者向けの無料塗り絵・脳トレ・カレンダー（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792554025">
+<link rel="stylesheet" href="style.css?v=1792554226">
 <style>
 .hero{padding:52px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -74,7 +74,12 @@
 .ab-a{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
 .ab-a .ph{position:relative;height:300px}
 .ab-a .ph img{position:absolute;width:58%;aspect-ratio:1.414;object-fit:cover;background:#fff;padding:7px;border:1px solid var(--line);box-shadow:0 8px 20px rgba(50,40,30,.08)}
-.ab-a .ph img:nth-child(1){left:0;top:0;transform:rotate(-3deg)}.ab-a .ph img:nth-child(2){right:4%;top:22%;transform:rotate(2deg)}.ab-a .ph img:nth-child(3){left:18%;bottom:0;transform:rotate(-1deg);width:46%}
+.ab-a .phb{border:0;background:none;padding:0;cursor:zoom-in}
+.ab-a .phb img{position:absolute;transition:transform .2s}
+.ab-a .phb:nth-child(1) img{left:0;top:4%;width:44%;transform:rotate(-4deg)}
+.ab-a .phb:nth-child(2) img{left:36%;top:0;width:auto;height:94%;aspect-ratio:.707;transform:rotate(2deg);z-index:2}
+.ab-a .phb:nth-child(3) img{right:0;top:30%;width:44%;transform:rotate(-1deg)}
+.ab-a .phb:hover img{z-index:3;box-shadow:0 14px 30px rgba(50,40,30,.16)}
 .ab-a h2{font-family:var(--mincho);font-size:30px;line-height:1.5;margin:6px 0 14px}
 .ey{font-size:13px;letter-spacing:.25em;color:var(--btn);font-weight:700}
 .ab-a p{margin:0;color:#4A423A}
@@ -152,7 +157,7 @@
 </main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792554025"></script>
+<script src="app.js?v=1792554226"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -175,13 +180,14 @@
 
   (function(){
     const V=new URLSearchParams(location.search).get("ab")||"a";
+    const FIX=["up_1791295291864_47.png","showa_star_kashu.png","up_1790911750392_6.png"].map(f=>RK.LIST.find(n=>n.file===f)).filter(Boolean);
     const ic=RK.ico;
     const P=nu.filter(n=>n.sample).sort(()=>Math.random()-.5).slice(0,3);
     const ABOUT="介護のレクプリは、高齢者向けの塗り絵・脳トレ・カレンダーを無料で配布しているサイトです。季節の花や動物、懐かしい風景の塗り絵から、難読漢字・計算・言葉遊びの脳トレまで、毎日のレクリエーションに使えるプリントをそろえています。";
     const steps=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます","search"],["画像を保存する","1枚ずつでも、お気に入りからまとめてでも","down"],["A4で印刷する","使ったものには「使用済み」の印がつきます","cal"]];
     let html="";
     if(V==="a"){
-      html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p></div><div class="ph">${P.map(n=>`<img alt="" src="${RK.thumb(n,n.sample)}">`).join("")}</div></section>
+      html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p></div><div class="ph">${FIX.map(n=>`<button class="phb" data-open="${esc(n.file)}" aria-label="${esc(n.title)}を拡大"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></button>`).join("")}</div></section>
       <ol class="steps-a">${steps.map((s,i)=>`<li><span class="num">0${i+1}</span><b>${s[0]}</b><span class="d">${s[1]}</span></li>`).join("")}</ol>`;
     }else if(V==="b"){
       html=`<section class="ab-b"><div class="ey">ABOUT</div><div class="q">塗る時間が、<em>話す時間</em>になる。</div><p>${ABOUT}</p>
