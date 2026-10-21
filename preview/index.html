@@ -18,7 +18,10 @@
 .hero form{display:flex;gap:8px}
 .hero form .search{flex:1}
 .hero .pics{flex:1;position:relative;height:340px;min-width:0}
-.hero .pics img{position:absolute;width:62%;aspect-ratio:1.414;object-fit:cover;background:#fff;padding:8px;border:1px solid var(--line)}
+.hero .pics img{position:absolute;width:62%;aspect-ratio:1.414;object-fit:contain;background:#fff;padding:8px;border:1px solid var(--line);opacity:0;transition:opacity .4s}
+.hero .pics img.on{opacity:1}
+.hero .pics.tate img{width:auto;height:88%;aspect-ratio:.707}
+.hero .pics.tate .a{left:16%;top:0}.hero .pics.tate .b{left:42%;right:auto;top:10%}
 .hero .pics .a{left:2%;top:2%;transform:rotate(-3deg);box-shadow:0 6px 16px rgba(50,40,30,.06)}
 .hero .pics .b{right:0;top:26%;transform:rotate(2deg);box-shadow:0 12px 28px rgba(50,40,30,.10)}
 .hero .stat{display:flex;gap:28px;margin-top:22px;color:var(--sub);font-size:14px}
@@ -100,8 +103,11 @@
   const c=k=>LIST.filter(n=>kindOf(n)===k).length;
   document.getElementById("stat").innerHTML=`<span><b>${c("塗り絵")}</b>枚 塗り絵</span><span><b>${c("脳トレ")}</b>枚 脳トレ</span><span><b>${c("カレンダー")}</b>枚 カレンダー</span>`;
   const withS=nu.filter(n=>n.sample&&n.season===seasonNow);
-  const h=withS[Math.floor(Math.random()*withS.length)]||nu[0];
-  document.getElementById("pics").innerHTML=`<img class="a" alt="${esc(h.title)}の線画" src="${full(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${full(h,h.sample)}">`;
+  const fh=new URLSearchParams(location.search).get("hero");const h=(fh&&nu.find(n=>n.file===fh))||withS[Math.floor(Math.random()*withS.length)]||nu[0];
+  const pics=document.getElementById("pics");
+  pics.innerHTML=`<img class="a" alt="${esc(h.title)}の線画" src="${full(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${full(h,h.sample)}">`;
+  const a=pics.querySelector(".a");const show=()=>{if(a.naturalHeight>a.naturalWidth)pics.classList.add("tate");pics.querySelectorAll("img").forEach(i=>i.classList.add("on"));};
+  a.complete&&a.naturalWidth?show():a.addEventListener("load",show);
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
   const mix=[];for(let i=0;i<4;i++){if(se[i])mix.push(se[i]);if(al[i])mix.push(al[i]);}
