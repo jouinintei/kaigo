@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792616461">
+<link rel="stylesheet" href="/rk.css?v=1792616535">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -107,7 +107,7 @@
 @media (max-width:360px){.hero .brand{font-size:43px}.hero .fr{font-size:13px;letter-spacing:.04em}}
 
 /* about/how variants */
-.ab-a{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+.ab-a{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center}
 .ab-a .ph{position:relative;height:420px}
 .ab-a .ph img{position:absolute;width:58%;aspect-ratio:1.414;object-fit:cover;background:#fff;padding:7px;border:1px solid var(--line);box-shadow:0 8px 20px rgba(50,40,30,.08)}
 .ab-a .phb{border:0;background:none;padding:0;cursor:default;pointer-events:none}
@@ -205,7 +205,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792616461"></script>
+<script src="/rk.js?v=1792616535"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -244,7 +244,7 @@
   document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
   // 左のページ内メニュー
   (()=>{const toc=document.querySelector(".toc");if(!toc)return;const A=[...toc.querySelectorAll("a")];const tg=a=>document.querySelector(a.dataset.t);
-    toc.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;e.preventDefault();const el=tg(a);if(!el)return;const y=a.dataset.t==="#top-hero"?0:el.getBoundingClientRect().top+scrollY-24;scrollTo({top:y,behavior:"smooth"});});
+    toc.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;e.preventDefault();const el=tg(a);if(!el)return;const r=el.getBoundingClientRect();const y=a.dataset.t==="#top-hero"?0:a.dataset.t==="#sozai"?r.top+scrollY-Math.max(24,(innerHeight-r.height)/2):r.top+scrollY-24;scrollTo({top:y,behavior:"smooth"});});
     let rq=0;const upd=()=>{rq=0;const line=innerHeight*.35;let cur=0;A.forEach((a,i)=>{const el=tg(a);if(el&&el.getBoundingClientRect().top<=line)cur=i;});if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=A.length-1;A.forEach((a,i)=>a.classList.toggle("on",i===cur));};
     addEventListener("scroll",()=>{if(!rq)rq=requestAnimationFrame(upd);},{passive:true});addEventListener("resize",upd);setTimeout(upd,300);})();
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
@@ -262,7 +262,7 @@
     let html="";
     if(V==="a"){
       const cn=k=>LIST.filter(n=>kindOf(n)===k).length;
-      const PTS=[["無料・登録不要・広告なし","開いてすぐ、保存して印刷できます"],["A4でそのまま印刷","枠も整えてあるので、配るだけ"],["季節の素材を毎週追加","行事や旬に合わせて増えていきます"],["施設で何枚でも","人数分の印刷も、くり返しの利用も自由です"]];
+      const PTS=[["無料・登録不要・広告なし","開いてすぐ保存・印刷"],["A4でそのまま印刷","枠も整えて、配るだけ"],["季節の素材を毎週追加","行事や旬に合わせて増加"],["施設で何枚でも","人数分の印刷も自由"]];
       const ST=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます。キーワードで探すこともできます。","「今の季節」から選ぶと、行事に合わせやすくなります"],["画像を保存する","「保存する」を押すと、A4用の画像が保存されます。色見本も一緒に保存できます。","☆お気に入りに入れておけば、あとでまとめて保存できます"],["A4で印刷する","保存した画像をA4で印刷するだけ。使った素材には「使用済み」の印がつきます。","同じ塗り絵を人数分そのまま印刷して使えます"]];
       html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p><ul class="pts-a">${PTS.map(x=>`<li><span class="ck">${RK.ico("check",16)}</span><div><b>${x[0]}</b><span>${x[1]}</span></div></li>`).join("")}</ul><div class="cnt-a"><span><b>${cn("塗り絵")}</b>枚の塗り絵</span><span><b>${cn("脳トレ")}</b>枚の脳トレ</span><span><b>${cn("カレンダー")}</b>種類のカレンダー</span></div></div><div class="ph">${FIX.map(n=>`<div class="phb"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></div>`).join("")}</div></section>
       <section class="how-a"><div class="hh"><div class="ey">HOW TO USE</div><h2>使い方は、かんたん3ステップ</h2></div><ol class="steps-a">${ST.map((s,i)=>`<li><span class="num">0${i+1}</span><b>${s[0]}</b><span class="d">${s[1]}</span><span class="tip">${s[2]}</span></li>`).join("")}</ol></section>`;
