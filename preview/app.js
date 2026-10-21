@@ -116,7 +116,7 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     const k = kindOf(n), pool = LIST.filter(x => x.file !== n.file && kindOf(x) === k && x.title !== n.title);
     const head = t => String(t).split(/[ 　(（]/)[0];
     const sc = x => (head(x.title) === head(n.title) ? 8 : 0) + (x.genre && x.genre === n.genre ? 4 : 0) + (x.season === n.season ? 2 : 0) + (x.diff === n.diff ? 1 : 0) + Math.random();
-    return pool.map(x => [sc(x), x]).sort((a, b) => b[0] - a[0]).slice(0, 4).map(a => a[1]);
+    return pool.map(x => [sc(x), x]).sort((a, b) => b[0] - a[0]).slice(0, 6).map(a => a[1]);
   }
   function openMd(file, tab) {
     const n = LIST.find(x => x.file === file); if (!n) return;
@@ -130,12 +130,12 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     const tabs = k === "脳トレ" ? (n.answer ? [["l", "問題"], ["a", "答え"]] : [["l", "問題"]]) : (n.sample ? [["l", "線画"], ["s", "色見本"]] : [["l", "線画"]]);
     const f = mdTab === "s" ? n.sample : mdTab === "a" ? n.answer : n.file;
     const rel = related(n);
-    document.querySelector(".md .box").innerHTML = `<div class="top"><div><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><button class="btn g" data-close style="height:44px">${ico("x", 16)}閉じる</button></div>
-<div class="scr"><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div>
+    document.querySelector(".md .box").innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div><button class="btn g" data-close style="height:44px">${ico("x", 16)}閉じる</button></div>
+<div class="scr">
 <div class="body"><div class="view"><img alt="${esc(n.title)}" src="${full(n, f)}"></div>
 
 ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}"><img loading="lazy" alt="" src="${thumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2"><button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button></div>
-<p class="note">保存した画像をA4サイズで印刷してお使いください。</p></div>`;
+</div>`;
   }
 
   /* ---------- events ---------- */
