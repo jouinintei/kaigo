@@ -21,7 +21,7 @@
 <script src="/frame.js?v=10"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792576063">
+<link rel="stylesheet" href="/rk.css?v=1792577777">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -57,7 +57,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792576063"></script>
+<script src="/rk.js?v=1792577777"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -83,6 +83,9 @@
   fetch("https://img.rekupuri.com/search/yomi.json",{mode:"cors"}).then(r=>r.ok?r.json():null).then(j=>{if(!j)return;AUTO_T=j.t||{};YOMI=j.w||{};YK=Object.keys(YOMI).sort((a,b)=>b.length-a.length);if(st.q)render();}).catch(()=>{});
   const withYomi=t=>{let a="";YK.forEach(k=>{if(t.indexOf(k)>=0)a+=YOMI[k];});return t+a;};
   const toKana=t=>{let s=String(t);YK.forEach(k=>{s=s.split(k).join(YOMI[k]);});return s;};
+  // 表記ゆれ（同じ意味の言葉）をまとめて検索する
+  const SYN=[["もみじ","紅葉","こうよう"],["さくら","桜"],["ひまわり","向日葵"],["あじさい","紫陽花"],["すいか","西瓜"],["かぼちゃ","南瓜","パンプキン"],["ねこ","猫"],["いぬ","犬"],["つきみ","月見","お月見","十五夜"],["しょうがつ","正月","お正月","新年"],["ひなまつり","ひな祭り","雛祭り","桃の節句"],["こどもの日","子供の日","子どもの日","端午","こいのぼり","鯉のぼり"],["たなばた","七夕"],["うめ","梅"],["つばき","椿"],["ぼたん","牡丹"],["しゃくやく","芍薬"],["ゆり","百合"],["きもの","着物","和服"],["けいろう","敬老"],["せつぶん","節分","豆まき"],["はなみ","花見","お花見"],["うんどうかい","運動会"],["きんぎょ","金魚"],["はなび","花火"],["あさがお","朝顔"],["ほたる","蛍"],["ゆきだるま","雪だるま"],["ふじさん","富士山"],["おにぎり","おむすび"],["さんま","秋刀魚"],["とんぼ","蜻蛉"],["ちょう","蝶","ちょうちょ"],["たんぽぽ","蒲公英"],["すすき","芒","薄"],["こすもす","コスモス","秋桜"]];
+  const synOf=w=>{const nw=norm(w);const g=SYN.find(g=>g.some(x=>norm(x)===nw));return g||[w];};
   const norm=s=>String(s).normalize("NFKC").toLowerCase().replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).replace(/\s+/g,"");
   const hira=s=>String(s).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
   function filtered(){
@@ -90,7 +93,7 @@
     if(K==="nurie"&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
     if(st.diff)a=a.filter(n=>n.diff===st.diff);
-    if(st.q){const ws=st.q.trim().split(/[\s,、]+/).filter(Boolean);a=a.filter(n=>{const b=[n.title,n.genre,n.season,n.diff].join(" ");const hay=norm(b)+"|"+norm(toKana(b))+"|"+norm(withYomi(b))+"|"+norm(AUTO_T[n.file]||"");return ws.every(w=>hay.includes(norm(w))||hay.includes(norm(toKana(w))));});}
+    if(st.q){const ws=st.q.trim().split(/[\s,、]+/).filter(Boolean);a=a.filter(n=>{const b=[n.title,n.genre,n.season,n.diff].join(" ");const hay=norm(b)+"|"+norm(toKana(b))+"|"+norm(withYomi(b))+"|"+norm(AUTO_T[n.file]||"");return ws.every(w=>synOf(w).some(v=>hay.includes(norm(v))||hay.includes(norm(toKana(v)))));});}
     window.RK_CTX=(()=>{const c={};if(K==="nurie"&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);if(K!=="cal")c.so=st.sort;return c;})();window.RK_SORT=K!=="cal"?st.sort:"";
     if(st.sort==="pop"){const r=new Map(pop.map((f,i)=>[f,i]));a=a.map((n,i)=>[r.has(n.file)?r.get(n.file):1e6+i,n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     else if(st.sort==="rand"){a=a.map(n=>[rk(n.file),n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}

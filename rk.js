@@ -50,7 +50,7 @@
   };
   const seasonNow = (() => { const m = today.getMonth() + 1; return m <= 2 || m === 12 ? "冬" : m <= 5 ? "春" : m <= 8 ? "夏" : "秋"; })();
 
-  function updFavCount() { document.querySelectorAll("[data-favn]").forEach(e => { const n = favs().length; e.textContent = n; e.style.display = n ? "" : "none"; }); }
+  function updFavCount() { const n = favs().length; document.querySelectorAll("[data-favn]").forEach(e => { e.textContent = n; e.style.display = n ? "" : "none"; }); document.querySelectorAll("[data-favtab]").forEach(e => { e.textContent = n; }); }
 
   /* ---------- layout ---------- */
   function header(cur) {
@@ -64,7 +64,7 @@
     const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["お気に入り", "fav", "star", "FAVORITE"]];
     const cnt = k => k === "fav" ? favs().length : LIST.filter(n => kindOf(n) === { nurie: "塗り絵", noutore: "脳トレ", cal: "カレンダー" }[k]).length;
     const v = new URLSearchParams(location.search).get("tab") || "bc";
-    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc">${cnt(k)}</span></a>`).join("")}</div></nav>`;
+    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc"${k === "fav" ? " data-favtab" : ""}>${cnt(k)}</span></a>`).join("")}</div></nav>`;
   }
   function footer(cur) {
     const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["お気に入り", "fav", "heart"]];
