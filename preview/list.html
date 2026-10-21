@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>素材をえらぶ｜介護のレクプリ（新デザイン確認用）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
+.ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
+.ph1 p{margin:0;color:var(--sub);font-size:15px}
+.ph1 .search{width:min(420px,100%)}
+.bar{display:flex;justify-content:space-between;align-items:center;margin:22px 0 18px;gap:12px}
+.bar .n{color:var(--sub)}.bar .n b{color:var(--ink);font-size:19px}
+.sp{flex:1}
+.months{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.mo{padding:10px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font:inherit;color:var(--ink)}
+.mo[aria-current=true]{outline:3px solid var(--acc)}
+.mo b{font-family:var(--mincho);font-size:22px}.mo img{display:block;width:100%;aspect-ratio:.707;object-fit:contain;background:#fff;margin-top:4px}
+.mo .lbl{float:right;margin-top:6px}
+@media (max-width:900px){.months{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:640px){.ph1{padding-top:18px}.ph1 h1{font-size:26px}.months{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
+</style>
+</head>
+<body>
+<div id="hd"></div>
+<div id="tb"></div>
+<main class="wrap" id="main"></main>
+<div id="ft"></div>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+<script>
+(function(){
+  const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
+  const qs=new URLSearchParams(location.search);
+  const K=qs.get("k")||"nurie";
+  const KIND={nurie:"塗り絵",noutore:"脳トレ",cal:"カレンダー"}[K];
+  document.getElementById("hd").innerHTML=RK.header(K);
+  document.getElementById("tb").innerHTML=RK.tabs(K);
+  document.getElementById("ft").innerHTML=RK.footer(K);
+  RK.updFavCount();
+  const main=document.getElementById("main");
+  const st={season:qs.get("s")||"すべて",genre:"",diff:"",q:qs.get("q")||"",sort:"new",page:1,month:null,sel:new Set()};
+  const PER=K==="cal"?12:12;
+  const SEASONS=["すべて","春","夏","秋","冬","通年"];
+  const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
+  const items=()=>LIST.filter(n=>kindOf(n)===KIND);
+  const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
+  const hira=s=>String(s).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
+  function filtered(){
+    let a=items();
+    if(K==="nurie"&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
+    if(st.genre)a=a.filter(n=>n.genre===st.genre);
+    if(st.diff)a=a.filter(n=>n.diff===st.diff);
+    if(st.q){const w=hira(st.q.trim());a=a.filter(n=>hira([n.title,n.genre,n.season].join(" ")).includes(w));}
+    if(st.sort==="old")a=a.slice().reverse();
+    return a;
+  }
+  function pager(total){
+    const pages=Math.ceil(total/PER);if(pages<=1)return"";
+    const p=st.page,nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-p)<=1)nums.push(i);else if(nums[nums.length-1]!=="…")nums.push("…");}
+    return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav><p class="pginfo">${total}枚中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}枚目</p>`;
+  }
+  const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K!=="fav"&&K!=="cal"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
+  function filters(){
+    if(K==="nurie")return `<div class="fl">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}<span class="sp"></span>
+<label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option${st.genre===g?" selected":""}>${g}</option>`).join("")}</select></label>
+<label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option${st.diff===g?" selected":""}>${g}</option>`).join("")}</select></label></div>`;
+    if(K==="noutore")return `<div class="fl"><button class="chip" data-genre="" aria-pressed="${!st.genre}">すべて</button>${genres().map(g=>`<button class="chip" data-genre="${g}" aria-pressed="${st.genre===g}">${g}</button>`).join("")}</div>`;
+    return "";
+  }
+  function render(){
+    if(K==="fav")return renderFav();
+    if(K==="cal")return renderCal();
+    const a=filtered(),tot=a.length,pages=Math.max(1,Math.ceil(tot/PER));if(st.page>pages)st.page=pages;
+    const pageItems=a.slice((st.page-1)*PER,st.page*PER);
+    main.innerHTML=head()+filters()+`<div class="bar"><span class="n"><b>${tot}</b> 枚</span><label><span class="sr">並び順</span><select class="sel" id="sort"><option value="new"${st.sort==="new"?" selected":""}>新着順</option><option value="old"${st.sort==="old"?" selected":""}>古い順</option></select></label></div>`+
+      (tot?`<div class="grid">${pageItems.map(n=>card(n)).join("")}</div>${pager(tot)}`:
+      `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><button class="btn p" data-reset>条件をリセット</button></div>`);
+  }
+  function renderCal(){
+    const a=items(),groups={};a.forEach(n=>{const k=n.year+"-"+String(n.month).padStart(2,"0");(groups[k]=groups[k]||[]).push(n);});
+    const keys=Object.keys(groups).sort();const now=new Date().toISOString().slice(0,7);
+    if(!st.month)st.month=groups[now]?now:keys[keys.length-1];
+    main.innerHTML=head()+`<div class="months" style="margin:20px 0 32px">${keys.map(k=>{const g=groups[k],m=+k.slice(5),n=g.find(x=>!/貼り付け|blank/.test(x.title+x.file))||g[0];return `<button class="mo" data-month="${k}" aria-current="${st.month===k}"><b>${m}<span style="font-size:14px">月</span></b>${k===now?'<span class="lbl season">今月</span>':""}<img loading="lazy" alt="" src="${thumb(n)}"><span style="font-size:12px;color:var(--mute)">${k.slice(0,4)}年・${g.length}種類</span></button>`;}).join("")}</div>
+<div class="h2"><h2>${+st.month.slice(0,4)}年${+st.month.slice(5)}月のカレンダー</h2></div><div class="grid">${groups[st.month].map(n=>card(n)).join("")}</div>`;
+  }
+  function renderFav(){
+    const f=favs(),a=f.map(x=>LIST.find(n=>n.file===x)).filter(Boolean);
+    if(!a.length){main.innerHTML=head()+`<div class="empty"><div class="ic">${ico("star",34)}</div><h3>お気に入りはまだありません</h3><p style="color:var(--sub)">素材の右上の星を押すと、ここに集まります。</p><a class="btn p" href="list.html?k=nurie">塗り絵を探す</a></div>`;return;}
+    const sel=st.sel;[...sel].forEach(x=>{if(!f.includes(x))sel.delete(x)});
+    main.innerHTML=head()+`<div class="bar"><span class="n"><b>${a.length}</b> 件</span><button class="btn g" data-all>${sel.size===a.length?"選択を外す":"すべて選ぶ"}</button></div><div class="grid">${a.map(n=>card(n,{chk:true,on:sel.has(n.file)})).join("")}</div>
+<div class="fbar"><span><b>${sel.size}</b> 枚を選択中</span><button class="btn p" data-bulk ${sel.size?"":"disabled"} style="height:50px">${ico("down",18)}選んだ${sel.size}枚をまとめて保存</button></div>`;
+  }
+  main.addEventListener("click",async e=>{
+    const t=e.target.closest("button,[data-chk]");if(!t)return;
+    if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
+    else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;render();}
+    else if(t.dataset.pg){st.page=+t.dataset.pg;render();scrollTo({top:0,behavior:"smooth"});}
+    else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1});render();}
+    else if(t.dataset.month){st.month=t.dataset.month;render();}
+    else if(t.dataset.chk){st.sel.has(t.dataset.chk)?st.sel.delete(t.dataset.chk):st.sel.add(t.dataset.chk);render();}
+    else if(t.dataset.all!==undefined){const f=favs();st.sel=st.sel.size===f.length?new Set():new Set(f);render();}
+    else if(t.dataset.bulk!==undefined){for(const f of st.sel){await RK.save(f);await new Promise(r=>setTimeout(r,600));}RK.toast(`${st.sel.size}枚を保存しました`,"A4サイズで印刷してお使いください");}
+  });
+  main.addEventListener("change",e=>{if(e.target.id==="genre")st.genre=e.target.value;if(e.target.id==="diff")st.diff=e.target.value;if(e.target.id==="sort")st.sort=e.target.value;st.page=1;render();});
+  let qt;main.addEventListener("input",e=>{if(e.target.id!=="q")return;clearTimeout(qt);qt=setTimeout(()=>{st.q=e.target.value;st.page=1;const pos=e.target.selectionStart;render();const q=document.getElementById("q");q.focus();q.setSelectionRange(pos,pos);},300);});
+  document.addEventListener("favchange",()=>{if(K==="fav")render();});
+  main.innerHTML=head()+filters()+`<div class="grid" style="margin-top:24px">${skeleton(6)}</div>`;
+  requestAnimationFrame(()=>setTimeout(render,50));
+})();
+</script>
+</body>
+</html>
