@@ -232,3 +232,6 @@ html,body{overflow-x:clip}
 
 /* 長押し・右クリックの「画像を保存」を出にくくする */
 img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+/* 画像の上に透明な膜を重ねて、ブラウザの画像検索・画像メニューが出ないようにする */
+.md .view,.phb,.months .mo,.md .rel .g button,.rec .card{position:relative}
+.wk .ph::after,.md .view::after,.hero .pic::after,.rec .card::after,.phb::after,.months .mo::after,.md .rel .g button::after{content:"";position:absolute;inset:0;z-index:2;background:transparent}
