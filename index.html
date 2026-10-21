@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792575483">
+<link rel="stylesheet" href="/rk.css?v=1792575613">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -65,8 +65,10 @@
 .hero .pb .btn{height:44px;padding:0 12px;font-size:15px;width:100%}
 .hero .pics img{position:absolute;height:86%;width:auto;max-width:72%;object-fit:contain;aspect-ratio:1.414;object-fit:contain;background:#fff;padding:8px;border:1px solid var(--line);opacity:0;transition:opacity .4s}
 .hero .pics img.on{opacity:1}
-.hero .pics.tate img{aspect-ratio:.707}
-.hero .pics.tate .a{left:18%}.hero .pics.tate .b{right:18%}
+.hero .pic.tate img{aspect-ratio:.707}
+.hero .pic.tate .a{left:18%}.hero .pic.tate .b{right:18%}
+.hero .pic{opacity:0;visibility:hidden;transition:opacity .6s,visibility 0s .6s}.hero .pic.cur{opacity:1;visibility:visible;transition:opacity .6s}
+.hero .pw{flex-direction:column;align-items:stretch}.hero .cnav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px}.hero .cnav button{border:0;background:none;cursor:pointer;padding:6px;color:var(--sub);display:flex}.hero .cnav .ar{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;align-items:center;justify-content:center}.hero .cnav .ar:hover{color:var(--btn);border-color:var(--btn)}.hero .dots{display:flex;gap:8px}.hero .dots button{width:9px;height:9px;padding:0;border-radius:50%;background:#D9D1C6}.hero .dots button[aria-current=true]{background:var(--acc);width:22px;border-radius:5px}.hero .ctl{font-family:var(--mincho);font-weight:700;font-size:15px;color:var(--ink);text-align:center;margin-top:4px;min-height:1.5em}
 .hero .pics .a{left:0;top:0;transform:rotate(-3deg);box-shadow:0 6px 16px rgba(50,40,30,.06)}
 .hero .pics .b{right:0;left:auto;top:14%;transform:rotate(2deg);box-shadow:0 12px 28px rgba(50,40,30,.10)}
 .hero .stat{display:flex;gap:28px;margin-top:22px;color:var(--sub);font-size:14px}
@@ -191,7 +193,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792575483"></script>
+<script src="/rk.js?v=1792575613"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -204,11 +206,22 @@
   const c=k=>LIST.filter(n=>kindOf(n)===k).length;
   document.querySelectorAll("[data-cnt]").forEach(e=>e.innerHTML=c(e.dataset.cnt)+"<small>枚</small>");
   const withS=nu.filter(n=>n.sample&&n.season===seasonNow);
-  const fh=new URLSearchParams(location.search).get("hero");const h=(fh&&nu.find(n=>n.file===fh))||withS[Math.floor(Math.random()*withS.length)]||nu[0];
+  const sh0=a=>a.slice().sort(()=>Math.random()-.5);
+  const fh=new URLSearchParams(location.search).get("hero");const f0=fh&&nu.find(n=>n.file===fh);
+  let slides=sh0(withS.length>=5?withS:withS.concat(nu.filter(n=>n.sample&&n.season==="通年"))).filter(n=>n!==f0).slice(0,f0?4:5);if(f0)slides.unshift(f0);if(!slides.length)slides=[nu[0]];
   const pics=document.getElementById("pics");
-  pics.innerHTML=`<button class="pic" data-open="${esc(h.file)}" data-src="top" aria-label="${esc(h.title)}を拡大"><img class="a" alt="${esc(h.title)}の線画" src="${RK.thumb(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${RK.thumb(h,h.sample)}"></button>`;
-  const a=pics.querySelector(".a");const show=()=>{if(a.naturalHeight>a.naturalWidth)pics.classList.add("tate");pics.querySelectorAll("img").forEach(i=>i.classList.add("on"));};
-  a.complete&&a.naturalWidth?show():a.addEventListener("load",show);
+  pics.innerHTML=slides.map((h,i)=>`<button class="pic${i?"":" cur"}" data-open="${esc(h.file)}" data-src="top" aria-label="${esc(h.title)}を拡大"><img class="a" alt="${esc(h.title)}の線画" data-s="${RK.thumb(h)}"><img class="b" alt="${esc(h.title)}の色見本" data-s="${RK.thumb(h,h.sample)}"></button>`).join("");
+  const pw=pics.parentNode;pw.insertAdjacentHTML("beforeend",slides.length>1?`<div class="ctl" aria-live="polite"></div><div class="cnav"><button class="ar" data-c="-1" aria-label="前の塗り絵">${RK.ico("left",18)}</button><div class="dots">${slides.map((h,i)=>`<button data-c="=${i}" aria-label="${i+1}枚目"></button>`).join("")}</div><button class="ar" data-c="1" aria-label="次の塗り絵">${RK.ico("right",18)}</button></div>`:`<div class="ctl"></div>`);
+  const P=[...pics.querySelectorAll(".pic")],ctl=pw.querySelector(".ctl");
+  const load=i=>{const p=P[i];if(!p||p.dataset.l)return;p.dataset.l=1;const a=p.querySelector(".a");p.querySelectorAll("img").forEach(m=>m.src=m.dataset.s);const show=()=>{if(a.naturalHeight>a.naturalWidth)p.classList.add("tate");p.querySelectorAll("img").forEach(m=>m.classList.add("on"));};a.complete&&a.naturalWidth?show():a.addEventListener("load",show);};
+  let cur=0,tm=null;
+  const go=i=>{cur=(i+P.length)%P.length;P.forEach((p,j)=>p.classList.toggle("cur",j===cur));load(cur);load(cur+1);pw.querySelectorAll(".dots button").forEach((d,j)=>d.setAttribute("aria-current",j===cur));ctl.textContent=slides[cur].title;};
+  const play=()=>{clearInterval(tm);if(P.length>1)tm=setInterval(()=>go(cur+1),5000);};
+  go(0);play();
+  pw.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;const v=b.dataset.c;go(v[0]==="="?+v.slice(1):cur+ +v);play();});
+  pics.addEventListener("mouseenter",()=>clearInterval(tm));pics.addEventListener("mouseleave",play);
+  let tx0=null;pics.addEventListener("touchstart",e=>{tx0=e.touches[0].clientX;},{passive:true});pics.addEventListener("touchend",e=>{if(tx0===null)return;const d=e.changedTouches[0].clientX-tx0;tx0=null;if(Math.abs(d)>40){go(cur+(d<0?1:-1));play();}},{passive:true});
+  document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
   const mix=[];for(let i=0;i<4;i++){if(se[i])mix.push(se[i]);if(al[i])mix.push(al[i]);}
