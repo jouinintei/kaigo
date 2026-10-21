@@ -24,8 +24,10 @@
   const full = (n, f) => IMG + (f || n.file) + ver(n);
   const thumb = (n, f) => TH + (f || n.file) + ".jpg" + ver(n);
   const sthumb = (n, f) => THS + (f || n.file) + ".jpg" + ver(n);
+  const srcs = n => `src="${sthumb(n)}" srcset="${sthumb(n)} 600w, ${thumb(n)} 1000w" sizes="(max-width:640px) 92vw, (max-width:900px) 46vw, 340px"`;
   addEventListener("error", e => {
     const t = e.target; if (!t || t.tagName !== "IMG") return;
+    if (t.hasAttribute("srcset")) { const c = t.currentSrc || t.src; t.removeAttribute("srcset"); t.src = c.indexOf(THS) === 0 ? TH + c.slice(THS.length) : c; if (c.indexOf(TH) !== 0) return; }
     if (t.src.indexOf(THS) === 0) { t.src = TH + t.src.slice(THS.length); return; }
     if (t.src.indexOf(TH) === 0) { t.src = IMG + t.src.slice(TH.length).replace(/\.jpg(\?.*)?$/, "$1"); }
   }, true);
@@ -86,7 +88,7 @@ ${cur===""?`<nav class="gnav" aria-label="メインメニュー">${nav.map(([t, 
     const lab1 = k === "脳トレ" ? "問題を保存" : "保存する";
     const used = isUsed(f);
     return `<article class="card wk${k !== "塗り絵" ? " v" : ""}" data-f="${esc(f)}">
-<div style="position:relative"><button class="ph" data-open="${esc(f)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" src="${sthumb(n)}" onload="this.classList.remove('sk')"></button>
+<div style="position:relative"><button class="ph" data-open="${esc(f)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" ${srcs(n)} onload="this.classList.remove('sk')"></button>
 ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.on ? "true" : "false"}" data-chk="${esc(f)}" aria-label="選ぶ">${opt.on ? ico("check", 20) : ""}</span>` : (isNew(n) ? '<span class="new">NEW</span>' : "")}
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
@@ -232,5 +234,5 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
   document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
   document.addEventListener("dragstart", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
 
-  window.RK = { sthumb, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
+  window.RK = { sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
 })();
