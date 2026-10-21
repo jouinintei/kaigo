@@ -100,7 +100,7 @@
     const p=st.page,nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-p)<=1)nums.push(i);else if(nums[nums.length-1]!=="…")nums.push("…");}
     return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav><p class="pginfo">${total}枚中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}枚目</p>`;
   }
-  const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K!=="fav"&&K!=="cal"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
+  const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K==="nurie"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
   function filters(){
     if(K==="nurie")return `<div class="fl"><div class="chr">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}</div><span class="sp"></span><div class="slr">
 <label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option value="${g}"${st.genre===g?" selected":""}>ジャンル：${g}</option>`).join("")}</select></label>
