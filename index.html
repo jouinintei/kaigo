@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792618633">
+<link rel="stylesheet" href="/rk.css?v=1792618734">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -152,11 +152,11 @@
 .s2[data-f="2"] .tst,.s2[data-f="2"] .dlp{display:flex;animation:fin .4s}.s2 .tst{opacity:1;top:auto;bottom:16px;right:50%;transform:translateX(50%)}
 .dlp{position:absolute;right:14px;top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.12);padding:10px 14px;gap:10px;align-items:center;font-size:12.5px;z-index:4}.dlp .di{width:30px;height:30px;border-radius:50%;background:#E7F2E6;color:#3E7A3B;display:flex;align-items:center;justify-content:center}.dlp b{display:block;color:#3A2A21;font-size:13px}.dlp span{color:var(--mute)}
 .fold{border:1px solid var(--line);border-radius:10px;overflow:hidden;height:300px}.s2[data-f="3"] .fold{display:flex;animation:fin .4s}
-.fs{flex:0 0 120px;background:#F6F2EC;padding:10px 6px;display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--sub)}.fs span{padding:7px 10px;border-radius:6px;display:flex;align-items:center;gap:6px}.fs .on{background:#FBE3CF;color:#3A2A21;font-weight:700}
-.fl{flex:1;padding:10px 12px;display:flex;flex-direction:column;gap:6px;position:relative}.fh{font-weight:700;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:6px;color:#3A2A21}
-.fi{display:flex;align-items:center;gap:10px;font-size:13px;padding:6px 8px;border-radius:8px;color:var(--sub)}.fi img{width:46px;height:33px;object-fit:contain;border:1px solid var(--line);background:#fff}.fi b{font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fi.nw{background:#FFF3E8;outline:2px solid #F0C9A6;color:#3A2A21}.fi.nw b{font-weight:700}.fi em{font-style:normal;font-size:11px;font-weight:700;color:#fff;background:var(--acc);border-radius:999px;padding:1px 8px}
-.fnote{margin-top:auto;font-size:12.5px;color:var(--btn);background:#FBF3EC;border-radius:8px;padding:8px 10px}
+.fds{flex:0 0 140px;background:#F6F2EC;padding:10px 6px;display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--sub)}.fds span{padding:7px 10px;border-radius:6px;display:flex;align-items:center;gap:6px;white-space:nowrap}.fds .on{background:#FBE3CF;color:#3A2A21;font-weight:700}
+.fdl{flex:1;padding:10px 12px;display:flex;flex-direction:column;gap:6px;position:relative}.fdh{font-weight:700;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:6px;color:#3A2A21}
+.fdi{display:flex;align-items:center;gap:10px;font-size:13px;padding:6px 8px;border-radius:8px;color:var(--sub)}.fdi img{width:46px;height:33px;object-fit:contain;border:1px solid var(--line);background:#fff}.fdi b{font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fdi.nw{background:#FFF3E8;outline:2px solid #F0C9A6;color:#3A2A21}.fdi.nw b{font-weight:700}.fdi em{font-style:normal;font-size:11px;font-weight:700;color:#fff;background:var(--acc);border-radius:999px;padding:1px 8px}
+.fdn{margin-top:auto;font-size:12.5px;color:var(--btn);background:#FBF3EC;border-radius:8px;padding:8px 10px}
 .pd{display:flex;gap:16px;align-items:stretch}
 .pv{flex:0 0 40%;background:#EFEAE3;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px}.pv img{width:100%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.10);padding:4px}.pv span{font:700 12px var(--gothic);color:var(--sub);border:1px solid #CFC4B6;border-radius:4px;padding:0 8px;background:#fff}
 .pf{flex:1;display:flex;flex-direction:column;gap:6px}.pt{font-weight:700;font-size:15px;color:#3A2A21;border-bottom:1px solid var(--line);padding-bottom:6px}
@@ -284,7 +284,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792618633"></script>
+<script src="/rk.js?v=1792618734"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -362,7 +362,7 @@
           <div class="f0w minis">${[D].concat(L1.filter(n=>n!==D).slice(0,2)).map((n,i)=>`<div class="mc">${i?"":'<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg>'}<img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}</b></div>`).join("")}</div>
           <div class="big"><img alt="" src="${Th}"><div class="btns"><span class="fv">☆ お気に入り</span><span class="sv">${RK.ico("down",16)} 保存する<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg></span></div></div>
           <div class="dlp"><span class="di">${RK.ico("down",16)}</span><div><b>${esc(FN)}</b><span>ダウンロード完了</span></div></div>
-          <div class="fold"><div class="fs"><span>デスクトップ</span><span class="on">${RK.ico("down",14)} ダウンロード</span><span>ドキュメント</span><span>ピクチャ</span></div><div class="fl"><div class="fh">ダウンロード</div><div class="fi nw"><img alt="" src="${RK.sthumb(D)}"><b>${esc(FN)}</b><em>NEW</em></div>${L1.filter(n=>n!==D).slice(2,4).map(n=>`<div class="fi"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}${n.diff?"("+esc(n.diff)+")":""}.png</b></div>`).join("")}<div class="fnote">スマホは「ファイル」アプリや写真アプリに入ります</div></div></div>
+          <div class="fold"><div class="fds"><span>デスクトップ</span><span class="on">${RK.ico("down",14)} ダウンロード</span><span>ドキュメント</span><span>ピクチャ</span></div><div class="fdl"><div class="fdh">ダウンロード</div><div class="fdi nw"><img alt="" src="${RK.sthumb(D)}"><b>${esc(FN)}</b><em>NEW</em></div>${L1.filter(n=>n!==D).slice(2,4).map(n=>`<div class="fdi"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}${n.diff?"("+esc(n.diff)+")":""}.png</b></div>`).join("")}<div class="fdn">スマホは「ファイル」アプリや写真アプリに入ります</div></div></div>
           <div class="tst">${RK.ico("check",14)} 保存しました</div></div>
         <div class="sc s3"><div class="cap"><i>3</i>印刷するときは、この設定がおすすめ</div><div class="pd"><div class="pv"><img alt="" src="${Th}"><span>A4</span></div><div class="pf"><div class="pt">印刷</div>${[["用紙サイズ","A4"],["向き","絵に合わせて 縦 / 横"],["大きさ","用紙に合わせる"],["カラー","白黒でもOK"],["部数","人数分"]].map((r,i)=>`<div class="row" style="--d:${.25+i*.35}s"><span class="k">${r[0]}</span><span class="v">${r[1]}<i>✓</i></span></div>`).join("")}<div class="go"><span>印刷する<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg></span></div></div></div></div></div></div>`;
       html+=`<section class="how-a"><div class="hl"><div class="ey">HOW TO USE</div><h2>使い方は、<br>かんたん3ステップ</h2><ol class="steps-a">${ST.map((s,i)=>`<li data-i="${i}"><span class="num">0${i+1}</span><div class="tx3"><b>${s[0]}</b><span class="d">${s[1]}</span><span class="tip">${s[2]}</span></div></li>`).join("")}</ol></div>${ill}</section>`;
