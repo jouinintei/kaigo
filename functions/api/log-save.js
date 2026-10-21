@@ -127,6 +127,8 @@ export async function onRequest({ request, env }) {
           const oe = { t: onow, f: f, k: k, d: odid };
           const os = String((ops[i] && ops[i][2]) || "").replace(/[^a-z]/g, "").slice(0, 12);
           if (os) oe.s = os;
+          const oo = String((ops[i] && ops[i][3]) || "");
+          if (os && /^(new|pop|rand)$/.test(oo)) oe.o = oo;
           if (oent && i === 0) oe.r = oent;
           O.ev.push(oe);
         });
@@ -201,7 +203,7 @@ export async function onRequest({ request, env }) {
   const cleanCtx = c => {
     if (!c || typeof c !== "object") return null;
     const o = {};
-    ["se", "ge", "di", "us", "q", "sr"].forEach(k => {
+    ["se", "ge", "di", "us", "q", "sr", "so"].forEach(k => {
       if (typeof c[k] === "string" && c[k].trim()) o[k] = c[k].trim().slice(0, 30);
     });
     return o;

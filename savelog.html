@@ -903,6 +903,7 @@
     if (c.di) f.push("難しさ：" + c.di);
     if (c.us) f.push(c.us);
     if (f.length) cp.push(f.join("・") + "に絞って");
+    if (c.so && SORT_JA[c.so]) cp.push((cp.length ? "、" : "") + SORT_JA[c.so] + "の並びで");
     if (!e.c) return base + "から保存（絞り込みは記録を始める前）";
     return base + "から、" + (cp.length ? cp.join("") : "絞り込みなしで探して") + "保存";
   }
@@ -937,6 +938,8 @@
     if (k.indexOf("o:") === 0) return k.slice(2);
     return { google: "Google検索", yahoo: "Yahoo!検索", bing: "Bing検索", note: "note", sns: "SNS", old: "旧アドレス", direct: "直接（お気に入り・URL入力など）", yjapp: "Yahoo!アプリ", gapp: "Googleアプリ", line: "LINE", insta: "Instagram", fb: "Facebook", qr: "QRコード", chatgpt: "ChatGPT", copilot: "Copilot", perplexity: "Perplexity", gemini: "Gemini" }[k] || k;
   }
+  var SORT_JA = { "new": "新着順", pop: "人気順", rand: "ランダム" };
+  function srcLabel(s, o){ var b = SRC_SHORT[s] || s; return (o && SORT_JA[o]) ? b + "（" + SORT_JA[o] + "）" : b; }
   var SRC_SHORT = {
     top: "トップから", list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
     fav: "お気に入りから", bulk: "まとめて保存", noutore: "脳トレ一覧から", calendar: "カレンダーから"
@@ -1266,7 +1269,7 @@
       var ttl = it ? it.title : e.f;
       var tags = [];
       var more = [];
-      if (e.s && SRC_SHORT[e.s]) tags.push('<span class="tag from from-'+e.s+'">'+SRC_SHORT[e.s]+'</span>');
+      if (e.s && SRC_SHORT[e.s]) tags.push('<span class="tag from from-'+e.s+'">'+srcLabel(e.s, e.c && e.c.so)+'</span>');
       if (kindOf(it) !== "塗り絵") tags.push('<span class="tag kind">'+kindOf(it)+'</span>');
       if (it && it.diff)   tags.push('<span class="tag">'+it.diff+'</span>');
       var er = e.r || (entOf.has(e) ? entOf.get(e) : "");
@@ -1444,7 +1447,7 @@
     }
     (Array.isArray(O.ev) ? O.ev : []).forEach(function(e){
       if (dayKey(e.t) !== t || isMine(e.d)) return;
-      var x = slot(e.d, e.f); x[e.k === "smp" ? "smp" : "lb"]++; x.last = Math.max(x.last, e.t); if (e.s) x.src[e.s] = 1;
+      var x = slot(e.d, e.f); x[e.k === "smp" ? "smp" : "lb"]++; x.last = Math.max(x.last, e.t); if (e.s) x.src[e.s + (e.o ? ":" + e.o : "")] = 1;
       per[e.d].open++; per[e.d].last = Math.max(per[e.d].last, e.t);
     });
     (d.events || []).forEach(function(e){
@@ -1482,7 +1485,7 @@
           b = [];
           if (op) b.push('<span class="ob">開いた' + (op > 1 ? '×' + op : '') + '</span>');
           if (sv) b.push('<span class="ob sv">💾保存' + (sv > 1 ? '×' + sv : '') + '</span>');
-          Object.keys(x.src).forEach(function(s){ b.push('<span class="ob" style="background:#fff;border:1px solid #e5ddd0;color:#8a8477">' + esc(SRC_SHORT[s] || s) + '</span>'); });
+          Object.keys(x.src).forEach(function(s){ var p = s.split(":"); b.push('<span class="ob" style="background:#fff;border:1px solid #e5ddd0;color:#8a8477">' + esc(srcLabel(p[0], p[1])) + '</span>'); });
           html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + (it && kindOf(it) === "脳トレ" ? '<span class="odf" style="margin:0 4px 0 0">脳トレ</span>' : '') + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
         });
         html += '</div></details>';

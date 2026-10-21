@@ -77,7 +77,7 @@
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
     if(st.diff)a=a.filter(n=>n.diff===st.diff);
     if(st.q){const ws=st.q.trim().split(/[\s,、]+/).filter(Boolean);a=a.filter(n=>{const b=[n.title,n.genre,n.season,n.diff].join(" ");const hay=norm(b)+"|"+norm(toKana(b))+"|"+norm(withYomi(b))+"|"+norm(AUTO_T[n.file]||"");return ws.every(w=>hay.includes(norm(w))||hay.includes(norm(toKana(w))));});}
-    window.RK_CTX=(()=>{const c={};if(K==="nurie"&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);return c;})();
+    window.RK_CTX=(()=>{const c={};if(K==="nurie"&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);if(K!=="cal")c.so=st.sort;return c;})();window.RK_SORT=K!=="cal"?st.sort:"";
     if(st.sort==="pop"){const r=new Map(pop.map((f,i)=>[f,i]));a=a.map((n,i)=>[r.has(n.file)?r.get(n.file):1e6+i,n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     else if(st.sort==="rand"){a=a.map(n=>[rk(n.file),n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     return a;
