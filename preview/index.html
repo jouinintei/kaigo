@@ -13,7 +13,8 @@
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
 .hero .tx{flex:0 0 440px}
 .hero .ey{font-size:14px;letter-spacing:.2em;color:var(--btn);font-weight:700}
-.hero h1{margin:10px 0 14px;font-family:var(--mincho);font-size:42px;line-height:1.45;font-weight:700}
+.hero .brand{margin:8px 0 2px;font-family:var(--mincho);font-weight:800;font-size:52px;line-height:1.15;letter-spacing:.02em;white-space:nowrap}.hero .brand .a{font-size:34px;color:var(--ink)}.hero .brand .b{color:var(--acc)}
+.hero h1{margin:6px 0 14px;font-family:var(--mincho);font-size:30px;line-height:1.5;font-weight:700}
 .hero p{margin:0;color:var(--sub)}
 .hero .tx{display:flex;flex-direction:column;justify-content:center}
 .hero form{display:flex;gap:8px}
@@ -60,7 +61,7 @@
 .about p{color:#4A423A;max-width:52em;margin:0}
 @media (max-width:900px){.hero .wrap{flex-direction:column;align-items:stretch}.hero .tx{flex:none}.hero .pics{height:260px}.recs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){
-  .hero{padding:28px 0 24px}.hero h1{font-size:30px}.hero .pics{flex:none;height:230px}
+  .hero{padding:28px 0 24px}.hero h1{font-size:23px}.hero .brand{font-size:42px}.hero .brand .a{font-size:28px}.hero .pics{flex:none;height:230px}
   .hero .pw{flex-direction:column;align-items:stretch}.hero .pcap{width:auto}.hero .pb{flex-direction:row}.hero .pb .btn{flex:1}
   .entry{grid-template-columns:1fr;gap:12px;margin-bottom:44px}
   .entry a{flex-direction:row;align-items:center;min-height:0;padding:16px}
@@ -132,6 +133,7 @@
 <section class="hero"><div class="wrap">
 <div class="tx">
 <div class="ey">無料・会員登録なし</div>
+<div class="brand" aria-label="介護のレクプリ"><span class="a">介護の</span><span class="b">レクプリ</span></div>
 <h1>印刷して、すぐ使える<br>高齢者向けレク素材</h1>
 <p>介護施設・デイサービス・ご家庭で使える塗り絵・脳トレ・カレンダーを、A4でそのまま印刷できます。</p>
 </div>

@@ -203,6 +203,7 @@ html,body{overflow-x:clip}
   .hd .wrap{height:60px}
   .logo{font-size:23px}.logo .a{font-size:17px}
   .gnav,.hd .favbtn,.tabs{display:none}
+  .hd.top{display:none}
   .grid{grid-template-columns:1fr;gap:16px}
   .fl{flex-wrap:nowrap;overflow-x:auto;padding:10px 0 14px;margin:0 -16px;padding-left:16px;padding-right:16px}
   .fl .chip,.fl .sel{flex:none}
