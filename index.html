@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792580422">
+<link rel="stylesheet" href="/rk.css?v=1792615822">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -161,12 +161,20 @@
 .st-d .n{font-family:var(--mincho);font-size:34px;color:var(--acc)}
 .st-d b{font-size:19px}.st-d span{display:block;font-size:15px;color:var(--sub)}
 @media (max-width:760px){.ab-a,.ab-d{grid-template-columns:1fr}.steps-a,.ft3,.st-c{grid-template-columns:1fr}.steps-a li::after{display:none}.tl{flex-direction:column;align-items:center;gap:18px}.tl li::before{display:none}.ab-b{padding:36px 20px}.ab-b .q{font-size:23px}}
+.toc{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:25;display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:14px;padding:10px 6px;box-shadow:0 6px 20px rgba(50,40,30,.06);transition:box-shadow .2s}
+.toc .tt{font-size:10px;letter-spacing:.2em;color:var(--mute);font-weight:700;text-align:center;padding:0 0 6px}
+.toc a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:14px;color:var(--sub);text-decoration:none;white-space:nowrap}
+.toc a:hover{background:#F7F2EA;color:var(--ink)}
+.toc .d{width:9px;height:9px;border-radius:50%;background:#D9D1C6;flex:none;transition:all .2s}
+.toc a.on{color:var(--btn);font-weight:700}.toc a.on .d{background:var(--acc);box-shadow:0 0 0 4px #F7EBE2}
+@media (max-width:1639px){.toc .tt{display:none}.toc .l{display:none}.toc:hover .l{display:inline}.toc:hover{box-shadow:0 10px 30px rgba(50,40,30,.14)}}
+@media (max-width:1100px){.toc{display:none}}
 </style>
 </head>
 <body>
 <div id="hd"></div>
 <main>
-<section class="hero"><div class="wrap">
+<section class="hero" id="top-hero"><div class="wrap">
 <div class="tx">
 <div class="fr">無料・登録不要・広告なし</div>
 <div class="brand" aria-label="介護のレクプリ"><span class="a">介護</span><span class="no">の</span><span class="b">レクプリ</span></div>
@@ -177,23 +185,24 @@
 </div></section>
 
 <div class="wrap">
-<nav class="entry" aria-label="素材の種類">
+<nav class="entry" id="sozai" aria-label="素材の種類">
 <a class="card" href="list.html?k=nurie"><span class="r"><span class="i"><svg class="ico" style="width:32px;height:32px" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/></svg></span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span><b>塗り絵<span class="cnt" data-cnt="塗り絵"></span></b><span class="d">季節・ジャンル・難しさで選べる</span></span></a>
 <a class="card" href="list.html?k=noutore"><span class="r"><span class="i"><svg class="ico" style="width:32px;height:32px" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a2 2 0 0 0-3-1z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/></svg></span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span><b>脳トレ<span class="cnt" data-cnt="脳トレ"></span></b><span class="d">漢字・計算・言葉遊び。答えつき</span></span></a>
 <a class="card" href="list.html?k=cal"><span class="r"><span class="i"><svg class="ico" style="width:32px;height:32px" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span><b>カレンダー<span class="cnt" data-cnt="カレンダー"></span></b><span class="d">塗って飾れる月間カレンダー</span></span></a>
 </nav>
 
 <div id="abhow"></div>
+<nav class="toc" aria-label="ページ内メニュー"><div class="tt">MENU</div><a href="#top-hero" data-t="#top-hero"><span class="d"></span><span class="l">トップ</span></a><a href="#sozai" data-t="#sozai"><span class="d"></span><span class="l">素材をさがす</span></a><a href="#about" data-t="#abhow .ab-a"><span class="d"></span><span class="l">レクプリについて</span></a><a href="#howto" data-t="#abhow .steps-a"><span class="d"></span><span class="l">使い方</span></a><a href="#osusume" data-t="#osusume"><span class="d"></span><span class="l">おすすめの塗り絵</span></a><a href="#shinchaku" data-t="#shinchaku"><span class="d"></span><span class="l">新しく追加した素材</span></a></nav>
 
-<section class="sec"><div class="h2"><h2>おすすめの塗り絵</h2><span class="s">季節ものと、いつでも使えるものを半分ずつ</span><a class="more" href="list.html?k=nurie">すべて見る →</a></div><div class="recs" id="recs"></div></section>
+<section class="sec" id="osusume"><div class="h2"><h2>おすすめの塗り絵</h2><span class="s">季節ものと、いつでも使えるものを半分ずつ</span><a class="more" href="list.html?k=nurie">すべて見る →</a></div><div class="recs" id="recs"></div></section>
 
-<section class="sec"><div class="h2"><h2>新しく追加した素材</h2><a class="more" href="list.html?k=nurie">一覧へ →</a></div><div class="recs" id="news"></div></section>
+<section class="sec" id="shinchaku"><div class="h2"><h2>新しく追加した素材</h2><a class="more" href="list.html?k=nurie">一覧へ →</a></div><div class="recs" id="news"></div></section>
 
 </div>
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792580422"></script>
+<script src="/rk.js?v=1792615822"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -230,6 +239,11 @@
   pics.addEventListener("dragstart",e=>e.preventDefault());
   let wx=0,wl=0;pics.addEventListener("wheel",e=>{if(N<2||Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();const t=Date.now();if(t-wl<600){return;}wx+=e.deltaX;if(Math.abs(wx)>40){go(cur+(wx>0?1:-1));play();wx=0;wl=t;}},{passive:false});
   document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
+  // 左のページ内メニュー
+  (()=>{const toc=document.querySelector(".toc");if(!toc)return;const A=[...toc.querySelectorAll("a")];const tg=a=>document.querySelector(a.dataset.t);
+    toc.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;e.preventDefault();const el=tg(a);if(!el)return;const y=a.dataset.t==="#top-hero"?0:el.getBoundingClientRect().top+scrollY-24;scrollTo({top:y,behavior:"smooth"});});
+    let rq=0;const upd=()=>{rq=0;const line=innerHeight*.35;let cur=0;A.forEach((a,i)=>{const el=tg(a);if(el&&el.getBoundingClientRect().top<=line)cur=i;});if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=A.length-1;A.forEach((a,i)=>a.classList.toggle("on",i===cur));};
+    addEventListener("scroll",()=>{if(!rq)rq=requestAnimationFrame(upd);},{passive:true});addEventListener("resize",upd);setTimeout(upd,300);})();
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
   const mix=[];for(let i=0;i<4;i++){if(se[i])mix.push(se[i]);if(al[i])mix.push(al[i]);}
