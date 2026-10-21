@@ -56,7 +56,7 @@
   function header(cur) {
     const nav = [["塗り絵", L("nurie"), "nurie"], ["脳トレ", L("noutore"), "noutore"], ["カレンダー", L("cal"), "cal"]];
     return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
-<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<a class="logo" href="${PROD ? "/" : "index.html"}"><span class="a">介護の</span><span class="b">レクプリ</span><span class="lsub">高齢者向け 無料の塗り絵・脳トレ・カレンダー</span></a>`}
+<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<a class="logo" href="${PROD ? "/" : "index.html"}"><span class="a">介護の</span><span class="b">レクプリ</span><span class="lsub">毎日のレクに、ちょうどいい1枚を</span></a>`}
 ${cur===""?`<nav class="gnav" aria-label="メインメニュー">${nav.map(([t, h, k]) => `<a href="${h}"${cur === k ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</nav>`:""}
 <a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a></div></header>`;
   }
