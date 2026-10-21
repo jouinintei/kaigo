@@ -222,6 +222,8 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     if (t.dataset.mtab) { mdTab = t.dataset.mtab; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp"); return; }
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeMd(); });
+  document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") { e.preventDefault(); toast("画像は「保存」ボタンから保存できます", "印刷用の枠付きで保存されます"); } });
+  document.addEventListener("dragstart", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
 
   window.RK = { LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
 })();
