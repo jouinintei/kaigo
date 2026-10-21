@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792618506">
+<link rel="stylesheet" href="/rk.css?v=1792618633">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -133,6 +133,30 @@
 .how-a .steps-a b{margin:2px 0 4px;font-size:21px}.how-a .steps-a span.d{font-size:15px;display:block}
 .how-a .steps-a .tip{padding-top:8px;margin:0}
 .ill{position:relative}
+.cf{display:none}.sc[data-f="0"] .c0,.sc[data-f="1"] .c1,.sc[data-f="2"] .c2,.sc[data-f="3"] .c3{display:inline;animation:fin .35s}
+@keyframes fin{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.s1 .chips span{transition:all .25s}.s1 .chips .al{background:var(--btn);border-color:var(--btn);color:#fff}
+.s1:not([data-f="0"]) .chips .al{background:#fff;border-color:var(--line);color:var(--sub)}.s1:not([data-f="0"]) .chips .tg{background:var(--btn);border-color:var(--btn);color:#fff}
+.sels{display:flex;gap:10px;margin-top:10px}.sel{position:relative;font-size:13.5px;border:1px solid var(--line);border-radius:8px;padding:6px 12px;background:#fff;color:var(--sub);transition:all .25s}.sel b{color:#3A2A21}.sel .v1{display:none}
+.s1[data-f="2"] .sg .v0,.s1[data-f="3"] .sg .v0,.s1[data-f="3"] .sd .v0{display:none}.s1[data-f="2"] .sg .v1,.s1[data-f="3"] .sg .v1,.s1[data-f="3"] .sd .v1{display:inline}
+.s1[data-f="2"] .sg,.s1[data-f="3"] .sd{border-color:var(--acc);box-shadow:0 0 0 3px #F7EBE2}
+.dd{display:none;position:absolute;left:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 24px rgba(0,0,0,.12);z-index:5;min-width:130px;padding:4px}.dd em{display:block;position:relative;font-style:normal;padding:6px 10px;border-radius:6px;color:#3A2A21}.dd em.pk{background:#FBEBDD;font-weight:700}
+.s1[data-f="2"] .dd{display:block;animation:fin .3s}
+.cnt{margin-top:10px;font-size:13px;color:var(--sub)}.cnt span{display:none}.cnt b{font-family:var(--mincho);font-size:22px;color:var(--acc);margin:0 2px}
+.s1[data-f="0"] .n0,.s1[data-f="1"] .n1,.s1[data-f="2"] .n2,.s1[data-f="3"] .n3{display:inline;animation:fin .35s}
+.s1 .minis{display:none;margin-top:8px}.s1[data-f="0"] .m0,.s1[data-f="1"] .m1,.s1[data-f="2"] .m2,.s1[data-f="3"] .m3{display:grid;animation:fin .4s}
+.hand{display:none}.s1[data-f="1"] .tg .hand,.s1[data-f="2"] .dd .hand,.s1[data-f="3"] .sd>.hand,.s2[data-f="0"] .mc .hand,.s2[data-f="1"] .sv .hand,.ill[data-s="2"] .go .hand{display:block;animation:tap 1.4s infinite}
+.mc{position:relative}.mc .hand{right:30%;bottom:30%}
+.s2 .f0w,.s2 .big,.s2 .dlp,.s2 .fold,.s2 .tst{display:none}
+.s2[data-f="0"] .f0w{display:grid;animation:fin .4s}.s2[data-f="1"] .big,.s2[data-f="2"] .big{display:flex;animation:fin .4s}
+.s2[data-f="2"] .tst,.s2[data-f="2"] .dlp{display:flex;animation:fin .4s}.s2 .tst{opacity:1;top:auto;bottom:16px;right:50%;transform:translateX(50%)}
+.dlp{position:absolute;right:14px;top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.12);padding:10px 14px;gap:10px;align-items:center;font-size:12.5px;z-index:4}.dlp .di{width:30px;height:30px;border-radius:50%;background:#E7F2E6;color:#3E7A3B;display:flex;align-items:center;justify-content:center}.dlp b{display:block;color:#3A2A21;font-size:13px}.dlp span{color:var(--mute)}
+.fold{border:1px solid var(--line);border-radius:10px;overflow:hidden;height:300px}.s2[data-f="3"] .fold{display:flex;animation:fin .4s}
+.fs{flex:0 0 120px;background:#F6F2EC;padding:10px 6px;display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--sub)}.fs span{padding:7px 10px;border-radius:6px;display:flex;align-items:center;gap:6px}.fs .on{background:#FBE3CF;color:#3A2A21;font-weight:700}
+.fl{flex:1;padding:10px 12px;display:flex;flex-direction:column;gap:6px;position:relative}.fh{font-weight:700;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:6px;color:#3A2A21}
+.fi{display:flex;align-items:center;gap:10px;font-size:13px;padding:6px 8px;border-radius:8px;color:var(--sub)}.fi img{width:46px;height:33px;object-fit:contain;border:1px solid var(--line);background:#fff}.fi b{font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi.nw{background:#FFF3E8;outline:2px solid #F0C9A6;color:#3A2A21}.fi.nw b{font-weight:700}.fi em{font-style:normal;font-size:11px;font-weight:700;color:#fff;background:var(--acc);border-radius:999px;padding:1px 8px}
+.fnote{margin-top:auto;font-size:12.5px;color:var(--btn);background:#FBF3EC;border-radius:8px;padding:8px 10px}
 .pd{display:flex;gap:16px;align-items:stretch}
 .pv{flex:0 0 40%;background:#EFEAE3;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px}.pv img{width:100%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.10);padding:4px}.pv span{font:700 12px var(--gothic);color:var(--sub);border:1px solid #CFC4B6;border-radius:4px;padding:0 8px;background:#fff}
 .pf{flex:1;display:flex;flex-direction:column;gap:6px}.pt{font-weight:700;font-size:15px;color:#3A2A21;border-bottom:1px solid var(--line);padding-bottom:6px}
@@ -260,7 +284,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792618506"></script>
+<script src="/rk.js?v=1792618633"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -323,10 +347,23 @@
       const PTS=[["無料・登録不要・広告なし","何枚でも保存・印刷できます"],["A4でそのまま印刷","枠も整えて、配るだけ"],["季節の素材を毎週追加","行事や旬に合わせて増加"],["大人の塗り絵としても","描き込みたっぷりの上級も"]];
       const ST=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます。キーワードで探すこともできます。","「今の季節」から選ぶと、行事に合わせやすくなります"],["画像を保存する","「保存する」を押すと、A4用の画像が保存されます。色見本も一緒に保存できます。","☆お気に入りに入れておけば、あとでまとめて保存できます"],["A4で印刷する","保存した画像をA4で印刷するだけ。使った素材には「使用済み」の印がつきます。","同じ塗り絵を人数分そのまま印刷して使えます"]];
       html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p><ul class="pts-a">${PTS.map(x=>`<li><span class="ck">${RK.ico("check",16)}</span><div><b>${x[0]}</b><span>${x[1]}</span></div></li>`).join("")}</ul><div class="cnt-a"><span><b>${cn("塗り絵")}</b>枚の塗り絵</span><span><b>${cn("脳トレ")}</b>枚の脳トレ</span><span><b>${cn("カレンダー")}</b>種類のカレンダー</span></div></div><div class="ph">${FIX.map(n=>`<div class="phb"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></div>`).join("")}</div></section>`;
-      const D=FIX[2]||FIX[0]||nu[0],Th=RK.thumb(D),Ts=RK.thumb(D,D.sample||D.file),S3=nu.filter(n=>n.season===seasonNow&&n.file!==(FIX[2]||{}).file).slice(0,6);
+      const D=FIX[2]||FIX[0]||nu[0],Th=RK.thumb(D),Ts=RK.thumb(D,D.sample||D.file),SN=seasonNow;
+      const FN=D.title+(D.diff?"("+D.diff+")":"")+D.file.slice(D.file.lastIndexOf("."));
+      const A1=nu.filter(n=>n.season===SN),gc={};A1.forEach(n=>gc[n.genre]=(gc[n.genre]||0)+1);const GN=gc["動物"]>=3?"動物":Object.keys(gc).sort((a,b)=>gc[b]-gc[a])[0];
+      const A2=A1.filter(n=>n.genre===GN),dc={};A2.forEach(n=>dc[n.diff]=(dc[n.diff]||0)+1);const DF=dc["初級"]>=1?"初級":Object.keys(dc).sort((a,b)=>dc[b]-dc[a])[0];const A3=A2.filter(n=>n.diff===DF);
+      const c0=nu.length,c1=A1.length,c2=A2.length,c3=A3.length;const L0=nu.slice(0,3),L1=A1.slice(0,6),L2=A2.slice(0,3),L3=A3.slice(0,3);
       const ill=`<div class="ill"><div class="win"><div class="bar3"><i></i><i></i><i></i><span>rekupuri.com</span></div>
-        <div class="sc s1"><div class="cap"><i>1</i>季節やジャンルを押して、塗り絵を選ぶ</div><div class="chips">${["すべて","春","夏","秋","冬","通年"].map(x=>`<span class="${x===seasonNow?"on":""}">${x}${x===seasonNow?'<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg>':""}</span>`).join("")}</div><div class="minis">${S3.map(n=>`<div class="mc"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}</b></div>`).join("")}</div></div>
-        <div class="sc s2"><div class="cap"><i>2</i>「保存する」を押すと、画像が保存されます</div><div class="big"><img alt="" src="${Th}"><div class="btns"><span class="fv">☆ お気に入り</span><span class="sv">${RK.ico("down",16)} 保存する<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg></span></div></div><div class="tst">${RK.ico("check",14)} 保存しました</div></div>
+        <div class="sc s1" data-f="0"><div class="cap"><i>1</i><span class="cf c0">まずは塗り絵の一覧を開きます</span><span class="cf c1">季節を押すと、その季節の塗り絵だけに</span><span class="cf c2">ジャンルを選んで、さらに絞り込み</span><span class="cf c3">難しさも選べます（初級・中級・上級）</span></div>
+          <div class="chips">${["すべて","春","夏","秋","冬","通年"].map(x=>`<span class="${x===SN?"tg":x==="すべて"?"al":""}">${x}${x===SN?'<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg>':""}</span>`).join("")}</div>
+          <div class="sels"><span class="sel sg">ジャンル：<b class="v0">すべて</b><b class="v1">${GN}</b> ▾<span class="dd">${["花","動物","風景","食べ物"].map(x=>`<em class="${x===GN?"pk":""}">${x}${x===GN?'<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg>':""}</em>`).join("")}</span></span><span class="sel sd">難しさ：<b class="v0">すべて</b><b class="v1">${DF}</b> ▾<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg></span></div>
+          <div class="cnt">${[c0,c1,c2,c3].map((c,i)=>`<span class="n${i}">全${c0}枚中 <b>${c}</b>枚</span>`).join("")}</div>
+          ${[L0,L1,L2,L3].map((l,i)=>`<div class="minis m${i}">${l.map(n=>`<div class="mc"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}</b></div>`).join("")}</div>`).join("")}</div>
+        <div class="sc s2" data-f="0"><div class="cap"><i>2</i><span class="cf c0">気に入った塗り絵を押すと、大きく開きます</span><span class="cf c1">「保存する」を押します</span><span class="cf c2">保存できました</span><span class="cf c3">保存した画像は「ダウンロード」フォルダに入っています</span></div>
+          <div class="f0w minis">${[D].concat(L1.filter(n=>n!==D).slice(0,2)).map((n,i)=>`<div class="mc">${i?"":'<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg>'}<img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}</b></div>`).join("")}</div>
+          <div class="big"><img alt="" src="${Th}"><div class="btns"><span class="fv">☆ お気に入り</span><span class="sv">${RK.ico("down",16)} 保存する<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg></span></div></div>
+          <div class="dlp"><span class="di">${RK.ico("down",16)}</span><div><b>${esc(FN)}</b><span>ダウンロード完了</span></div></div>
+          <div class="fold"><div class="fs"><span>デスクトップ</span><span class="on">${RK.ico("down",14)} ダウンロード</span><span>ドキュメント</span><span>ピクチャ</span></div><div class="fl"><div class="fh">ダウンロード</div><div class="fi nw"><img alt="" src="${RK.sthumb(D)}"><b>${esc(FN)}</b><em>NEW</em></div>${L1.filter(n=>n!==D).slice(2,4).map(n=>`<div class="fi"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}${n.diff?"("+esc(n.diff)+")":""}.png</b></div>`).join("")}<div class="fnote">スマホは「ファイル」アプリや写真アプリに入ります</div></div></div>
+          <div class="tst">${RK.ico("check",14)} 保存しました</div></div>
         <div class="sc s3"><div class="cap"><i>3</i>印刷するときは、この設定がおすすめ</div><div class="pd"><div class="pv"><img alt="" src="${Th}"><span>A4</span></div><div class="pf"><div class="pt">印刷</div>${[["用紙サイズ","A4"],["向き","絵に合わせて 縦 / 横"],["大きさ","用紙に合わせる"],["カラー","白黒でもOK"],["部数","人数分"]].map((r,i)=>`<div class="row" style="--d:${.25+i*.35}s"><span class="k">${r[0]}</span><span class="v">${r[1]}<i>✓</i></span></div>`).join("")}<div class="go"><span>印刷する<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg></span></div></div></div></div></div></div>`;
       html+=`<section class="how-a"><div class="hl"><div class="ey">HOW TO USE</div><h2>使い方は、<br>かんたん3ステップ</h2><ol class="steps-a">${ST.map((s,i)=>`<li data-i="${i}"><span class="num">0${i+1}</span><div class="tx3"><b>${s[0]}</b><span class="d">${s[1]}</span><span class="tip">${s[2]}</span></div></li>`).join("")}</ol></div>${ill}</section>`;
     }else if(V==="b"){
@@ -343,11 +380,12 @@
       <section class="ab-d"><div class="hd2"><div class="en">HOW TO USE</div><h2>使い方</h2></div><ol class="st-d">${steps.map((s,i)=>`<li><span class="n">0${i+1}</span><div><b>${s[0]}</b><span>${s[1]}</span></div></li>`).join("")}</ol></section>`;
     }
     document.getElementById("abhow").innerHTML=html;
-    (()=>{const ill=document.querySelector("#abhow .ill"),L=[...document.querySelectorAll("#abhow .how-a .steps-a li")];if(!ill||!L.length)return;let k=0,t=null,hold=false;
-      const set=i=>{k=i;ill.dataset.s=i;L.forEach((x,j)=>x.classList.toggle("on",j===i));};
-      const run=()=>{clearInterval(t);t=setInterval(()=>{if(!hold&&!document.hidden)set((k+1)%L.length);},4500);};
-      L.forEach((x,i)=>{x.addEventListener("mouseenter",()=>{hold=true;set(i);});x.addEventListener("mouseleave",()=>{hold=false;run();});x.addEventListener("click",()=>{set(i);run();});});
-      set(0);run();})();
+    (()=>{const ill=document.querySelector("#abhow .ill"),L=[...document.querySelectorAll("#abhow .how-a .steps-a li")];if(!ill||!L.length)return;
+      const SC=[...ill.querySelectorAll(".sc")],NF=[4,4,1],DUR=[[2400,2600,2800,2800],[2400,2400,2400,3800],[5200]];let k=0,f=0,t=null,hold=false;
+      const show=()=>{ill.dataset.s=k;SC.forEach((x,j)=>x.dataset.f=j===k?f:0);L.forEach((x,j)=>x.classList.toggle("on",j===k));};
+      const tick=()=>{clearTimeout(t);t=setTimeout(()=>{if(document.hidden){tick();return;}f++;if(f>=NF[k]){f=0;if(!hold)k=(k+1)%L.length;}show();tick();},DUR[k][f]);};
+      L.forEach((x,i)=>{x.addEventListener("mouseenter",()=>{hold=true;if(k!==i){k=i;f=0;show();tick();}});x.addEventListener("mouseleave",()=>{hold=false;});x.addEventListener("click",()=>{k=i;f=0;show();tick();});});
+      show();tick();})();
   })();
   document.getElementById("recs").innerHTML=mix.slice(0,8).map(rec).join("");
   document.getElementById("news").innerHTML=nu.slice(0,4).map(rec).join("");
