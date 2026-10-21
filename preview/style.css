@@ -100,8 +100,8 @@ img{max-width:100%}
 .md .tb button{height:46px;padding:0 22px;border:0;background:transparent;font:inherit;font-size:16px;color:var(--sub);border-bottom:3px solid transparent;margin-bottom:-1px;cursor:pointer}
 .md .tb button[aria-selected=true]{color:var(--btn);font-weight:700;border-bottom-color:var(--acc)}
 .md .body{padding:18px 24px 22px;display:flex;flex-direction:column;gap:14px}
-.md .view{border:1px solid var(--line);border-radius:8px;background:var(--bg);overflow:auto;max-height:62vh;display:flex;justify-content:center}
-.md .view img{display:block;max-width:100%;height:auto;background:#fff;transition:width .2s}
+.md .view{border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:12px;display:flex;justify-content:center;align-items:center}
+.md .view img{display:block;max-width:100%;max-height:64vh;width:auto;height:auto;object-fit:contain;background:#fff;box-shadow:0 1px 4px rgba(50,40,30,.12)}
 .md .zoom{display:flex;justify-content:center;align-items:center;gap:12px;font-size:14px;color:var(--sub)}
 .md .zoom button{width:44px;height:44px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:22px;cursor:pointer;color:var(--ink)}
 .md .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
