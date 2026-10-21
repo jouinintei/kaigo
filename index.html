@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792616883">
+<link rel="stylesheet" href="/rk.css?v=1792616968">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -138,7 +138,7 @@
 .sc{position:absolute;left:0;right:0;top:34px;bottom:0;padding:22px;opacity:0;transform:translateY(8px);transition:opacity .45s,transform .45s;pointer-events:none}
 .ill[data-s="0"] .s1,.ill[data-s="1"] .s2,.ill[data-s="2"] .s3{opacity:1;transform:none}
 .chips{display:flex;gap:8px;flex-wrap:wrap}.chips span{font-size:14px;border:1px solid var(--line);border-radius:999px;padding:5px 14px;color:var(--sub);background:#fff}.chips .on{background:var(--btn);border-color:var(--btn);color:#fff}
-.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}.mc{border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff}.mc img{width:100%;aspect-ratio:1.414;object-fit:contain;display:block}.mc b{display:block;font-size:12.5px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#3A2A21}
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.mc{border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff}.mc img{width:100%;aspect-ratio:1.414;object-fit:contain;display:block}.mc b{display:block;font-size:12.5px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#3A2A21}
 .big{display:flex;flex-direction:column;align-items:center;gap:14px}.big img{height:250px;max-width:100%;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff}
 .btns{display:flex;gap:10px}.btns span{display:inline-flex;align-items:center;gap:6px;border-radius:10px;padding:10px 18px;font-size:15px;font-weight:700}.btns .fv{border:1px solid var(--line);color:var(--sub);background:#fff}.btns .sv{background:var(--btn);color:#fff;box-shadow:0 0 0 0 rgba(169,83,42,.5)}
 .ill[data-s="1"] .btns .sv{animation:pulse 1.6s infinite}
@@ -233,7 +233,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792616883"></script>
+<script src="/rk.js?v=1792616968"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -285,18 +285,18 @@
     const FIX=["up_1791295291864_47.png","showa_star_kashu.png","up_1790911750392_6.png"].map(f=>RK.LIST.find(n=>n.file===f)).filter(Boolean);
     const ic=RK.ico;
     const P=nu.filter(n=>n.sample).sort(()=>Math.random()-.5).slice(0,3);
-    const ABOUT="介護のレクプリは、高齢者向けの塗り絵・脳トレ・カレンダーを無料で配布しているサイトです。季節の花や動物、懐かしい風景の塗り絵から、難読漢字・計算・言葉遊びの脳トレまで、毎日のレクリエーションに使えるプリントをそろえています。";
+    const ABOUT="介護のレクプリは、高齢者向けの塗り絵・脳トレ・カレンダーを無料で配布しているサイトです。季節の花や動物、懐かしい風景の塗り絵から、難読漢字・計算・言葉遊びの脳トレまで、毎日のレクリエーションに使えるプリントをそろえています。細かく描き込んだ上級の塗り絵は、大人の塗り絵としてご家庭や趣味の時間にも楽しんでいただけます。";
     const steps=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます","search"],["画像を保存する","1枚ずつでも、お気に入りからまとめてでも","down"],["A4で印刷する","使ったものには「使用済み」の印がつきます","cal"]];
     let html="";
     if(V==="a"){
       const cn=k=>LIST.filter(n=>kindOf(n)===k).length;
-      const PTS=[["無料・登録不要・広告なし","開いてすぐ保存・印刷"],["A4でそのまま印刷","枠も整えて、配るだけ"],["季節の素材を毎週追加","行事や旬に合わせて増加"],["施設で何枚でも","人数分の印刷も自由"]];
+      const PTS=[["無料・登録不要・広告なし","何枚でも保存・印刷できます"],["A4でそのまま印刷","枠も整えて、配るだけ"],["季節の素材を毎週追加","行事や旬に合わせて増加"],["大人の塗り絵としても","描き込みたっぷりの上級も"]];
       const ST=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます。キーワードで探すこともできます。","「今の季節」から選ぶと、行事に合わせやすくなります"],["画像を保存する","「保存する」を押すと、A4用の画像が保存されます。色見本も一緒に保存できます。","☆お気に入りに入れておけば、あとでまとめて保存できます"],["A4で印刷する","保存した画像をA4で印刷するだけ。使った素材には「使用済み」の印がつきます。","同じ塗り絵を人数分そのまま印刷して使えます"]];
       html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p><ul class="pts-a">${PTS.map(x=>`<li><span class="ck">${RK.ico("check",16)}</span><div><b>${x[0]}</b><span>${x[1]}</span></div></li>`).join("")}</ul><div class="cnt-a"><span><b>${cn("塗り絵")}</b>枚の塗り絵</span><span><b>${cn("脳トレ")}</b>枚の脳トレ</span><span><b>${cn("カレンダー")}</b>種類のカレンダー</span></div></div><div class="ph">${FIX.map(n=>`<div class="phb"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></div>`).join("")}</div></section>`;
-      const D=FIX[2]||FIX[0]||nu[0],Th=RK.thumb(D),Ts=RK.thumb(D,D.sample||D.file),S3=nu.filter(n=>n.season===seasonNow).slice(0,3);
+      const D=FIX[2]||FIX[0]||nu[0],Th=RK.thumb(D),Ts=RK.thumb(D,D.sample||D.file),S3=nu.filter(n=>n.season===seasonNow&&n.file!==(FIX[2]||{}).file).slice(0,6);
       const ill=`<div class="ill"><div class="win"><div class="bar3"><i></i><i></i><i></i><span>rekupuri.com</span></div>
-        <div class="sc s1"><div class="chips">${["すべて","春","夏","秋","冬","通年"].map(x=>`<span class="${x===seasonNow?"on":""}">${x}</span>`).join("")}</div><div class="minis">${S3.map(n=>`<div class="mc"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}</b></div>`).join("")}</div><div class="cur c1"></div></div>
-        <div class="sc s2"><div class="big"><img alt="" src="${Th}"><div class="btns"><span class="fv">☆ お気に入り</span><span class="sv">${RK.ico("down",16)} 保存する</span></div></div><div class="tst">${RK.ico("check",14)} 保存しました</div><div class="cur c2"></div></div>
+        <div class="sc s1"><div class="chips">${["すべて","春","夏","秋","冬","通年"].map(x=>`<span class="${x===seasonNow?"on":""}">${x}</span>`).join("")}</div><div class="minis">${S3.map(n=>`<div class="mc"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}</b></div>`).join("")}</div></div>
+        <div class="sc s2"><div class="big"><img alt="" src="${Th}"><div class="btns"><span class="fv">☆ お気に入り</span><span class="sv">${RK.ico("down",16)} 保存する</span></div></div><div class="tst">${RK.ico("check",14)} 保存しました</div></div>
         <div class="sc s3"><div class="pr"><div class="paper"><img alt="" src="${Th}"></div><div class="mach"><span></span></div><div class="a4">A4</div></div><div class="done"><img alt="" src="${Ts}"><span>塗ってみると…</span></div></div>
       </div></div>`;
       html+=`<section class="how-a"><div class="hl"><div class="ey">HOW TO USE</div><h2>使い方は、<br>かんたん3ステップ</h2><ol class="steps-a">${ST.map((s,i)=>`<li data-i="${i}"><span class="num">0${i+1}</span><div class="tx3"><b>${s[0]}</b><span class="d">${s[1]}</span><span class="tip">${s[2]}</span></div></li>`).join("")}</ol></div>${ill}</section>`;
