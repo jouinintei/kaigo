@@ -7,7 +7,7 @@
 <title>素材をえらぶ｜介護のレクプリ（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792552995">
+<link rel="stylesheet" href="style.css?v=1792553123">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -43,7 +43,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792552995"></script>
+<script src="app.js?v=1792553123"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -102,7 +102,7 @@
     if(K==="cal")return renderCal();
     const a=filtered(),tot=a.length,pages=Math.max(1,Math.ceil(tot/PER));if(st.page>pages)st.page=pages;
     const pageItems=a.slice((st.page-1)*PER,st.page*PER);
-    main.innerHTML=head()+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["pop","人気順"],["rand","ランダム"],["new","新着順"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
+    main.innerHTML=head()+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
       (tot?`<div class="grid">${pageItems.map(n=>card(n)).join("")}</div>${pager(tot)}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><button class="btn p" data-reset>条件をリセット</button></div>`);
   }

@@ -121,18 +121,20 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
   function openMd(file, tab) {
     const n = LIST.find(x => x.file === file); if (!n) return;
     mdN = n; mdTab = tab || "l"; zoom = 100; renderMd();
-    const md = document.querySelector(".md"); md.classList.add("on"); document.body.style.overflow = "hidden";
-    md.querySelector("[data-close]").focus();
+    const md = document.querySelector(".md"); if (!md.classList.contains("on")) { try { history.pushState({ md: 1 }, ""); } catch (e) {} } md.classList.add("on"); document.body.style.overflow = "hidden";
+    const bx = md.querySelector(".box"); bx.setAttribute("tabindex", "-1"); bx.focus({ preventScroll: true });
   }
-  function closeMd() { document.querySelector(".md").classList.remove("on"); document.body.style.overflow = ""; }
+  function hideMd() { document.querySelector(".md").classList.remove("on"); document.body.style.overflow = ""; }
+  function closeMd() { if (!document.querySelector(".md.on")) return; if (history.state && history.state.md) history.back(); else hideMd(); }
+  addEventListener("popstate", hideMd);
   function renderMd() {
     const n = mdN, k = kindOf(n);
     const tabs = k === "脳トレ" ? (n.answer ? [["l", "問題"], ["a", "答え"]] : [["l", "問題"]]) : (n.sample ? [["l", "線画"], ["s", "色見本"]] : [["l", "線画"]]);
     const f = mdTab === "s" ? n.sample : mdTab === "a" ? n.answer : n.file;
     const rel = related(n);
-    document.querySelector(".md .box").innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div><button class="btn g" data-close style="height:44px">${ico("x", 16)}閉じる</button></div>
+    document.querySelector(".md .box").innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
 <div class="scr">
-<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${full(n, f)}"></div>
+<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${full(n, f)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"></div>
 
 ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}"><img loading="lazy" alt="" src="${thumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2"><button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button></div>
 </div>`;
@@ -140,7 +142,8 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
 
   /* ---------- events ---------- */
   document.addEventListener("click", e => {
-    const t = e.target.closest("button,[data-chk]"); if (!t) { if (e.target.classList.contains("md")) closeMd(); return; }
+    if (e.target.classList && e.target.classList.contains("md")) { closeMd(); return; }
+    const t = e.target.closest("button,[data-chk]"); if (!t) return;
     if (t.dataset.close !== undefined) return closeMd();
     if (t.dataset.fav) {
       const on = toggleFav(t.dataset.fav);
