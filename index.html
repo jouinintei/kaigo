@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792575797">
+<link rel="stylesheet" href="/rk.css?v=1792575930">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -67,7 +67,7 @@
 .hero .pics img.on{opacity:1}
 .hero .pic.tate img{aspect-ratio:.707}
 .hero .pic.tate .a{left:24%}.hero .pic.tate .b{right:24%}
-.hero .pic{opacity:0;visibility:hidden;transition:opacity .6s,visibility 0s .6s}.hero .pic.cur{opacity:1;visibility:visible;transition:opacity .6s}
+.hero .pics{overflow:hidden;touch-action:pan-y;user-select:none}.hero .pic{transition:transform .45s cubic-bezier(.25,.8,.3,1)}.hero .pics.drag .pic{transition:none}.hero .pics.drag{cursor:grabbing}
 .hero .pw{flex-direction:column;align-items:stretch;justify-content:center;gap:0}.hero .pw .pics{flex:none;width:100%}.hero .cnav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px}.hero .cnav button{border:0;background:none;cursor:pointer;padding:6px;color:var(--sub);display:flex}.hero .cnav .ar{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;align-items:center;justify-content:center}.hero .cnav .ar:hover{color:var(--btn);border-color:var(--btn)}.hero .dots{display:flex;gap:8px}.hero .dots button{width:9px;height:9px;padding:0;border-radius:50%;background:#D9D1C6}.hero .dots button[aria-current=true]{background:var(--acc);width:22px;border-radius:5px}.hero .ctl{font-family:var(--mincho);font-weight:700;font-size:15px;color:var(--ink);text-align:center;margin-top:4px;min-height:1.5em}
 .hero .pics .a{left:0;top:0;transform:rotate(-3deg);box-shadow:0 6px 16px rgba(50,40,30,.06)}
 .hero .pics .b{right:0;left:auto;top:14%;transform:rotate(2deg);box-shadow:0 12px 28px rgba(50,40,30,.10)}
@@ -192,7 +192,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792575797"></script>
+<script src="/rk.js?v=1792575930"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -214,12 +214,19 @@
   const P=[...pics.querySelectorAll(".pic")],ctl=pw.querySelector(".ctl");
   const load=i=>{const p=P[i];if(!p||p.dataset.l)return;p.dataset.l=1;const a=p.querySelector(".a");p.querySelectorAll("img").forEach(m=>m.src=m.dataset.s);const show=()=>{if(a.naturalHeight>a.naturalWidth)p.classList.add("tate");p.querySelectorAll("img").forEach(m=>m.classList.add("on"));};a.complete&&a.naturalWidth?show():a.addEventListener("load",show);};
   let cur=0,tm=null;
-  const go=i=>{cur=(i+P.length)%P.length;P.forEach((p,j)=>p.classList.toggle("cur",j===cur));load(cur);load(cur+1);pw.querySelectorAll(".dots button").forEach((d,j)=>d.setAttribute("aria-current",j===cur));ctl.textContent=slides[cur].title;};
+  const N=P.length;const pos=dx=>P.forEach((p,j)=>{let d=j-cur;if(d>N/2)d-=N;if(d<-N/2)d+=N;p.style.transform=`translateX(calc(${d*100}% + ${dx}px))`;p.style.visibility=Math.abs(d)<=1?"visible":"hidden";});
+  const go=i=>{cur=(i+N)%N;P.forEach((p,j)=>p.classList.toggle("cur",j===cur));pos(0);load(cur);load((cur+1)%N);load((cur+N-1)%N);pw.querySelectorAll(".dots button").forEach((d,j)=>d.setAttribute("aria-current",j===cur));ctl.textContent=slides[cur].title;};
   const play=()=>{clearInterval(tm);if(P.length>1)tm=setInterval(()=>go(cur+1),5000);};
   go(0);play();
   pw.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;const v=b.dataset.c;go(v[0]==="="?+v.slice(1):cur+ +v);play();});
-  pics.addEventListener("mouseenter",()=>clearInterval(tm));pics.addEventListener("mouseleave",play);
-  let tx0=null;pics.addEventListener("touchstart",e=>{tx0=e.touches[0].clientX;},{passive:true});pics.addEventListener("touchend",e=>{if(tx0===null)return;const d=e.changedTouches[0].clientX-tx0;tx0=null;if(Math.abs(d)>40){go(cur+(d<0?1:-1));play();}},{passive:true});
+  pics.addEventListener("pointerenter",e=>{if(e.pointerType==="mouse")clearInterval(tm);});pics.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")play();});
+  let sx=null,sy=0,dx=0,dragging=false,eat=false;
+  pics.addEventListener("pointerdown",e=>{if(N<2||(e.pointerType==="mouse"&&e.button!==0))return;sx=e.clientX;sy=e.clientY;dx=0;dragging=false;});
+  pics.addEventListener("pointermove",e=>{if(sx===null)return;dx=e.clientX-sx;const dy=e.clientY-sy;if(!dragging){if(Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)){dragging=true;clearInterval(tm);pics.classList.add("drag");try{pics.setPointerCapture(e.pointerId);}catch(_){}}else if(Math.abs(dy)>10){sx=null;return;}}if(dragging){e.preventDefault();pos(dx);}});
+  const end=()=>{if(sx===null)return;sx=null;if(!dragging)return;dragging=false;pics.classList.remove("drag");eat=true;setTimeout(()=>eat=false,50);const w=pics.clientWidth;go(Math.abs(dx)>Math.min(60,w*.15)?cur+(dx<0?1:-1):cur);play();};
+  pics.addEventListener("pointerup",end);pics.addEventListener("pointercancel",()=>{if(sx!==null){sx=null;dragging=false;pics.classList.remove("drag");go(cur);play();}});
+  pics.addEventListener("click",e=>{if(eat){e.preventDefault();e.stopPropagation();}},true);
+  pics.addEventListener("dragstart",e=>e.preventDefault());
   document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
