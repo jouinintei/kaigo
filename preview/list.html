@@ -65,7 +65,7 @@
   document.getElementById("ft").innerHTML=RK.footer(K);
   RK.updFavCount();
   const main=document.getElementById("main");
-  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:"new",page:1,month:null,sel:new Set(),unused:false};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
+  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
   let pop=[],seed=Math.random()*1e9|0;
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};

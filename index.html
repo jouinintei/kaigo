@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792620029">
+<link rel="stylesheet" href="/rk.css?v=1792620139">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -245,10 +245,13 @@
 @media (max-width:760px){.pts-a{grid-template-columns:1fr}.ab-a .ph{height:300px}.ab-a h2{font-size:28px}.how-a{margin-top:48px;grid-template-columns:1fr;gap:24px}.how-a h2{font-size:25px}.win{height:470px}.pd{flex-direction:column;gap:10px}.pv{flex:none;flex-direction:row;padding:8px}.pv img{width:84px}.big img{height:160px}.cap{font-size:14px}.p3{gap:8px;height:260px}.prn{width:160px;height:220px}.pin{left:28px;right:28px}.pout{left:24px;right:24px;top:116px}.col img{height:96px}.arr3{font-size:20px}.minis{grid-template-columns:repeat(2,1fr)}.minis .mc:nth-child(n+5){display:none}.cnt-a b{font-size:24px}.ab-a,.ab-d{grid-template-columns:1fr}.steps-a,.ft3,.st-c{grid-template-columns:1fr}.steps-a li::after{display:none}.tl{flex-direction:column;align-items:center;gap:18px}.tl li::before{display:none}.ab-b{padding:36px 20px}.ab-b .q{font-size:23px}}
 .toc{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:25;display:flex;flex-direction:column;gap:6px}
 .toc a{writing-mode:vertical-rl;font-family:var(--mincho);font-weight:700;font-size:15px;letter-spacing:.12em;color:#fff;text-decoration:none;padding:14px 9px 14px 7px;border-radius:0 10px 10px 0;background:#C9B9A6;box-shadow:2px 3px 8px rgba(0,0,0,.08);width:34px;transition:width .2s,box-shadow .2s;text-shadow:0 1px 1px rgba(0,0,0,.08)}
-.toc a:nth-child(1){background:#B9A48E}.toc a:nth-child(2){background:#D9A27A}.toc a:nth-child(3){background:#9DB39A}.toc a:nth-child(4){background:#A9B8CC}.toc a:nth-child(5){background:#D98A5E}.toc a:nth-child(6){background:#C7A9C2}
+.toc a:nth-child(1){background:#B9A48E}.toc a:nth-child(2){background:#D9A27A}.toc a:nth-child(3){background:#9DB39A}.toc a:nth-child(4){background:#A9B8CC}.toc a:nth-child(5){background:#C9A24A}.toc a:nth-child(6){background:#D98A5E}.toc a:nth-child(7){background:#C7A9C2}
 .toc a:hover{width:40px}.toc a.on{width:46px;box-shadow:3px 4px 12px rgba(0,0,0,.18)}
+.rkb{position:absolute;left:8px;top:8px;z-index:3;min-width:40px;height:40px;padding:0 6px;border-radius:999px;background:#fff;border:2px solid #D9CBB9;color:#5C534A;font:800 19px var(--mincho);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.12)}.rkb small{font-size:11px;margin-left:1px}
+.rkb.r1{background:#E0B43C;border-color:#E0B43C;color:#fff}.rkb.r2{background:#A9B2BC;border-color:#A9B2BC;color:#fff}.rkb.r3{background:#C58A5A;border-color:#C58A5A;color:#fff}
+.toc a[data-t="#ranking"],.bnav.jump a[data-t="#ranking"]{display:none}body.has-rank .toc a[data-t="#ranking"]{display:block}body.has-rank .bnav.jump a[data-t="#ranking"]{display:flex}
 @media (max-width:1100px){.toc{display:none}}
-.bnav.jump{grid-template-columns:repeat(6,1fr)!important}.bnav.jump a{font-size:10.5px;gap:3px}.bnav.jump a .ico{width:22px;height:22px}.bnav.jump a.on{color:var(--btn);font-weight:700}.bnav.jump a.on .ico{stroke-width:2.4}
+.bnav.jump{grid-template-columns:repeat(6,1fr)!important}body.has-rank .bnav.jump{grid-template-columns:repeat(7,1fr)!important}.bnav.jump a{font-size:10px;letter-spacing:-.02em;gap:3px}.bnav.jump a .ico{width:22px;height:22px}.bnav.jump a.on{color:var(--btn);font-weight:700}.bnav.jump a.on .ico{stroke-width:2.4}
 </style>
 </head>
 <body>
@@ -272,8 +275,9 @@
 </nav>
 
 <div id="abhow"></div>
-<nav class="toc" aria-label="ページ内メニュー"><a href="#top-hero" data-t="#top-hero" title="トップ">トップ</a><a href="#sozai" data-t="#sozai" title="素材をさがす">さがす</a><a href="#about" data-t="#abhow .ab-a" title="レクプリについて">について</a><a href="#howto" data-t="#abhow .how-a" title="使い方">使い方</a><a href="#osusume" data-t="#osusume" title="おすすめの塗り絵">おすすめ</a><a href="#shinchaku" data-t="#shinchaku" title="新しく追加した素材">新着</a></nav>
+<nav class="toc" aria-label="ページ内メニュー"><a href="#top-hero" data-t="#top-hero" title="トップ">トップ</a><a href="#sozai" data-t="#sozai" title="素材をさがす">さがす</a><a href="#about" data-t="#abhow .ab-a" title="レクプリについて">について</a><a href="#howto" data-t="#abhow .how-a" title="使い方">使い方</a><a href="#ranking" data-t="#ranking" title="人気ランキング">ランキング</a><a href="#osusume" data-t="#osusume" title="おすすめの塗り絵">おすすめ</a><a href="#shinchaku" data-t="#shinchaku" title="新しく追加した素材">新着</a></nav>
 
+<section class="sec" id="ranking" hidden><div class="h2"><h2>今週の人気ランキング</h2><span class="s">この1週間でよく保存された素材</span><a class="more" href="list.html?k=nurie&amp;sort=pop">人気順で見る →</a></div><div class="recs rk8" id="rank"></div></section>
 <section class="sec" id="osusume"><div class="h2"><h2>おすすめの塗り絵</h2><a class="more" href="list.html?k=nurie">すべて見る →</a></div><div class="recs" id="recs"></div></section>
 
 <section class="sec" id="shinchaku"><div class="h2"><h2>新しく追加した素材</h2><a class="more" href="list.html?k=nurie">一覧へ →</a></div><div class="recs" id="news"></div></section>
@@ -282,7 +286,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792620029"></script>
+<script src="/rk.js?v=1792620139"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -321,9 +325,9 @@
   document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
   // 左のページ内メニュー
   (()=>{const toc=document.querySelector(".toc");if(!toc)return;
-    const IT=[["#top-hero","トップ","home"],["#sozai","さがす","search"],["#abhow .ab-a","について","pal"],["#abhow .how-a","使い方","check"],["#osusume","おすすめ","star"],["#shinchaku","新着","cal"]];
+    const IT=[["#top-hero","トップ","home"],["#sozai","さがす","search"],["#abhow .ab-a","について","pal"],["#abhow .how-a","使い方","check"],["#ranking","人気","crown"],["#osusume","おすすめ","star"],["#shinchaku","新着","cal"]];
     const bn=document.querySelector(".bnav");if(bn){bn.classList.add("jump");bn.setAttribute("aria-label","ページ内メニュー");bn.innerHTML=IT.map(x=>`<a href="#" data-t="${x[0]}">${RK.ico(x[2])}${x[1]}</a>`).join("");}
-    const A=[...toc.querySelectorAll("a")],B=bn?[...bn.querySelectorAll("a")]:[];const tg=t=>document.querySelector(t);
+    const A=[...toc.querySelectorAll("a")],B=bn?[...bn.querySelectorAll("a")]:[];const tg=t=>{const e=document.querySelector(t);return e&&!e.hidden?e:null;};
     document.addEventListener("click",e=>{const a=e.target.closest(".toc a[data-t],.bnav.jump a[data-t]");if(!a)return;e.preventDefault();const t=a.dataset.t,el=tg(t);if(!el)return;const r=el.getBoundingClientRect();const y=t==="#top-hero"?0:t==="#sozai"?r.top+scrollY-Math.max(24,(innerHeight-r.height-(bn&&bn.offsetHeight||0))/2):r.top+scrollY-24;scrollTo({top:y,behavior:"smooth"});});
     let rq=0;const upd=()=>{rq=0;const line=innerHeight*.55;let cur=0;IT.forEach((x,i)=>{const el=tg(x[0]);if(el&&el.getBoundingClientRect().top<=line)cur=i;});if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=IT.length-1;A.forEach((a,i)=>a.classList.toggle("on",i===cur));B.forEach((a,i)=>a.classList.toggle("on",i===cur));};
     addEventListener("scroll",()=>{if(!rq)rq=requestAnimationFrame(upd);},{passive:true});addEventListener("resize",upd);setTimeout(upd,300);})();
@@ -387,6 +391,8 @@
   })();
   document.getElementById("recs").innerHTML=mix.slice(0,8).map(rec).join("");
   document.getElementById("news").innerHTML=nu.slice(0,4).map(rec).join("");
+  fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{const seen=new Set(),top=[];((j&&j.files)||[]).forEach(f=>{const n=LIST.find(x=>x.file===f||x.sample===f||x.answer===f);if(n&&!seen.has(n.file)&&top.length<8){seen.add(n.file);top.push(n);}});
+    if(top.length<4)return;const box=document.getElementById("rank");box.innerHTML=top.map((n,i)=>rec(n).replace('<div class="card c">',`<div class="card c"><span class="rkb r${i+1}">${i+1}<small>位</small></span>`)).join("");document.getElementById("ranking").hidden=false;document.body.classList.add("has-rank");dispatchEvent(new Event("resize"));}).catch(()=>{});
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a9863d837944405fb5b7d52eafc53b9e"}'></script><!-- End Cloudflare Web Analytics -->

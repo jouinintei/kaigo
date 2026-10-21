@@ -21,7 +21,7 @@
 <script src="/frame.js?v=10"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792620029">
+<link rel="stylesheet" href="/rk.css?v=1792620139">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -57,7 +57,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792620029"></script>
+<script src="/rk.js?v=1792620139"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -79,7 +79,7 @@
   document.getElementById("ft").innerHTML=RK.footer(K);
   RK.updFavCount();
   const main=document.getElementById("main");
-  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:"new",page:1,month:null,sel:new Set(),unused:false};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
+  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
   let pop=[],seed=Math.random()*1e9|0;
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
