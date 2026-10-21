@@ -134,7 +134,7 @@
     const t=e.target.closest("button,[data-chk]");if(!t)return;
     if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
     else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;render();}
-    else if(t.dataset.pg){st.page=+t.dataset.pg;render();const el=main.querySelector(".fl")||main.querySelector(".bar")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
+    else if(t.dataset.pg){st.page=+t.dataset.pg;render();const el=main.querySelector(".bar")||main.querySelector(".fl")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
     else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1});render();}
     else if(t.dataset.sort){if(t.dataset.sort==="rand"&&st.sort==="rand")seed=Math.random()*1e9|0;st.sort=t.dataset.sort;st.page=1;render();}
     else if(t.dataset.clr){const k=t.dataset.clr;if(k==="season")st.season="すべて";else st[k]="";st.page=1;render();}
