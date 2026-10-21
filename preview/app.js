@@ -11,7 +11,7 @@
     brain: '<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a2 2 0 0 0-3-1z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/>',
     cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
     check: '<path d="M5 12l5 5 9-10"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
-    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>'
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'
   };
   const ico = (n, s) => `<svg class="ico" ${s ? `style="width:${s}px;height:${s}px"` : ""} viewBox="0 0 24 24" aria-hidden="true">${P[n]}</svg>`;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -50,7 +50,7 @@
     return `<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>
 <header class="hd"><div class="wrap"><a class="logo" href="index.html"><span class="a">介護の</span><span class="b">レクプリ</span></a>
 ${cur===""?`<nav class="gnav" aria-label="メインメニュー">${nav.map(([t, h, k]) => `<a href="${h}"${cur === k ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</nav>`:""}
-<a class="favbtn" href="list.html?k=fav">${ico("heart", 18)}お気に入り<span class="n" data-favn></span></a></div></header>`;
+${cur===""?`<a class="favbtn" href="list.html?k=fav">${ico("heart", 18)}お気に入り<span class="n" data-favn></span></a>`:`<a class="favbtn" href="../contact.html">${ico("mail", 18)}お問い合わせ・要望</a>`}</div></header>`;
   }
   function tabs(cur) {
     const t = [["塗り絵", "nurie"], ["脳トレ", "noutore"], ["カレンダー", "cal"], ["お気に入り", "fav"]];
