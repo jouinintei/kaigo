@@ -7,7 +7,7 @@
 <title>介護のレクプリ｜高齢者向けの無料塗り絵・脳トレ・カレンダー（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792554293">
+<link rel="stylesheet" href="style.css?v=1792554362">
 <style>
 .hero{padding:52px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -21,8 +21,7 @@
 .hero .pw{flex:1;min-width:0;display:flex;align-items:center;gap:16px}
 .hero .pics{position:relative;flex:1;height:330px;min-width:0}
 .hero .pic{position:absolute;inset:0;border:0;background:none;padding:0;cursor:zoom-in}
-.hero .pic:hover img.b{transform:rotate(2deg) translateY(-4px);box-shadow:0 16px 34px rgba(50,40,30,.14)}
-.hero .pics img{transition:opacity .4s,transform .2s,box-shadow .2s}
+.hero .pics img{transition:opacity .4s}
 .hero .pcap{flex:none;width:270px;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:16px;position:relative;z-index:2}
 .hero .pt{display:flex;flex-direction:column;gap:0;min-width:0;flex:1}
 .hero .pt .lbl{align-self:flex-start}
@@ -75,11 +74,10 @@
 .ab-a .ph{position:relative;height:320px}
 .ab-a .ph img{position:absolute;width:58%;aspect-ratio:1.414;object-fit:cover;background:#fff;padding:7px;border:1px solid var(--line);box-shadow:0 8px 20px rgba(50,40,30,.08)}
 .ab-a .phb{border:0;background:none;padding:0;cursor:zoom-in}
-.ab-a .phb img{position:absolute;transition:transform .2s;width:auto;max-width:none;aspect-ratio:auto;object-fit:contain}
-.ab-a .phb:nth-child(1) img{left:0;top:10%;height:54%;transform:rotate(-4deg)}
-.ab-a .phb:nth-child(2) img{left:50%;top:0;height:100%;transform:translateX(-50%) rotate(2deg);z-index:2}
-.ab-a .phb:nth-child(3) img{right:0;bottom:4%;height:54%;transform:rotate(-2deg)}
-.ab-a .phb:hover img{z-index:3;box-shadow:0 14px 30px rgba(50,40,30,.16)}
+.ab-a .phb img{position:absolute;width:auto;max-width:none;aspect-ratio:auto;object-fit:contain}
+.ab-a .phb:nth-child(2) img{left:0;top:6%;height:88%;transform:rotate(-2deg);z-index:1}
+.ab-a .phb:nth-child(1) img{right:12%;top:0;height:47%;transform:rotate(2deg);z-index:2}
+.ab-a .phb:nth-child(3) img{right:0;bottom:0;height:47%;transform:rotate(-2deg);z-index:3}
 .ab-a h2{font-family:var(--mincho);font-size:30px;line-height:1.5;margin:6px 0 14px}
 .ey{font-size:13px;letter-spacing:.25em;color:var(--btn);font-weight:700}
 .ab-a p{margin:0;color:#4A423A}
@@ -157,7 +155,7 @@
 </main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792554293"></script>
+<script src="app.js?v=1792554362"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;

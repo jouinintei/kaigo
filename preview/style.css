@@ -5,7 +5,7 @@
   --mincho:'Shippori Mincho B1',serif;--gothic:'Zen Kaku Gothic New',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scrollbar-gutter:stable}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--gothic);font-size:17px;line-height:1.75}
 a{color:var(--btn)}a:hover{color:var(--btnh)}
 img{max-width:100%}
