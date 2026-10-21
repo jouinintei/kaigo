@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792615822">
+<link rel="stylesheet" href="/rk.css?v=1792616231">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -161,13 +161,10 @@
 .st-d .n{font-family:var(--mincho);font-size:34px;color:var(--acc)}
 .st-d b{font-size:19px}.st-d span{display:block;font-size:15px;color:var(--sub)}
 @media (max-width:760px){.ab-a,.ab-d{grid-template-columns:1fr}.steps-a,.ft3,.st-c{grid-template-columns:1fr}.steps-a li::after{display:none}.tl{flex-direction:column;align-items:center;gap:18px}.tl li::before{display:none}.ab-b{padding:36px 20px}.ab-b .q{font-size:23px}}
-.toc{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:25;display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:14px;padding:10px 6px;box-shadow:0 6px 20px rgba(50,40,30,.06);transition:box-shadow .2s}
-.toc .tt{font-size:10px;letter-spacing:.2em;color:var(--mute);font-weight:700;text-align:center;padding:0 0 6px}
-.toc a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:14px;color:var(--sub);text-decoration:none;white-space:nowrap}
-.toc a:hover{background:#F7F2EA;color:var(--ink)}
-.toc .d{width:9px;height:9px;border-radius:50%;background:#D9D1C6;flex:none;transition:all .2s}
-.toc a.on{color:var(--btn);font-weight:700}.toc a.on .d{background:var(--acc);box-shadow:0 0 0 4px #F7EBE2}
-@media (max-width:1639px){.toc .tt{display:none}.toc .l{display:none}.toc:hover .l{display:inline}.toc:hover{box-shadow:0 10px 30px rgba(50,40,30,.14)}}
+.toc{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:25;display:flex;flex-direction:column;gap:6px}
+.toc a{writing-mode:vertical-rl;font-family:var(--mincho);font-weight:700;font-size:15px;letter-spacing:.12em;color:#fff;text-decoration:none;padding:14px 9px 14px 7px;border-radius:0 10px 10px 0;background:#C9B9A6;box-shadow:2px 3px 8px rgba(0,0,0,.08);width:34px;transition:width .2s,box-shadow .2s;text-shadow:0 1px 1px rgba(0,0,0,.08)}
+.toc a:nth-child(1){background:#B9A48E}.toc a:nth-child(2){background:#D9A27A}.toc a:nth-child(3){background:#9DB39A}.toc a:nth-child(4){background:#A9B8CC}.toc a:nth-child(5){background:#D98A5E}.toc a:nth-child(6){background:#C7A9C2}
+.toc a:hover{width:40px}.toc a.on{width:46px;box-shadow:3px 4px 12px rgba(0,0,0,.18)}
 @media (max-width:1100px){.toc{display:none}}
 </style>
 </head>
@@ -192,7 +189,7 @@
 </nav>
 
 <div id="abhow"></div>
-<nav class="toc" aria-label="ページ内メニュー"><div class="tt">MENU</div><a href="#top-hero" data-t="#top-hero"><span class="d"></span><span class="l">トップ</span></a><a href="#sozai" data-t="#sozai"><span class="d"></span><span class="l">素材をさがす</span></a><a href="#about" data-t="#abhow .ab-a"><span class="d"></span><span class="l">レクプリについて</span></a><a href="#howto" data-t="#abhow .steps-a"><span class="d"></span><span class="l">使い方</span></a><a href="#osusume" data-t="#osusume"><span class="d"></span><span class="l">おすすめの塗り絵</span></a><a href="#shinchaku" data-t="#shinchaku"><span class="d"></span><span class="l">新しく追加した素材</span></a></nav>
+<nav class="toc" aria-label="ページ内メニュー"><a href="#top-hero" data-t="#top-hero" title="トップ">トップ</a><a href="#sozai" data-t="#sozai" title="素材をさがす">さがす</a><a href="#about" data-t="#abhow .ab-a" title="レクプリについて">について</a><a href="#howto" data-t="#abhow .steps-a" title="使い方">使い方</a><a href="#osusume" data-t="#osusume" title="おすすめの塗り絵">おすすめ</a><a href="#shinchaku" data-t="#shinchaku" title="新しく追加した素材">新着</a></nav>
 
 <section class="sec" id="osusume"><div class="h2"><h2>おすすめの塗り絵</h2><span class="s">季節ものと、いつでも使えるものを半分ずつ</span><a class="more" href="list.html?k=nurie">すべて見る →</a></div><div class="recs" id="recs"></div></section>
 
@@ -202,7 +199,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792615822"></script>
+<script src="/rk.js?v=1792616231"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
