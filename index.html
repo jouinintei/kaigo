@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792619059">
+<link rel="stylesheet" href="/rk.css?v=1792619330">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -282,7 +282,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792619059"></script>
+<script src="/rk.js?v=1792619330"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -325,7 +325,7 @@
     const bn=document.querySelector(".bnav");if(bn){bn.classList.add("jump");bn.setAttribute("aria-label","ページ内メニュー");bn.innerHTML=IT.map(x=>`<a href="#" data-t="${x[0]}">${RK.ico(x[2])}${x[1]}</a>`).join("");}
     const A=[...toc.querySelectorAll("a")],B=bn?[...bn.querySelectorAll("a")]:[];const tg=t=>document.querySelector(t);
     document.addEventListener("click",e=>{const a=e.target.closest(".toc a[data-t],.bnav.jump a[data-t]");if(!a)return;e.preventDefault();const t=a.dataset.t,el=tg(t);if(!el)return;const r=el.getBoundingClientRect();const y=t==="#top-hero"?0:t==="#sozai"?r.top+scrollY-Math.max(24,(innerHeight-r.height-(bn&&bn.offsetHeight||0))/2):r.top+scrollY-24;scrollTo({top:y,behavior:"smooth"});});
-    let rq=0;const upd=()=>{rq=0;const line=innerHeight*.35;let cur=0;IT.forEach((x,i)=>{const el=tg(x[0]);if(el&&el.getBoundingClientRect().top<=line)cur=i;});if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=IT.length-1;A.forEach((a,i)=>a.classList.toggle("on",i===cur));B.forEach((a,i)=>a.classList.toggle("on",i===cur));};
+    let rq=0;const upd=()=>{rq=0;const line=innerHeight*.55;let cur=0;IT.forEach((x,i)=>{const el=tg(x[0]);if(el&&el.getBoundingClientRect().top<=line)cur=i;});if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=IT.length-1;A.forEach((a,i)=>a.classList.toggle("on",i===cur));B.forEach((a,i)=>a.classList.toggle("on",i===cur));};
     addEventListener("scroll",()=>{if(!rq)rq=requestAnimationFrame(upd);},{passive:true});addEventListener("resize",upd);setTimeout(upd,300);})();
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
