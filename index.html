@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792617177">
+<link rel="stylesheet" href="/rk.css?v=1792617370">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -133,13 +133,28 @@
 .how-a .steps-a b{margin:2px 0 4px;font-size:21px}.how-a .steps-a span.d{font-size:15px;display:block}
 .how-a .steps-a .tip{padding-top:8px;margin:0}
 .ill{position:relative}
+.cap{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:700;color:#3A2A21;margin:-4px 0 14px}.cap i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px var(--mincho);flex:none}
+.hand{position:absolute;width:30px;height:30px;right:-18px;bottom:-22px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));z-index:3}
+.chips span,.btns .sv{position:relative}
+.ill[data-s="0"] .s1 .hand,.ill[data-s="1"] .s2 .hand{animation:tap 1.6s infinite}
+@keyframes tap{0%,100%{transform:translate(0,0)}50%{transform:translate(-4px,-4px) scale(.92)}}
+.p3{display:flex;align-items:center;justify-content:center;gap:18px;height:300px}
+.prn{position:relative;width:220px;height:250px}
+.pin{position:absolute;left:40px;right:40px;top:6px;height:46px;background:#fff;border:1px solid var(--line);border-bottom:0}
+.pbody{position:absolute;left:0;right:0;top:46px;height:96px;background:#E6DED3;border-radius:16px;box-shadow:inset 0 -8px 0 #D8CDBF}.pbody .lamp{position:absolute;right:20px;top:18px;width:10px;height:10px;border-radius:50%;background:#7DB37A}.pbody .slot{position:absolute;left:26px;right:26px;bottom:22px;height:8px;border-radius:4px;background:#B9AC9C}
+.pout{position:absolute;left:34px;right:34px;top:120px;background:#fff;border:1px solid var(--line);padding:5px;box-shadow:0 8px 16px rgba(0,0,0,.08);transform:translateY(-40px);clip-path:inset(0 0 100% 0);transition:transform 1.4s ease .2s,clip-path 1.4s ease .2s}.pout img{width:100%;display:block}
+.ill[data-s="2"] .pout{transform:none;clip-path:inset(0 0 0 0)}
+.plab{position:absolute;left:0;right:0;bottom:-6px;text-align:center;font:700 14px var(--gothic);color:var(--btn)}
+.arr3{font-size:26px;color:#C9BBAA;opacity:0;transition:opacity .4s 1.5s}.ill[data-s="2"] .arr3{opacity:1}
+.col{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;color:var(--sub);opacity:0;transform:scale(.95);transition:all .5s 1.7s}.ill[data-s="2"] .col{opacity:1;transform:none}.col img{height:130px;border:1px solid var(--line);border-radius:6px;padding:4px;background:#fff}
+
 .win{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 40px rgba(50,40,30,.10);overflow:hidden;height:420px;position:relative}
 .bar3{height:34px;background:#F3EEE7;display:flex;align-items:center;gap:6px;padding:0 14px;border-bottom:1px solid var(--line)}.bar3 i{width:10px;height:10px;border-radius:50%;background:#E0D6CA}.bar3 span{margin-left:12px;font-size:12px;color:var(--mute);background:#fff;border-radius:6px;padding:2px 12px}
 .sc{position:absolute;left:0;right:0;top:34px;bottom:0;padding:22px;opacity:0;transform:translateY(8px);transition:opacity .45s,transform .45s;pointer-events:none}
 .ill[data-s="0"] .s1,.ill[data-s="1"] .s2,.ill[data-s="2"] .s3{opacity:1;transform:none}
 .chips{display:flex;gap:8px;flex-wrap:wrap}.chips span{font-size:14px;border:1px solid var(--line);border-radius:999px;padding:5px 14px;color:var(--sub);background:#fff}.chips .on{background:var(--btn);border-color:var(--btn);color:#fff}
 .minis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.mc{border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff}.mc img{width:100%;aspect-ratio:1.414;object-fit:contain;display:block}.mc b{display:block;font-size:12.5px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#3A2A21}
-.big{display:flex;flex-direction:column;align-items:center;gap:14px}.big img{height:250px;max-width:100%;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff}
+.big{display:flex;flex-direction:column;align-items:center;gap:14px}.big img{height:210px;max-width:100%;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff}
 .btns{display:flex;gap:10px}.btns span{display:inline-flex;align-items:center;gap:6px;border-radius:10px;padding:10px 18px;font-size:15px;font-weight:700}.btns .fv{border:1px solid var(--line);color:var(--sub);background:#fff}.btns .sv{background:var(--btn);color:#fff;box-shadow:0 0 0 0 rgba(169,83,42,.5)}
 .ill[data-s="1"] .btns .sv{animation:pulse 1.6s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(169,83,42,.45)}70%{box-shadow:0 0 0 12px rgba(169,83,42,0)}100%{box-shadow:0 0 0 0 rgba(169,83,42,0)}}
@@ -194,7 +209,7 @@
 .st-d li:first-child{padding-top:0}
 .st-d .n{font-family:var(--mincho);font-size:34px;color:var(--acc)}
 .st-d b{font-size:19px}.st-d span{display:block;font-size:15px;color:var(--sub)}
-@media (max-width:760px){.pts-a{grid-template-columns:1fr}.ab-a .ph{height:300px}.ab-a h2{font-size:28px}.how-a{margin-top:48px;grid-template-columns:1fr;gap:24px}.how-a h2{font-size:25px}.win{height:360px}.big img{height:190px}.cnt-a b{font-size:24px}.ab-a,.ab-d{grid-template-columns:1fr}.steps-a,.ft3,.st-c{grid-template-columns:1fr}.steps-a li::after{display:none}.tl{flex-direction:column;align-items:center;gap:18px}.tl li::before{display:none}.ab-b{padding:36px 20px}.ab-b .q{font-size:23px}}
+@media (max-width:760px){.pts-a{grid-template-columns:1fr}.ab-a .ph{height:300px}.ab-a h2{font-size:28px}.how-a{margin-top:48px;grid-template-columns:1fr;gap:24px}.how-a h2{font-size:25px}.win{height:380px}.big img{height:160px}.cap{font-size:14px}.p3{gap:8px;height:260px}.prn{width:160px;height:220px}.pin{left:28px;right:28px}.pout{left:24px;right:24px;top:116px}.col img{height:96px}.arr3{font-size:20px}.minis{grid-template-columns:repeat(2,1fr)}.minis .mc:nth-child(n+5){display:none}.cnt-a b{font-size:24px}.ab-a,.ab-d{grid-template-columns:1fr}.steps-a,.ft3,.st-c{grid-template-columns:1fr}.steps-a li::after{display:none}.tl{flex-direction:column;align-items:center;gap:18px}.tl li::before{display:none}.ab-b{padding:36px 20px}.ab-b .q{font-size:23px}}
 .toc{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:25;display:flex;flex-direction:column;gap:6px}
 .toc a{writing-mode:vertical-rl;font-family:var(--mincho);font-weight:700;font-size:15px;letter-spacing:.12em;color:#fff;text-decoration:none;padding:14px 9px 14px 7px;border-radius:0 10px 10px 0;background:#C9B9A6;box-shadow:2px 3px 8px rgba(0,0,0,.08);width:34px;transition:width .2s,box-shadow .2s;text-shadow:0 1px 1px rgba(0,0,0,.08)}
 .toc a:nth-child(1){background:#B9A48E}.toc a:nth-child(2){background:#D9A27A}.toc a:nth-child(3){background:#9DB39A}.toc a:nth-child(4){background:#A9B8CC}.toc a:nth-child(5){background:#D98A5E}.toc a:nth-child(6){background:#C7A9C2}
@@ -234,7 +249,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792617177"></script>
+<script src="/rk.js?v=1792617370"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -299,10 +314,9 @@
       html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p><ul class="pts-a">${PTS.map(x=>`<li><span class="ck">${RK.ico("check",16)}</span><div><b>${x[0]}</b><span>${x[1]}</span></div></li>`).join("")}</ul><div class="cnt-a"><span><b>${cn("塗り絵")}</b>枚の塗り絵</span><span><b>${cn("脳トレ")}</b>枚の脳トレ</span><span><b>${cn("カレンダー")}</b>種類のカレンダー</span></div></div><div class="ph">${FIX.map(n=>`<div class="phb"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></div>`).join("")}</div></section>`;
       const D=FIX[2]||FIX[0]||nu[0],Th=RK.thumb(D),Ts=RK.thumb(D,D.sample||D.file),S3=nu.filter(n=>n.season===seasonNow&&n.file!==(FIX[2]||{}).file).slice(0,6);
       const ill=`<div class="ill"><div class="win"><div class="bar3"><i></i><i></i><i></i><span>rekupuri.com</span></div>
-        <div class="sc s1"><div class="chips">${["すべて","春","夏","秋","冬","通年"].map(x=>`<span class="${x===seasonNow?"on":""}">${x}</span>`).join("")}</div><div class="minis">${S3.map(n=>`<div class="mc"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}</b></div>`).join("")}</div></div>
-        <div class="sc s2"><div class="big"><img alt="" src="${Th}"><div class="btns"><span class="fv">☆ お気に入り</span><span class="sv">${RK.ico("down",16)} 保存する</span></div></div><div class="tst">${RK.ico("check",14)} 保存しました</div></div>
-        <div class="sc s3"><div class="pr"><div class="paper"><img alt="" src="${Th}"></div><div class="mach"><span></span></div><div class="a4">A4</div></div><div class="done"><img alt="" src="${Ts}"><span>塗ってみると…</span></div></div>
-      </div></div>`;
+        <div class="sc s1"><div class="cap"><i>1</i>季節やジャンルを押して、塗り絵を選ぶ</div><div class="chips">${["すべて","春","夏","秋","冬","通年"].map(x=>`<span class="${x===seasonNow?"on":""}">${x}${x===seasonNow?'<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg>':""}</span>`).join("")}</div><div class="minis">${S3.map(n=>`<div class="mc"><img alt="" src="${RK.sthumb(n)}"><b>${esc(n.title)}</b></div>`).join("")}</div></div>
+        <div class="sc s2"><div class="cap"><i>2</i>「保存する」を押すと、画像が保存されます</div><div class="big"><img alt="" src="${Th}"><div class="btns"><span class="fv">☆ お気に入り</span><span class="sv">${RK.ico("down",16)} 保存する<svg class="hand" viewBox="0 0 24 24"><path d="M5 3l14 7-6 1.6L10.5 18z" fill="#fff" stroke="#3A2A21" stroke-width="1.6" stroke-linejoin="round"/></svg></span></div></div><div class="tst">${RK.ico("check",14)} 保存しました（ダウンロードフォルダへ）</div></div>
+        <div class="sc s3"><div class="cap"><i>3</i>保存した画像を、A4で印刷するだけ</div><div class="p3"><div class="prn"><div class="pin"></div><div class="pbody"><span class="lamp"></span><span class="slot"></span></div><div class="pout"><img alt="" src="${Th}"></div><div class="plab">A4で印刷</div></div><div class="arr3">→</div><div class="col"><img alt="" src="${Ts}"><span>あとは塗って楽しむだけ</span></div></div></div></div></div>`;
       html+=`<section class="how-a"><div class="hl"><div class="ey">HOW TO USE</div><h2>使い方は、<br>かんたん3ステップ</h2><ol class="steps-a">${ST.map((s,i)=>`<li data-i="${i}"><span class="num">0${i+1}</span><div class="tx3"><b>${s[0]}</b><span class="d">${s[1]}</span><span class="tip">${s[2]}</span></div></li>`).join("")}</ol></div>${ill}</section>`;
     }else if(V==="b"){
       html=`<section class="ab-b"><div class="ey">ABOUT</div><div class="q">塗る時間が、<em>話す時間</em>になる。</div><p>${ABOUT}</p>
