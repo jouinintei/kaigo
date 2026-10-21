@@ -61,7 +61,7 @@ ${cur===""?`<a class="favbtn" href="list.html?k=fav">${ico("heart", 18)}お気�
   function footer(cur) {
     const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["お気に入り", "fav", "heart"]];
     return `<section class="req"><div class="wrap"><div><h3>「こんな塗り絵がほしい」をお聞かせください</h3><p>ご要望・不具合のご連絡はこちらから。いただいた声をもとに素材を増やしています。</p></div><a class="btn p" href="../contact.html" style="height:52px">ご要望を送る</a></div></section>
-<footer class="ft"><div class="wrap"><span class="logo" style="font-size:22px"><span class="a" style="font-size:16px">介護の</span><span class="b">レクプリ</span></span><span><a href="../terms.html">素材のご利用について</a><a href="../privacy.html">プライバシーポリシー</a><a href="../contact.html">お問い合わせ</a></span></div><div class="wrap" style="padding-bottom:20px;font-size:12px">© 介護のレクプリ</div></footer>
+<footer class="ft"><div class="wrap"><span>© 介護のレクプリ</span><nav aria-label="サイトについて"><a href="../terms.html">素材のご利用について</a><a href="../privacy.html">プライバシーポリシー</a><a href="../contact.html">お問い合わせ</a></nav></div></footer>
 <nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="list.html?k=${k}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}</a>`).join("")}</nav>
 <div class="toast" role="status" aria-live="polite"><span class="ok">${ico("check", 18)}</span><span class="tx"></span></div>
 <div class="md" role="dialog" aria-modal="true" aria-labelledby="mdT"><div class="box"></div></div>`;
