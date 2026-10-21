@@ -244,7 +244,7 @@
 <div id="abhow"></div>
 <nav class="toc" aria-label="ページ内メニュー"><a href="#top-hero" data-t="#top-hero" title="トップ">トップ</a><a href="#sozai" data-t="#sozai" title="素材をさがす">さがす</a><a href="#about" data-t="#abhow .ab-a" title="レクプリについて">について</a><a href="#howto" data-t="#abhow .how-a" title="使い方">使い方</a><a href="#ranking" data-t="#ranking" title="人気ランキング">人気順</a><a href="#osusume" data-t="#osusume" title="おすすめの塗り絵">おすすめ</a><a href="#shinchaku" data-t="#shinchaku" title="新しく追加した素材">新着</a></nav>
 
-<section class="sec" id="ranking" hidden><div class="h2"><h2>今週の人気ランキング</h2><span class="s">この1週間でよく保存された素材</span><a class="more" href="list.html?k=nurie&amp;sort=pop">すべて見る →</a></div><div class="recs rk8" id="rank"></div></section>
+<section class="sec" id="ranking" hidden><div class="h2"><h2>今週の人気ランキング</h2><span class="s">この1週間でよく保存された素材</span><a class="more" href="list.html?k=nurie&amp;sort=pop">人気順を見る →</a></div><div class="recs rk8" id="rank"></div></section>
 <section class="sec" id="osusume"><div class="h2"><h2>おすすめの塗り絵</h2><a class="more" href="list.html?k=nurie">すべて見る →</a></div><div class="recs" id="recs"></div></section>
 
 <section class="sec" id="shinchaku"><div class="h2"><h2>新しく追加した素材</h2><a class="more" href="list.html?k=nurie">一覧へ →</a></div><div class="recs" id="news"></div></section>
@@ -257,7 +257,7 @@
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
-  document.querySelectorAll('a[href^="list.html?k="]').forEach(a=>{a.href=RK_L(a.getAttribute("href").split("k=")[1]);});
+  document.querySelectorAll('a[href^="list.html?k="]').forEach(a=>{const q=a.getAttribute("href").split("k=")[1].split("&"),u=RK_L(q[0]),x=q.slice(1).join("&");a.href=x?u+(u.indexOf("?")<0?"?":"&")+x:u;});
   window.RK_SRC=window.RK_PAGE="top";
   document.getElementById("hd").innerHTML=RK.header("");
   document.getElementById("ft").innerHTML=RK.footer("");
