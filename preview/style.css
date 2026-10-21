@@ -20,6 +20,7 @@ html,body{overflow-x:clip}
 .hd .wrap{height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .logo{font-family:var(--mincho);font-weight:800;font-size:24px;text-decoration:none;white-space:nowrap;letter-spacing:.02em;line-height:1}
 .logo .a{font-size:18px;color:var(--ink)}.logo .b{color:var(--acc)}
+.logo{display:flex;align-items:baseline}.logo .lsub{font-family:var(--gothic);font-weight:500;font-size:13px;letter-spacing:.04em;color:var(--sub);margin-left:14px;padding-left:14px;border-left:1px solid var(--line);align-self:center;line-height:1.4}
 .gnav{display:flex;gap:4px}
 .gnav a{color:var(--ink);text-decoration:none;padding:8px 14px;font-size:16px;border-bottom:3px solid transparent}
 .gnav a[aria-current=page]{color:var(--btn);font-weight:700;border-bottom-color:var(--acc)}
@@ -201,7 +202,7 @@ html,body{overflow-x:clip}
   body{font-size:16px;padding-bottom:72px}
   .wrap{padding:0 16px}
   .hd .wrap{height:60px}
-  .logo{font-size:23px}.logo .a{font-size:17px}
+  .logo{font-size:23px;flex-wrap:wrap;row-gap:4px}.logo .a{font-size:17px}.logo .lsub{flex-basis:100%;margin:0;padding:0;border:0;font-size:11px;letter-spacing:.02em}
   .gnav,.hd .favbtn,.tabs{display:none}
   .hd.top{display:none}
   .grid{grid-template-columns:1fr;gap:16px}
