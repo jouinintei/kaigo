@@ -288,7 +288,7 @@
     if(V==="a"){
       const cn=k=>LIST.filter(n=>kindOf(n)===k).length;
       const PTS=[["無料・登録不要・広告なし","何枚でも保存・印刷できます"],["A4でそのまま印刷","枠も整えて、配るだけ"],["季節の素材を毎週追加","行事や旬に合わせて増加"],["大人の塗り絵としても","描き込みたっぷりの上級も"]];
-      const ST=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます。キーワードで探すこともできます。","「今の季節」から選ぶと、行事に合わせやすくなります"],["画像を保存する","「保存する」を押すと、A4用の画像が保存されます。色見本も一緒に保存できます。","☆お気に入りに入れておけば、あとでまとめて保存できます"],["A4で印刷する","用紙サイズはA4、大きさは「用紙に合わせる」を選んで印刷するだけ。使った素材には「使用済み」の印がつきます。","塗り絵は白黒印刷でも大丈夫です"]];
+      const ST=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます。キーワードで探すこともできます。","「今の季節」から選ぶと、行事に合わせやすくなります"],["画像を保存する","「保存する」を押すと、A4用の画像が保存されます。色見本も一緒に保存できます。","☆お気に入りに入れておけば、あとでまとめて保存できます"],["A4で印刷する","保存した画像をA4で印刷するだけ。使った素材には「使用済み」の印がつきます。","同じ塗り絵を人数分そのまま印刷して使えます"]];
       html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p><ul class="pts-a">${PTS.map(x=>`<li><span class="ck">${RK.ico("check",16)}</span><div><b>${x[0]}</b><span>${x[1]}</span></div></li>`).join("")}</ul><div class="cnt-a"><span><b>${cn("塗り絵")}</b>枚の塗り絵</span><span><b>${cn("脳トレ")}</b>枚の脳トレ</span><span><b>${cn("カレンダー")}</b>種類のカレンダー</span></div></div><div class="ph">${FIX.map(n=>`<div class="phb"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></div>`).join("")}</div></section>`;
       const D=FIX[2]||FIX[0]||nu[0],Th=RK.thumb(D),Ts=RK.thumb(D,D.sample||D.file),S3=nu.filter(n=>n.season===seasonNow&&n.file!==(FIX[2]||{}).file).slice(0,6);
       const ill=`<div class="ill"><div class="win"><div class="bar3"><i></i><i></i><i></i><span>rekupuri.com</span></div>
