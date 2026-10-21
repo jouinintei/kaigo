@@ -7,7 +7,7 @@
 <title>介護のレクプリ｜高齢者向けの無料塗り絵・脳トレ・カレンダー（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792553243">
+<link rel="stylesheet" href="style.css?v=1792553336">
 <style>
 .hero{padding:52px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:center}
@@ -17,13 +17,21 @@
 .hero p{margin:0 0 22px;color:var(--sub)}
 .hero form{display:flex;gap:8px}
 .hero form .search{flex:1}
-.hero .pics{flex:1;position:relative;height:340px;min-width:0}
+.hero .pw{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+.hero .pics{position:relative;height:320px;min-width:0}
+.hero .pic{position:absolute;inset:0;border:0;background:none;padding:0;cursor:zoom-in}
+.hero .pcap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px;position:relative;z-index:2}
+.hero .pt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hero .pt .lbl{align-self:flex-start}
+.hero .pt b{font-family:var(--mincho);font-size:22px;line-height:1.4}
+.hero .pm{font-size:14px;color:var(--mute)}
+.hero .pb{display:flex;gap:8px;flex:none}
 .hero .pics img{position:absolute;width:62%;aspect-ratio:1.414;object-fit:contain;background:#fff;padding:8px;border:1px solid var(--line);opacity:0;transition:opacity .4s}
 .hero .pics img.on{opacity:1}
 .hero .pics.tate img{width:auto;height:88%;aspect-ratio:.707}
 .hero .pics.tate .a{left:16%;top:0}.hero .pics.tate .b{left:42%;right:auto;top:10%}
-.hero .pics .a{left:2%;top:2%;transform:rotate(-3deg);box-shadow:0 6px 16px rgba(50,40,30,.06)}
-.hero .pics .b{right:0;top:26%;transform:rotate(2deg);box-shadow:0 12px 28px rgba(50,40,30,.10)}
+.hero .pics .a{left:2%;top:0;transform:rotate(-3deg);box-shadow:0 6px 16px rgba(50,40,30,.06)}
+.hero .pics .b{right:0;top:18%;transform:rotate(2deg);box-shadow:0 12px 28px rgba(50,40,30,.10)}
 .hero .stat{display:flex;gap:28px;margin-top:22px;color:var(--sub);font-size:14px}
 .hero .stat b{font-family:var(--mincho);font-size:26px;color:var(--ink);margin-right:2px}
 .entry{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-bottom:64px}
@@ -50,6 +58,7 @@
 @media (max-width:900px){.hero .wrap{flex-direction:column;align-items:stretch}.hero .tx{flex:none}.hero .pics{height:300px}.recs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){
   .hero{padding:28px 0 24px}.hero h1{font-size:30px}.hero .pics{height:230px}
+  .hero .pcap{flex-direction:column;align-items:stretch}.hero .pb .btn{flex:1}
   .entry{grid-template-columns:1fr;gap:12px;margin-bottom:44px}
   .entry a{flex-direction:row;align-items:center;min-height:0;padding:16px}
   .entry .r{order:2;margin-left:auto}.entry .i{width:54px;height:54px}
@@ -69,7 +78,7 @@
 <form action="list.html" role="search"><input type="hidden" name="k" value="nurie"><label class="search">
 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="sr">作品名やテーマで探す</span><input type="search" name="q" placeholder="作品名やテーマで探す（例：ねこ、紅葉）"></label><button class="btn p" style="height:48px">検索</button></form>
 </div>
-<div class="pics" id="pics"></div>
+<div class="pw"><div class="pics" id="pics"></div><div class="pcap card" id="pcap"></div></div>
 </div></section>
 
 <div class="wrap">
@@ -93,7 +102,7 @@
 </main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792553243"></script>
+<script src="app.js?v=1792553336"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -106,7 +115,8 @@
   const withS=nu.filter(n=>n.sample&&n.season===seasonNow);
   const fh=new URLSearchParams(location.search).get("hero");const h=(fh&&nu.find(n=>n.file===fh))||withS[Math.floor(Math.random()*withS.length)]||nu[0];
   const pics=document.getElementById("pics");
-  pics.innerHTML=`<img class="a" alt="${esc(h.title)}の線画" src="${full(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${full(h,h.sample)}">`;
+  pics.innerHTML=`<button class="pic" data-open="${esc(h.file)}" aria-label="${esc(h.title)}を拡大"><img class="a" alt="${esc(h.title)}の線画" src="${full(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${full(h,h.sample)}"></button>`;
+  document.getElementById("pcap").innerHTML=`<div class="pt"><span class="lbl season">今月のおすすめ</span><b>${esc(h.title)}</b><span class="pm">${esc([h.season,h.genre,h.diff].filter(Boolean).join(" ・ "))}</span></div><div class="pb"><button class="btn p" data-save="${esc(h.file)}">${RK.ico("down",18)}保存する</button><button class="btn o" data-open="${esc(h.file)}" data-tab="s">${RK.ico("pal",18)}色見本</button></div>`;
   const a=pics.querySelector(".a");const show=()=>{if(a.naturalHeight>a.naturalWidth)pics.classList.add("tate");pics.querySelectorAll("img").forEach(i=>i.classList.add("on"));};
   a.complete&&a.naturalWidth?show():a.addEventListener("load",show);
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
