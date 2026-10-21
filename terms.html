@@ -15,44 +15,42 @@
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="/analytics.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/rk.css?v=1792620282">
 <style>
-  :root { --bg:#faf6ef; --card:#fff; --ink:#3a3a3a; --accent:#e8833a; --line:#e5ddd0; }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:"Hiragino Maru Gothic ProN","BIZ UDGothic","Yu Gothic","Meiryo",sans-serif;
-         background:var(--bg); color:var(--ink); line-height:1.9; }
-  header { background:var(--card); border-bottom:3px solid var(--accent); padding:18px 24px; text-align:center; }
-  header h1 { font-size:22px; color:var(--accent); letter-spacing:1px; }
-  header p { font-size:14px; color:#8a8477; margin-top:4px; }
-  a { color:#b3611f; }
-  .wrap { max-width:780px; margin:0 auto; padding:22px 16px 60px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
-  h2 { font-size:18px; color:var(--accent); margin:28px 0 8px; padding-bottom:5px; border-bottom:1px solid var(--line); }
-  h2:first-of-type { margin-top:4px; }
-  p { font-size:15.5px; margin-bottom:10px; }
-  ul { margin:6px 0 12px 22px; font-size:15.5px; }
-  li { margin-bottom:6px; }
-  .ok, .ng { border-radius:12px; padding:14px 18px 14px 20px; margin:10px 0 16px; }
-  .ok { background:#f1f8f2; border:1px solid #cfe6d4; }
-  .ng { background:#fdf3f1; border:1px solid #f0d5cf; }
-  .ok h3 { color:#3f8a5c; font-size:16px; margin-bottom:6px; }
-  .ng h3 { color:#b5563f; font-size:16px; margin-bottom:6px; }
-  .ok ul, .ng ul { margin-bottom:0; }
-  .date { font-size:14px; color:#8a8477; text-align:right; margin-top:24px; }
-  footer { text-align:center; font-size:13px; color:#8a8477; padding:34px 16px 26px; margin-top:30px; border-top:1px solid var(--line); }
-  footer a { margin:0 6px; }
-  @media (max-width:600px){ .card { padding:18px 16px; } p, ul { font-size:15px; } }
+.lp{max-width:1200px;margin:0 auto;padding:0 24px}
+.crumb{font-size:13px;color:var(--mute);padding:18px 0 0}.crumb a{color:var(--mute)}
+.lph{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:end;padding:22px 0 30px;border-bottom:1px solid var(--line)}
+.lph .ey{font-size:13px;letter-spacing:.25em;color:var(--btn);font-weight:700}
+.lph h1{font-family:var(--mincho);font-size:38px;line-height:1.4;margin:6px 0 14px;color:#3A2A21}
+.lph p{margin:0 0 10px;color:#4A423A;font-size:16px;line-height:1.9}.lph p b{color:#3A2A21}
+.lpc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+.lpc .nm{display:flex;align-items:baseline;gap:6px;color:var(--sub)}.lpc .nm b{font-family:var(--mincho);font-size:56px;line-height:1;color:var(--acc)}
+.lpc .pt{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14.5px;color:#4A423A}.lpc .pt li::before{content:"✓";color:var(--acc);font-weight:700;margin-right:8px}
+.lpc .btn{height:52px;font-size:16px}
+.lps{margin-top:36px}.lps .h2 h2{font-family:var(--mincho)}
+.lpgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:8px}
+.lpmore{display:flex;justify-content:center;margin:28px 0 8px}.lpmore .btn{height:52px;padding:0 32px;font-size:16px}
+.lphow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:8px;padding:0;list-style:none}
+.lphow li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;gap:14px;align-items:flex-start;font-size:15.5px;color:#4A423A}
+.lphow li span{font-family:var(--mincho);font-size:32px;line-height:1;color:var(--acc)}
+.lpthemes{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.lpthemes a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:15px}.lpthemes a:hover{border-color:var(--acc);color:var(--btn)}.lpthemes a[aria-current]{background:var(--btn);border-color:var(--btn);color:#fff}
+.doc{max-width:860px;margin:0 auto;padding:0 24px}
+.doc .ph1{padding:34px 0 8px}.doc .ph1 .ey{font-size:13px;letter-spacing:.25em;color:var(--btn);font-weight:700}.doc .ph1 h1{font-family:var(--mincho);font-size:34px;margin:6px 0 0;color:#3A2A21}
+.doc .body{background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;margin-top:22px;font-size:16px;line-height:1.95;color:#4A423A}
+.doc .body h2,.doc .body h3{font-family:var(--mincho);color:#3A2A21;margin:28px 0 10px;display:flex;align-items:center;gap:10px}.doc .body h2{font-size:22px}.doc .body h3{font-size:19px}
+.doc .body h2::before,.doc .body h3::before{content:"";width:3px;height:20px;background:var(--acc);border-radius:2px;flex:none}
+.doc .body > :first-child{margin-top:0}.doc .body p{margin:0 0 14px}.doc .body ul,.doc .body ol{margin:0 0 16px;padding-left:1.4em}.doc .body li{margin:4px 0}
+.doc .body .ok,.doc .body .ng,.doc .body .box{border-radius:12px;padding:18px 22px;margin:18px 0}.doc .body .ok{background:#F2F7EF;border:1px solid #CFE3C6}.doc .body .ng{background:#FCF1EC;border:1px solid #F0D2C2}.doc .body .ok h3,.doc .body .ng h3{margin-top:0}
+.doc .body a{color:var(--btn)}
+@media (max-width:900px){.lpgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.lph{grid-template-columns:1fr;gap:20px}}
+@media (max-width:640px){.lp,.doc{padding:0 16px}.lph h1{font-size:28px}.lpgrid{grid-template-columns:1fr}.lphow{grid-template-columns:1fr}.lpc .nm b{font-size:44px}.doc .body{padding:22px 18px}.doc .ph1 h1{font-size:27px}}
 </style>
 </head>
 <body>
-
-<header>
-  <h1>素材のご利用について</h1>
-  <p><a href="/">介護のレクプリ トップへ</a></p>
-</header>
-
-<div class="wrap">
-<div class="card">
-
+<div id="hd"></div>
+<main class="doc"><div class="ph1"><div class="ey">TERMS</div><h1>素材のご利用について</h1></div><div class="body">
 <p>当サイトの塗り絵・脳トレ・カレンダーは、<strong>すべて無料でお使いいただけます。</strong>会員登録も、事前のご連絡も、使用料も必要ありません。介護施設やご家庭のレクリエーションで、どうぞ気兼ねなくお使いください。</p>
 <p>ただ、素材そのものを配り直したり売ったりすることだけは、ご遠慮いただいています。詳しくは以下をご覧ください。</p>
 
@@ -109,14 +107,15 @@
 <p>ご不明な点は、<a href="/contact.html">お問い合わせページ</a>よりお気軽にお尋ねください。</p>
 
 <p class="date">制定日:2026年8月7日</p>
-
-</div>
-
-<footer>
-  <a href="/">トップ</a>｜<a href="/all">作品いちらん</a>｜<a href="/terms.html">素材のご利用について</a>｜<a href="/privacy.html">プライバシーポリシー</a>｜<a href="/contact.html">お問い合わせ・要望</a><br>
-  © 介護のレクプリ
-</footer>
-</div>
-
+</div></main>
+<div id="ft"></div>
+<script src="/data.js"></script>
+<script src="/rk.js?v=1792620282"></script>
+<script>
+document.getElementById("hd").innerHTML=RK.header("doc");
+document.getElementById("ft").innerHTML=RK.footer("doc");
+var q=document.querySelector(".req");if(q)q.remove();var f=document.querySelector(".ft");if(f)f.style.marginTop="64px";
+</script>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a9863d837944405fb5b7d52eafc53b9e"}'></script>
 </body>
 </html>

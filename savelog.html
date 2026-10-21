@@ -941,7 +941,7 @@
   var SORT_JA = { "new": "新着順", pop: "人気順", rand: "ランダム" };
   function srcLabel(s, o){ var b = SRC_SHORT[s] || s; return (o && SORT_JA[o]) ? b + "（" + SORT_JA[o] + "）" : b; }
   var SRC_SHORT = {
-    top: "トップから", list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
+    top: "トップから", lp: "特集ページから", list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
     fav: "お気に入りから", bulk: "まとめて保存", noutore: "脳トレ一覧から", calendar: "カレンダーから"
   };
   document.getElementById("rankSeg").addEventListener("click", function(e){
