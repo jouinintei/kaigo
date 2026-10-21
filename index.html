@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792560030">
+<link rel="stylesheet" href="/rk.css?v=1792564979">
 <style>
 .hero{padding:52px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -188,7 +188,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792560030"></script>
+<script src="/rk.js?v=1792564979"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -203,7 +203,7 @@
   const withS=nu.filter(n=>n.sample&&n.season===seasonNow);
   const fh=new URLSearchParams(location.search).get("hero");const h=(fh&&nu.find(n=>n.file===fh))||withS[Math.floor(Math.random()*withS.length)]||nu[0];
   const pics=document.getElementById("pics");
-  pics.innerHTML=`<button class="pic" data-open="${esc(h.file)}" data-src="top" aria-label="${esc(h.title)}を拡大"><img class="a" alt="${esc(h.title)}の線画" src="${full(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${full(h,h.sample)}"></button>`;
+  pics.innerHTML=`<button class="pic" data-open="${esc(h.file)}" data-src="top" aria-label="${esc(h.title)}を拡大"><img class="a" alt="${esc(h.title)}の線画" src="${RK.thumb(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${RK.thumb(h,h.sample)}"></button>`;
   const a=pics.querySelector(".a");const show=()=>{if(a.naturalHeight>a.naturalWidth)pics.classList.add("tate");pics.querySelectorAll("img").forEach(i=>i.classList.add("on"));};
   a.complete&&a.naturalWidth?show():a.addEventListener("load",show);
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
