@@ -77,7 +77,7 @@
 .ab-a{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
 .ab-a .ph{position:relative;height:320px}
 .ab-a .ph img{position:absolute;width:58%;aspect-ratio:1.414;object-fit:cover;background:#fff;padding:7px;border:1px solid var(--line);box-shadow:0 8px 20px rgba(50,40,30,.08)}
-.ab-a .phb{border:0;background:none;padding:0;cursor:zoom-in}
+.ab-a .phb{border:0;background:none;padding:0;cursor:default;pointer-events:none}
 .ab-a .phb img{position:absolute;width:auto;max-width:none;aspect-ratio:auto;object-fit:contain}
 .ab-a .phb:nth-child(2) img{left:0;top:6%;height:88%;transform:rotate(-2deg);z-index:1}
 .ab-a .phb:nth-child(1) img{right:12%;top:0;height:47%;transform:rotate(2deg);z-index:2}
@@ -211,7 +211,7 @@
     const steps=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます","search"],["画像を保存する","1枚ずつでも、お気に入りからまとめてでも","down"],["A4で印刷する","使ったものには「使用済み」の印がつきます","cal"]];
     let html="";
     if(V==="a"){
-      html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p></div><div class="ph">${FIX.map(n=>`<button class="phb" data-open="${esc(n.file)}" data-src="top" aria-label="${esc(n.title)}を拡大"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></button>`).join("")}</div></section>
+      html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p></div><div class="ph">${FIX.map(n=>`<div class="phb"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></div>`).join("")}</div></section>
       <ol class="steps-a">${steps.map((s,i)=>`<li><span class="num">0${i+1}</span><b>${s[0]}</b><span class="d">${s[1]}</span></li>`).join("")}</ol>`;
     }else if(V==="b"){
       html=`<section class="ab-b"><div class="ey">ABOUT</div><div class="q">塗る時間が、<em>話す時間</em>になる。</div><p>${ABOUT}</p>
