@@ -28,7 +28,7 @@ html,body{overflow-x:clip}
 
 /* tabs (list page) */
 .tabs{background:#fff;border-bottom:1px solid var(--line)}
-.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+.tabs .wrap{display:flex;gap:4px;overflow:visible}
 .tabs a{display:flex;align-items:center;gap:8px;padding:12px 20px;font-size:17px;color:var(--ink);text-decoration:none;border-bottom:3px solid transparent;white-space:nowrap}
 .tabs a[aria-current=page]{color:var(--btn);font-weight:700;border-bottom-color:var(--acc)}
 .tabs .ti,.tabs .en,.tabs .tc{display:none}
@@ -196,7 +196,7 @@ html,body{overflow-x:clip}
 .pvnote{background:#2B2622;color:#fff;text-align:center;font-size:13px;padding:6px 12px}
 .pvnote a{color:#F2B48D}
 
-@media (max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}}
+@media (max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.tabs-bc .wrap{gap:4px}.tabs-bc a{flex:1 1 0;min-width:0;justify-content:center;padding:10px 8px;font-size:16px;gap:6px}.tabs-bc a[aria-current=page]{padding:12px 8px}.tabs-bc .tc{font-size:14px;padding:0 7px;line-height:22px}}
 @media (max-width:640px){
   body{font-size:16px;padding-bottom:72px}
   .wrap{padding:0 16px}
