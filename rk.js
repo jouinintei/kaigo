@@ -119,8 +119,8 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     st = setTimeout(() => { const q = sq.splice(0); post({ files: q.map(x => x[0]), srcs: q.map(x => x[1]), ctxs: q.map(x => x[2]), ent: entOnce("rk_ent_sent"), did: deviceId() }); }, 2000);
   }
   const oq = []; let ot = null;
-  function logOpen(file, kind) {
-    if (!file) return; oq.push([file, kind]); clearTimeout(ot);
+  function logOpen(file, kind, src) {
+    if (!file) return; oq.push([file, kind, String(src || window.RK_SRC || "").slice(0, 12)]); clearTimeout(ot);
     ot = setTimeout(() => { const q = oq.splice(0); post({ opens: q, ent: entOnce("rk_ent_osent"), did: deviceId() }); }, 3000);
   }
   const fq = []; let ft = null;
@@ -185,7 +185,7 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
   function openMd(file, tab, src) {
     const n = LIST.find(x => x.file === file); if (!n) return;
     mdN = n; mdTab = tab || "l"; zoom = 100; mdSrc = src || window.RK_SRC; mdCtx = src ? null : window.RK_CTX; renderMd();
-    if (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ") logOpen(n.file, "lb"); if (mdTab === "s") logOpen(n.sample, "smp");
+    if (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ") logOpen(n.file, "lb", mdSrc); if (mdTab === "s") logOpen(n.sample, "smp", mdSrc);
     const md = document.querySelector(".md"); if (!md.classList.contains("on")) { try { history.pushState({ md: 1 }, ""); } catch (e) {} } md.classList.add("on"); document.body.style.overflow = "hidden";
     const bx = md.querySelector(".box"); bx.setAttribute("tabindex", "-1"); bx.focus({ preventScroll: true });
   }
@@ -219,10 +219,10 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     }
     if (t.dataset.save) { const inMd = !!t.closest(".md"); save(t.dataset.save, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : undefined); return; }
     if (t.dataset.open) { openMd(t.dataset.open, t.dataset.tab, t.dataset.src || (t.closest(".md") ? "nita" : null)); return; }
-    if (t.dataset.mtab) { mdTab = t.dataset.mtab; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp"); return; }
+    if (t.dataset.mtab) { mdTab = t.dataset.mtab; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp", mdSrc); return; }
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeMd(); });
-  document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") { e.preventDefault(); toast("画像は「保存」ボタンから保存できます", "印刷用の枠付きで保存されます"); } });
+  document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
   document.addEventListener("dragstart", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
 
   window.RK = { LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };

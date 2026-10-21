@@ -125,6 +125,8 @@ export async function onRequest({ request, env }) {
           if (!O.tot[k]) O.tot[k] = {};
           O.tot[k][f] = (O.tot[k][f] || 0) + 1;
           const oe = { t: onow, f: f, k: k, d: odid };
+          const os = String((ops[i] && ops[i][2]) || "").replace(/[^a-z]/g, "").slice(0, 12);
+          if (os) oe.s = os;
           if (oent && i === 0) oe.r = oent;
           O.ev.push(oe);
         });

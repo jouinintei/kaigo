@@ -938,7 +938,7 @@
     return { google: "Google検索", yahoo: "Yahoo!検索", bing: "Bing検索", note: "note", sns: "SNS", old: "旧アドレス", direct: "直接（お気に入り・URL入力など）", yjapp: "Yahoo!アプリ", gapp: "Googleアプリ", line: "LINE", insta: "Instagram", fb: "Facebook", qr: "QRコード", chatgpt: "ChatGPT", copilot: "Copilot", perplexity: "Perplexity", gemini: "Gemini" }[k] || k;
   }
   var SRC_SHORT = {
-    list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
+    top: "トップから", list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
     fav: "お気に入りから", bulk: "まとめて保存", noutore: "脳トレ一覧から", calendar: "カレンダーから"
   };
   document.getElementById("rankSeg").addEventListener("click", function(e){
@@ -1439,12 +1439,12 @@
     function slot(id, f){
       var base = f;   // 色見本は見本そのものとして分けて表示する
       if (!per[id]) per[id] = { last: 0, items: {}, open: 0, save: 0 };
-      if (!per[id].items[base]) per[id].items[base] = { lb: 0, smp: 0, save: 0, smpSave: 0, last: 0 };
+      if (!per[id].items[base]) per[id].items[base] = { lb: 0, smp: 0, save: 0, smpSave: 0, last: 0, src: {} };
       return per[id].items[base];
     }
     (Array.isArray(O.ev) ? O.ev : []).forEach(function(e){
       if (dayKey(e.t) !== t || isMine(e.d)) return;
-      var x = slot(e.d, e.f); x[e.k === "smp" ? "smp" : "lb"]++; x.last = Math.max(x.last, e.t);
+      var x = slot(e.d, e.f); x[e.k === "smp" ? "smp" : "lb"]++; x.last = Math.max(x.last, e.t); if (e.s) x.src[e.s] = 1;
       per[e.d].open++; per[e.d].last = Math.max(per[e.d].last, e.t);
     });
     (d.events || []).forEach(function(e){
@@ -1482,6 +1482,7 @@
           b = [];
           if (op) b.push('<span class="ob">開いた' + (op > 1 ? '×' + op : '') + '</span>');
           if (sv) b.push('<span class="ob sv">💾保存' + (sv > 1 ? '×' + sv : '') + '</span>');
+          Object.keys(x.src).forEach(function(s){ b.push('<span class="ob" style="background:#fff;border:1px solid #e5ddd0;color:#8a8477">' + esc(SRC_SHORT[s] || s) + '</span>'); });
           html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + (it && kindOf(it) === "脳トレ" ? '<span class="odf" style="margin:0 4px 0 0">脳トレ</span>' : '') + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
         });
         html += '</div></details>';

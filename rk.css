@@ -15,13 +15,13 @@ img{max-width:100%}
 
 /* header */
 .hd{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
-.hd .wrap{height:74px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.logo{font-family:var(--mincho);font-weight:800;font-size:28px;text-decoration:none;white-space:nowrap;letter-spacing:.02em;line-height:1}
-.logo .a{font-size:21px;color:var(--ink)}.logo .b{color:var(--acc)}
+.hd .wrap{height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-family:var(--mincho);font-weight:800;font-size:24px;text-decoration:none;white-space:nowrap;letter-spacing:.02em;line-height:1}
+.logo .a{font-size:18px;color:var(--ink)}.logo .b{color:var(--acc)}
 .gnav{display:flex;gap:4px}
-.gnav a{color:var(--ink);text-decoration:none;padding:10px 16px;font-size:16px;border-bottom:3px solid transparent}
+.gnav a{color:var(--ink);text-decoration:none;padding:8px 14px;font-size:16px;border-bottom:3px solid transparent}
 .gnav a[aria-current=page]{color:var(--btn);font-weight:700;border-bottom-color:var(--acc)}
-.favbtn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}
+.favbtn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}
 .favbtn .n{background:var(--btn);color:#fff;border-radius:999px;font-size:12px;min-width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
 
 /* tabs (list page) */

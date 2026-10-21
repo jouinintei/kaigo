@@ -7,7 +7,7 @@
 <title>介護のレクプリ｜高齢者向けの無料塗り絵・脳トレ・カレンダー（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1792554840">
+<link rel="stylesheet" href="style.css?v=1792560030">
 <style>
 .hero{padding:52px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -155,11 +155,12 @@
 </main>
 <div id="ft"></div>
 <script src="../data.js"></script>
-<script src="app.js?v=1792554840"></script>
+<script src="app.js?v=1792560030"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
   document.querySelectorAll('a[href^="list.html?k="]').forEach(a=>{a.href=RK_L(a.getAttribute("href").split("k=")[1]);});
+  window.RK_SRC=window.RK_PAGE="top";
   document.getElementById("hd").innerHTML=RK.header("");
   document.getElementById("ft").innerHTML=RK.footer("");
   RK.updFavCount();
@@ -169,13 +170,13 @@
   const withS=nu.filter(n=>n.sample&&n.season===seasonNow);
   const fh=new URLSearchParams(location.search).get("hero");const h=(fh&&nu.find(n=>n.file===fh))||withS[Math.floor(Math.random()*withS.length)]||nu[0];
   const pics=document.getElementById("pics");
-  pics.innerHTML=`<button class="pic" data-open="${esc(h.file)}" data-src="osusume" aria-label="${esc(h.title)}を拡大"><img class="a" alt="${esc(h.title)}の線画" src="${full(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${full(h,h.sample)}"></button>`;
+  pics.innerHTML=`<button class="pic" data-open="${esc(h.file)}" data-src="top" aria-label="${esc(h.title)}を拡大"><img class="a" alt="${esc(h.title)}の線画" src="${full(h)}"><img class="b" alt="${esc(h.title)}の色見本" src="${full(h,h.sample)}"></button>`;
   const a=pics.querySelector(".a");const show=()=>{if(a.naturalHeight>a.naturalWidth)pics.classList.add("tate");pics.querySelectorAll("img").forEach(i=>i.classList.add("on"));};
   a.complete&&a.naturalWidth?show():a.addEventListener("load",show);
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
   const mix=[];for(let i=0;i<4;i++){if(se[i])mix.push(se[i]);if(al[i])mix.push(al[i]);}
-  const rec=n=>`<button class="rec" data-open="${esc(n.file)}" data-src="osusume"><div class="card c"><img loading="lazy" alt="" src="${thumb(n)}"><span class="lbl ${n.season==="通年"?"always":"season"}">${n.season==="通年"?"通年":"季節"}</span></div><b>${esc(n.title)}</b><span class="m">${esc([n.genre,n.diff].filter(Boolean).join(" ・ "))}</span></button>`;
+  const rec=n=>`<button class="rec" data-open="${esc(n.file)}" data-src="top"><div class="card c"><img loading="lazy" alt="" src="${thumb(n)}"><span class="lbl ${n.season==="通年"?"always":"season"}">${n.season==="通年"?"通年":"季節"}</span></div><b>${esc(n.title)}</b><span class="m">${esc([n.genre,n.diff].filter(Boolean).join(" ・ "))}</span></button>`;
 
   (function(){
     const V=new URLSearchParams(location.search).get("ab")||"a";
@@ -186,7 +187,7 @@
     const steps=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます","search"],["画像を保存する","1枚ずつでも、お気に入りからまとめてでも","down"],["A4で印刷する","使ったものには「使用済み」の印がつきます","cal"]];
     let html="";
     if(V==="a"){
-      html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p></div><div class="ph">${FIX.map(n=>`<button class="phb" data-open="${esc(n.file)}" data-src="osusume" aria-label="${esc(n.title)}を拡大"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></button>`).join("")}</div></section>
+      html=`<section class="ab-a"><div><div class="ey">ABOUT</div><h2>毎日のレクに、<br>ちょうどいい1枚を。</h2><p>${ABOUT}</p></div><div class="ph">${FIX.map(n=>`<button class="phb" data-open="${esc(n.file)}" data-src="top" aria-label="${esc(n.title)}を拡大"><img alt="${esc(n.title)}" src="${RK.thumb(n,n.sample||n.file)}"></button>`).join("")}</div></section>
       <ol class="steps-a">${steps.map((s,i)=>`<li><span class="num">0${i+1}</span><b>${s[0]}</b><span class="d">${s[1]}</span></li>`).join("")}</ol>`;
     }else if(V==="b"){
       html=`<section class="ab-b"><div class="ey">ABOUT</div><div class="q">塗る時間が、<em>話す時間</em>になる。</div><p>${ABOUT}</p>
