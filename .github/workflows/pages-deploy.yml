@@ -28,6 +28,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Update theme page counts from data.js
+        run: python3 preview/landing.py
       - name: Prepare site files
         run: |
           mkdir -p dist

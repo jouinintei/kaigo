@@ -28,3 +28,7 @@ CF="<!-- Cloudflare Web Analytics --><script type='module' src='https://static.c
 build('index.html','index.html','index.html',CF)
 build('list.html','gallery.html','gallery.html',CF)
 print('ok',V)
+
+# 特集ページも同じ rk.js / rk.css の版で作り直す
+import subprocess, os as _os
+subprocess.run(["python3", _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "landing.py")], check=True)

@@ -1,9 +1,12 @@
 # landing.py — 特集ページ8つと規約・プライバシーを新デザインで作り直す
 # 元の文面は /home/claude/aud/lp_orig/ から読み、枚数は data.js から数え直す
 import re, json, time, html as H
-K = '/home/claude/kaigo/'
-O = '/home/claude/aud/lp_orig/'
-V = str(int(time.time()))
+import os
+K = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/'
+O = K + 'preview/lp_orig/'
+_g = open(K + 'gallery.html', encoding='utf-8').read()
+_m = re.search(r'rk\.js\?v=(\d+)', _g)
+V = _m.group(1) if _m else str(int(time.time()))
 
 # ---- data.js から一覧を読む（kind 未指定は塗り絵）
 src = open(K + 'data.js', encoding='utf-8').read()

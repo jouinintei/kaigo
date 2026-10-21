@@ -21,7 +21,7 @@
 <script src="/frame.js?v=10"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792620139">
+<link rel="stylesheet" href="/rk.css?v=1792620695">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -57,7 +57,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792620139"></script>
+<script src="/rk.js?v=1792620695"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -128,7 +128,7 @@
     if(st.genre)cond.push(["genre",st.genre]);
     if(st.diff)cond.push(["diff",st.diff]);
     if(st.q)cond.push(["q","「"+st.q+"」"]);
-    if(st.unused)cond.push(["unused","まだ使っていないもの"]);
+    if(st.unused)cond.push(["unused","使用済みを除く"]);
     const chips=cond.map(([k,t])=>`<button class="cc" data-clr="${k}" aria-label="${esc(t)}の条件を外す">${esc(t)}${ico("x",14)}</button>`).join("");
     return `<div class="n"><div class="cl">${cond.length?chips+`<span class="of">の${KIND}</span>`:`<span class="of">すべての${KIND}</span>`}</div><div class="big"><b>${tot}</b><span>枚</span>${cond.length?`<small>（全${all}枚中）</small>`:""}${cond.length>0?`<button class="clr" data-reset>すべて外す</button>`:""}</div></div>`;
   }
