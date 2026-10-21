@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792616968">
+<link rel="stylesheet" href="/rk.css?v=1792617177">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -200,6 +200,7 @@
 .toc a:nth-child(1){background:#B9A48E}.toc a:nth-child(2){background:#D9A27A}.toc a:nth-child(3){background:#9DB39A}.toc a:nth-child(4){background:#A9B8CC}.toc a:nth-child(5){background:#D98A5E}.toc a:nth-child(6){background:#C7A9C2}
 .toc a:hover{width:40px}.toc a.on{width:46px;box-shadow:3px 4px 12px rgba(0,0,0,.18)}
 @media (max-width:1100px){.toc{display:none}}
+.bnav.jump{grid-template-columns:repeat(6,1fr)!important}.bnav.jump a{font-size:10.5px;gap:3px}.bnav.jump a .ico{width:22px;height:22px}.bnav.jump a.on{color:var(--btn);font-weight:700}.bnav.jump a.on .ico{stroke-width:2.4}
 </style>
 </head>
 <body>
@@ -233,7 +234,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792616968"></script>
+<script src="/rk.js?v=1792617177"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -271,9 +272,12 @@
   let wx=0,wl=0;pics.addEventListener("wheel",e=>{if(N<2||Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();const t=Date.now();if(t-wl<600){return;}wx+=e.deltaX;if(Math.abs(wx)>40){go(cur+(wx>0?1:-1));play();wx=0;wl=t;}},{passive:false});
   document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
   // 左のページ内メニュー
-  (()=>{const toc=document.querySelector(".toc");if(!toc)return;const A=[...toc.querySelectorAll("a")];const tg=a=>document.querySelector(a.dataset.t);
-    toc.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;e.preventDefault();const el=tg(a);if(!el)return;const r=el.getBoundingClientRect();const y=a.dataset.t==="#top-hero"?0:a.dataset.t==="#sozai"?r.top+scrollY-Math.max(24,(innerHeight-r.height)/2):r.top+scrollY-24;scrollTo({top:y,behavior:"smooth"});});
-    let rq=0;const upd=()=>{rq=0;const line=innerHeight*.35;let cur=0;A.forEach((a,i)=>{const el=tg(a);if(el&&el.getBoundingClientRect().top<=line)cur=i;});if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=A.length-1;A.forEach((a,i)=>a.classList.toggle("on",i===cur));};
+  (()=>{const toc=document.querySelector(".toc");if(!toc)return;
+    const IT=[["#top-hero","トップ","home"],["#sozai","さがす","search"],["#abhow .ab-a","について","pal"],["#abhow .how-a","使い方","check"],["#osusume","おすすめ","star"],["#shinchaku","新着","cal"]];
+    const bn=document.querySelector(".bnav");if(bn){bn.classList.add("jump");bn.setAttribute("aria-label","ページ内メニュー");bn.innerHTML=IT.map(x=>`<a href="#" data-t="${x[0]}">${RK.ico(x[2])}${x[1]}</a>`).join("");}
+    const A=[...toc.querySelectorAll("a")],B=bn?[...bn.querySelectorAll("a")]:[];const tg=t=>document.querySelector(t);
+    document.addEventListener("click",e=>{const a=e.target.closest(".toc a[data-t],.bnav.jump a[data-t]");if(!a)return;e.preventDefault();const t=a.dataset.t,el=tg(t);if(!el)return;const r=el.getBoundingClientRect();const y=t==="#top-hero"?0:t==="#sozai"?r.top+scrollY-Math.max(24,(innerHeight-r.height-(bn&&bn.offsetHeight||0))/2):r.top+scrollY-24;scrollTo({top:y,behavior:"smooth"});});
+    let rq=0;const upd=()=>{rq=0;const line=innerHeight*.35;let cur=0;IT.forEach((x,i)=>{const el=tg(x[0]);if(el&&el.getBoundingClientRect().top<=line)cur=i;});if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=IT.length-1;A.forEach((a,i)=>a.classList.toggle("on",i===cur));B.forEach((a,i)=>a.classList.toggle("on",i===cur));};
     addEventListener("scroll",()=>{if(!rq)rq=requestAnimationFrame(upd);},{passive:true});addEventListener("resize",upd);setTimeout(upd,300);})();
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
