@@ -7,7 +7,7 @@
 <title>介護のレクプリ｜高齢者向けの無料塗り絵・脳トレ・カレンダー（新デザイン確認用）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=1792552683">
 <style>
 .hero{padding:52px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:center}
@@ -32,7 +32,8 @@
 .entry .i{width:64px;height:64px;border-radius:16px;background:var(--tint);display:flex;align-items:center;justify-content:center;color:var(--btn)}
 .entry .r{display:flex;justify-content:space-between;align-items:center;color:var(--btn)}
 .entry b{font-family:var(--mincho);font-size:25px;display:block}
-.entry .cnt{font-family:var(--gothic);font-size:14px;font-weight:700;color:var(--btn);background:var(--tint);border-radius:999px;padding:2px 10px;margin-left:10px;vertical-align:middle}
+.entry .cnt{font-family:var(--mincho);font-size:26px;font-weight:700;color:var(--btn);margin-left:12px}
+.entry .cnt small{font-family:var(--gothic);font-size:14px;font-weight:500;margin-left:2px;color:var(--sub)}
 .entry span.d{font-size:15px;color:var(--sub)}
 .recs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
 .rec{text-decoration:none;color:var(--ink);border:0;background:none;padding:0;text-align:left;font:inherit;cursor:pointer}
@@ -91,8 +92,8 @@
 </div>
 </main>
 <div id="ft"></div>
-<script src="../data.js"></script>
-<script src="app.js"></script>
+<script src="../data.js?v=1792552683"></script>
+<script src="app.js?v=1792552683"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
@@ -101,7 +102,7 @@
   RK.updFavCount();
   const nu=LIST.filter(n=>kindOf(n)==="塗り絵");
   const c=k=>LIST.filter(n=>kindOf(n)===k).length;
-  document.querySelectorAll("[data-cnt]").forEach(e=>e.textContent=c(e.dataset.cnt)+"枚");
+  document.querySelectorAll("[data-cnt]").forEach(e=>e.innerHTML=c(e.dataset.cnt)+"<small>枚</small>");
   const withS=nu.filter(n=>n.sample&&n.season===seasonNow);
   const fh=new URLSearchParams(location.search).get("hero");const h=(fh&&nu.find(n=>n.file===fh))||withS[Math.floor(Math.random()*withS.length)]||nu[0];
   const pics=document.getElementById("pics");

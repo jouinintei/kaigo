@@ -55,8 +55,8 @@ ${cur===""?`<a class="favbtn" href="list.html?k=fav">${ico("heart", 18)}お気�
   function tabs(cur) {
     const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["お気に入り", "fav", "star", "FAVORITE"]];
     const cnt = k => k === "fav" ? favs().length : LIST.filter(n => kindOf(n) === { nurie: "塗り絵", noutore: "脳トレ", cal: "カレンダー" }[k]).length;
-    const v = new URLSearchParams(location.search).get("tab") || "a";
-    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="list.html?k=${k}${v !== "a" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc">${cnt(k)}</span></a>`).join("")}</div></nav>`;
+    const v = new URLSearchParams(location.search).get("tab") || "bc";
+    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="list.html?k=${k}${v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc">${cnt(k)}</span></a>`).join("")}</div></nav>`;
   }
   function footer(cur) {
     const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["お気に入り", "fav", "heart"]];

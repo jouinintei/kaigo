@@ -63,6 +63,17 @@ img{max-width:100%}
 .tabs-f .tc{display:block;margin-left:auto;font-size:13px;color:var(--mute);font-weight:400}
 .tabs-f a[aria-current=page]{border:2px solid var(--acc);padding:13px 15px;color:var(--ink)}
 .tabs-f a[aria-current=page] .ti{background:var(--btn);color:#fff}
+/* BC: index tabs + icon + count (default) */
+.tabs-bc{background:var(--bg);border-bottom:0;padding-top:18px}
+.tabs-bc .wrap{gap:6px;border-bottom:1px solid var(--line);align-items:flex-end}
+.tabs-bc a{border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;background:#F1ECE4;padding:12px 22px;margin-bottom:-1px;font-family:var(--mincho);font-weight:700;font-size:18px;color:var(--sub);gap:10px}
+.tabs-bc a:hover{background:#F7F2EA;color:var(--ink)}
+.tabs-bc a[aria-current=page]{background:var(--bg);color:var(--ink);border-top:3px solid var(--acc);padding:14px 26px 14px}
+.tabs-bc .ti{display:flex;color:#9A8F82}.tabs-bc a[aria-current=page] .ti{color:var(--btn)}
+.tabs-bc .tc{display:inline-flex;align-items:baseline;font-family:var(--gothic);font-size:17px;font-weight:700;background:#fff;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 10px;line-height:26px}
+.tabs-bc .tc::after{content:"枚";font-size:12px;font-weight:500;margin-left:1px}
+.tabs-bc a[href*="k=fav"] .tc::after{content:"件"}
+.tabs-bc a[aria-current=page] .tc{background:#F7EBE2;color:var(--btn);border-color:#EBD3C2}
 /* G: vertical icon tabs */
 .tabs-g a{flex-direction:column;gap:2px;padding:10px 26px 8px;font-size:14px;min-width:96px}
 .tabs-g .ti{display:flex;color:#8A8076}.tabs-g a[aria-current=page] .ti{color:var(--btn)}
