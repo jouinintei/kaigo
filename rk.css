@@ -250,7 +250,7 @@ img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit
 .md .view{position:relative}
 .fsb{display:none;position:absolute;right:14px;bottom:14px;z-index:3;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;border:0;background:rgba(43,38,34,.82);color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .fsv{position:fixed;inset:0;z-index:200;background:#111}
-.fsv img{position:absolute;left:50%;top:50%;background:#fff;-webkit-touch-callout:none;user-select:none}
+.fsv img{position:absolute;left:50%;top:50%;background:#fff;max-width:none;max-height:none;object-fit:contain;-webkit-touch-callout:none;user-select:none}
 .fsx{position:absolute;right:12px;top:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;display:flex;align-items:center;justify-content:center}
 .fsh{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:13px}
 @media (max-width:640px){.fsb{display:inline-flex}}
