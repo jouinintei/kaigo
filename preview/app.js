@@ -54,7 +54,7 @@
     return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
 <header class="hd"><div class="wrap"><a class="logo" href="${PROD ? "/" : "index.html"}"><span class="a">介護の</span><span class="b">レクプリ</span></a>
 ${cur===""?`<nav class="gnav" aria-label="メインメニュー">${nav.map(([t, h, k]) => `<a href="${h}"${cur === k ? ' aria-current="page"' : ""}>${t}</a>`).join("")}</nav>`:""}
-${cur===""?`<a class="favbtn" href="${L("fav")}">${ico("heart", 18)}お気に入り<span class="n" data-favn></span></a>`:`<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a>`}</div></header>`;
+<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a></div></header>`;
   }
   function tabs(cur) {
     const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["お気に入り", "fav", "star", "FAVORITE"]];
