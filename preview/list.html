@@ -16,6 +16,9 @@
 .bar{display:flex;justify-content:space-between;align-items:center;margin:22px 0 18px;gap:12px}
 .bar .n{color:var(--sub)}.bar .n b{color:var(--ink);font-size:19px}
 .sp{flex:1}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;background:#fff;padding:3px}
+.seg button{height:40px;padding:0 16px;border:0;border-radius:8px;background:transparent;font:inherit;font-size:15px;color:var(--ink);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--btn);color:#fff;font-weight:700}
 .months{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
 .mo{padding:10px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;font:inherit;color:var(--ink)}
 .mo[aria-current=true]{outline:3px solid var(--acc)}
@@ -44,6 +47,9 @@
   RK.updFavCount();
   const main=document.getElementById("main");
   const st={season:qs.get("s")||"すべて",genre:"",diff:"",q:qs.get("q")||"",sort:"new",page:1,month:null,sel:new Set()};
+  let pop=[],seed=Math.random()*1e9|0;
+  fetch("../api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
+  const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
   const PER=K==="cal"?12:12;
   const SEASONS=["すべて","春","夏","秋","冬","通年"];
   const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
@@ -56,7 +62,8 @@
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
     if(st.diff)a=a.filter(n=>n.diff===st.diff);
     if(st.q){const w=hira(st.q.trim());a=a.filter(n=>hira([n.title,n.genre,n.season].join(" ")).includes(w));}
-    if(st.sort==="old")a=a.slice().reverse();
+    if(st.sort==="pop"){const r=new Map(pop.map((f,i)=>[f,i]));a=a.map((n,i)=>[r.has(n.file)?r.get(n.file):1e6+i,n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
+    else if(st.sort==="rand"){a=a.map(n=>[rk(n.file),n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     return a;
   }
   function pager(total){
@@ -77,7 +84,7 @@
     if(K==="cal")return renderCal();
     const a=filtered(),tot=a.length,pages=Math.max(1,Math.ceil(tot/PER));if(st.page>pages)st.page=pages;
     const pageItems=a.slice((st.page-1)*PER,st.page*PER);
-    main.innerHTML=head()+filters()+`<div class="bar"><span class="n"><b>${tot}</b> 枚</span><label><span class="sr">並び順</span><select class="sel" id="sort"><option value="new"${st.sort==="new"?" selected":""}>新着順</option><option value="old"${st.sort==="old"?" selected":""}>古い順</option></select></label></div>`+
+    main.innerHTML=head()+filters()+`<div class="bar"><span class="n"><b>${tot}</b> 枚</span><div class="seg" role="group" aria-label="並び順">${[["pop","人気順"],["rand","ランダム"],["new","新着順"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
       (tot?`<div class="grid">${pageItems.map(n=>card(n)).join("")}</div>${pager(tot)}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><button class="btn p" data-reset>条件をリセット</button></div>`);
   }
@@ -101,12 +108,13 @@
     else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;render();}
     else if(t.dataset.pg){st.page=+t.dataset.pg;render();scrollTo({top:0,behavior:"smooth"});}
     else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1});render();}
+    else if(t.dataset.sort){if(t.dataset.sort==="rand"&&st.sort==="rand")seed=Math.random()*1e9|0;st.sort=t.dataset.sort;st.page=1;render();}
     else if(t.dataset.month){st.month=t.dataset.month;render();}
     else if(t.dataset.chk){st.sel.has(t.dataset.chk)?st.sel.delete(t.dataset.chk):st.sel.add(t.dataset.chk);render();}
     else if(t.dataset.all!==undefined){const f=favs();st.sel=st.sel.size===f.length?new Set():new Set(f);render();}
     else if(t.dataset.bulk!==undefined){for(const f of st.sel){await RK.save(f);await new Promise(r=>setTimeout(r,600));}RK.toast(`${st.sel.size}枚を保存しました`,"A4サイズで印刷してお使いください");}
   });
-  main.addEventListener("change",e=>{if(e.target.id==="genre")st.genre=e.target.value;if(e.target.id==="diff")st.diff=e.target.value;if(e.target.id==="sort")st.sort=e.target.value;st.page=1;render();});
+  main.addEventListener("change",e=>{if(e.target.id==="genre")st.genre=e.target.value;if(e.target.id==="diff")st.diff=e.target.value;st.page=1;render();});
   let qt;main.addEventListener("input",e=>{if(e.target.id!=="q")return;clearTimeout(qt);qt=setTimeout(()=>{st.q=e.target.value;st.page=1;const pos=e.target.selectionStart;render();const q=document.getElementById("q");q.focus();q.setSelectionRange(pos,pos);},300);});
   document.addEventListener("favchange",()=>{if(K==="fav")render();});
   main.innerHTML=head()+filters()+`<div class="grid" style="margin-top:24px">${skeleton(6)}</div>`;
