@@ -144,7 +144,7 @@
   let qt;main.addEventListener("input",e=>{if(e.target.id!=="q")return;clearTimeout(qt);qt=setTimeout(()=>{st.q=e.target.value;st.page=1;const pos=e.target.selectionStart;render();const q=document.getElementById("q");q.focus();q.setSelectionRange(pos,pos);},300);});
   document.addEventListener("favchange",()=>{if(K==="fav")render();});
   main.innerHTML=head()+filters()+`<div class="grid" style="margin-top:24px">${skeleton(6)}</div>`;
-  requestAnimationFrame(()=>setTimeout(render,50));
+  let rdone=0;const go=()=>{if(!rdone){rdone=1;render();}};requestAnimationFrame(()=>setTimeout(go,50));setTimeout(go,400);
 })();
 </script>
 </body>

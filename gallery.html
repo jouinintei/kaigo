@@ -21,7 +21,7 @@
 <script src="/frame.js?v=10"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792570082">
+<link rel="stylesheet" href="/rk.css?v=1792570164">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -57,7 +57,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792570082"></script>
+<script src="/rk.js?v=1792570164"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -158,7 +158,7 @@
   let qt;main.addEventListener("input",e=>{if(e.target.id!=="q")return;clearTimeout(qt);qt=setTimeout(()=>{st.q=e.target.value;st.page=1;const pos=e.target.selectionStart;render();const q=document.getElementById("q");q.focus();q.setSelectionRange(pos,pos);},300);});
   document.addEventListener("favchange",()=>{if(K==="fav")render();});
   main.innerHTML=head()+filters()+`<div class="grid" style="margin-top:24px">${skeleton(6)}</div>`;
-  requestAnimationFrame(()=>setTimeout(render,50));
+  let rdone=0;const go=()=>{if(!rdone){rdone=1;render();}};requestAnimationFrame(()=>setTimeout(go,50));setTimeout(go,400);
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a9863d837944405fb5b7d52eafc53b9e"}'></script><!-- End Cloudflare Web Analytics -->
