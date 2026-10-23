@@ -93,7 +93,7 @@ for name, (ey, glink) in PAGES.items():
     n = count(F)
     head = fix_counts(head_of(raw), n)
     if '/analytics.js' not in head: head += '<script src="/analytics.js" defer></script>\n'
-    head += '<script src="/frame.js?v=10"></script>\n' + FONTS + LP_CSS + '</head>\n'
+    head += '<script src="/frame.js?v=11"></script>\n' + FONTS + LP_CSS + '</head>\n'
     body = raw[raw.index('<body'):]
     h1 = re.search(r'<h1>(.*?)</h1>', body, re.S).group(1)
     crumb = re.search(r'<div class="crumb">(.*?)</div>', body, re.S).group(1)
