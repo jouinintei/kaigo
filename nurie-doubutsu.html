@@ -79,7 +79,7 @@
 <script>
 (function(){
   var F={"kind": "塗り絵", "genre": "動物"},MAX=24;
-  window.RK_SRC=window.RK_PAGE="lp";
+  window.RK_SRC=window.RK_PAGE="lp";window.RK_CTX={lp:(location.pathname.split("/").pop()||"").replace(/\.html$/,"")};
   document.getElementById("hd").innerHTML=RK.header("lp");
   document.getElementById("ft").innerHTML=RK.footer(F.kind==="脳トレ"?"noutore":F.kind==="カレンダー"?"cal":"nurie");
   RK.updFavCount();

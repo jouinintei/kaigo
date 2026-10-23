@@ -893,7 +893,12 @@
     if (s === "fav") return "お気に入りから保存";
     if (s === "bulk") return "お気に入りの「まとめて保存」で保存";
     if (s === "sample") return "色見本を開いて保存";
-    if (s === "lp") return "特集ページ（季節別・動物・敬老の日・脳トレプリントなどの紹介ページ）から保存";
+    if (s === "lp") {
+      var lpk = e.c && e.c.lp;
+      if (lpk && LP_JA[lpk]) return "特集ページ「" + LP_JA[lpk] + "」から保存";
+      if (lpk) return "特集ページ（" + lpk + "）から保存";
+      return "特集ページ（季節別・動物・敬老の日・脳トレプリントなど）から保存（どのページかは記録を始める前）";
+    }
     if (s === "top") return "トップページから保存";
     var base = s === "noutore" ? "脳トレの一覧" : s === "calendar" ? "カレンダー" : s === "list" ? "塗り絵の一覧" : "不明な場所";
     var c = e.c || {}, cp = [];
@@ -940,6 +945,7 @@
     if (k.indexOf("o:") === 0) return k.slice(2);
     return { google: "Google検索", yahoo: "Yahoo!検索", bing: "Bing検索", note: "note", sns: "SNS", old: "旧アドレス", direct: "直接（お気に入り・URL入力など）", yjapp: "Yahoo!アプリ", gapp: "Googleアプリ", line: "LINE", insta: "Instagram", fb: "Facebook", qr: "QRコード", chatgpt: "ChatGPT", copilot: "Copilot", perplexity: "Perplexity", gemini: "Gemini" }[k] || k;
   }
+  var LP_JA = { "nurie-haru": "春の塗り絵", "nurie-natsu": "夏の塗り絵", "nurie-aki": "秋の塗り絵", "nurie-fuyu": "冬の塗り絵", "nurie-doubutsu": "動物の塗り絵", "keirou-nurie": "敬老の日の塗り絵", "noutore-print": "脳トレプリント", "nurie-calendar": "塗り絵カレンダー" };
   var SORT_JA = { "new": "新着順", pop: "人気順", rand: "ランダム" };
   function srcLabel(s, o){ var b = SRC_SHORT[s] || s; return (o && SORT_JA[o]) ? b + "（" + SORT_JA[o] + "）" : b; }
   var SRC_SHORT = {

@@ -119,7 +119,7 @@ for name, (ey, glink) in PAGES.items():
 <script>
 (function(){{
   var F={json.dumps(F, ensure_ascii=False)},MAX=24;
-  window.RK_SRC=window.RK_PAGE="lp";
+  window.RK_SRC=window.RK_PAGE="lp";window.RK_CTX={{lp:(location.pathname.split("/").pop()||"").replace(/\.html$/,"")}};
   document.getElementById("hd").innerHTML=RK.header("lp");
   document.getElementById("ft").innerHTML=RK.footer(F.kind==="脳トレ"?"noutore":F.kind==="カレンダー"?"cal":"nurie");
   RK.updFavCount();
