@@ -865,6 +865,9 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風景", title: "窓辺の書斎", diff: "上級", file: "up_1792755691172_4.png", sample: "up_1792755691172_4_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792755688172" },
   { season: "通年", genre: "風景", title: "広大な大地", diff: "中級", file: "up_1792755692172_5.png", sample: "up_1792755692172_5_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792755688172" },
   { season: "通年", genre: "食べ物", title: "和菓子", diff: "上級", file: "up_1792755688172_1.png", sample: "up_1792755688172_1_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792756202681" },
+  { season: "通年", genre: "風物詩", title: "八百屋", diff: "上級", file: "up_1792757113508_1.png", sample: "up_1792757113508_1_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792757113508" },
+  { season: "通年", genre: "動物", title: "うさぎとにんじん", diff: "中級", file: "up_1792757114508_2.png", sample: "up_1792757114508_2_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792757113508" },
+  { season: "通年", genre: "その他", title: "お人形", diff: "中級", file: "up_1792757115508_3.png", sample: "up_1792757115508_3_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792757113508" },
   { season: "通年", genre: "人物", title: "舞妓さん", diff: "上級", file: "up_1792755705172_18.png", sample: "up_1792755705172_18_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792755688172" },
   { season: "通年", genre: "人物", title: "舞妓さん", diff: "中級", file: "up_1792755706172_19.png", sample: "up_1792755706172_19_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792755688172" },
 ];
