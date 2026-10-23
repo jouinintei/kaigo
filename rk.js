@@ -79,7 +79,7 @@
     return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
 <header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><span class="lm"><span class="a">介護</span><span class="no">の</span><span class="b">レクプリ</span></span></a>`}
 
-<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a></div></header>`;
+${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a>`}</div></header>`;
   }
   function tabs(cur) {
     const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["お気に入り", "fav", "star", "FAVORITE"]];
