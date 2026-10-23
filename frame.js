@@ -355,6 +355,23 @@
     });
   }
 
+  window.rekupuriStamp = async function (blob) {
+    try {
+      var src = await loadBitmap(blob), W = src.width, H = src.height, m = Math.min(W, H);
+      var c = document.createElement("canvas"); c.width = W; c.height = H;
+      var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H); ctx.drawImage(src, 0, 0);
+      if (src.close) { try { src.close(); } catch (e) {} }
+      var lh = Math.round(m * CFG.logoH), fs = Math.round(lh * 0.95), label = CFG.label;
+      ctx.font = "bold " + fs + "px 'Helvetica Neue', Arial, 'Hiragino Sans', sans-serif";
+      ctx.textBaseline = "middle"; ctx.textAlign = "left";
+      var lw = Math.ceil(ctx.measureText(label).width), gap = Math.round(lh * 0.35), vg = Math.round(lh * 0.15);
+      var lx = W - Math.round(m * CFG.logoRight) - lw, ly = H - Math.round(m * 0.03) - lh;
+      ctx.fillStyle = "#fff"; ctx.fillRect(lx - gap, ly - vg, lw + gap * 2, lh + vg * 2);
+      ctx.fillStyle = CFG.logoColor; ctx.fillText(label, lx, ly + lh / 2 + 1);
+      return await new Promise(function (res, rej) { c.toBlob(function (b) { b ? res(b) : rej(new Error("toBlob")); }, "image/png"); });
+    } catch (e) { return blob; }
+  };
+
   window.rekupuriFrame = async function (blob) {
     try {
       return await frameBlob(blob);

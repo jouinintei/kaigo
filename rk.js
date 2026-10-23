@@ -175,6 +175,7 @@ ${badges(f)}</div>
     if (!r || !r.ok) throw new Error("load");
     const b = await r.blob();
     if (file === n.file && kindOf(n) === "塗り絵" && window.rekupuriFrame) return await window.rekupuriFrame(b);
+    if ((file === n.file || file === n.answer) && kindOf(n) === "脳トレ" && window.rekupuriStamp) return await window.rekupuriStamp(b);
     if (file === n.sample) return await stampSample(b);
     return b;
   }
