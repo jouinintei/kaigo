@@ -35,7 +35,7 @@
 .lphow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:8px;padding:0;list-style:none}
 .lphow li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;gap:14px;align-items:flex-start;font-size:15.5px;color:#4A423A}
 .lphow li span{font-family:var(--mincho);font-size:32px;line-height:1;color:var(--acc)}
-.lpthemes{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.lpthemes a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:15px}.lpthemes a:hover{border-color:var(--acc);color:var(--btn)}.lpthemes a[aria-current]{background:var(--btn);border-color:var(--btn);color:#fff}
+.lpfeat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:26px}.lpfeat div{background:#fff;border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:14px 16px}.lpfeat b{display:block;font-size:16px;margin-bottom:4px}.lpfeat span{font-size:13.5px;color:var(--sub);line-height:1.7}.lpchips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px}.lpchips button{font:inherit;font-size:15px;font-weight:700;height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}.lpchips button small{font-size:12px;color:var(--sub);font-weight:500}.lpchips button[aria-pressed="true"]{background:var(--btn);border-color:var(--btn);color:#fff}.lpchips button[aria-pressed="true"] small{color:#fff}.lpchips button:hover{border-color:var(--acc)}.lpthemes{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.lpthemes a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:15px}.lpthemes a:hover{border-color:var(--acc);color:var(--btn)}.lpthemes a[aria-current]{background:var(--btn);border-color:var(--btn);color:#fff}
 .doc{max-width:860px;margin:0 auto;padding:0 24px}
 .doc .ph1{padding:34px 0 8px}.doc .ph1 .ey{font-size:13px;letter-spacing:.25em;color:var(--btn);font-weight:700}.doc .ph1 h1{font-family:var(--mincho);font-size:34px;margin:6px 0 0;color:#3A2A21}
 .doc .body{background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;margin-top:22px;font-size:16px;line-height:1.95;color:#4A423A}
@@ -45,7 +45,8 @@
 .doc .body .ok,.doc .body .ng,.doc .body .box{border-radius:12px;padding:18px 22px;margin:18px 0}.doc .body .ok{background:#F2F7EF;border:1px solid #CFE3C6}.doc .body .ng{background:#FCF1EC;border:1px solid #F0D2C2}.doc .body .ok h3,.doc .body .ng h3{margin-top:0}
 .doc .body a{color:var(--btn)}
 @media (max-width:900px){.lpgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.lph{grid-template-columns:1fr;gap:20px}}
-@media (max-width:640px){.lp,.doc{padding:0 16px}.lph h1{font-size:28px}.lpgrid{grid-template-columns:1fr}.lphow{grid-template-columns:1fr}.lpc .nm b{font-size:44px}.doc .body{padding:22px 18px}.doc .ph1 h1{font-size:27px}}
+@media (max-width:900px){.lpfeat{grid-template-columns:1fr;gap:10px}}
+@media (max-width:640px){.lpchips{flex-wrap:nowrap;overflow-x:auto;margin:4px -16px 16px;padding:0 16px 4px;scrollbar-width:none}.lpchips button{flex:none}.lp,.doc{padding:0 16px}.lph h1{font-size:28px}.lpgrid{grid-template-columns:1fr}.lphow{grid-template-columns:1fr}.lpc .nm b{font-size:44px}.doc .body{padding:22px 18px}.doc .ph1 h1{font-size:27px}}
 </style>
 </head>
 <body>

@@ -64,7 +64,7 @@ LP_CSS = '''<style>
 .lphow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:8px;padding:0;list-style:none}
 .lphow li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;gap:14px;align-items:flex-start;font-size:15.5px;color:#4A423A}
 .lphow li span{font-family:var(--mincho);font-size:32px;line-height:1;color:var(--acc)}
-.lpthemes{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.lpthemes a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:15px}.lpthemes a:hover{border-color:var(--acc);color:var(--btn)}.lpthemes a[aria-current]{background:var(--btn);border-color:var(--btn);color:#fff}
+.lpfeat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:26px}.lpfeat div{background:#fff;border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:14px 16px}.lpfeat b{display:block;font-size:16px;margin-bottom:4px}.lpfeat span{font-size:13.5px;color:var(--sub);line-height:1.7}.lpchips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px}.lpchips button{font:inherit;font-size:15px;font-weight:700;height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}.lpchips button small{font-size:12px;color:var(--sub);font-weight:500}.lpchips button[aria-pressed="true"]{background:var(--btn);border-color:var(--btn);color:#fff}.lpchips button[aria-pressed="true"] small{color:#fff}.lpchips button:hover{border-color:var(--acc)}.lpthemes{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.lpthemes a{display:inline-flex;align-items:center;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:15px}.lpthemes a:hover{border-color:var(--acc);color:var(--btn)}.lpthemes a[aria-current]{background:var(--btn);border-color:var(--btn);color:#fff}
 .doc{max-width:860px;margin:0 auto;padding:0 24px}
 .doc .ph1{padding:34px 0 8px}.doc .ph1 .ey{font-size:13px;letter-spacing:.25em;color:var(--btn);font-weight:700}.doc .ph1 h1{font-family:var(--mincho);font-size:34px;margin:6px 0 0;color:#3A2A21}
 .doc .body{background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;margin-top:22px;font-size:16px;line-height:1.95;color:#4A423A}
@@ -74,7 +74,8 @@ LP_CSS = '''<style>
 .doc .body .ok,.doc .body .ng,.doc .body .box{border-radius:12px;padding:18px 22px;margin:18px 0}.doc .body .ok{background:#F2F7EF;border:1px solid #CFE3C6}.doc .body .ng{background:#FCF1EC;border:1px solid #F0D2C2}.doc .body .ok h3,.doc .body .ng h3{margin-top:0}
 .doc .body a{color:var(--btn)}
 @media (max-width:900px){.lpgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.lph{grid-template-columns:1fr;gap:20px}}
-@media (max-width:640px){.lp,.doc{padding:0 16px}.lph h1{font-size:28px}.lpgrid{grid-template-columns:1fr}.lphow{grid-template-columns:1fr}.lpc .nm b{font-size:44px}.doc .body{padding:22px 18px}.doc .ph1 h1{font-size:27px}}
+@media (max-width:900px){.lpfeat{grid-template-columns:1fr;gap:10px}}
+@media (max-width:640px){.lpchips{flex-wrap:nowrap;overflow-x:auto;margin:4px -16px 16px;padding:0 16px 4px;scrollbar-width:none}.lpchips button{flex:none}.lp,.doc{padding:0 16px}.lph h1{font-size:28px}.lpgrid{grid-template-columns:1fr}.lphow{grid-template-columns:1fr}.lpc .nm b{font-size:44px}.doc .body{padding:22px 18px}.doc .ph1 h1{font-size:27px}}
 </style>
 '''
 
@@ -102,6 +103,13 @@ for name, (ey, glink) in PAGES.items():
     unit = '種類' if F.get('kind') == 'カレンダー' else '枚'
     kind = F.get('kind') or '塗り絵'
     pts = ['無料・登録不要・広告なし', 'A4サイズでそのまま印刷', '答えつき' if kind == '脳トレ' else ('色見本つき' if kind == '塗り絵' else '毎月の行事に合わせた絵柄')]
+    NT = kind == '脳トレ'
+    feat = ('<section class="lpfeat"><div><b>すべて答え付き</b><span>問題と答えが1枚ずつ。進行役が答えを読み上げるだけでレクになります</span></div>'
+            '<div><b>問題と答えを一緒に印刷</b><span>パソコンなら「🖨️ 直接印刷する」で、問題と答えの2枚をまとめて印刷できます</span></div>'
+            '<div><b>5つの種類から選べる</b><span>漢字・計算・言葉遊び・クイズ・ことわざ。その日の気分や参加者に合わせて</span></div></section>') if NT else ''
+    chips = '<div class="lpchips" id="lpchips" role="group" aria-label="種類で絞り込む"></div>' if NT else ''
+    how2 = '「保存する」を押すと、A4用の画像が保存されます。パソコンなら「🖨️ 直接印刷する」でそのまま印刷できます' if NT else '「保存する」を押すと、A4用の画像が保存されます'
+    sub = '種類を選ぶと、その種類だけが人気順に並びます' if NT else '押すと大きく見られます。そのまま保存もできます'
     themes = ''.join(f'<a href="{t}.html"{" aria-current=\"page\"" if t == name else ""}>{l}</a>' for t, l in THEMES)
     page = f'''{head}<body>
 <div id="hd"></div>
@@ -109,8 +117,8 @@ for name, (ey, glink) in PAGES.items():
 <div class="crumb">{crumb}</div>
 <section class="lph"><div><div class="ey">{ey}</div><h1>{h1}</h1>{''.join(f'<p>{p}</p>' for p in ps)}</div>
 <div class="lpc"><div class="nm"><b id="lpn">{n}</b><span>{unit}を収録</span></div><ul class="pt">{''.join(f'<li>{x}</li>' for x in pts)}</ul><a class="btn p" href="{glink}">絞り込んで探す（一覧へ）→</a></div></section>
-<section class="lps"><div class="h2"><h2>収録している素材</h2><span class="s">押すと大きく見られます。そのまま保存もできます</span></div><div class="lpgrid" id="lpgrid"></div><div class="lpmore"><a class="btn o" href="{glink}" id="lpmore">すべて見る →</a></div></section>
-<section class="lps"><div class="h2"><h2>使い方</h2></div><ol class="lphow"><li><span>1</span><div>気になる素材を押して、大きく表示します</div></li><li><span>2</span><div>「保存する」を押すと、A4用の画像が保存されます</div></li><li><span>3</span><div>A4サイズで印刷して、そのままレクリエーションに</div></li></ol></section>
+{feat}<section class="lps"><div class="h2"><h2>収録している素材</h2><span class="s">{sub}</span></div>{chips}<div class="lpgrid" id="lpgrid"></div><div class="lpmore"><a class="btn o" href="{glink}" id="lpmore">すべて見る →</a></div></section>
+<section class="lps"><div class="h2"><h2>使い方</h2></div><ol class="lphow"><li><span>1</span><div>気になる素材を押して、大きく表示します</div></li><li><span>2</span><div>{how2}</div></li><li><span>3</span><div>A4サイズで印刷して、そのままレクリエーションに</div></li></ol></section>
 <section class="lps"><div class="h2"><h2>ほかのテーマもどうぞ</h2></div><div class="lpthemes">{themes}</div></section>
 </main>
 <div id="ft"></div>
@@ -125,8 +133,39 @@ for name, (ey, glink) in PAGES.items():
   RK.updFavCount();
   var list=RK.LIST.filter(function(n){{var k=RK.kindOf(n);if(F.kind&&k!==F.kind)return false;if(F.season&&n.season!==F.season)return false;if(F.genre&&n.genre!==F.genre)return false;if(F.title_has&&String(n.title||"").indexOf(F.title_has)<0)return false;return true;}});
   document.getElementById("lpn").textContent=list.length;
+  if(F.kind==="脳トレ"){{
+    var SP=matchMedia("(max-width:760px)").matches,STEP=SP?12:24,shown=STEP,G="",pop=[];
+    var GEN=["漢字","計算","言葉遊び","クイズ","ことわざ"];
+    var idx={{}};list.forEach(function(n,i){{idx[n.file]=i;}});
+    function rank(n){{var r=pop.indexOf(n.file);if(r<0)r=pop.indexOf(n.answer);return r<0?1e4+(list.length-idx[n.file]):r;}}
+    function byPop(a){{return a.slice().sort(function(x,y){{return rank(x)-rank(y)||idx[y.file]-idx[x.file];}});}}
+    function ordered(){{
+      if(G)return byPop(list.filter(function(n){{return n.genre===G;}}));
+      var q=GEN.map(function(g){{return byPop(list.filter(function(n){{return n.genre===g;}}));}}),o=[];
+      var rest=byPop(list.filter(function(n){{return GEN.indexOf(n.genre)<0;}}));
+      for(var i=0;o.length<list.length-rest.length;i++)q.forEach(function(a){{if(a[i])o.push(a[i]);}});
+      return o.concat(rest);
+    }}
+    var chipsEl=document.getElementById("lpchips");
+    function chips(){{
+      chipsEl.innerHTML=[["","すべて",list.length]].concat(GEN.map(function(g){{return [g,g,list.filter(function(n){{return n.genre===g;}}).length];}})).filter(function(c){{return c[2]>0;}})
+        .map(function(c){{return '<button type="button" data-g="'+c[0]+'" aria-pressed="'+(G===c[0])+'">'+c[1]+'<small>'+c[2]+'</small></button>';}}).join("");
+    }}
+    var m=document.getElementById("lpmore");
+    function draw(){{
+      var o=ordered();document.getElementById("lpgrid").innerHTML=o.slice(0,shown).map(function(n){{return RK.card(n);}}).join("");
+      var left=o.length-shown;
+      if(left>0){{m.textContent="もっと見る（あと"+left+"枚）";m.href="#";m.dataset.more="1";}}
+      else{{m.textContent=(G?G+"の脳トレを":"")+"一覧で絞り込んで探す →";m.href=G?"{glink}&genre="+encodeURIComponent(G):"{glink}";delete m.dataset.more;}}
+    }}
+    m.addEventListener("click",function(e){{if(!m.dataset.more)return;e.preventDefault();shown+=STEP;draw();}});
+    chipsEl.addEventListener("click",function(e){{var b=e.target.closest("button[data-g]");if(!b)return;G=b.dataset.g;shown=STEP;window.RK_CTX.ge=G||undefined;chips();draw();}});
+    chips();draw();
+    fetch("/api/popular",{{cache:"no-store"}}).then(function(r){{return r.json();}}).then(function(j){{pop=(j&&j.files)||[];draw();}}).catch(function(){{}});
+  }}else{{
   document.getElementById("lpgrid").innerHTML=list.slice(0,MAX).map(function(n){{return RK.card(n);}}).join("");
   var m=document.getElementById("lpmore");if(list.length<=MAX)m.parentNode.style.display="none";else m.textContent="残り"+(list.length-MAX)+"{unit}もすべて見る →";
+  }}
 }})();
 </script>
 {BEACON}
