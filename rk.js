@@ -54,7 +54,7 @@
     document.querySelectorAll(`article[data-f="${CSS.escape(f)}"]`).forEach(ar => {
       const ph = ar.querySelector(".ph"); if (ph) { const o = ph.parentNode.querySelector(".bdg"); if (o) o.remove(); ph.parentNode.insertAdjacentHTML("beforeend", badges(f)); }
       const sb = ar.querySelector(`[data-save="${CSS.escape(f)}"]`); if (sb && isSaved(f)) { sb.className = "btn done"; sb.innerHTML = ico("down", 17) + "もう一度保存"; }
-      const pb = ar.querySelector(`[data-print="${CSS.escape(f)}"]`); if (pb && isPrinted(f)) { pb.textContent = pb.textContent.replace("直接印刷する", "もう一度印刷する"); pb.classList.add("pdone"); }
+      const pb = ar.querySelector(`[data-print="${CSS.escape(f)}"]`); if (pb && isPrinted(f)) { pb.textContent = pb.textContent.replace("直接印刷する", pb.classList.contains("half") ? "もう一度印刷" : "もう一度印刷する"); pb.classList.add("pdone"); }
     });
   }
   function markUsed(f) { const h = J(HIST, {}); h[f] = h[f] || {}; h[f].save = new Date().toISOString().slice(0, 10); S(HIST, h); }
@@ -103,13 +103,14 @@
       : (n.sample ? `<button class="btn o" data-open="${esc(f)}" data-tab="s">${ico("pal", 17)}色見本</button>` : "");
     const lab1 = k === "脳トレ" ? "問題を保存" : "保存する";
     const used = isSaved(f), printed = isPrinted(f);
+    const saveBtn = `<button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>`;
     return `<article class="card wk${k !== "塗り絵" ? " v" : ""}" data-f="${esc(f)}">
 <div style="position:relative"><button class="ph" data-open="${esc(f)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" ${srcs(n)} onload="this.classList.remove('sk')"></button>
 ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.on ? "true" : "false"}" data-chk="${esc(f)}" aria-label="選ぶ">${opt.on ? ico("check", 20) : ""}</span>` : (isNew(n) ? '<span class="new">NEW</span>' : "")}
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${badges(f)}</div>
 <div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
-<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn ptb${printed ? " pdone" : ""}" data-print="${esc(f)}">🖨️ ${printed ? "もう一度印刷する" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}</article>`;
+${PT && k === "塗り絵" ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""}<div class="acts${btn2 ? " a2" : ""}">${saveBtn}<button class="btn ptb half${printed ? " pdone" : ""}" data-print="${esc(f)}">🖨️ ${printed ? "もう一度印刷" : "直接印刷する"}</button></div>` : `<div class="acts${btn2 ? "" : " one"}">${saveBtn}${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn ptb${printed ? " pdone" : ""}" data-print="${esc(f)}">🖨️ ${printed ? "もう一度印刷する" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}`}</article>`;
   }
   function skeleton(n) {
     return Array.from({ length: n }, () => `<div class="card wk"><div class="sk" style="aspect-ratio:1.414;border-radius:6px"></div><div class="sk" style="height:16px;width:60%;border-radius:4px;margin:16px 0 8px"></div><div class="sk" style="height:12px;width:40%;border-radius:4px"></div></div>`).join("");

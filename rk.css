@@ -258,3 +258,4 @@ img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit
 .wk .ptb{width:100%;margin-top:8px;height:40px;font-size:14px}
 .btn.ptb{background:#2F5D8A;color:#fff;border:1px solid #2F5D8A;transition:background .15s,border-color .15s,color .15s}.btn.ptb:hover{background:#24496E;border-color:#24496E;color:#fff}.btn.ptb:active{background:#1C3A58}
 .btn.ptb.pdone{background:#fff;color:#2F5D8A;border:1px solid #B9CBDD}.btn.ptb.pdone:hover{background:#F2F6FB;border-color:#2F5D8A}
+.acts.a2{margin-top:8px}.acts .btn.ptb.half{width:auto;margin-top:0;height:44px;font-size:15px}
