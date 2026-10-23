@@ -4,7 +4,7 @@
   --bg:#FAF7F2;--card:#FFFFFF;--line:#E3DED6;--line2:#EFE9DF;--ink:#2B2622;--sub:#5C534A;--mute:#6E655B;
   --acc:#D97532;--btn:#A9532A;--btnh:#8E4321;--tint:#F5EFE6;--tag:#F1ECE4;
   --shadow:0 2px 8px rgba(50,40,30,.035);--r:10px;
-  --mincho:'Zen Maru Gothic',var(--gothic);--gothic:'Hiragino Kaku Gothic ProN','Hiragino Sans','BIZ UDPGothic','Yu Gothic UI','Yu Gothic','Meiryo',system-ui,sans-serif;
+  --mincho:'Zen Antique Soft',var(--gothic);--gothic:'Hiragino Kaku Gothic ProN','Hiragino Sans','BIZ UDPGothic','Yu Gothic UI','Yu Gothic','Meiryo',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scrollbar-gutter:stable}
@@ -269,3 +269,4 @@ img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit
 .wk .tt b{font-family:'Zen Antique Soft',var(--gothic);font-weight:400;font-size:18px}
 .rec b{font-family:'Zen Antique Soft',var(--gothic);font-weight:400;font-size:17px}
 .md h2#mdT{font-family:'Zen Antique Soft',var(--gothic);font-weight:400}
+html{font-synthesis-weight:none}
