@@ -94,7 +94,7 @@ ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
 <div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
-<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn g ptb" data-print="${esc(f)}">印刷する${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}</article>`;
+<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn g ptb" data-print="${esc(f)}">🖨️ 直接印刷する${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}</article>`;
   }
   function skeleton(n) {
     return Array.from({ length: n }, () => `<div class="card wk"><div class="sk" style="aspect-ratio:1.414;border-radius:6px"></div><div class="sk" style="height:16px;width:60%;border-radius:4px;margin:16px 0 8px"></div><div class="sk" style="height:12px;width:40%;border-radius:4px"></div></div>`).join("");
@@ -284,5 +284,5 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
   document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
   document.addEventListener("dragstart", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
 
-  window.RK = { isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
+  window.RK = { PT, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
 })();
