@@ -264,6 +264,17 @@
   .inq .tag.bug{background:#fdecea;border-color:transparent;color:#c0392b}
   .inq .txt{font-size:14px;line-height:1.75;white-space:pre-wrap;word-break:break-word}
   .inq .from{font-size:12px;color:var(--ink-3);margin-top:5px;word-break:break-all}
+  .inq .tag.photo{background:#e8f4ec;border-color:transparent;color:#2e7d4f}
+  .inq .pok{font-size:12px;margin-top:6px;font-weight:700}
+  .inq .pok.ok{color:#2e7d4f}.inq .pok.ng{color:var(--ink-3)}
+  .inq .phs{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .inq .phs button{padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;width:110px;height:110px;background:#fff;cursor:zoom-in}
+  .inq .phs img{width:100%;height:100%;object-fit:cover;display:block}
+  .phv{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px;flex-direction:column;gap:12px}
+  .phv.show{display:flex}
+  .phv img{max-width:100%;max-height:calc(100% - 60px);object-fit:contain;border-radius:6px;background:#fff}
+  .phv .bar{display:flex;gap:10px}
+  .phv a,.phv button{font:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:8px 18px;text-decoration:none;cursor:pointer}
   #feedWrap{max-height:500px;overflow:auto}
   #rankWrap{max-height:262px;overflow:auto}
   .inssum{flex-basis:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-top:8px;cursor:default}
@@ -1397,7 +1408,7 @@
       if (k !== curDay){ curDay = k; html += '<div class="daysep" style="grid-column:auto;padding:12px 2px 2px">' + labelDay(k) + '</div>'; }
       var type = it.type || "その他";
       var tags = (t > seenAt ? '<span class="tag newinq">NEW</span>' : '') + '<span class="when">' + hhmm(t) + '</span>' +
-        '<span class="tag ' + (type === "不具合" ? "bug" : "kind") + '">' + esc(type) + '</span>';
+        '<span class="tag ' + (type === "不具合" ? "bug" : type === "作品の写真" ? "photo" : "kind") + '">' + esc(type) + '</span>';
       if (it.d && it.d !== "unknown"){
         var lv = (typeof devLevel === "function") ? devLevel(it.d) : "";
         tags += '<span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(it.d) + '">' + esc(shortId(it.d)) +
@@ -1406,14 +1417,30 @@
         tags += '<span class="tag dev">端末不明</span>';
       }
       html += '<div class="inq"><div class="top">' + tags + '</div>' +
-        '<div class="txt">' + esc(it.text || "") + '</div>' +
+        '<div class="txt">' + (it.text ? esc(it.text) : (Array.isArray(it.photos) && it.photos.length ? '<span style="color:var(--ink-3)">（写真のみ）</span>' : '')) + '</div>' +
         (it.from ? '<div class="from">返信先: ' + esc(it.from) + '</div>' : '') +
-        (Array.isArray(it.photos) && it.photos.length ? '<div class="from">' + (it.share ? "✅ サイトでの紹介OK" : "紹介の了承なし") + '</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">' +
+        (Array.isArray(it.photos) && it.photos.length ?
+          '<div class="pok ' + (it.share ? 'ok">✅ サイトで紹介してOK' : 'ng">紹介の了承なし（見るだけ）') + '</div><div class="phs">' +
           it.photos.map(function(n){ var u = "api/contact?key=" + encodeURIComponent(key) + "&photo=" + encodeURIComponent(n);
-            return '<a href="' + u + '" target="_blank" rel="noopener"><img src="' + u + '" alt="" loading="lazy" style="width:110px;height:110px;object-fit:cover;border-radius:8px;border:1px solid #ddd"></a>'; }).join("") + '</div>' : '') + '</div>';
+            return '<button type="button" data-ph="' + esc(u) + '"><img src="' + esc(u) + '" alt="送られた写真" loading="lazy"></button>'; }).join("") + '</div>' : '') + '</div>';
     });
     wrap.innerHTML = html;
   }
+  document.addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest("[data-ph]");
+    if (!b) return;
+    var v = document.getElementById("phView");
+    if (!v){
+      v = document.createElement("div"); v.id = "phView"; v.className = "phv";
+      v.innerHTML = '<img alt="送られた写真"><div class="bar"><a target="_blank" rel="noopener" download>保存・別タブ</a><button type="button">閉じる</button></div>';
+      v.addEventListener("click", function(ev){ if (ev.target === v || ev.target.tagName === "BUTTON") v.classList.remove("show"); });
+      document.addEventListener("keydown", function(ev){ if (ev.key === "Escape") v.classList.remove("show"); });
+      document.body.appendChild(v);
+    }
+    var u = b.getAttribute("data-ph");
+    v.querySelector("img").src = u; v.querySelector("a").href = u;
+    v.classList.add("show");
+  });
   function loadInquiries(){
     fetch("api/contact?key=" + encodeURIComponent(key) + "&_=" + Date.now(), {cache:"no-store"})
       .then(function(r){
