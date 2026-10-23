@@ -391,7 +391,7 @@
   })();
   document.getElementById("recs").innerHTML=mix.slice(0,8).map(rec).join("");
   document.getElementById("news").innerHTML=nu.slice(0,4).map(rec).join("");
-  fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{const seen=new Set(),top=[];((j&&j.files)||[]).forEach(f=>{const n=LIST.find(x=>x.file===f||x.sample===f||x.answer===f);if(n&&!seen.has(n.file)&&top.length<8){seen.add(n.file);top.push(n);}});
+  fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{const seen=new Set(),top=[],cap={"塗り絵":4,"脳トレ":4},cnt={};((j&&j.files)||[]).forEach(f=>{const n=LIST.find(x=>x.file===f||x.sample===f||x.answer===f);if(!n||seen.has(n.file))return;const k=kindOf(n);if(!(k in cap)||(cnt[k]||0)>=cap[k])return;seen.add(n.file);cnt[k]=(cnt[k]||0)+1;top.push(n);});
     if(top.length<4)return;const box=document.getElementById("rank");box.innerHTML=top.map((n,i)=>rec(n).replace('<div class="card c">',`<div class="card c"><span class="rkb r${i+1}">${i+1}<small>位</small></span>`)).join("");document.getElementById("ranking").hidden=false;document.body.classList.add("has-rank");dispatchEvent(new Event("resize"));}).catch(()=>{});
 })();
 </script>

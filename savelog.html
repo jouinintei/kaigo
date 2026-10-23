@@ -893,6 +893,8 @@
     if (s === "fav") return "お気に入りから保存";
     if (s === "bulk") return "お気に入りの「まとめて保存」で保存";
     if (s === "sample") return "色見本を開いて保存";
+    if (s === "lp") return "特集ページ（季節別・動物・敬老の日・脳トレプリントなどの紹介ページ）から保存";
+    if (s === "top") return "トップページから保存";
     var base = s === "noutore" ? "脳トレの一覧" : s === "calendar" ? "カレンダー" : s === "list" ? "塗り絵の一覧" : "不明な場所";
     var c = e.c || {}, cp = [];
     if (c.q) cp.push("「" + c.q + "」で検索して");
