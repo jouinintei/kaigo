@@ -17,7 +17,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>介護のレクプリ|高齢者向け 無料の塗り絵・脳トレ・カレンダー素材</title>
-<meta name="description" content="介護施設・デイサービスのレクリエーションで使える塗り絵・脳トレ(難読漢字・計算・言葉遊びなど)・月間カレンダーの無料素材集。すべてA4印刷対応で、季節やジャンルから選んでそのまま使えます。">
+<meta name="description" content="介護施設・デイサービスのレクリエーションで使える塗り絵・脳トレ(難読漢字・計算・言葉遊びなど)・月間カレンダーの無料素材集。すべてA4印刷対応で、季節やジャンルから選んで、塗り絵や水彩・ちぎり絵の下絵にそのまま使えます。">
 <link rel="canonical" href="https://rekupuri.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="介護のレクプリ">
@@ -118,6 +118,7 @@
 .ab-a h2{font-family:var(--mincho);font-size:36px;line-height:1.45;margin:6px 0 16px;color:#3A2A21}
 .ey{font-size:13px;letter-spacing:.25em;color:var(--btn);font-weight:700}
 .ab-a p{margin:0;color:#4A423A;font-size:16.5px;line-height:1.9}
+.ab-a p+p,.ab-b p+p,.ab-c p+p,.ab-d p+p{margin-top:.9em}
 .pts-a{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .pts-a li{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .pts-a .ck{flex:none;width:28px;height:28px;border-radius:50%;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px}.pts-a .ck .ico{stroke-width:3}
@@ -341,7 +342,7 @@
     const FIX=["up_1791295291864_47.png","showa_star_kashu.png","up_1790911750392_6.png"].map(f=>RK.LIST.find(n=>n.file===f)).filter(Boolean);
     const ic=RK.ico;
     const P=nu.filter(n=>n.sample).sort(()=>Math.random()-.5).slice(0,3);
-    const ABOUT="介護のレクプリは、高齢者向けの塗り絵・脳トレ・カレンダーを無料で配布しているサイトです。季節の花や動物、懐かしい風景の塗り絵から、難読漢字・計算・言葉遊びの脳トレまで、毎日のレクリエーションに使えるプリントをそろえています。細かく描き込んだ上級の塗り絵は、大人の塗り絵としてご家庭や趣味の時間にも楽しんでいただけます。色鉛筆だけでなく、水彩絵の具で塗る水彩塗り絵や、折り紙・和紙をちぎって貼るちぎり絵の下絵としてもお使いいただけます。塗り終わった作品は、よろしければ<a href=\"/contact.html?type=作品の写真\">写真で見せてください</a>。「こんな色で塗りました」の声も励みになります。";
+    const ABOUT="介護のレクプリは、高齢者向けの塗り絵・脳トレ・カレンダーを無料で配布しているサイトです。</p><p>季節の花や動物、懐かしい風景の塗り絵と、難読漢字・計算・言葉遊びの脳トレをそろえています。どれもA4で印刷して、毎日のレクリエーションにそのまま使えます。</p><p>色鉛筆はもちろん、水彩塗り絵やちぎり絵の下絵にも。描き込みの多い上級の塗り絵は、大人の塗り絵としてご家庭や趣味の時間にもどうぞ。</p><p>塗り終わった作品は、よろしければ<a href=\"/contact.html?type=作品の写真\">写真で見せてください</a>。「こんな色で塗りました」の声が励みになります。";
     const steps=[["素材を選ぶ","季節・ジャンル・難しさで絞り込めます","search"],["画像を保存する","1枚ずつでも、お気に入りからまとめてでも","down"],["A4で印刷する","使ったものには「使用済み」の印がつきます","cal"]];if(RK.PT)steps[2][1]="「🖨️ 直接印刷する」なら保存せずにそのまま印刷できます";
     let html="";
     if(V==="a"){
