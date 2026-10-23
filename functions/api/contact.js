@@ -62,6 +62,35 @@ async function ghPut(repo, token, data, sha) {
   });
 }
 
+const PHOTO_DIR = "data/contact-photos/";
+const MAX_PHOTOS = 3;
+const MAX_PHOTO_B64 = 2800000; // 1枚あたり約2MBまで
+
+function ghHeaders(token) {
+  return {
+    "Authorization": "Bearer " + token,
+    "Accept": "application/vnd.github+json",
+    "User-Agent": "rekupuri-contact-fn",
+    "X-GitHub-Api-Version": "2022-11-28"
+  };
+}
+
+// 送られた写真(JPEGのbase64)を非公開リポジトリに保存し、ファイル名を返す
+async function savePhoto(repo, token, b64, stamp, i) {
+  const name = stamp + "_" + Math.random().toString(36).slice(2, 8) + "_" + (i + 1) + ".jpg";
+  const r = await fetch("https://api.github.com/repos/" + repo + "/contents/" + PHOTO_DIR + name, {
+    method: "PUT",
+    headers: Object.assign(ghHeaders(token), { "Content-Type": "application/json" }),
+    body: JSON.stringify({ message: "お問い合わせの写真 +1", content: b64 })
+  });
+  if (!r.ok) throw new Error("photo_" + r.status);
+  return name;
+}
+
+function isJpegB64(b64) {
+  try { const h = atob(b64.slice(0, 8)); return h.charCodeAt(0) === 0xFF && h.charCodeAt(1) === 0xD8 && h.charCodeAt(2) === 0xFF; } catch (e) { return false; }
+}
+
 // 新しいお問い合わせをスマホに通知する（ntfy）。本文やメールアドレスは送らない
 async function notifyPhone(repo, token, type) {
   try {
@@ -102,6 +131,15 @@ export async function onRequest(context) {
     if (!gtoken || !grepo) {
       return new Response(JSON.stringify({ ok: false, error: "server_not_configured" }), { status: 500, headers });
     }
+    const photo = String(url.searchParams.get("photo") || "");
+    if (photo) {
+      if (!/^[0-9A-Za-z_-]+\.jpg$/.test(photo)) return new Response("Not found", { status: 404 });
+      const r = await fetch("https://api.github.com/repos/" + grepo + "/contents/" + PHOTO_DIR + photo, {
+        headers: Object.assign(ghHeaders(gtoken), { "Accept": "application/vnd.github.raw" })
+      });
+      if (!r.ok) return new Response("Not found", { status: 404 });
+      return new Response(r.body, { status: 200, headers: { "Content-Type": "image/jpeg", "Cache-Control": "private, max-age=86400", "X-Robots-Tag": "noindex" } });
+    }
     try {
       const cur = await ghGet(grepo, gtoken);
       return new Response(JSON.stringify({ ok: true, items: cur.data }), { status: 200, headers });
@@ -129,21 +167,39 @@ export async function onRequest(context) {
   const text = String((body && body.text) || "").trim().slice(0, 1000);
   const from = String((body && body.from) || "").trim().slice(0, 200);
   const did = String((body && body.did) || "").replace(/[^a-z0-9]/gi, "").slice(0, 16);
-  const TYPES = ["ご要望", "不具合", "その他"];
+  const TYPES = ["ご要望", "作品の写真", "不具合", "その他"];
   const type = TYPES.includes(String((body && body.type) || "")) ? body.type : "その他";
-  if (!text) {
+  const rawPhotos = Array.isArray(body && body.photos) ? body.photos.slice(0, MAX_PHOTOS) : [];
+  const photos = [];
+  for (const p of rawPhotos) {
+    const b64 = String(p || "").replace(/^data:image\/jpeg;base64,/, "").replace(/\s/g, "");
+    if (!b64 || b64.length > MAX_PHOTO_B64 || !isJpegB64(b64)) {
+      return new Response(JSON.stringify({ ok: false, error: "bad_photo" }), { status: 400, headers });
+    }
+    photos.push(b64);
+  }
+  const share = !!(body && body.share) && photos.length > 0;
+  if (!text && !photos.length) {
     return new Response(JSON.stringify({ ok: false, error: "empty" }), { status: 400, headers });
   }
 
   try {
+    let names = null;
     for (let attempt = 0; attempt < 2; attempt++) {
       const { data, sha } = await ghGet(repo, token);
       // 送信間隔の制限: 直前の受付から10秒以内は受け付けない
       const lastT = data.length ? Date.parse(data[data.length - 1].date) : 0;
-      if (lastT && Date.now() - lastT < 10000) {
+      if (!names && lastT && Date.now() - lastT < 10000) {
         return new Response(JSON.stringify({ ok: false, error: "too_fast" }), { status: 429, headers });
       }
-      data.push({ date: new Date().toISOString(), type: type, text: text, from: from, d: did || "unknown" });
+      if (!names) {
+        const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "").replace("T", "_");
+        names = [];
+        for (let i = 0; i < photos.length; i++) names.push(await savePhoto(repo, token, photos[i], stamp, i));
+      }
+      const item = { date: new Date().toISOString(), type: type, text: text, from: from, d: did || "unknown" };
+      if (names.length) { item.photos = names; item.share = share; }
+      data.push(item);
       if (data.length > 500) data.splice(0, data.length - 500);
       const r = await ghPut(repo, token, data, sha);
       if (r.ok) {

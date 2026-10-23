@@ -55,6 +55,17 @@
 .faq summary::after{content:"+";color:var(--btn);font-size:22px;line-height:1}
 .faq details[open] summary::after{content:"−"}
 .faq details p{margin:8px 0 0;font-size:15px}
+.photo-call{background:var(--tint);border-radius:12px;padding:16px 18px;margin:4px 0 18px}
+.photo-call b{display:block;font-size:16px;margin-bottom:4px}
+.photo-call p{margin:0;font-size:14px;line-height:1.7}
+.pick{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pick .btn{height:44px;padding:0 20px;font-size:15px;margin:0}
+.thumbs{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.thumbs .th{position:relative;width:96px;height:96px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.thumbs .th img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs .th button{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:15px;line-height:26px;padding:0;cursor:pointer}
+.agree{display:flex;gap:8px;align-items:flex-start;font-size:15px;font-weight:400!important;margin-top:8px!important}
+.agree input{width:20px!important;height:20px;margin-top:3px;flex:none}
 @media (max-width:640px){.cw{padding:0 16px}.ph1 h1{font-size:27px}.box{padding:20px 18px}.form .btn{align-self:stretch}}
 </style>
 </head>
@@ -70,12 +81,19 @@
 <li>来月の行事の塗り絵がほしい</li><li>線が太めのやさしい絵がほしい</li><li>男性が喜ぶ題材（車・釣りなど）</li><li>計算の脳トレをもっと</li><li>保存ができない</li>
 </ul>
 <p class="hint">「題材」「季節や行事」「難しさ」「使う場面（人数・時間など）」が書いてあると、より形にしやすくなります。</p>
+<div class="photo-call"><b>🖍️ 塗った作品の写真もお待ちしています</b><p>「こんな色で塗りました」「利用者さんがこんな風に仕上げました」など、お気軽にお送りください。写真だけの送信でも大丈夫です。</p></div>
 <div class="form">
 <label for="cType">種類</label>
-<select id="cType"><option value="ご要望">ご要望</option><option value="不具合">不具合</option><option value="その他">その他</option></select>
+<select id="cType"><option value="ご要望">ご要望</option><option value="作品の写真">作品の写真</option><option value="不具合">不具合</option><option value="その他">その他</option></select>
 <label for="cText">内容</label>
 <textarea id="cText" rows="6" maxlength="1000" placeholder="内容をご記入ください"></textarea>
 <div class="count" id="cCount">0 / 1000</div>
+<label>写真<small>任意・3枚まで</small></label>
+<div class="pick"><button class="btn g" id="pBtn" type="button">📷 写真をえらぶ</button><span class="hint" id="pNote"></span></div>
+<input id="pFile" type="file" accept="image/*" multiple hidden>
+<div class="thumbs" id="pThumbs"></div>
+<div class="cnote" id="pWarn" style="display:none">※お名前やお顔が写っていないか、送る前にご確認ください。</div>
+<label class="agree" id="pAgreeL" style="display:none"><input type="checkbox" id="pAgree">サイトで作品として紹介してもかまいません（施設名やお名前は載せません）</label>
 <label for="cFrom">返信先<small>任意</small></label>
 <input id="cFrom" type="text" maxlength="100" placeholder="メールアドレスなど。空欄でも大丈夫です">
 <input id="cWeb" class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -87,7 +105,7 @@
 
 <section class="card box">
 <h2>メールで直接送る</h2>
-<p>写真や資料を添付したいとき、やり取りしながら相談したいときは、こちらのアドレスへ直接お送りください。</p>
+<p>4枚以上の写真や資料を送りたいとき、やり取りしながら相談したいときは、こちらのアドレスへ直接お送りください。</p>
 <div class="mailbox"><span class="addr" id="mAddr">info＠rekupuri.com</span><a class="btn p" id="mGo" href="#">メールを作成</a><button class="btn g" id="mCopy" type="button">アドレスをコピー</button></div>
 <p class="msg" id="mMsg" role="status" style="color:#2E7D4F"></p>
 <p class="hint">ふだん数日以内にお返事しています。届かないときは、迷惑メールフォルダもご確認ください。</p>
@@ -119,18 +137,59 @@
     if (!id) { id = Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 4); try { localStorage.setItem("rekupuri_did", id); } catch (e) {} }
     return id;
   }
+  const photos = [];
+  const pFile = document.getElementById("pFile"), pThumbs = document.getElementById("pThumbs"), pNote = document.getElementById("pNote");
+  document.getElementById("pBtn").onclick = () => pFile.click();
+  function toJpeg(file) {
+    return new Promise((res, rej) => {
+      const url = URL.createObjectURL(file), img = new Image();
+      img.onload = () => {
+        const max = 1600, sc = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
+        const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg", 0.85));
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("img")); };
+      img.src = url;
+    });
+  }
+  function drawThumbs() {
+    pThumbs.innerHTML = "";
+    photos.forEach((d, i) => {
+      const w = document.createElement("div"); w.className = "th";
+      w.innerHTML = '<img alt=""><button type="button" aria-label="この写真を外す">×</button>';
+      w.querySelector("img").src = d;
+      w.querySelector("button").onclick = () => { photos.splice(i, 1); drawThumbs(); };
+      pThumbs.appendChild(w);
+    });
+    const has = photos.length > 0;
+    document.getElementById("pWarn").style.display = has ? "" : "none";
+    document.getElementById("pAgreeL").style.display = has ? "" : "none";
+    pNote.textContent = has ? photos.length + " / 3枚" : "";
+    if (has && sel.value === "ご要望") sel.value = "作品の写真";
+  }
+  pFile.onchange = async () => {
+    const files = [...pFile.files]; pFile.value = "";
+    for (const f of files) {
+      if (photos.length >= 3) { pNote.textContent = "写真は3枚までです"; break; }
+      try { photos.push(await toJpeg(f)); } catch (e) { pNote.textContent = "読み込めない写真がありました"; }
+    }
+    drawThumbs();
+  };
   const btn = document.getElementById("cSend");
   btn.onclick = async () => {
     const text = ta.value.trim(), from = document.getElementById("cFrom").value.trim(), type = sel.value, web = document.getElementById("cWeb").value, msg = document.getElementById("cMsg");
-    if (!text) { msg.style.color = "#B3261E"; msg.textContent = "内容をご記入ください"; ta.focus(); return; }
+    if (!text && !photos.length) { msg.style.color = "#B3261E"; msg.textContent = "内容をご記入いただくか、写真をえらんでください"; ta.focus(); return; }
     let last = 0; try { last = Number(localStorage.getItem("rk_contact_last") || 0); } catch (e) {}
     if (Date.now() - last < 60000) { msg.style.color = "#B3261E"; msg.textContent = "続けて送信できません。1分ほどあけてからお試しください"; return; }
     btn.disabled = true; msg.style.color = "#6E655B"; msg.textContent = "送信中...";
     try {
-      const r = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: text, from: from, type: type, web: web, did: deviceId() }) });
+      const r = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: text, from: from, type: type, web: web, did: deviceId(), photos: photos, share: document.getElementById("pAgree").checked }) });
       if (r.ok) {
         try { localStorage.setItem("rk_contact_last", String(Date.now())); } catch (e) {}
         ta.value = ""; cnt.textContent = "0 / 1000"; document.getElementById("cFrom").value = "";
+        photos.length = 0; document.getElementById("pAgree").checked = false; drawThumbs();
         msg.style.color = "#2E7D4F"; msg.textContent = "送信しました。ありがとうございます！";
         setTimeout(() => { btn.disabled = false; }, 60000);
       } else {

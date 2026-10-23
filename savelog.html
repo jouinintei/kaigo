@@ -1407,7 +1407,10 @@
       }
       html += '<div class="inq"><div class="top">' + tags + '</div>' +
         '<div class="txt">' + esc(it.text || "") + '</div>' +
-        (it.from ? '<div class="from">返信先: ' + esc(it.from) + '</div>' : '') + '</div>';
+        (it.from ? '<div class="from">返信先: ' + esc(it.from) + '</div>' : '') +
+        (Array.isArray(it.photos) && it.photos.length ? '<div class="from">' + (it.share ? "✅ サイトでの紹介OK" : "紹介の了承なし") + '</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">' +
+          it.photos.map(function(n){ var u = "api/contact?key=" + encodeURIComponent(key) + "&photo=" + encodeURIComponent(n);
+            return '<a href="' + u + '" target="_blank" rel="noopener"><img src="' + u + '" alt="" loading="lazy" style="width:110px;height:110px;object-fit:cover;border-radius:8px;border:1px solid #ddd"></a>'; }).join("") + '</div>' : '') + '</div>';
     });
     wrap.innerHTML = html;
   }
