@@ -112,6 +112,7 @@ html,body{overflow-x:clip}
 .wk .star[aria-pressed=true]{color:var(--btn);border-color:#E3C9B6}
 .wk .star[aria-pressed=true] svg{fill:var(--acc);stroke:var(--btn)}
 .wk .new{position:absolute;left:8px;top:8px;background:#fff;border:1.5px solid var(--acc);color:var(--btn);font-size:12px;font-weight:700;padding:0 8px;border-radius:6px;line-height:22px}
+.wk .bdg{position:absolute;left:8px;bottom:8px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}.wk .bdg .used{position:static}.wk .used.prt{background:#2F5D8A;border-color:#2F5D8A}
 .wk .used{position:absolute;left:8px;bottom:8px;background:#2E7D4F;border:1px solid #2E7D4F;color:#fff;font-size:13px;font-weight:700;padding:0 9px 0 7px;border-radius:999px;line-height:24px;display:flex;align-items:center;gap:4px;box-shadow:0 1px 3px rgba(0,0,0,.25)}.wk .used svg{stroke:#fff;stroke-width:3}
 .wk .tt{margin:16px 2px 14px}
 .wk .tt b{font-size:17px;display:block;line-height:1.5}

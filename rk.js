@@ -42,6 +42,21 @@
   const PT = (() => { try { const q = new URLSearchParams(location.search).get("printtest"); if (q === "1") localStorage.setItem("rk_printtest", "1"); if (q === "0") localStorage.removeItem("rk_printtest"); return localStorage.getItem("rk_printtest") === "1" && matchMedia("(pointer:fine)").matches; } catch (e) { return false; } })();
   const isUsed = f => !!(J(HIST, {})[f]);
   function toggleFav(f) { let a = favs(); a = a.includes(f) ? a.filter(x => x !== f) : a.concat(f); S(FAV, a); updFavCount(); return a.includes(f); }
+  const hOf = f => J(HIST, {})[f] || null;
+  const isSaved = f => { const h = hOf(f); return !!h && (!!h.save || !h.print); };
+  const isPrinted = f => { const h = hOf(f); return !!h && !!h.print; };
+  function markPrinted(f) { const h = J(HIST, {}); h[f] = h[f] || {}; h[f].print = new Date().toISOString().slice(0, 10); S(HIST, h); }
+  function badges(f) {
+    const a = hOf(f) ? `<span class="used">${ico("check", 13)}使用済み</span>` : "";
+    return a ? `<span class="bdg">${a}</span>` : "";
+  }
+  function refreshCard(f) {
+    document.querySelectorAll(`article[data-f="${CSS.escape(f)}"]`).forEach(ar => {
+      const ph = ar.querySelector(".ph"); if (ph) { const o = ph.parentNode.querySelector(".bdg"); if (o) o.remove(); ph.parentNode.insertAdjacentHTML("beforeend", badges(f)); }
+      const sb = ar.querySelector(`[data-save="${CSS.escape(f)}"]`); if (sb && isSaved(f)) { sb.className = "btn done"; sb.innerHTML = ico("down", 17) + "もう一度保存"; }
+      const pb = ar.querySelector(`[data-print="${CSS.escape(f)}"]`); if (pb && isPrinted(f)) pb.textContent = pb.textContent.replace("直接印刷する", "もう一度印刷する");
+    });
+  }
   function markUsed(f) { const h = J(HIST, {}); h[f] = h[f] || {}; h[f].save = new Date().toISOString().slice(0, 10); S(HIST, h); }
 
   const today = new Date();
@@ -87,14 +102,14 @@
     const btn2 = k === "脳トレ" ? (n.answer ? `<button class="btn o" data-save="${esc(n.answer)}" data-of="${esc(f)}">答えを保存</button>` : "")
       : (n.sample ? `<button class="btn o" data-open="${esc(f)}" data-tab="s">${ico("pal", 17)}色見本</button>` : "");
     const lab1 = k === "脳トレ" ? "問題を保存" : "保存する";
-    const used = isUsed(f);
+    const used = isSaved(f), printed = isPrinted(f);
     return `<article class="card wk${k !== "塗り絵" ? " v" : ""}" data-f="${esc(f)}">
 <div style="position:relative"><button class="ph" data-open="${esc(f)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" ${srcs(n)} onload="this.classList.remove('sk')"></button>
 ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.on ? "true" : "false"}" data-chk="${esc(f)}" aria-label="選ぶ">${opt.on ? ico("check", 20) : ""}</span>` : (isNew(n) ? '<span class="new">NEW</span>' : "")}
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
-${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
+${badges(f)}</div>
 <div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
-<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn g ptb" data-print="${esc(f)}">🖨️ 直接印刷する${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}</article>`;
+<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn g ptb" data-print="${esc(f)}">🖨️ ${printed ? "もう一度印刷する" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}</article>`;
   }
   function skeleton(n) {
     return Array.from({ length: n }, () => `<div class="card wk"><div class="sk" style="aspect-ratio:1.414;border-radius:6px"></div><div class="sk" style="height:16px;width:60%;border-radius:4px;margin:16px 0 8px"></div><div class="sk" style="height:12px;width:40%;border-radius:4px"></div></div>`).join("");
@@ -175,7 +190,7 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     if (file === n.file) { markUsed(n.file); logSave(n.file, src || window.RK_SRC, ctx === undefined ? window.RK_CTX : ctx); }
     else logSave(file, src || window.RK_SRC, null);
     toast(`「${n.title}」を保存しました`, "A4サイズで印刷してお使いください");
-    if (file === n.file) document.querySelectorAll(`article[data-f="${CSS.escape(n.file)}"] [data-save="${CSS.escape(n.file)}"]`).forEach(b => { b.className = "btn done"; b.innerHTML = ico("down", 17) + "もう一度保存"; const ph = b.closest("article") && b.closest("article").querySelector(".ph"); if (ph && !ph.parentNode.querySelector(".used")) ph.parentNode.insertAdjacentHTML("beforeend", `<span class="used">${ico("check", 13)}使用済み</span>`); });
+    if (file === n.file) refreshCard(n.file);
   }
 
   /* ---------- print (test) ---------- */
@@ -205,10 +220,10 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
       doc.setProperties({ title: n.title }); doc.autoPrint();
       const url = URL.createObjectURL(doc.output("blob"));
       if (win) win.location.href = url; else window.open(url, "_blank");
-      markUsed(n.file); logSave(n.file, "print", null);
+      markPrinted(n.file); logSave(n.file, "print", null); refreshCard(n.file);
       toast(`「${n.title}」の印刷画面を開きました`, "A4サイズで印刷してください");
     } catch (e) { if (win) win.close(); toast("印刷用PDFを作れませんでした", "保存してから印刷してください"); }
-    if (btn) btn.textContent = old; busy.delete("p:" + file);
+    if (btn && btn.textContent === "作成中…") btn.textContent = old; refreshCard(file); busy.delete("p:" + file);
   }
 
   /* ---------- modal ---------- */
