@@ -39,6 +39,7 @@
   const FAV = "nurie_fav_v1", HIST = "nurie_history_v1";
   const favs = () => J(FAV, []);
   const isFav = f => favs().includes(f);
+  const PT = (() => { try { const q = new URLSearchParams(location.search).get("printtest"); if (q === "1") localStorage.setItem("rk_printtest", "1"); if (q === "0") localStorage.removeItem("rk_printtest"); return localStorage.getItem("rk_printtest") === "1" && matchMedia("(pointer:fine)").matches; } catch (e) { return false; } })();
   const isUsed = f => !!(J(HIST, {})[f]);
   function toggleFav(f) { let a = favs(); a = a.includes(f) ? a.filter(x => x !== f) : a.concat(f); S(FAV, a); updFavCount(); return a.includes(f); }
   function markUsed(f) { const h = J(HIST, {}); h[f] = h[f] || {}; h[f].save = new Date().toISOString().slice(0, 10); S(HIST, h); }
@@ -93,7 +94,7 @@ ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
 <div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
-<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>${btn2}</div></article>`;
+<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn g ptb" data-print="${esc(f)}">印刷する${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}</article>`;
   }
   function skeleton(n) {
     return Array.from({ length: n }, () => `<div class="card wk"><div class="sk" style="aspect-ratio:1.414;border-radius:6px"></div><div class="sk" style="height:16px;width:60%;border-radius:4px;margin:16px 0 8px"></div><div class="sk" style="height:12px;width:40%;border-radius:4px"></div></div>`).join("");
@@ -177,6 +178,39 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     if (file === n.file) document.querySelectorAll(`article[data-f="${CSS.escape(n.file)}"] [data-save="${CSS.escape(n.file)}"]`).forEach(b => { b.className = "btn done"; b.innerHTML = ico("down", 17) + "もう一度保存"; const ph = b.closest("article") && b.closest("article").querySelector(".ph"); if (ph && !ph.parentNode.querySelector(".used")) ph.parentNode.insertAdjacentHTML("beforeend", `<span class="used">${ico("check", 13)}使用済み</span>`); });
   }
 
+  /* ---------- print (test) ---------- */
+  let jspdfP = null;
+  const loadPdf = () => jspdfP || (jspdfP = new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = () => res(window.jspdf.jsPDF); s.onerror = rej; document.head.appendChild(s); }));
+  async function toJpeg(blob) {
+    const bmp = await createImageBitmap(blob), cv = document.createElement("canvas"); cv.width = bmp.width; cv.height = bmp.height;
+    const c = cv.getContext("2d"); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(bmp, 0, 0);
+    return { url: cv.toDataURL("image/jpeg", 0.92), w: bmp.width, h: bmp.height };
+  }
+  async function printIt(file, btn) {
+    const n = LIST.find(x => x.file === file); if (!n || busy.has("p:" + file)) return;
+    busy.add("p:" + file);
+    const win = window.open("", "_blank");
+    if (win) win.document.write('<p style="font:16px sans-serif;padding:24px">印刷用のPDFを作成しています…</p>');
+    const old = btn ? btn.textContent : ""; if (btn) btn.textContent = "作成中…";
+    try {
+      const JsPDF = await loadPdf();
+      const files = [n.file].concat(kindOf(n) === "脳トレ" && n.answer ? [n.answer] : []);
+      let doc = null;
+      for (const f of files) {
+        const im = await toJpeg(await getBlob(n, f)), land = im.w > im.h, W = land ? 297 : 210, H = land ? 210 : 297;
+        if (!doc) doc = new JsPDF({ orientation: land ? "l" : "p", unit: "mm", format: "a4" }); else doc.addPage("a4", land ? "l" : "p");
+        const r = Math.min(W / im.w, H / im.h), w = im.w * r, h = im.h * r;
+        doc.addImage(im.url, "JPEG", (W - w) / 2, (H - h) / 2, w, h);
+      }
+      doc.setProperties({ title: n.title }); doc.autoPrint();
+      const url = URL.createObjectURL(doc.output("blob"));
+      if (win) win.location.href = url; else window.open(url, "_blank");
+      markUsed(n.file); logSave(n.file, "print", null);
+      toast(`「${n.title}」の印刷画面を開きました`, "A4サイズで印刷してください");
+    } catch (e) { if (win) win.close(); toast("印刷用PDFを作れませんでした", "保存してから印刷してください"); }
+    if (btn) btn.textContent = old; busy.delete("p:" + file);
+  }
+
   /* ---------- modal ---------- */
   let mdN = null, mdTab = "l", zoom = 100;
   function related(n) {
@@ -241,6 +275,7 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
       toast(on ? "お気に入りに追加しました" : "お気に入りから外しました", on ? "お気に入りページからまとめて保存できます" : "");
       document.dispatchEvent(new CustomEvent("favchange")); return;
     }
+    if (t.dataset.print) { printIt(t.dataset.print, t); return; }
     if (t.dataset.save) { const inMd = !!t.closest(".md"); save(t.dataset.save, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : undefined); return; }
     if (t.dataset.open) { openMd(t.dataset.open, t.dataset.tab, t.dataset.src || (t.closest(".md") ? "nita" : null)); return; }
     if (t.dataset.mtab) { mdTab = t.dataset.mtab; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp", mdSrc); return; }
