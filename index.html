@@ -253,6 +253,13 @@
 .toc a[data-t="#ranking"],.bnav.jump a[data-t="#ranking"]{display:none}body.has-rank .toc a[data-t="#ranking"]{display:block}body.has-rank .bnav.jump a[data-t="#ranking"]{display:flex}
 @media (max-width:1100px){.toc{display:none}}
 .bnav.jump{grid-template-columns:repeat(6,1fr)!important}body.has-rank .bnav.jump{grid-template-columns:repeat(7,1fr)!important}.bnav.jump a{font-size:10px;letter-spacing:-.02em;gap:3px}.bnav.jump a .ico{width:22px;height:22px}.bnav.jump a.on{color:var(--btn);font-weight:700}.bnav.jump a.on .ico{stroke-width:2.4}
+/* 色見本：マウスを乗せると塗った見本に切り替わる */
+.rec .smp{position:absolute;inset:10px;width:calc(100% - 20px);height:calc(100% - 20px);object-fit:contain;background:#fff;opacity:0;transition:opacity .35s;z-index:1;border-radius:4px;aspect-ratio:auto}
+.rec:hover .smp,.rec:focus-visible .smp{opacity:1}
+@media (prefers-reduced-motion:reduce){.rec .smp{transition:none}}
+/* ページ内メニュー：ロゴと同じ色に統一 */
+.toc a,.toc a:nth-child(n){background:var(--btn)!important;opacity:.62;text-shadow:none}
+.toc a.on,.toc a:hover{opacity:1}
 /* ---- top-test: carousels ---- */
 .carw{position:relative}
 .recs.car{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:calc((100% - 3*22px)/4);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;padding-bottom:4px}
@@ -422,6 +429,8 @@
   document.getElementById("recs").innerHTML=mix.slice(0,12).map(rec).join("")+mtile(gq("sort=rand"),"ランダムで<br>もっと見る");
   document.getElementById("news").innerHTML=nu.slice(0,12).map(rec).join("")+mtile(gq("sort=new"),"新着順で<br>もっと見る");
   carInit();
+  const deco=()=>document.querySelectorAll(".rec[data-open]").forEach(r=>{if(r.dataset.dc)return;r.dataset.dc=1;const n=LIST.find(x=>x.file===r.dataset.open);if(!n||!n.sample)return;const c=r.querySelector(".card");if(c)c.insertAdjacentHTML("beforeend",`<img class="smp" alt="" loading="lazy" src="${RK.sthumb(n,n.sample)}">`);});
+  deco();new MutationObserver(deco).observe(document.querySelector("main"),{childList:true,subtree:true});
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{const seen=new Set(),top=[],cap={"塗り絵":4,"脳トレ":4},cnt={};((j&&j.files)||[]).forEach(f=>{const n=LIST.find(x=>x.file===f||x.sample===f||x.answer===f);if(!n||seen.has(n.file))return;const k=kindOf(n);if(!(k in cap)||(cnt[k]||0)>=cap[k])return;seen.add(n.file);cnt[k]=(cnt[k]||0)+1;top.push(n);});
     if(top.length<4)return;const box=document.getElementById("rank");box.innerHTML=top.map((n,i)=>rec(n).replace('<div class="card c">',`<div class="card c"><span class="rkb r${i+1}">${i+1}<small>位</small></span>`)).join("")+mtile(gq("sort=pop"),"人気順で<br>もっと見る");document.getElementById("ranking").hidden=false;document.body.classList.add("has-rank");carInit();dispatchEvent(new Event("resize"));}).catch(()=>{});
 })();
