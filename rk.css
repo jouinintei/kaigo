@@ -256,3 +256,4 @@ img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit
 .fsh{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:13px}
 @media (max-width:640px){.fsb{display:inline-flex}}
 .wk .ptb{width:100%;margin-top:8px;height:40px;font-size:14px;transition:border-color .15s,background .15s,color .15s}.wk .ptb:hover{border-color:var(--acc);background:#FFF6EE;color:var(--btn)}.wk .ptb:active{background:#FBE7D6}
+.row2 .mdp{transition:border-color .15s,background .15s}.row2 .mdp:hover{border-color:var(--acc);background:#FFF6EE}
