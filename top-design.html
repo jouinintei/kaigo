@@ -39,6 +39,7 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/rk.css?v=1792776000">
 <style>
@@ -272,11 +273,60 @@
 .tbn a{color:#F2B48D;font-weight:700}
 @media (max-width:900px){.recs.car{grid-auto-columns:calc((100% - 22px)/2.4)}.cbtn{display:none}}
 @media (max-width:640px){.recs.car{grid-auto-columns:44%;gap:12px;margin:0 -16px;padding:0 16px 4px;scroll-padding-left:16px}.how-a .ill,.how-a .tip,.ab-a .ph{display:none}.h2{flex-wrap:wrap;row-gap:4px}.h2 .s{order:3;width:100%;padding-left:15px}}
+
+/* ===== 紙と色鉛筆（デザイン試作） ===== */
+:root{--bg:#FCFBF7;--line:#ECE6DD;--tint:#F6F2EC;--tag:#F3EFE8;--maru:'Zen Maru Gothic',var(--gothic);--btn:#B4501C;--btnh:#93400F;--acc:#E07A3A;--soft:#FBEDE3}
+body[data-sea="春"]{--btn:#B0466A;--btnh:#8F3655;--acc:#E28AA6;--soft:#FBEAF0}
+body[data-sea="夏"]{--btn:#1C7568;--btnh:#145C52;--acc:#3BA597;--soft:#E2F2EF}
+body[data-sea="秋"]{--btn:#B4501C;--btnh:#93400F;--acc:#E07A3A;--soft:#FBEDE3}
+body[data-sea="冬"]{--btn:#2C5689;--btnh:#21446E;--acc:#5584BD;--soft:#E8EFF8}
+body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .25 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.ey{display:none}
+.hero h1,.h2 h2,.entry b,.ab-a h2,.how-a h2,.req h3{font-family:var(--maru);font-weight:700;letter-spacing:.02em}
+.hero h1{color:var(--ink)}.hero .fr{color:var(--btn)}
+.h2::before{width:14px;height:14px;border-radius:999px;background:var(--acc);box-shadow:0 0 0 4px var(--soft)}
+.h2 h2{font-size:26px}
+.h2 .more{color:var(--btn)}
+/* 入口：色鉛筆の色で塗った面 */
+.entry a.card{background:var(--soft);border:0;box-shadow:none;border-radius:18px}
+.entry a.card:hover{box-shadow:0 10px 24px rgba(40,30,20,.08)}
+.entry .i{background:#fff;color:var(--btn)}
+.entry .cnt{font-family:var(--maru);color:var(--btn)}
+/* 素材：枠をやめて、1枚の紙として見せる */
+.rec .card{border:0;border-radius:3px;padding:0;background:#fff;box-shadow:0 1px 2px rgba(60,48,36,.12),0 8px 18px rgba(60,48,36,.07);transition:transform .2s,box-shadow .2s;overflow:hidden}
+.rec img{border-radius:0;padding:8px;box-sizing:border-box}
+.rec:hover .card,.rec:focus-visible .card{transform:translateY(-3px);box-shadow:0 2px 4px rgba(60,48,36,.12),0 14px 28px rgba(60,48,36,.12)}
+.rec b{font-family:var(--maru);font-size:17px;margin-top:12px}
+.rec .lbl{top:10px;right:10px;background:rgba(255,255,255,.92);color:var(--btn);border:1px solid var(--soft)}
+.rec .lbl.always{color:#5C534A}
+.rec .smp{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;opacity:0;transition:opacity .35s;z-index:1}
+.rec:hover .smp,.rec:focus-visible .smp{opacity:1}
+.rec .sw{position:absolute;right:10px;bottom:10px;z-index:3;width:46px;height:46px;border-radius:999px;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.18);background:#fff}
+.rec .sw img{width:100%;height:100%;object-fit:cover;padding:0;aspect-ratio:auto}
+.rec .sw::after{content:"";position:absolute;inset:0;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.swh{font-size:14px;color:var(--mute);margin:-10px 0 16px 26px}
+.swh i{display:inline-block;width:14px;height:14px;border-radius:999px;vertical-align:-2px;margin-right:6px;background:conic-gradient(#E9A23B,#D9603B,#B0466A,#5584BD,#3BA597,#E9A23B)}
+/* 順位・縦タブは季節色の濃淡でそろえる */
+.rkb{background:#fff;border-color:var(--soft);color:var(--btn)}
+.rkb.r1{background:var(--btn);border-color:var(--btn);color:#fff}
+.rkb.r2{background:color-mix(in srgb,var(--btn) 72%,#fff);border-color:transparent;color:#fff}
+.rkb.r3{background:color-mix(in srgb,var(--btn) 52%,#fff);border-color:transparent;color:#fff}
+.toc a{background:var(--btn)!important;opacity:.62;text-shadow:none}
+.toc a.on,.toc a:hover{opacity:1}
+.mtile{background:var(--soft);border-color:color-mix(in srgb,var(--btn) 30%,#fff);color:var(--btn);border-radius:3px}
+.mtile .ci{background:var(--btn)}
+.pts-a .ck,.steps-a .num{color:var(--btn)}
+.lbl.season{background:var(--soft);color:var(--btn)}
+@media (prefers-reduced-motion:reduce){.rec .card,.rec .smp{transition:none}}
+/* 試作用の季節切り替え */
+.tbn .sea{display:inline-flex;gap:4px;margin-left:auto}
+.tbn .sea button{height:34px;min-width:44px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:999px;font:inherit;font-size:14px;cursor:pointer}
+.tbn .sea button[aria-pressed="true"]{background:#fff;color:#2B2622;font-weight:700}
 </style>
 <meta name="robots" content="noindex">
 </head>
 <body>
-<div class="tbn"><div class="wrap"><b>トップページの試作版</b><span>公開中のトップとは別のページです。</span><a href="/">今のトップを見る</a></div></div>
+<div class="tbn"><div class="wrap"><b>デザイン試作「紙と色鉛筆」</b><span>公開中のトップとは別のページです。</span><a href="/">今のトップを見る</a><span class="sea" role="group" aria-label="季節の色を試す"><button type="button" data-sea="春">春</button><button type="button" data-sea="夏">夏</button><button type="button" data-sea="秋">秋</button><button type="button" data-sea="冬">冬</button></span></div></div>
 <div id="hd"></div>
 <main>
 <section class="hero" id="top-hero"><div class="wrap">
@@ -314,7 +364,7 @@
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;
   document.querySelectorAll('a[href^="list.html?k="]').forEach(a=>{const q=a.getAttribute("href").split("k=")[1].split("&"),u=RK_L(q[0]),x=q.slice(1).join("&");a.href=x?u+(u.indexOf("?")<0?"?":"&")+x:u;});
-  window.RK_SRC=window.RK_PAGE="toptest";
+  window.RK_SRC=window.RK_PAGE="topdesign";
   document.getElementById("hd").innerHTML=RK.header("");
   document.getElementById("ft").innerHTML=RK.footer("");
   RK.updFavCount();
@@ -429,5 +479,17 @@
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a9863d837944405fb5b7d52eafc53b9e"}'></script><!-- End Cloudflare Web Analytics -->
+
+<script>
+(function(){
+  const setSea=s=>{document.body.dataset.sea=s;document.querySelectorAll(".tbn .sea button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.sea===s)));};
+  setSea(RK.seasonNow);
+  document.addEventListener("click",e=>{const b=e.target.closest(".tbn .sea button");if(b)setSea(b.dataset.sea);});
+  const deco=()=>document.querySelectorAll(".rec[data-open]").forEach(r=>{if(r.dataset.dc)return;r.dataset.dc=1;const n=RK.LIST.find(x=>x.file===r.dataset.open);if(!n||!n.sample)return;const c=r.querySelector(".card");if(!c)return;
+    c.insertAdjacentHTML("beforeend",`<img class="smp" alt="" loading="lazy" src="${RK.sthumb(n,n.sample)}"><span class="sw" aria-hidden="true"><img alt="" loading="lazy" src="${RK.sthumb(n,n.sample)}"></span>`);});
+  deco();new MutationObserver(deco).observe(document.querySelector("main"),{childList:true,subtree:true});
+  const os=document.querySelector("#osusume .h2");if(os)os.insertAdjacentHTML("afterend",'<p class="swh"><i></i>丸い色の印は色見本つき。絵に重ねると、塗ったときの見本が見られます</p>');
+})();
+</script>
 </body>
 </html>

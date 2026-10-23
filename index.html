@@ -253,6 +253,25 @@
 .toc a[data-t="#ranking"],.bnav.jump a[data-t="#ranking"]{display:none}body.has-rank .toc a[data-t="#ranking"]{display:block}body.has-rank .bnav.jump a[data-t="#ranking"]{display:flex}
 @media (max-width:1100px){.toc{display:none}}
 .bnav.jump{grid-template-columns:repeat(6,1fr)!important}body.has-rank .bnav.jump{grid-template-columns:repeat(7,1fr)!important}.bnav.jump a{font-size:10px;letter-spacing:-.02em;gap:3px}.bnav.jump a .ico{width:22px;height:22px}.bnav.jump a.on{color:var(--btn);font-weight:700}.bnav.jump a.on .ico{stroke-width:2.4}
+/* ---- top-test: carousels ---- */
+.carw{position:relative}
+.recs.car{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:calc((100% - 3*22px)/4);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;padding-bottom:4px}
+.recs.car::-webkit-scrollbar{display:none}
+.recs.car>*{scroll-snap-align:start}
+.cbtn{position:absolute;top:calc(50% - 44px);z-index:4;width:48px;height:48px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:opacity .15s}
+.cbtn.p{left:-22px}.cbtn.n{right:-22px}
+.cbtn[disabled]{opacity:0;pointer-events:none}
+.cbtn:hover{border-color:var(--btn);color:var(--btn)}
+.mtile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-decoration:none;color:var(--btn);font-weight:700;font-size:16px;border:2px dashed #E3C9B6;border-radius:12px;background:#FFF9F4;aspect-ratio:1.2;align-self:start;margin-top:0;text-align:center;padding:12px}
+.mtile .ci{width:52px;height:52px;border-radius:999px;background:var(--btn);color:#fff;display:flex;align-items:center;justify-content:center}
+.mtile:hover{background:#FBEEE4}
+.h2 .more{white-space:nowrap}
+#abhow{margin-top:80px}@media (max-width:640px){#abhow{margin-top:52px}}
+.tbn{background:#2B2622;color:#fff;font-size:14px;line-height:1.5}
+.tbn .wrap{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;padding-top:8px;padding-bottom:8px}
+.tbn a{color:#F2B48D;font-weight:700}
+@media (max-width:900px){.recs.car{grid-auto-columns:calc((100% - 22px)/2.4)}.cbtn{display:none}}
+@media (max-width:640px){.recs.car{grid-auto-columns:44%;gap:12px;margin:0 -16px;padding:0 16px 4px;scroll-padding-left:16px}.how-a .ill,.how-a .tip,.ab-a .ph{display:none}.h2{flex-wrap:wrap;row-gap:4px}.h2 .s{order:3;width:100%;padding-left:15px}}
 </style>
 </head>
 <body>
@@ -275,13 +294,14 @@
 <a class="card" href="list.html?k=cal"><span class="r"><span class="i"><svg class="ico" style="width:32px;height:32px" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><span><b>カレンダー<span class="cnt" data-cnt="カレンダー"></span></b><span class="d">塗って飾れる月間カレンダー</span></span></a>
 </nav>
 
+<nav class="toc" aria-label="ページ内メニュー"><a href="#top-hero" data-t="#top-hero" title="トップ">トップ</a><a href="#sozai" data-t="#sozai" title="素材をさがす">さがす</a><a href="#ranking" data-t="#ranking" title="人気ランキング">人気順</a><a href="#osusume" data-t="#osusume" title="おすすめの塗り絵">おすすめ</a><a href="#shinchaku" data-t="#shinchaku" title="新しく追加した塗り絵">新着</a><a href="#about" data-t="#abhow .ab-a" title="レクプリについて">について</a><a href="#howto" data-t="#abhow .how-a" title="使い方">使い方</a></nav>
+
+<section class="sec" id="ranking" hidden><div class="h2"><h2>今週の人気ランキング</h2><span class="s">この1週間でよく保存された素材</span><a class="more" href="list.html?k=nurie&amp;sort=pop">人気順でもっと見る →</a></div><div class="carw"><div class="recs car rk8" id="rank"></div></div></section>
+<section class="sec" id="osusume"><div class="h2"><h2>おすすめの塗り絵</h2><span class="s">開くたびに入れかわります</span><a class="more" href="list.html?k=nurie&amp;sort=rand">ランダムでもっと見る →</a></div><div class="carw"><div class="recs car" id="recs"></div></div></section>
+
+<section class="sec" id="shinchaku"><div class="h2"><h2>新しく追加した塗り絵</h2><a class="more" href="list.html?k=nurie&amp;sort=new">新着順でもっと見る →</a></div><div class="carw"><div class="recs car" id="news"></div></div></section>
+
 <div id="abhow"></div>
-<nav class="toc" aria-label="ページ内メニュー"><a href="#top-hero" data-t="#top-hero" title="トップ">トップ</a><a href="#sozai" data-t="#sozai" title="素材をさがす">さがす</a><a href="#about" data-t="#abhow .ab-a" title="レクプリについて">について</a><a href="#howto" data-t="#abhow .how-a" title="使い方">使い方</a><a href="#ranking" data-t="#ranking" title="人気ランキング">人気順</a><a href="#osusume" data-t="#osusume" title="おすすめの塗り絵">おすすめ</a><a href="#shinchaku" data-t="#shinchaku" title="新しく追加した素材">新着</a></nav>
-
-<section class="sec" id="ranking" hidden><div class="h2"><h2>今週の人気ランキング</h2><span class="s">この1週間でよく保存された素材</span><a class="more" href="list.html?k=nurie&amp;sort=pop">人気順を見る →</a></div><div class="recs rk8" id="rank"></div></section>
-<section class="sec" id="osusume"><div class="h2"><h2>おすすめの塗り絵</h2><a class="more" href="list.html?k=nurie">すべて見る →</a></div><div class="recs" id="recs"></div></section>
-
-<section class="sec" id="shinchaku"><div class="h2"><h2>新しく追加した素材</h2><a class="more" href="list.html?k=nurie">一覧へ →</a></div><div class="recs" id="news"></div></section>
 
 </div>
 </main>
@@ -326,15 +346,15 @@
   document.addEventListener("visibilitychange",()=>document.hidden?clearInterval(tm):play());
   // 左のページ内メニュー
   (()=>{const toc=document.querySelector(".toc");if(!toc)return;
-    const IT=[["#top-hero","トップ","home"],["#sozai","さがす","search"],["#abhow .ab-a","について","pal"],["#abhow .how-a","使い方","check"],["#ranking","人気順","crown"],["#osusume","おすすめ","star"],["#shinchaku","新着","cal"]];
-    const bn=document.querySelector(".bnav");if(bn){bn.classList.add("jump");bn.setAttribute("aria-label","ページ内メニュー");bn.innerHTML=IT.map(x=>`<a href="#" data-t="${x[0]}">${RK.ico(x[2])}${x[1]}</a>`).join("");}
+    const IT=[["#top-hero","トップ","home"],["#sozai","さがす","search"],["#ranking","人気順","crown"],["#osusume","おすすめ","star"],["#shinchaku","新着","cal"],["#abhow .ab-a","について","pal"],["#abhow .how-a","使い方","check"]];
+    const bn=null;
     const A=[...toc.querySelectorAll("a")],B=bn?[...bn.querySelectorAll("a")]:[];const tg=t=>{const e=document.querySelector(t);return e&&!e.hidden?e:null;};
     document.addEventListener("click",e=>{const a=e.target.closest(".toc a[data-t],.bnav.jump a[data-t]");if(!a)return;e.preventDefault();const t=a.dataset.t,el=tg(t);if(!el)return;const r=el.getBoundingClientRect();const y=t==="#top-hero"?0:t==="#sozai"?r.top+scrollY-Math.max(24,(innerHeight-r.height-(bn&&bn.offsetHeight||0))/2):r.top+scrollY-24;scrollTo({top:y,behavior:"smooth"});});
     let rq=0;const upd=()=>{rq=0;const line=innerHeight*.55;let cur=0;IT.forEach((x,i)=>{const el=tg(x[0]);if(el&&el.getBoundingClientRect().top<=line)cur=i;});if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=IT.length-1;A.forEach((a,i)=>a.classList.toggle("on",i===cur));B.forEach((a,i)=>a.classList.toggle("on",i===cur));};
     addEventListener("scroll",()=>{if(!rq)rq=requestAnimationFrame(upd);},{passive:true});addEventListener("resize",upd);setTimeout(upd,300);})();
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
-  const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,4), al=sh(nu.filter(n=>n.season==="通年")).slice(0,4);
-  const mix=[];for(let i=0;i<4;i++){if(se[i])mix.push(se[i]);if(al[i])mix.push(al[i]);}
+  const se=sh(nu.filter(n=>n.season===seasonNow)).slice(0,6), al=sh(nu.filter(n=>n.season==="通年")).slice(0,6);
+  const mix=[];for(let i=0;i<6;i++){if(se[i])mix.push(se[i]);if(al[i])mix.push(al[i]);}
   const rec=n=>`<button class="rec" data-open="${esc(n.file)}" data-src="top"><div class="card c"><img loading="lazy" alt="" ${RK.srcs(n)}><span class="lbl ${n.season==="通年"?"always":"season"}">${n.season==="通年"?"通年":"季節"}</span></div><b>${esc(n.title)}</b><span class="m">${esc([n.genre,n.diff].filter(Boolean).join(" ・ "))}</span></button>`;
 
   (function(){
@@ -391,10 +411,19 @@
       L.forEach((x,i)=>{x.addEventListener("mouseenter",()=>{hold=true;if(k!==i){k=i;f=0;show();tick();}});x.addEventListener("mouseleave",()=>{hold=false;});x.addEventListener("click",()=>{k=i;f=0;show();tick();});});
       show();tick();})();
   })();
-  document.getElementById("recs").innerHTML=mix.slice(0,8).map(rec).join("");
-  document.getElementById("news").innerHTML=nu.slice(0,4).map(rec).join("");
+  const mtile=(href,t)=>`<a class="mtile" href="${href}"><span class="ci">${RK.ico("arrow",24)}</span>${t}</a>`;
+  const G=RK_L("nurie");const gq=q=>G+(G.indexOf("?")<0?"?":"&")+q;
+  const carInit=()=>document.querySelectorAll(".carw").forEach(w=>{if(w.dataset.ok)return;w.dataset.ok=1;const c=w.querySelector(".car");
+    w.insertAdjacentHTML("beforeend",`<button class="cbtn p" type="button" aria-label="前へ">${RK.ico("left",22)}</button><button class="cbtn n" type="button" aria-label="次へ">${RK.ico("right",22)}</button>`);
+    const P=w.querySelector(".cbtn.p"),N=w.querySelector(".cbtn.n");
+    const upd=()=>{P.disabled=c.scrollLeft<=4;N.disabled=c.scrollLeft+c.clientWidth>=c.scrollWidth-4;};
+    const step=d=>c.scrollBy({left:d*c.clientWidth,behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
+    P.onclick=()=>step(-1);N.onclick=()=>step(1);c.addEventListener("scroll",()=>requestAnimationFrame(upd),{passive:true});addEventListener("resize",upd);setTimeout(upd,60);});
+  document.getElementById("recs").innerHTML=mix.slice(0,12).map(rec).join("")+mtile(gq("sort=rand"),"ランダムで<br>もっと見る");
+  document.getElementById("news").innerHTML=nu.slice(0,12).map(rec).join("")+mtile(gq("sort=new"),"新着順で<br>もっと見る");
+  carInit();
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{const seen=new Set(),top=[],cap={"塗り絵":4,"脳トレ":4},cnt={};((j&&j.files)||[]).forEach(f=>{const n=LIST.find(x=>x.file===f||x.sample===f||x.answer===f);if(!n||seen.has(n.file))return;const k=kindOf(n);if(!(k in cap)||(cnt[k]||0)>=cap[k])return;seen.add(n.file);cnt[k]=(cnt[k]||0)+1;top.push(n);});
-    if(top.length<4)return;const box=document.getElementById("rank");box.innerHTML=top.map((n,i)=>rec(n).replace('<div class="card c">',`<div class="card c"><span class="rkb r${i+1}">${i+1}<small>位</small></span>`)).join("");document.getElementById("ranking").hidden=false;document.body.classList.add("has-rank");dispatchEvent(new Event("resize"));}).catch(()=>{});
+    if(top.length<4)return;const box=document.getElementById("rank");box.innerHTML=top.map((n,i)=>rec(n).replace('<div class="card c">',`<div class="card c"><span class="rkb r${i+1}">${i+1}<small>位</small></span>`)).join("")+mtile(gq("sort=pop"),"人気順で<br>もっと見る");document.getElementById("ranking").hidden=false;document.body.classList.add("has-rank");carInit();dispatchEvent(new Event("resize"));}).catch(()=>{});
 })();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a9863d837944405fb5b7d52eafc53b9e"}'></script><!-- End Cloudflare Web Analytics -->
