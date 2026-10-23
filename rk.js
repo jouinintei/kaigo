@@ -93,7 +93,7 @@ ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
 <div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
-<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("check", 17) + "保存済み" : ico("down", 17) + lab1}</button>${btn2}</div></article>`;
+<div class="acts${btn2 ? "" : " one"}"><button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>${btn2}</div></article>`;
   }
   function skeleton(n) {
     return Array.from({ length: n }, () => `<div class="card wk"><div class="sk" style="aspect-ratio:1.414;border-radius:6px"></div><div class="sk" style="height:16px;width:60%;border-radius:4px;margin:16px 0 8px"></div><div class="sk" style="height:12px;width:40%;border-radius:4px"></div></div>`).join("");
@@ -174,7 +174,7 @@ ${used ? `<span class="used">${ico("check", 13)}使用済み</span>` : ""}</div>
     if (file === n.file) { markUsed(n.file); logSave(n.file, src || window.RK_SRC, ctx === undefined ? window.RK_CTX : ctx); }
     else logSave(file, src || window.RK_SRC, null);
     toast(`「${n.title}」を保存しました`, "A4サイズで印刷してお使いください");
-    if (file === n.file) document.querySelectorAll(`article[data-f="${CSS.escape(n.file)}"] [data-save="${CSS.escape(n.file)}"]`).forEach(b => { b.className = "btn done"; b.innerHTML = ico("check", 17) + "保存済み"; });
+    if (file === n.file) document.querySelectorAll(`article[data-f="${CSS.escape(n.file)}"] [data-save="${CSS.escape(n.file)}"]`).forEach(b => { b.className = "btn done"; b.innerHTML = ico("down", 17) + "もう一度保存"; const ph = b.closest("article") && b.closest("article").querySelector(".ph"); if (ph && !ph.parentNode.querySelector(".used")) ph.parentNode.insertAdjacentHTML("beforeend", `<span class="used">${ico("check", 13)}使用済み</span>`); });
   }
 
   /* ---------- modal ---------- */

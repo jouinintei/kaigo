@@ -88,7 +88,7 @@ html,body{overflow-x:clip}
 .btn.p{background:var(--btn);color:#fff}.btn.p:hover{background:var(--btnh);color:#fff}
 .btn.o{background:#fff;color:var(--btn);border:1px solid #E3C9B6}.btn.o:hover{border-color:var(--acc)}
 .btn.g{background:#fff;color:var(--ink);border:1px solid var(--line)}
-.btn.done{background:#fff;color:var(--mute);border:1px solid #CFC6B8}
+.btn.done{background:#fff;color:var(--btn);border:1px solid #E3C9B6}.btn.done:hover{border-color:var(--acc)}
 .btn:focus-visible,.chip:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #F2B48D;outline-offset:2px}
 
 /* headings */
