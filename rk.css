@@ -1,15 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Zen+Antique+Soft&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&display=swap&text=%E9%AB%98%E9%BD%A2%E8%80%85%E5%90%91%E3%81%91%E3%83%AC%E3%82%AF%E7%B4%A0%E6%9D%90');
 :root{
   --bg:#FAF7F2;--card:#FFFFFF;--line:#E3DED6;--line2:#EFE9DF;--ink:#2B2622;--sub:#5C534A;--mute:#6E655B;
   --acc:#D97532;--btn:#A9532A;--btnh:#8E4321;--tint:#F5EFE6;--tag:#F1ECE4;
   --shadow:0 2px 8px rgba(50,40,30,.035);--r:10px;
-  --mincho:'Zen Antique Soft',var(--gothic);--gothic:'Hiragino Kaku Gothic ProN','Hiragino Sans','BIZ UDPGothic','Yu Gothic UI','Yu Gothic','Meiryo',system-ui,sans-serif;
+  --mincho:'Zen Antique Soft',var(--gothic);--body:Meiryo,'メイリオ','Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic UI','Yu Gothic',sans-serif;--gothic:'Hiragino Kaku Gothic ProN','Hiragino Sans','BIZ UDPGothic','Yu Gothic UI','Yu Gothic','Meiryo',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scrollbar-gutter:stable}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:'Zen Maru Gothic',var(--gothic);font-weight:500;font-size:17px;line-height:1.75}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.75}
 a{color:var(--btn)}a:hover{color:var(--btnh)}
 img{max-width:100%}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
@@ -77,7 +76,7 @@ html,body{overflow-x:clip}
 .tabs-bc a:hover{background:#F7F2EA;color:var(--ink)}
 .tabs-bc a[aria-current=page]{background:var(--bg);color:var(--ink);border-top:3px solid var(--acc);padding:14px 26px 14px}
 .tabs-bc .ti{display:flex;color:#9A8F82}.tabs-bc a[aria-current=page] .ti{color:var(--btn)}
-.tabs-bc .tc{display:inline-flex;align-items:baseline;font-family:'Zen Maru Gothic',var(--gothic);font-size:17px;font-weight:700;background:#fff;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 10px;line-height:26px}
+.tabs-bc .tc{display:inline-flex;align-items:baseline;font-family:var(--body);font-size:17px;font-weight:700;background:#fff;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 10px;line-height:26px}
 .tabs-bc .tc::after{content:"枚";font-size:12px;font-weight:500;margin-left:1px}
 .tabs-bc a[href*="k=fav"] .tc::after{content:"件"}
 .tabs-bc a[aria-current=page] .tc{background:#F7EBE2;color:var(--btn);border-color:#EBD3C2}
