@@ -21,7 +21,7 @@
 <script src="/frame.js?v=11"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792765405">
+<link rel="stylesheet" href="/rk.css?v=1792776000">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -48,7 +48,9 @@
 .mo b{font-family:var(--mincho);font-size:22px}.mo img{display:block;width:100%;aspect-ratio:.707;object-fit:contain;background:#fff;margin-top:4px}
 .mo .lbl{float:right;margin-top:6px}
 @media (max-width:900px){.months{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (max-width:640px){.bar{flex-direction:column;align-items:stretch}.bar .big small,.bar .clr{white-space:nowrap}.seg{align-self:flex-start}.ph1{padding-top:18px}.ph1 h1{font-size:26px}.months{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
+@media (max-width:640px){.bar{flex-direction:row;align-items:center;gap:8px}.bar .n{min-width:0}.bar .cl:not(:has(.cc)){display:none}.bar .big b{font-size:28px}.bar .big small,.bar .clr{white-space:nowrap}.seg{align-self:center;flex:0 0 auto}.seg button{padding:0 10px}.ph1{padding-top:18px}.ph1 h1{font-size:26px}.ph1 p{display:none}.months{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
+.ftg{display:none}
+@media (max-width:640px){.ftg{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;margin:14px 0 4px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:16px;font-weight:700;cursor:pointer}.ftg .c{color:var(--btn)}.ftg[aria-expanded=true]{border-color:var(--btn)}.ftg svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.fhide{display:none!important}.fsw{margin-top:12px}}
 .hreset{margin:40px 0 24px;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff}.hreset h3{margin:0 0 6px;font-size:17px}.hreset p{margin:0 0 14px;color:var(--sub);font-size:14px;line-height:1.7}.hr2{display:flex;gap:10px;flex-wrap:wrap}.hr2 .btn{height:44px;font-size:15px}
 </style>
 </head>
@@ -58,7 +60,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792765405"></script>
+<script src="/rk.js?v=1792776000"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -133,7 +135,21 @@
     const chips=cond.map(([k,t])=>`<button class="cc" data-clr="${k}" aria-label="${esc(t)}の条件を外す">${esc(t)}${ico("x",14)}</button>`).join("");
     return `<div class="n"><div class="cl">${cond.length?chips+`<span class="of">の${KIND}</span>`:`<span class="of">すべての${KIND}</span>`}</div><div class="big"><b>${tot}</b><span>枚</span>${cond.length?`<small>（全${all}枚中）</small>`:""}${cond.length>0?`<button class="clr" data-reset>すべて外す</button>`:""}</div></div>`;
   }
+  let fopen=false;
+  const narrow=()=>matchMedia("(max-width:640px)").matches;
+  function ftoggle(){
+    const fl=main.querySelector(".fl"),sr=main.querySelector(".ph1 .search");if(!fl&&!sr)return;
+    const bits=[];if(K==="nurie"&&st.season!=="すべて")bits.push(st.season);if(st.genre)bits.push(st.genre);if(st.diff)bits.push(st.diff);if(st.q)bits.push("「"+st.q+"」");if(st.unused)bits.push("未使用");
+    const b=document.createElement("button");b.type="button";b.className="ftg";b.dataset.ftg="";b.setAttribute("aria-expanded",String(fopen));
+    b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg>'+(fopen?"絞り込みを閉じる":"絞り込み・検索")+' <span class="c">（'+esc(bits.length?bits.join("・"):"すべて")+"）</span>";
+    const ph=main.querySelector(".ph1");if(ph)ph.after(b);else fl.before(b);
+    const parts=[fl];if(sr){if(narrow()){const w=document.createElement("div");w.className="fsw";w.appendChild(sr);b.after(w);parts.push(w);}}
+    parts.filter(Boolean).forEach(p=>p.classList.toggle("fhide",!fopen));
+  }
   function render(){
+    render0();ftoggle();
+  }
+  function render0(){
     if(K==="fav")return renderFav();
     if(K==="cal")return renderCal();
     const a=filtered(),tot=a.length,pages=Math.max(1,Math.ceil(tot/PER));if(st.page>pages)st.page=pages;
@@ -159,7 +175,8 @@
   }
   main.addEventListener("click",async e=>{
     const t=e.target.closest("button,[data-chk]");if(!t)return;
-    if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
+    if(t.dataset.ftg!==undefined){fopen=!fopen;render();}
+    else if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
     else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;render();}
     else if(t.dataset.pg){st.page=+t.dataset.pg;render();const el=main.querySelector(".bar")||main.querySelector(".fl")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
     else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1,unused:false});try{localStorage.setItem("rk_unused","0");}catch(e){}render();}
