@@ -837,6 +837,6 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の大スター穴埋め テレビ・お笑い編", file: "showa_star_tv.png", answer: "showa_star_tv_ans.png", added: "2026-10", date: "2026-10-23" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 料理編", file: "nandoku_ryouri.png", answer: "nandoku_ryouri_ans.png", added: "2026-10", date: "2026-10-23" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "難読漢字 体編", file: "nandoku_karada.png", answer: "nandoku_karada_ans.png", added: "2026-10", date: "2026-10-23" },
-  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昔の言葉クイズ その5", file: "mukashi_kotoba5.png", answer: "mukashi_kotoba5_ans.png", added: "2026-10", date: "2026-10-23" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昔の言葉クイズ その5", file: "mukashi_kotoba5.png", answer: "mukashi_kotoba5_ans.png", added: "2026-10", date: "2026-10-23", v: "1792723633647" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昔の言葉クイズ その6", file: "mukashi_kotoba6.png", answer: "mukashi_kotoba6_ans.png", added: "2026-10", date: "2026-10-23" },
 ];
