@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&display=swap&text=%E9%AB%98%E9%BD%A2%E8%80%85%E5%90%91%E3%81%91%E3%83%AC%E3%82%AF%E7%B4%A0%E6%9D%90');
 :root{
   --bg:#FAF7F2;--card:#FFFFFF;--line:#E3DED6;--line2:#EFE9DF;--ink:#2B2622;--sub:#5C534A;--mute:#6E655B;
   --acc:#D97532;--btn:#A9532A;--btnh:#8E4321;--tint:#F5EFE6;--tag:#F1ECE4;
@@ -262,3 +263,4 @@ img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 .logo .lmimg{display:block;height:46px;width:auto;margin-top:2px}
 @media (max-width:640px){.logo .lmimg{height:38px}}
+.logo .ls{font-family:'M PLUS Rounded 1c',var(--gothic);font-weight:800;letter-spacing:.1em;color:#2B2622}
