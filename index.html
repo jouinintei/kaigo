@@ -301,7 +301,7 @@
   const withS=nu.filter(n=>n.sample&&n.season===seasonNow);
   const sh0=a=>a.slice().sort(()=>Math.random()-.5);
   const fh=new URLSearchParams(location.search).get("hero");const f0=fh&&nu.find(n=>n.file===fh);
-  let slides=sh0(withS.length>=5?withS:withS.concat(nu.filter(n=>n.sample&&n.season==="通年"))).filter(n=>n!==f0).slice(0,f0?4:5);if(f0)slides.unshift(f0);if(!slides.length)slides=[nu[0]];
+  const allY=sh0(nu.filter(n=>n.sample&&n.season==="通年"&&n!==f0)),seaS=sh0(withS.filter(n=>n!==f0)),NS=f0?4:5;let ns=Math.min(seaS.length,Math.ceil(NS/2)+(allY.length<NS-Math.ceil(NS/2)?NS:0)),ny=Math.min(allY.length,NS-ns);ns=Math.min(seaS.length,NS-ny);let slides=[];for(let i=0;slides.length<ns+ny;i++){if(i<ns)slides.push(seaS[i]);if(i<ny)slides.push(allY[i]);}if(f0)slides.unshift(f0);if(!slides.length)slides=[nu[0]];
   const pics=document.getElementById("pics");
   pics.innerHTML=slides.map((h,i)=>`<button class="pic${i?"":" cur"}" data-open="${esc(h.file)}" data-src="top" aria-label="${esc(h.title)}を拡大"><img class="a" alt="${esc(h.title)}の線画" data-s="${RK.thumb(h)}"><img class="b" alt="${esc(h.title)}の色見本" data-s="${RK.thumb(h,h.sample)}"></button>`).join("");
   const pw=pics.parentNode;pw.insertAdjacentHTML("beforeend",slides.length>1?`<div class="ctl" aria-live="polite"></div><div class="cnav"><button class="ar" data-c="-1" aria-label="前の塗り絵">${RK.ico("left",18)}</button><div class="dots">${slides.map((h,i)=>`<button data-c="=${i}" aria-label="${i+1}枚目"></button>`).join("")}</div><button class="ar" data-c="1" aria-label="次の塗り絵">${RK.ico("right",18)}</button></div>`:`<div class="ctl"></div>`);
