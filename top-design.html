@@ -39,10 +39,10 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=M+PLUS+Rounded+1c:wght@800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Antique+B1&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792776000">
+<link rel="stylesheet" href="/rk.css?v=1792779000">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -324,6 +324,15 @@ body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg 
 .tbn .sea button{height:34px;min-width:44px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:999px;font:inherit;font-size:14px;cursor:pointer}
 .tbn .sea button[aria-pressed="true"]{background:#fff;color:#2B2622;font-weight:700}
 .entry b,.entry .cnt{font-family:'Shippori Antique B1',var(--gothic);font-weight:400}
+.hero .brand .bimg{display:block;height:128px;width:auto;max-width:100%}@media (max-width:900px){.hero .brand .bimg{height:96px}}@media (max-width:640px){.hero .brand .bimg{height:76px}}
+/* 書体の割り当て（ロゴに合わせる） */
+:root{--logo:'M PLUS Rounded 1c',var(--maru)}
+body{font-family:var(--maru);font-weight:500}
+.hero h1,.h2 h2,.ab-a h2,.how-a h2,.req h3{font-family:var(--logo);font-weight:800;letter-spacing:.03em}
+.hero p,.ab-a p,.pts-a span,.steps-a .d,.steps-a .tip,.rec span.m,.h2 .s,.entry .d,.req p{font-family:var(--maru);font-weight:500}
+.rec b,.pts-a b,.steps-a b,.h2 .more,.mtile{font-family:var(--maru);font-weight:700}
+.rkb,.steps-a .num{font-family:var(--logo);font-weight:800}
+.entry b,.entry .cnt{font-family:'Shippori Antique B1',var(--gothic);font-weight:400}
 </style>
 <meta name="robots" content="noindex">
 </head>
@@ -334,7 +343,7 @@ body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg 
 <section class="hero" id="top-hero"><div class="wrap">
 <div class="tx">
 <div class="fr">無料・登録不要・広告なし</div>
-<div class="brand" aria-label="介護のレクプリ"><span class="a">介護</span><span class="no">の</span><span class="b">レクプリ</span></div>
+<div class="brand"><img class="bimg" src="/brand/logo.webp" alt="介護のレクプリ" width="900" height="283"></div>
 <h1>印刷して、すぐ使える<br>高齢者向けレク素材</h1>
 <p>介護施設・デイサービス・ご家庭で使える塗り絵・脳トレ・カレンダーを、A4でそのまま印刷できます。</p>
 </div>
@@ -361,7 +370,7 @@ body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg 
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792776000"></script>
+<script src="/rk.js?v=1792779000"></script>
 <script>
 (function(){
   const {LIST,kindOf,thumb,full,esc,seasonNow,metaOf}=RK;

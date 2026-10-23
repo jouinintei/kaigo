@@ -260,3 +260,5 @@ img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit
 .btn.ptb.pdone{background:#fff;color:#2F5D8A;border:1px solid #B9CBDD}.btn.ptb.pdone:hover{background:#F2F6FB;border-color:#2F5D8A}
 .acts.a2{margin-top:8px}.acts .btn.ptb.half{width:auto;margin-top:0;height:44px;font-size:15px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+.logo .lmimg{display:block;height:46px;width:auto;margin-top:2px}
+@media (max-width:640px){.logo .lmimg{height:38px}}
