@@ -256,5 +256,5 @@ img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit
 .fsh{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:13px}
 @media (max-width:640px){.fsb{display:inline-flex}}
 .wk .ptb{width:100%;margin-top:8px;height:40px;font-size:14px}
-.btn.ptb{background:#E3ECF6;color:#2F5D8A;border:1px solid #9DB6D0;transition:background .15s,border-color .15s,color .15s}.btn.ptb:hover{background:#D2E0EF;border-color:#2F5D8A;color:#24496E}.btn.ptb:active{background:#C2D5EA}
+.btn.ptb{background:#2F5D8A;color:#fff;border:1px solid #2F5D8A;transition:background .15s,border-color .15s,color .15s}.btn.ptb:hover{background:#24496E;border-color:#24496E;color:#fff}.btn.ptb:active{background:#1C3A58}
 .btn.ptb.pdone{background:#fff;color:#2F5D8A;border:1px solid #B9CBDD}.btn.ptb.pdone:hover{background:#F2F6FB;border-color:#2F5D8A}
