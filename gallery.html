@@ -21,7 +21,7 @@
 <script src="/frame.js?v=11"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1792727038">
+<link rel="stylesheet" href="/rk.css?v=1792727140">
 <style>
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
 .ph1 h1{margin:0;font-family:var(--mincho);font-size:34px}
@@ -49,6 +49,7 @@
 .mo .lbl{float:right;margin-top:6px}
 @media (max-width:900px){.months{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (max-width:640px){.bar{flex-direction:column;align-items:stretch}.bar .big small,.bar .clr{white-space:nowrap}.seg{align-self:flex-start}.ph1{padding-top:18px}.ph1 h1{font-size:26px}.months{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
+.hreset{margin:40px 0 24px;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff}.hreset h3{margin:0 0 6px;font-size:17px}.hreset p{margin:0 0 14px;color:var(--sub);font-size:14px;line-height:1.7}.hr2{display:flex;gap:10px;flex-wrap:wrap}.hr2 .btn{height:44px;font-size:15px}
 </style>
 </head>
 <body>
@@ -57,7 +58,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792727038"></script>
+<script src="/rk.js?v=1792727140"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
@@ -148,12 +149,13 @@
     main.innerHTML=head()+`<div class="months" style="margin:20px 0 32px">${keys.map(k=>{const g=groups[k],m=+k.slice(5),n=g.find(x=>!/貼り付け|blank/.test(x.title+x.file))||g[0];return `<button class="mo" data-month="${k}" aria-current="${st.month===k}"><b>${m}<span style="font-size:14px">月</span></b>${k===now?'<span class="lbl season">今月</span>':""}<img loading="lazy" alt="" src="${RK.sthumb(n)}"><span style="font-size:12px;color:var(--mute)">${k.slice(0,4)}年・${g.length}種類</span></button>`;}).join("")}</div>
 <div class="h2"><h2>${+st.month.slice(0,4)}年${+st.month.slice(5)}月のカレンダー</h2></div><div class="grid">${groups[st.month].map(n=>card(n)).join("")}</div>`;
   }
+  const histBox=()=>`<div class="hreset"><h3>使用の記録</h3><p>このパソコン（ブラウザ）に残っている「保存した」「印刷した」の記録を消せます。消すと「使用済み」の印や「もう一度〜」の表示が元に戻ります。</p><div class="hr2"><button class="btn g" data-hreset="save">保存の記録をリセット</button>${RK.PT?`<button class="btn g" data-hreset="print">印刷の記録をリセット</button>`:""}</div></div>`;
   function renderFav(){
     const f=favs(),a=f.map(x=>LIST.find(n=>n.file===x)).filter(Boolean);
-    if(!a.length){main.innerHTML=head()+`<div class="empty"><div class="ic">${ico("star",34)}</div><h3>お気に入りはまだありません</h3><p style="color:var(--sub)">素材の右上の星を押すと、ここに集まります。</p><a class="btn p" href="list.html?k=nurie">塗り絵を探す</a></div>`;return;}
+    if(!a.length){main.innerHTML=head()+`<div class="empty"><div class="ic">${ico("star",34)}</div><h3>お気に入りはまだありません</h3><p style="color:var(--sub)">素材の右上の星を押すと、ここに集まります。</p><a class="btn p" href="list.html?k=nurie">塗り絵を探す</a></div>`+histBox();return;}
     const sel=st.sel;[...sel].forEach(x=>{if(!f.includes(x))sel.delete(x)});
     main.innerHTML=head()+`<div class="bar"><div class="n"><div class="big"><b>${a.length}</b><span>件</span></div></div><button class="btn g" data-all>${sel.size===a.length?"選択を外す":"すべて選ぶ"}</button></div><div class="grid">${a.map(n=>card(n,{chk:true,on:sel.has(n.file)})).join("")}</div>
-<div class="fbar"><span><b>${sel.size}</b> 枚を選択中</span><button class="btn p" data-bulk ${sel.size?"":"disabled"} style="height:50px">${ico("down",18)}選んだ${sel.size}枚をまとめて保存</button></div>`;
+<div class="fbar"><span><b>${sel.size}</b> 枚を選択中</span><button class="btn p" data-bulk ${sel.size?"":"disabled"} style="height:50px">${ico("down",18)}選んだ${sel.size}枚をまとめて保存</button></div>`+histBox();
   }
   main.addEventListener("click",async e=>{
     const t=e.target.closest("button,[data-chk]");if(!t)return;
@@ -167,6 +169,7 @@
     else if(t.dataset.month){st.month=t.dataset.month;render();}
     else if(t.dataset.chk){st.sel.has(t.dataset.chk)?st.sel.delete(t.dataset.chk):st.sel.add(t.dataset.chk);render();}
     else if(t.dataset.all!==undefined){const f=favs();st.sel=st.sel.size===f.length?new Set():new Set(f);render();}
+    else if(t.dataset.hreset){const k=t.dataset.hreset,nm=k==="save"?"保存":"印刷";if(!confirm(`${nm}の記録をすべて消しますか？\n（このパソコンの記録だけが消えます。元には戻せません）`))return;const n=RK.resetHist(k);render();RK.toast(`${nm}の記録をリセットしました`,n?`${n}件の記録を消しました`:"消す記録はありませんでした");}
     else if(t.dataset.bulk!==undefined){for(const f of st.sel){await RK.save(f,"bulk",null);await new Promise(r=>setTimeout(r,600));}RK.toast(`${st.sel.size}枚を保存しました`,"A4サイズで印刷してお使いください");}
   });
   main.addEventListener("change",e=>{if(e.target.id==="genre")st.genre=e.target.value;if(e.target.id==="diff")st.diff=e.target.value;st.page=1;render();});

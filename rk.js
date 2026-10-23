@@ -57,6 +57,11 @@
       const pb = ar.querySelector(`[data-print="${CSS.escape(f)}"]`); if (pb && isPrinted(f)) { pb.textContent = pb.textContent.replace("直接印刷する", pb.classList.contains("half") ? "もう一度印刷" : "もう一度印刷する"); pb.classList.add("pdone"); }
     });
   }
+  function resetHist(kind) {
+    const h = J(HIST, {}); let n = 0;
+    Object.keys(h).forEach(f => { const e = h[f] || {}; if (kind === "save" ? (e.save || !e.print) : e.print) { n++; if (kind === "save") delete e.save; else delete e.print; if (!e.save && !e.print) delete h[f]; else h[f] = e; } });
+    S(HIST, h); return n;
+  }
   function markUsed(f) { const h = J(HIST, {}); h[f] = h[f] || {}; h[f].save = new Date().toISOString().slice(0, 10); S(HIST, h); }
 
   const today = new Date();
@@ -302,5 +307,5 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
   document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
   document.addEventListener("dragstart", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
 
-  window.RK = { PT, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
+  window.RK = { PT, resetHist, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
 })();
