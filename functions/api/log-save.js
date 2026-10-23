@@ -203,7 +203,7 @@ export async function onRequest({ request, env }) {
   const cleanCtx = c => {
     if (!c || typeof c !== "object") return null;
     const o = {};
-    ["se", "ge", "di", "us", "q", "sr", "so", "lp"].forEach(k => {
+    ["se", "ge", "di", "us", "q", "sr", "so", "lp", "pr"].forEach(k => {
       if (typeof c[k] === "string" && c[k].trim()) o[k] = c[k].trim().slice(0, 30);
     });
     return o;

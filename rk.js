@@ -208,7 +208,7 @@ ${PT && k === "塗り絵" ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""
     const c = cv.getContext("2d"); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(bmp, 0, 0);
     return { url: cv.toDataURL("image/jpeg", 0.92), w: bmp.width, h: bmp.height };
   }
-  async function printIt(file, btn) {
+  async function printIt(file, btn, src, ctx) {
     const n = LIST.find(x => x.file === file); if (!n || busy.has("p:" + file)) return;
     busy.add("p:" + file);
     const win = window.open("", "_blank");
@@ -227,7 +227,7 @@ ${PT && k === "塗り絵" ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""
       doc.setProperties({ title: n.title }); doc.autoPrint();
       const url = URL.createObjectURL(doc.output("blob"));
       if (win) win.location.href = url; else window.open(url, "_blank");
-      markPrinted(n.file); logSave(n.file, "print", null); refreshCard(n.file);
+      markPrinted(n.file); logSave(n.file, src || window.RK_SRC, Object.assign({}, ctx || {}, { pr: "1" })); refreshCard(n.file);
       document.querySelectorAll(`.md [data-print="${CSS.escape(n.file)}"]`).forEach(b => { b.classList.add("pdone"); });
       toast(`「${n.title}」の印刷画面を開きました`, "A4サイズで印刷してください");
     } catch (e) { if (win) win.close(); toast("印刷用PDFを作れませんでした", "保存してから印刷してください"); }
@@ -298,7 +298,7 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
       toast(on ? "お気に入りに追加しました" : "お気に入りから外しました", on ? "お気に入りページからまとめて保存できます" : "");
       document.dispatchEvent(new CustomEvent("favchange")); return;
     }
-    if (t.dataset.print) { printIt(t.dataset.print, t); return; }
+    if (t.dataset.print) { const inMd = !!t.closest(".md"); printIt(t.dataset.print, t, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : window.RK_CTX); return; }
     if (t.dataset.save) { const inMd = !!t.closest(".md"); save(t.dataset.save, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : undefined); return; }
     if (t.dataset.open) { openMd(t.dataset.open, t.dataset.tab, t.dataset.src || (t.closest(".md") ? "nita" : null)); return; }
     if (t.dataset.mtab) { mdTab = t.dataset.mtab; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp", mdSrc); return; }
