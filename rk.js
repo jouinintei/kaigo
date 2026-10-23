@@ -39,7 +39,7 @@
   const FAV = "nurie_fav_v1", HIST = "nurie_history_v1";
   const favs = () => J(FAV, []);
   const isFav = f => favs().includes(f);
-  const PT = (() => { try { const q = new URLSearchParams(location.search).get("printtest"); if (q === "1") localStorage.setItem("rk_printtest", "1"); if (q === "0") localStorage.removeItem("rk_printtest"); return localStorage.getItem("rk_printtest") === "1" && matchMedia("(pointer:fine)").matches; } catch (e) { return false; } })();
+  const PT = (() => { try { return matchMedia("(pointer:fine)").matches; } catch (e) { return false; } })();
   const isUsed = f => !!(J(HIST, {})[f]);
   function toggleFav(f) { let a = favs(); a = a.includes(f) ? a.filter(x => x !== f) : a.concat(f); S(FAV, a); updFavCount(); return a.includes(f); }
   const hOf = f => J(HIST, {})[f] || null;
