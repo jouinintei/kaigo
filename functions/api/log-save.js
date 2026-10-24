@@ -5,7 +5,8 @@
 const FILE_PATH = "data/save-log.json";
 const KEEP_DAYS = 120;
 const KEEP_EVENTS = 300;
-const KEEP_DEV_FILES = 200;
+const KEEP_FILE_DAYS = 30;  // 絵ごとの日別枚数を持つ日数（それより前はその日の合計枚数だけ残す）
+const KEEP_FD_DAYS = 8;     // 絵ごとの保存端末(人気ランキングの端末数用)を持つ日数
 
 function cleanRepo(r) {
   return String(r || "")
@@ -27,7 +28,7 @@ function blankFav() {
 }
 
 function blank() {
-  return { totals: {}, days: {}, devs: {}, events: [], src: {}, ent: {}, dfiles: {}, fav: blankFav() };
+  return { totals: {}, days: {}, devs: {}, events: [], src: {}, ent: {}, dtot: {}, fd: {}, fav: blankFav() };
 }
 
 async function ghRead(env) {
@@ -59,7 +60,9 @@ async function ghRead(env) {
   if (!Array.isArray(data.events)) data.events = [];
   if (!data.src) data.src = {};
   if (!data.ent) data.ent = {};
-  if (!data.dfiles) data.dfiles = {};
+  if (!data.dtot) data.dtot = {};
+  if (!data.fd) data.fd = {};
+  delete data.dfiles;
   if (!data.fav || typeof data.fav !== "object") data.fav = blankFav();
   if (!data.fav.days) data.fav.days = {};
   if (!data.fav.tot) data.fav.tot = {};
@@ -91,6 +94,28 @@ function json(obj, status) {
     status: status || 200,
     headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" }
   });
+}
+
+// 数字だけ残して軽く保つ
+//  - 1枚ずつの保存履歴は今日と昨日(日本時間)の分だけ（念のため上限3000件）
+//  - 絵ごとの日別枚数は直近KEEP_FILE_DAYS日分。それより前はその日の合計枚数(dtot)にまとめる
+//  - 絵ごとの保存端末は直近KEEP_FD_DAYS日分
+//  - 累計・日ごとの端末別件数・保存元の内訳・来た経路は消さない
+function compact(d, day) {
+  const dayStart = Date.parse(day + "T00:00:00+09:00");
+  const keepFrom = dayStart - 24 * 3600 * 1000;
+  d.events = d.events.filter(e => e.t >= keepFrom);
+  if (d.events.length > 3000) d.events = d.events.slice(d.events.length - 3000);
+  const keyAgo = n => new Date(dayStart - n * 24 * 3600 * 1000 + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  const fileFrom = keyAgo(KEEP_FILE_DAYS - 1);
+  Object.keys(d.days).forEach(k => {
+    if (k >= fileFrom) return;
+    const o = d.days[k];
+    d.dtot[k] = (d.dtot[k] || 0) + Object.keys(o).reduce((s, f) => s + o[f], 0);
+    delete d.days[k];
+  });
+  const fdFrom = keyAgo(KEEP_FD_DAYS - 1);
+  Object.keys(d.fd).forEach(k => { if (k < fdFrom) delete d.fd[k]; });
 }
 
 export async function onRequest({ request, env }) {
@@ -250,32 +275,11 @@ export async function onRequest({ request, env }) {
         if (c) ev.c = c;
         if (ent && i === 0) ev.r = ent;
         d.events.push(ev);
-        if (!d.dfiles[did]) d.dfiles[did] = {};
-        const df = d.dfiles[did][f] || [0, 0];
-        d.dfiles[did][f] = [df[0] + 1, now];
+        if (!d.fd[day]) d.fd[day] = {};
+        const fl = d.fd[day][f] || (d.fd[day][f] = []);
+        if (fl.indexOf(did) < 0) fl.push(did);
       });
-      Object.keys(d.dfiles).forEach(id => {
-        const fs = Object.keys(d.dfiles[id]);
-        if (fs.length > KEEP_DEV_FILES) {
-          fs.sort((a, b) => d.dfiles[id][b][1] - d.dfiles[id][a][1]).slice(KEEP_DEV_FILES).forEach(x => delete d.dfiles[id][x]);
-        }
-      });
-      // 今日と昨日(日本時間)の保存はすべて残す。それより前は最新KEEP_EVENTS件まで（全体の上限3000件）
-      {
-        const keepFrom = Date.parse(day + "T00:00:00+09:00") - 24 * 3600 * 1000;
-        const recent = d.events.filter(e => e.t >= keepFrom);
-        const older = d.events.filter(e => e.t < keepFrom);
-        const room = Math.max(0, KEEP_EVENTS - recent.length);
-        d.events = (room ? older.slice(Math.max(0, older.length - room)) : []).concat(recent);
-        if (d.events.length > 3000) d.events = d.events.slice(d.events.length - 3000);
-      }
-      const keys = Object.keys(d.days).sort();
-      while (keys.length > KEEP_DAYS) {
-        const old = keys.shift();
-        delete d.days[old];
-        delete d.devs[old];
-        delete d.src[old];
-      }
+      compact(d, day);
       if (await ghWrite(env, cur.sha, d)) return json({ ok: true });
     } catch (e) {}
   }

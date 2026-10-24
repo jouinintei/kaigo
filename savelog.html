@@ -583,6 +583,9 @@
       Object.keys(o).forEach(function(f){ s += o[f]; });
       dayTotal[k] = s;
     });
+    // 30日より前は、その日の合計枚数だけが残っている
+    var dtot = d.dtot || {};
+    Object.keys(dtot).forEach(function(k){ dayTotal[k] = (dayTotal[k] || 0) + dtot[k]; });
 
     drawTiles(dayTotal, totals, devs);
     drawChart(dayTotal);
@@ -850,15 +853,18 @@
     }
     var since = rankPeriod ? Date.parse(shiftKey(t, -(rankPeriod - 1)) + "T00:00:00+09:00") : 0;
     var devSets = {}, oldest = Infinity;
-    events.forEach(function(e){
-      if (!e || !e.f || !e.t) return;
-      if (e.t < oldest) oldest = e.t;
-      if (e.t < since) return;
-      if (!devSets[e.f]) devSets[e.f] = {};
-      devSets[e.f][e.d || "?"] = 1;
+    var fd = d.fd || {};
+    Object.keys(fd).forEach(function(k){
+      var ks = Date.parse(k + "T00:00:00+09:00");
+      if (ks < oldest) oldest = ks;
+      if (ks < since) return;
+      Object.keys(fd[k]).forEach(function(f){
+        if (!devSets[f]) devSets[f] = {};
+        (fd[k][f] || []).forEach(function(x){ devSets[f][x] = 1; });
+      });
     });
     var devN = function(f){ return devSets[f] ? Object.keys(devSets[f]).length : 0; };
-    var covered = events.length > 0 && oldest <= since && rankPeriod !== 0;
+    var covered = oldest <= since && rankPeriod !== 0;
     var files = Object.keys(cnt).filter(function(f){ return cnt[f] > 0; })
       .sort(function(a, b){ return (cnt[b] - cnt[a]) || (devN(b) - devN(a)) || a.localeCompare(b); })
       .slice(0, 20);
@@ -1090,7 +1096,7 @@
   }
   function devFilesHtml(id){
     var L = devFiles(id);
-    if (!L.length) return '<details class="dfl" data-id="' + esc(id) + '"' + (devOpen[id] ? ' open' : '') + '><summary>保存したもの</summary><p class="empty">記録がまだありません（これからの保存分から溜まります）</p></details>';
+    if (!L.length) return '<details class="dfl" data-id="' + esc(id) + '"' + (devOpen[id] ? ' open' : '') + '><summary>今日・昨日に保存したもの</summary><p class="empty">今日・昨日に保存したものはありません</p></details>';
     var items = L.map(function(x){
       var it = info(x.f);
       var ttl = it ? it.title : x.f;
@@ -1103,7 +1109,7 @@
       return '<div class="dfi">' + thumb + '<div class="dft" title="' + esc(ttl) + '">' + esc(ttl) + '</div>' +
         '<div class="dfm">' + esc(sub.join("・")) + (when ? '　' + when : '') + (x.n > 1 ? '　' + x.n + '回' : '') + '</div></div>';
     }).join("");
-    return '<details class="dfl" data-id="' + esc(id) + '"' + (devOpen[id] ? ' open' : '') + '><summary>保存したもの（' + L.length + '種類）</summary><div class="dfg">' + items + '</div></details>';
+    return '<details class="dfl" data-id="' + esc(id) + '"' + (devOpen[id] ? ' open' : '') + '><summary>今日・昨日に保存したもの（' + L.length + '種類）</summary><div class="dfg">' + items + '</div></details>';
   }
   document.getElementById("devWrap").addEventListener("toggle", function(ev){
     var el = ev.target;

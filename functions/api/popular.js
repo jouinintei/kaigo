@@ -1,6 +1,6 @@
 // functions/api/popular.js
 // 直近7日間に保存された作品を「保存した端末数」で並べて返す(件数は返さない)
-// 非公開リポジトリ data/save-log.json の events(時刻 t / ファイル f / 端末 d)を集計する
+// 非公開リポジトリ data/save-log.json の fd(日ごとの保存端末)と days(日ごとの枚数)を集計する
 // 環境変数: GITHUB_TOKEN, MEMBER_REPO(log-save.js と同じもの)
 
 export async function onRequest({ request, env }) {
@@ -27,18 +27,26 @@ export async function onRequest({ request, env }) {
     if (!r.ok) return new Response(JSON.stringify({ files: [] }), { headers });
     const log = await r.json();
 
-    const events = Array.isArray(log.events) ? log.events : [];
-    const since = Date.now() - 7 * 24 * 3600 * 1000;
+    // 直近7日(日本時間・今日を含む)の日付
+    const dayStart = Date.parse(new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10) + "T00:00:00+09:00");
+    const keys = [];
+    for (let i = 0; i < 7; i++) keys.push(new Date(dayStart - i * 24 * 3600 * 1000 + 9 * 3600 * 1000).toISOString().slice(0, 10));
 
     // ファイルごとに「保存した端末の集合」と「保存回数」を集める
+    // 端末は fd(日ごと・絵ごとの保存端末)、回数は days(日ごと・絵ごとの枚数)から
     const devs = {};   // file -> Set(did)
     const cnt = {};    // file -> 回数
-    for (const e of events) {
-      if (!e || !e.f || !e.t || e.t < since) continue;
-      if (!devs[e.f]) { devs[e.f] = new Set(); cnt[e.f] = 0; }
-      devs[e.f].add(e.d || "?");
-      cnt[e.f]++;
+    const fd = log.fd || {}, days = log.days || {};
+    for (const k of keys) {
+      const o = fd[k] || {};
+      for (const f of Object.keys(o)) {
+        if (!devs[f]) devs[f] = new Set();
+        (o[f] || []).forEach(x => devs[f].add(x));
+      }
+      const c = days[k] || {};
+      for (const f of Object.keys(c)) cnt[f] = (cnt[f] || 0) + c[f];
     }
+    for (const f of Object.keys(cnt)) if (!devs[f]) devs[f] = new Set();
 
     // 端末数の多い順 → 同数なら保存回数の多い順
     const files = Object.keys(devs)
