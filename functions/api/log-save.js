@@ -36,10 +36,23 @@ async function ghRead(env) {
   if (r.status === 404) return { sha: null, data: blank() };
   if (!r.ok) throw new Error("github read " + r.status);
   const j = await r.json();
-  let data = blank();
+  let data = null;
   try {
-    data = JSON.parse(decodeURIComponent(escape(atob(String(j.content || "").replace(/\n/g, "")))));
+    if (j.content) data = JSON.parse(decodeURIComponent(escape(atob(String(j.content).replace(/\n/g, "")))));
   } catch (e) {}
+  // 1MBを超えるとcontentが空で返ってくるので、そのときは中身だけを取り直す
+  if (!data && j.size > 0) {
+    const rr = await fetch("https://api.github.com/repos/" + repo + "/git/blobs/" + j.sha, {
+      headers: Object.assign(ghHeaders(env), { "Accept": "application/vnd.github.raw" })
+    });
+    if (!rr.ok) throw new Error("github raw read " + rr.status);
+    try { data = JSON.parse(await rr.text()); } catch (e) {}
+  }
+  // 中身があるのに読めなかったときは、空で上書きしないよう書き込みを止める
+  if (!data || typeof data !== "object") {
+    if (j.size > 0) throw new Error("save-log unreadable");
+    data = blank();
+  }
   if (!data.totals) data.totals = {};
   if (!data.days) data.days = {};
   if (!data.devs) data.devs = {};
