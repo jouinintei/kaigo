@@ -274,9 +274,9 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
     const f = mdTab === "s" ? n.sample : mdTab === "a" ? n.answer : (k === "壁紙作り" && n.pdf ? n.pdf : n.file);
     const PGL = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫";
     const vf = k === "壁紙作り" && mdTab !== "s" && mdPg >= 0 && n.pages && n.pages[mdPg] ? n.pages[mdPg] : (f === n.pdf ? n.file : f);
-    const wpages = k === "壁紙作り" && n.pages && n.pages.length ? `<div class="wpages"><h3>保存・印刷される内容<small>（A4縦・全${n.pages.length}枚）押すと大きく表示</small></h3><div class="wpg">${n.pages.map((p, i) => `<button type="button" data-wpg="${i}" aria-pressed="${mdPg === i}"><img loading="lazy" alt="" src="${sthumb(n, p)}"><span>${i ? PGL[i - 1] : "全体図"}</span></button>`).join("")}</div></div>` : "";
+    const wpages = k === "壁紙作り" && mdTab !== "s" && n.pages && n.pages.length ? `<div class="wpages"><h3>保存・印刷される内容<small>A4縦・全${n.pages.length}枚<br>押すと大きく表示</small></h3><div class="wpg">${n.pages.map((p, i) => `<button type="button" data-wpg="${i}" aria-pressed="${mdPg === i}"><img loading="lazy" alt="" src="${sthumb(n, p)}"><span>${i ? PGL[i - 1] : "全体図"}</span></button>`).join("")}</div></div>` : "";
     const rel = related(n);
-    document.querySelector(".md .box").classList.toggle("wall", !!wpages);
+    document.querySelector(".md .box").classList.toggle("wall", k === "壁紙作り");
     document.querySelector(".md .box").innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
 <div class="scr">
 <div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, vf)}" data-full="${full(n, vf)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"><button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button>${wpages}</div>
