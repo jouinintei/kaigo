@@ -167,7 +167,7 @@ export async function onRequest(context) {
   const text = String((body && body.text) || "").trim().slice(0, 1000);
   const from = String((body && body.from) || "").trim().slice(0, 200);
   const did = String((body && body.did) || "").replace(/[^a-z0-9]/gi, "").slice(0, 16);
-  const TYPES = ["ご要望", "作品の写真", "不具合", "その他"];
+  const TYPES = ["ご要望", "作品の写真", "不具合", "その他", "壁紙作りの感想"];
   const type = TYPES.includes(String((body && body.type) || "")) ? body.type : "その他";
   const rawPhotos = Array.isArray(body && body.photos) ? body.photos.slice(0, MAX_PHOTOS) : [];
   const photos = [];
