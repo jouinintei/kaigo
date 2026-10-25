@@ -919,7 +919,7 @@
       return "特集ページ（季節別・動物・敬老の日・脳トレプリントなど）から保存（どのページかは記録を始める前）";
     }
     if (s === "top") return "トップページから保存";
-    var base = s === "noutore" ? "脳トレの一覧" : s === "calendar" ? "カレンダー" : s === "list" ? "塗り絵の一覧" : "不明な場所";
+    var base = s === "noutore" ? "脳トレの一覧" : s === "calendar" ? "カレンダー" : s === "wall" ? "壁紙作りの一覧" : s === "list" ? "塗り絵の一覧" : "不明な場所";
     var c = e.c || {}, cp = [];
     if (c.q) cp.push("「" + c.q + "」で検索して");
     if (c.sr) cp.push("シリーズ「" + c.sr + "」を開いて");
@@ -969,7 +969,7 @@
   function srcLabel(s, o){ var b = SRC_SHORT[s] || s; return (o && SORT_JA[o]) ? b + "（" + SORT_JA[o] + "）" : b; }
   var SRC_SHORT = {
     top: "トップから", lp: "特集ページから", list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
-    fav: "お気に入りから", bulk: "まとめて保存", noutore: "脳トレ一覧から", calendar: "カレンダーから"
+    fav: "お気に入りから", bulk: "まとめて保存", noutore: "脳トレ一覧から", calendar: "カレンダーから", wall: "壁紙作りから"
   };
   document.getElementById("rankSeg").addEventListener("click", function(e){
     var b = e.target.closest("button");

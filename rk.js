@@ -149,7 +149,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
   }
   const oq = []; let ot = null;
   function logOpen(file, kind, src) {
-    if (!file) return; const s0 = String(src || window.RK_SRC || "").slice(0, 12); oq.push((s0 === "list" || s0 === "noutore") && window.RK_SORT ? [file, kind, s0, window.RK_SORT] : [file, kind, s0]); clearTimeout(ot);
+    if (!file) return; const s0 = String(src || window.RK_SRC || "").slice(0, 12); oq.push((s0 === "list" || s0 === "noutore" || s0 === "wall") && window.RK_SORT ? [file, kind, s0, window.RK_SORT] : [file, kind, s0]); clearTimeout(ot);
     ot = setTimeout(() => { const q = oq.splice(0); post({ opens: q, ent: entOnce("rk_ent_osent"), did: deviceId() }); }, 3000);
   }
   const fq = []; let ft = null;
