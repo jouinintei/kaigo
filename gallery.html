@@ -74,7 +74,7 @@
     const M={nurie:[`高齢者向け 無料の塗り絵一覧（${cnt("塗り絵")}枚）｜季節・ジャンル・難しさで探せる｜介護のレクプリ`,`高齢者向けの無料塗り絵${cnt("塗り絵")}枚。季節・ジャンル・難しさで絞り込んで、A4サイズでそのまま印刷できます。色見本つき。`,"gallery.html"],
       noutore:[`高齢者向け 無料の脳トレプリント一覧（${cnt("脳トレ")}枚）｜答えつき・A4印刷｜介護のレクプリ`,`漢字・計算・言葉遊び・クイズなど、高齢者向けの無料脳トレプリント${cnt("脳トレ")}枚。すべて答えつきで、A4でそのまま印刷できます。`,"gallery.html?page=noutore"],
       cal:[`塗って飾れる 無料の月間カレンダー（${cnt("カレンダー")}種類）｜高齢者向け｜介護のレクプリ`,`塗り絵になった月間カレンダーを無料で配布しています。毎月の行事に合わせた絵柄を、A4でそのまま印刷できます。`,"gallery.html?page=calendar"],
-      wall:[`みんなで塗って壁面飾りに 無料の壁紙作り塗り絵（${cnt("壁紙作り")}作品）｜高齢者向け｜介護のレクプリ`,`1枚の絵をA4・6枚に分けた大きな塗り絵です。一人1枚ずつ塗って、つなげると壁一面の作品に。デイサービスや介護施設の壁面飾りにどうぞ。`,"gallery.html?page=wall"],
+      wall:[`みんなで塗って壁面飾りに 無料の壁紙作り塗り絵（${cnt("壁紙作り")}作品）｜高齢者向け｜介護のレクプリ`,`1枚の絵を何枚かのA4に分けた大きな塗り絵です。一人1枚ずつ塗って、つなげると壁一面の作品に。デイサービスや介護施設の壁面飾りにどうぞ。`,"gallery.html?page=wall"],
       fav:["お気に入り｜介護のレクプリ","お気に入りに入れた素材の一覧です。","gallery.html?page=fav"]}[K];
     const set=(sel,attr,val)=>{let e=document.head.querySelector(sel);if(!e){e=document.createElement(sel.startsWith("link")?"link":"meta");const m=sel.match(/\[(\w+)="?([^"\]]+)"?\]/);e.setAttribute(m[1],m[2]);document.head.appendChild(e);}e.setAttribute(attr,val);};
     document.title=M[0];set('meta[name="description"]',"content",M[1]);set('meta[property="og:title"]',"content",M[0]);set('meta[property="og:description"]',"content",M[1]);
@@ -91,7 +91,7 @@
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
   const PER=K==="cal"?12:12;
   const SEASONS=["すべて","春","夏","秋","冬","通年"];
-  const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],wall:["壁紙作り","1枚の絵を6枚に分けた大きな塗り絵。一人1枚ずつ塗って、つなげると壁一面の作品になります。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
+  const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],wall:["壁紙作り","みんなで塗って、つなげると壁一面の作品になる大きな塗り絵です。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
   const items=()=>LIST.filter(n=>kindOf(n)===KIND);
   const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
   let YOMI={},YK=[],AUTO_T={};
@@ -158,7 +158,7 @@
     if(K==="cal")return renderCal();
     const a=filtered(),tot=a.length,pages=Math.max(1,Math.ceil(tot/PER));if(st.page>pages)st.page=pages;
     const pageItems=a.slice((st.page-1)*PER,st.page*PER);
-    main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、A4用紙6枚に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面（約60cm四方）の作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>6枚の塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
+    main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、何枚かのA4用紙に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面の大きな作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>分けた塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
       (tot?`<div class="grid">${pageItems.map(n=>card(n)).join("")}</div>${pager(tot)}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><button class="btn p" data-reset>条件をリセット</button></div>`);
   }
