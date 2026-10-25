@@ -12,10 +12,10 @@
     cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
     print: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',
     check: '<path d="M5 12l5 5 9-10"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
-    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>', full: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', left: '<path d="M15 6l-6 6 6 6"/>', right: '<path d="M9 6l6 6-6 6"/>', home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>', full: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', left: '<path d="M15 6l-6 6 6 6"/>', right: '<path d="M9 6l6 6-6 6"/>', home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', wall: '<rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M9 4v16M15 4v16M3 12h18"/>', mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'
   };
   const PROD = location.pathname.indexOf("/preview/") < 0;
-  const L = k => PROD ? ({ nurie: "/gallery.html", noutore: "/gallery.html?page=noutore", cal: "/gallery.html?page=calendar", fav: "/gallery.html?page=fav" }[k] || "/gallery.html") : "list.html?k=" + k;
+  const L = k => PROD ? ({ nurie: "/gallery.html", noutore: "/gallery.html?page=noutore", cal: "/gallery.html?page=calendar", wall: "/gallery.html?page=wall", fav: "/gallery.html?page=fav" }[k] || "/gallery.html") : "list.html?k=" + k;
   const ROOT = PROD ? "/" : "../";
   window.RK_L = L;
   const ico = (n, s) => `<svg class="ico" ${s ? `style="width:${s}px;height:${s}px"` : ""} viewBox="0 0 24 24" aria-hidden="true">${P[n]}</svg>`;
@@ -54,7 +54,7 @@
   function refreshCard(f) {
     document.querySelectorAll(`article[data-f="${CSS.escape(f)}"]`).forEach(ar => {
       const ph = ar.querySelector(".ph"); if (ph) { const o = ph.parentNode.querySelector(".bdg"); if (o) o.remove(); ph.parentNode.insertAdjacentHTML("beforeend", badges(f)); }
-      const sb = ar.querySelector(`[data-save="${CSS.escape(f)}"]`); if (sb && isSaved(f)) { sb.className = "btn done"; sb.innerHTML = ico("down", 17) + "もう一度保存"; }
+      const sb = ar.querySelector(`[data-save="${CSS.escape(f)}"]`) || ar.querySelector("[data-save]:not([data-of])"); if (sb && isSaved(f)) { sb.className = "btn done"; sb.innerHTML = ico("down", 17) + "もう一度保存"; }
       const pb = ar.querySelector(`[data-print="${CSS.escape(f)}"]`); if (pb && isPrinted(f)) { pb.textContent = pb.textContent.replace("直接印刷する", pb.classList.contains("half") ? "もう一度印刷" : "もう一度印刷する"); pb.classList.add("pdone"); }
     });
   }
@@ -83,16 +83,16 @@
 ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a>`}</div></header>`;
   }
   function tabs(cur) {
-    const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["お気に入り", "fav", "star", "FAVORITE"]];
-    const cnt = k => k === "fav" ? favs().length : LIST.filter(n => kindOf(n) === { nurie: "塗り絵", noutore: "脳トレ", cal: "カレンダー" }[k]).length;
+    const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["壁紙作り", "wall", "wall", "WALL"], ["お気に入り", "fav", "star", "FAVORITE"]];
+    const cnt = k => k === "fav" ? favs().length : LIST.filter(n => kindOf(n) === { nurie: "塗り絵", noutore: "脳トレ", cal: "カレンダー", wall: "壁紙作り" }[k]).length;
     const v = new URLSearchParams(location.search).get("tab") || "bc";
-    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc"${k === "fav" ? " data-favtab" : ""}>${cnt(k)}</span></a>`).join("")}</div></nav>`;
+    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc"${k === "fav" ? " data-favtab" : ""}>${cnt(k)}</span>${k === "wall" ? '<span class="tnew">NEW</span>' : ""}</a>`).join("")}</div></nav>`;
   }
   function footer(cur) {
-    const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["お気に入り", "fav", "star"]];
-    return `<section class="req"><div class="wrap"><div><h3>「こんな${cur === "noutore" ? "脳トレ" : cur === "cal" ? "カレンダー" : cur === "fav" || cur === "" ? "素材" : "塗り絵"}がほしい」をお聞かせください</h3><p>ご要望・不具合のご連絡はこちらから。いただいた声をもとに素材を増やしています。</p></div><a class="btn p" href="${ROOT}contact.html" style="height:52px">ご要望を送る</a></div></section>
+    const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["壁紙作り", "wall", "wall"], ["お気に入り", "fav", "star"]];
+    return `<section class="req"><div class="wrap"><div><h3>「こんな${cur === "noutore" ? "脳トレ" : cur === "cal" ? "カレンダー" : cur === "wall" ? "壁紙作り" : cur === "fav" || cur === "" ? "素材" : "塗り絵"}がほしい」をお聞かせください</h3><p>ご要望・不具合のご連絡はこちらから。いただいた声をもとに素材を増やしています。</p></div><a class="btn p" href="${ROOT}contact.html" style="height:52px">ご要望を送る</a></div></section>
 <footer class="ft"><div class="wrap"><span>© 介護のレクプリ</span><nav aria-label="サイトについて"><a href="${ROOT}terms.html">素材のご利用について</a><a href="${ROOT}privacy.html">プライバシーポリシー</a><a href="${ROOT}contact.html">お問い合わせ</a></nav></div></footer>
-<nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="${L(k)}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}</a>`).join("")}</nav>
+<nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="${L(k)}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}${k === "wall" ? '<span class="bnew">NEW</span>' : ""}</a>`).join("")}</nav>
 <div class="toast" role="status" aria-live="polite"><span class="ok">${ico("check", 18)}</span><span class="tx"></span></div>
 <div class="md" role="dialog" aria-modal="true" aria-labelledby="mdT"><div class="box"></div></div>`;
   }
@@ -101,22 +101,24 @@ ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 
   function metaOf(n) {
     const k = kindOf(n);
     if (k === "カレンダー") return `${n.year}年${n.month}月`;
+    if (k === "壁紙作り") return [n.season, n.people ? "推奨" + n.people : ""].filter(Boolean).join(" ・ ");
     return [n.season, n.genre, n.diff].filter(Boolean).join(" ・ ");
   }
   function card(n, opt = {}) {
     const k = kindOf(n), f = n.file, fav = isFav(f);
     const btn2 = k === "脳トレ" ? (n.answer ? `<button class="btn o" data-save="${esc(n.answer)}" data-of="${esc(f)}">答えを保存</button>` : "")
       : (n.sample ? `<button class="btn o" data-open="${esc(f)}" data-tab="s">${ico("pal", 17)}色見本</button>` : "");
-    const lab1 = k === "脳トレ" ? "問題を保存" : "保存する";
+    const W = k === "壁紙作り";
+    const lab1 = k === "脳トレ" ? "問題を保存" : W ? "7枚を保存" : "保存する";
     const used = isSaved(f), printed = isPrinted(f);
-    const saveBtn = `<button class="btn ${used ? "done" : "p"}" data-save="${esc(f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>`;
+    const saveBtn = `<button class="btn ${used ? "done" : "p"}" data-save="${esc(W && n.pdf ? n.pdf : f)}">${used ? ico("down", 17) + "もう一度保存" : ico("down", 17) + lab1}</button>`;
     return `<article class="card wk${k !== "塗り絵" ? " v" : ""}" data-f="${esc(f)}">
 <div style="position:relative"><button class="ph" data-open="${esc(f)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" ${srcs(n)} onload="this.classList.remove('sk')"></button>
 ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.on ? "true" : "false"}" data-chk="${esc(f)}" aria-label="選ぶ">${opt.on ? ico("check", 20) : ""}</span>` : (isNew(n) ? '<span class="new">NEW</span>' : "")}
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${badges(f)}</div>
 <div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
-${PT && k === "塗り絵" ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""}<div class="acts${btn2 ? " a2" : ""}">${saveBtn}<button class="btn ptb half${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷" : "直接印刷する"}</button></div>` : `<div class="acts${btn2 ? "" : " one"}">${saveBtn}${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn ptb${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷する" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}`}</article>`;
+${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""}<div class="acts${btn2 ? " a2" : ""}">${saveBtn}<button class="btn ptb half${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷" : W ? "7枚を印刷" : "直接印刷する"}</button></div>` : `<div class="acts${btn2 ? "" : " one"}">${saveBtn}${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn ptb${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷する" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}`}</article>`;
   }
   function skeleton(n) {
     return Array.from({ length: n }, () => `<div class="card wk"><div class="sk" style="aspect-ratio:1.414;border-radius:6px"></div><div class="sk" style="height:16px;width:60%;border-radius:4px;margin:16px 0 8px"></div><div class="sk" style="height:12px;width:40%;border-radius:4px"></div></div>`).join("");
@@ -162,6 +164,7 @@ ${PT && k === "塗り絵" ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""
     const d = kindOf(n) === "脳トレ" ? "" : (n.diff ? "(" + n.diff + ")" : "");
     if (file === n.answer) return n.title + " 答え" + d + file.slice(file.lastIndexOf("."));
     if (file === n.sample) return n.title + d + "（見本）.jpg";
+    if (file === n.pdf) return "壁紙作り_" + n.title + "（全7枚）.pdf";
     return n.title + d + file.slice(file.lastIndexOf("."));
   }
   async function stampSample(blob) {
@@ -188,17 +191,17 @@ ${PT && k === "塗り絵" ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""
   }
   const busy = new Set();
   async function save(file, src, ctx) {
-    const n = LIST.find(x => x.file === file || x.answer === file || x.sample === file); if (!n || busy.has(file)) return;
+    const n = LIST.find(x => x.file === file || x.answer === file || x.sample === file || x.pdf === file); if (!n || busy.has(file)) return;
     busy.add(file);
     const name = dlName(n, file);
     const go = (url, direct) => { const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); };
     try { const b = await getBlob(n, file), u = URL.createObjectURL(b); go(u); setTimeout(() => URL.revokeObjectURL(u), 30000); }
     catch (e) { if (PROD) go("/api/dl?f=" + encodeURIComponent(file) + "&n=" + encodeURIComponent(name), true); else window.open(full(n, file), "_blank"); }
     busy.delete(file);
-    if (file === n.file) { markUsed(n.file); logSave(n.file, src || window.RK_SRC, ctx === undefined ? window.RK_CTX : ctx); }
+    if (file === n.file || file === n.pdf) { markUsed(n.file); logSave(n.file, src || window.RK_SRC, ctx === undefined ? window.RK_CTX : ctx); }
     else logSave(file, src || window.RK_SRC, null);
-    toast(`「${n.title}」を保存しました`, "A4サイズで印刷してお使いください");
-    if (file === n.file) refreshCard(n.file);
+    toast(`「${n.title}」を保存しました`, file === n.pdf ? "全体図と6枚のPDFです。A4・実際のサイズで印刷してください" : "A4サイズで印刷してお使いください");
+    if (file === n.file || file === n.pdf) refreshCard(n.file);
   }
 
   /* ---------- print (test) ---------- */
@@ -216,6 +219,13 @@ ${PT && k === "塗り絵" ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""
     if (win) win.document.write('<p style="font:16px sans-serif;padding:24px">印刷用のPDFを作成しています…</p>');
     const old = btn ? btn.textContent : ""; if (btn) btn.textContent = "作成中…";
     try {
+      if (kindOf(n) === "壁紙作り" && n.pdf) {
+        const b = await getBlob(n, n.pdf), url = URL.createObjectURL(new Blob([b], { type: "application/pdf" }));
+        if (win) win.location.href = url; else window.open(url, "_blank");
+        markPrinted(n.file); logSave(n.file, src || window.RK_SRC, Object.assign({}, ctx || {}, { pr: "1" })); refreshCard(n.file);
+        toast(`「${n.title}」の印刷画面を開きました`, "A4・実際のサイズ（100%）で印刷してください");
+        busy.delete("p:" + file); return;
+      }
       const JsPDF = await loadPdf();
       const files = [n.file].concat(kindOf(n) === "脳トレ" && n.answer ? [n.answer] : []);
       let doc = null;
@@ -261,13 +271,13 @@ ${PT && k === "塗り絵" ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""
   function renderMd() {
     const n = mdN, k = kindOf(n);
     const tabs = k === "脳トレ" ? (n.answer ? [["l", "問題"], ["a", "答え"]] : [["l", "問題"]]) : (n.sample ? [["l", "線画"], ["s", "色見本"]] : [["l", "線画"]]);
-    const f = mdTab === "s" ? n.sample : mdTab === "a" ? n.answer : n.file;
+    const f = mdTab === "s" ? n.sample : mdTab === "a" ? n.answer : (k === "壁紙作り" && n.pdf ? n.pdf : n.file);
     const rel = related(n);
     document.querySelector(".md .box").innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
 <div class="scr">
-<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, f)}" data-full="${full(n, f)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"><button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button></div>
+<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, f === n.pdf ? n.file : f)}" data-full="${full(n, f === n.pdf ? n.file : f)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"><button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button></div>
 
-${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" && mdTab !== "s" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(n.file) ? " pdone" : ""}" data-print="${esc(n.file)}">${ico("print", 17)}${isPrinted(n.file) ? "もう一度印刷" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
+${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : k === "壁紙作り" ? "壁紙作り" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" && mdTab !== "s" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : k === "壁紙作り" ? "7枚を保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(n.file) ? " pdone" : ""}" data-print="${esc(n.file)}">${ico("print", 17)}${isPrinted(n.file) ? "もう一度印刷" : k === "壁紙作り" ? "7枚を印刷" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "壁紙作り" ? "7枚を保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
 </div>`;
     upgradeMd();
   }

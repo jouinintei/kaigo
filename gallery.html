@@ -5,7 +5,7 @@
 <script src="/entry.js"></script>
 <script>window.IMG_BASE="https://img.rekupuri.com/images/";window.THUMB_BASE="https://img.rekupuri.com/thumbs/";addEventListener("error",function(e){var t=e.target;if(!t||t.tagName!=="IMG")return;var s=t.src,T=window.THUMB_BASE,B=window.IMG_BASE;if(s.indexOf(T)===0){t.src=B+s.slice(T.length).replace(/\.jpg(\?.*)?$/,"");e.stopPropagation();return;}if(s.indexOf(B)===0&&!t.dataset.fb){t.dataset.fb="1";t.src="images/"+s.slice(B.length);e.stopPropagation();}},true);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>作品一覧(塗り絵・脳トレ・カレンダー)|介護のレクプリ</title>
+<title>作品一覧(塗り絵・脳トレ・カレンダー・壁紙作り)|介護のレクプリ</title>
 <meta name="description" content="高齢者向けの無料塗り絵・脳トレ・月間カレンダーの一覧ページ。季節やジャンルで絞り込んで、A4サイズでそのまま印刷・保存できます。">
 <link rel="canonical" href="https://rekupuri.com/gallery.html">
 <meta property="og:type" content="website">
@@ -21,7 +21,7 @@
 <script src="/frame.js?v=11"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="/rk.css?v=1792782400">
+<link rel="stylesheet" href="/rk.css?v=1792857600">
 <style>
 .ph1 h1,.bar .big b,.mo b,.h2 h2,.md h2,.empty h3,.req h3{font-weight:700}
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
@@ -52,6 +52,7 @@
 @media (max-width:640px){.bar{flex-direction:row;align-items:center;gap:8px}.bar .n{min-width:0}.bar .cl:not(:has(.cc)){display:none}.bar .big b{font-size:28px}.bar .big small,.bar .clr{white-space:nowrap}.seg{align-self:center;flex:0 0 auto}.seg button{padding:0 10px}.ph1{padding-top:18px}.ph1 h1{font-size:26px}.ph1 p{display:none}.months{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
 .ftg{display:none}
 @media (max-width:640px){.ftg{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;margin:14px 0 4px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:16px;font-weight:700;cursor:pointer}.ftg .c{color:var(--btn)}.ftg[aria-expanded=true]{border-color:var(--btn)}.ftg svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.fhide{display:none!important}.fsw{margin-top:12px}}
+.wabout{margin:18px 0 6px;padding:18px 22px;border:1px solid #EBD3C2;border-radius:12px;background:#FBF3EC}.wabout h3{margin:0 0 6px;font-size:18px;color:var(--btn)}.wabout p{margin:0;font-size:15px;line-height:1.8;color:var(--ink)}.wabout p+p{margin-top:4px}
 .hreset{margin:40px 0 24px;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff}.hreset h3{margin:0 0 6px;font-size:17px}.hreset p{margin:0 0 14px;color:var(--sub);font-size:14px;line-height:1.7}.hr2{display:flex;gap:10px;flex-wrap:wrap}.hr2 .btn{height:44px;font-size:15px}
 </style>
 </head>
@@ -61,18 +62,19 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1792780800"></script>
+<script src="/rk.js?v=1792857600"></script>
 <script>
 (function(){
   const {LIST,kindOf,card,skeleton,esc,ico,favs,thumb}=RK;
   const qs=new URLSearchParams(location.search);
-  const K=qs.get("k")||({noutore:"noutore",calendar:"cal",fav:"fav"})[qs.get("page")]||"nurie";
-  window.RK_SRC=window.RK_PAGE=({nurie:"list",noutore:"noutore",cal:"calendar",fav:"fav"})[K];
-  const KIND={nurie:"塗り絵",noutore:"脳トレ",cal:"カレンダー"}[K];
+  const K=qs.get("k")||({noutore:"noutore",calendar:"cal",wall:"wall",fav:"fav"})[qs.get("page")]||"nurie";
+  window.RK_SRC=window.RK_PAGE=({nurie:"list",noutore:"noutore",cal:"calendar",wall:"wall",fav:"fav"})[K];
+  const KIND={nurie:"塗り絵",noutore:"脳トレ",cal:"カレンダー",wall:"壁紙作り"}[K];
   (()=>{const cnt=k=>RK.LIST.filter(n=>RK.kindOf(n)===k).length;
     const M={nurie:[`高齢者向け 無料の塗り絵一覧（${cnt("塗り絵")}枚）｜季節・ジャンル・難しさで探せる｜介護のレクプリ`,`高齢者向けの無料塗り絵${cnt("塗り絵")}枚。季節・ジャンル・難しさで絞り込んで、A4サイズでそのまま印刷できます。色見本つき。`,"gallery.html"],
       noutore:[`高齢者向け 無料の脳トレプリント一覧（${cnt("脳トレ")}枚）｜答えつき・A4印刷｜介護のレクプリ`,`漢字・計算・言葉遊び・クイズなど、高齢者向けの無料脳トレプリント${cnt("脳トレ")}枚。すべて答えつきで、A4でそのまま印刷できます。`,"gallery.html?page=noutore"],
       cal:[`塗って飾れる 無料の月間カレンダー（${cnt("カレンダー")}種類）｜高齢者向け｜介護のレクプリ`,`塗り絵になった月間カレンダーを無料で配布しています。毎月の行事に合わせた絵柄を、A4でそのまま印刷できます。`,"gallery.html?page=calendar"],
+      wall:[`みんなで塗って壁面飾りに 無料の壁紙作り塗り絵（${cnt("壁紙作り")}作品）｜高齢者向け｜介護のレクプリ`,`1枚の絵をA4・6枚に分けた大きな塗り絵です。一人1枚ずつ塗って、つなげると壁一面の作品に。デイサービスや介護施設の壁面飾りにどうぞ。`,"gallery.html?page=wall"],
       fav:["お気に入り｜介護のレクプリ","お気に入りに入れた素材の一覧です。","gallery.html?page=fav"]}[K];
     const set=(sel,attr,val)=>{let e=document.head.querySelector(sel);if(!e){e=document.createElement(sel.startsWith("link")?"link":"meta");const m=sel.match(/\[(\w+)="?([^"\]]+)"?\]/);e.setAttribute(m[1],m[2]);document.head.appendChild(e);}e.setAttribute(attr,val);};
     document.title=M[0];set('meta[name="description"]',"content",M[1]);set('meta[property="og:title"]',"content",M[0]);set('meta[property="og:description"]',"content",M[1]);
@@ -89,7 +91,7 @@
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
   const PER=K==="cal"?12:12;
   const SEASONS=["すべて","春","夏","秋","冬","通年"];
-  const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
+  const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],wall:["壁紙作り","1枚の絵を6枚に分けた大きな塗り絵。一人1枚ずつ塗って、つなげると壁一面の作品になります。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
   const items=()=>LIST.filter(n=>kindOf(n)===KIND);
   const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
   let YOMI={},YK=[],AUTO_T={};
@@ -103,12 +105,12 @@
   const hira=s=>String(s).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
   function filtered(){
     let a=items();
-    if(K==="nurie"&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
+    if((K==="nurie"||K==="wall")&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
     if(st.diff)a=a.filter(n=>n.diff===st.diff);
     if(st.unused)a=a.filter(n=>!RK.isUsed(n.file));
     if(st.q){const ws=st.q.trim().split(/[\s,、]+/).filter(Boolean);a=a.filter(n=>{const b=[n.title,n.genre,n.season,n.diff].join(" ");const hay=norm(b)+"|"+norm(toKana(b))+"|"+norm(withYomi(b))+"|"+norm(AUTO_T[n.file]||"");return ws.every(w=>synOf(w).some(v=>hay.includes(norm(v))||hay.includes(norm(toKana(v)))));});}
-    window.RK_CTX=(()=>{const c={};if(K==="nurie"&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);if(st.unused)c.us="未使用だけ";if(K!=="cal")c.so=st.sort;return c;})();window.RK_SORT=K!=="cal"?st.sort:"";
+    window.RK_CTX=(()=>{const c={};if((K==="nurie"||K==="wall")&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);if(st.unused)c.us="未使用だけ";if(K!=="cal")c.so=st.sort;return c;})();window.RK_SORT=K!=="cal"?st.sort:"";
     if(st.sort==="pop"){const r=new Map(pop.map((f,i)=>[f,i]));a=a.map((n,i)=>[r.has(n.file)?r.get(n.file):1e6+i,n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     else if(st.sort==="rand"){a=a.map(n=>[rk(n.file),n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     return a;
@@ -123,24 +125,25 @@
     if(K==="nurie")return `<div class="fl"><div class="chr">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}</div><span class="sp"></span><div class="slr">
 <label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option value="${g}"${st.genre===g?" selected":""}>ジャンル：${g}</option>`).join("")}</select></label>
 <label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option value="${g}"${st.diff===g?" selected":""}>難しさ：${g}</option>`).join("")}</select></label><button class="uchk" data-unused aria-pressed="${st.unused}"><span class="bx">${st.unused?ico("check",15):""}</span>まだ使っていないものだけ</button></div></div>`;
+    if(K==="wall")return `<div class="fl"><div class="chr">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}</div></div>`;
     if(K==="noutore")return `<div class="fl"><div class="chr"><button class="chip" data-genre="" aria-pressed="${!st.genre}">すべて</button>${genres().map(g=>`<button class="chip" data-genre="${g}" aria-pressed="${st.genre===g}">${g}</button>`).join("")}</div><span class="sp"></span><div class="slr"><button class="uchk" data-unused aria-pressed="${st.unused}"><span class="bx">${st.unused?ico("check",15):""}</span>まだ使っていないものだけ</button></div></div>`;
     return "";
   }
   function countLine(tot){
     const all=items().length,cond=[];
-    if(K==="nurie"&&st.season!=="すべて")cond.push(["season",st.season]);
+    if((K==="nurie"||K==="wall")&&st.season!=="すべて")cond.push(["season",st.season]);
     if(st.genre)cond.push(["genre",st.genre]);
     if(st.diff)cond.push(["diff",st.diff]);
     if(st.q)cond.push(["q","「"+st.q+"」"]);
     if(st.unused)cond.push(["unused","使用済みを除く"]);
     const chips=cond.map(([k,t])=>`<button class="cc" data-clr="${k}" aria-label="${esc(t)}の条件を外す">${esc(t)}${ico("x",14)}</button>`).join("");
-    return `<div class="n"><div class="cl">${cond.length?chips+`<span class="of">の${KIND}</span>`:`<span class="of">すべての${KIND}</span>`}</div><div class="big"><b>${tot}</b><span>枚</span>${cond.length?`<small>（全${all}枚中）</small>`:""}${cond.length>0?`<button class="clr" data-reset>すべて外す</button>`:""}</div></div>`;
+    return `<div class="n"><div class="cl">${cond.length?chips+`<span class="of">の${KIND}</span>`:`<span class="of">すべての${KIND}</span>`}</div><div class="big"><b>${tot}</b><span>${K==="wall"?"作品":"枚"}</span>${cond.length?`<small>（全${all}枚中）</small>`:""}${cond.length>0?`<button class="clr" data-reset>すべて外す</button>`:""}</div></div>`;
   }
   let fopen=false;
   const narrow=()=>matchMedia("(max-width:640px)").matches;
   function ftoggle(){
     const fl=main.querySelector(".fl"),sr=main.querySelector(".ph1 .search");if(!fl&&!sr)return;
-    const bits=[];if(K==="nurie"&&st.season!=="すべて")bits.push(st.season);if(st.genre)bits.push(st.genre);if(st.diff)bits.push(st.diff);if(st.q)bits.push("「"+st.q+"」");if(st.unused)bits.push("未使用");
+    const bits=[];if((K==="nurie"||K==="wall")&&st.season!=="すべて")bits.push(st.season);if(st.genre)bits.push(st.genre);if(st.diff)bits.push(st.diff);if(st.q)bits.push("「"+st.q+"」");if(st.unused)bits.push("未使用");
     const b=document.createElement("button");b.type="button";b.className="ftg";b.dataset.ftg="";b.setAttribute("aria-expanded",String(fopen));
     b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg>'+(fopen?"絞り込みを閉じる":"絞り込み・検索")+' <span class="c">（'+esc(bits.length?bits.join("・"):"すべて")+"）</span>";
     const ph=main.querySelector(".ph1");if(ph)ph.after(b);else fl.before(b);
@@ -155,7 +158,7 @@
     if(K==="cal")return renderCal();
     const a=filtered(),tot=a.length,pages=Math.max(1,Math.ceil(tot/PER));if(st.page>pages)st.page=pages;
     const pageItems=a.slice((st.page-1)*PER,st.page*PER);
-    main.innerHTML=head()+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
+    main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、A4用紙6枚に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面（約60cm四方）の作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>6枚の塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
       (tot?`<div class="grid">${pageItems.map(n=>card(n)).join("")}</div>${pager(tot)}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><button class="btn p" data-reset>条件をリセット</button></div>`);
   }

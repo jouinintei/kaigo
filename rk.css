@@ -79,6 +79,9 @@ html,body{overflow-x:clip}
 .tabs-bc .tc{display:inline-flex;align-items:baseline;font-family:var(--body);font-size:17px;font-weight:700;background:#fff;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 10px;line-height:26px}
 .tabs-bc .tc::after{content:"枚";font-size:12px;font-weight:500;margin-left:1px}
 .tabs-bc a[href*="k=fav"] .tc::after{content:"件"}
+.tabs-bc a[href*="page=wall"] .tc::after,.tabs-bc a[href*="k=wall"] .tc::after{content:"作品"}
+.tabs .tnew{display:inline-flex;align-items:center;margin-left:2px;padding:0 7px;border-radius:999px;background:var(--btn);color:#fff;font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:.04em;line-height:20px}
+.bnav .bnew{position:absolute;top:6px;left:50%;margin-left:8px;background:var(--btn);color:#fff;font-size:9px;font-weight:700;border-radius:999px;padding:0 5px;line-height:15px}
 .tabs-bc a[aria-current=page] .tc{background:#F7EBE2;color:var(--btn);border-color:#EBD3C2}
 /* G: vertical icon tabs */
 .tabs-g a{flex-direction:column;gap:2px;padding:10px 26px 8px;font-size:14px;min-width:96px}
@@ -213,8 +216,8 @@ html,body{overflow-x:clip}
   .fl{flex-wrap:nowrap;overflow-x:auto;padding:10px 0 14px;margin:0 -16px;padding-left:16px;padding-right:16px}
   .fl .chip,.fl .sel{flex:none}
   .fl:has(.slr){display:block;overflow:visible;margin:0;padding:10px 0 14px}.fl .chr{display:flex;flex-wrap:wrap;gap:8px}.fl .chr .chip{padding-left:14px;padding-right:14px}.fl .sp{display:none}.fl .slr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.fl .slr label,.fl .slr .sel{width:100%;min-width:0}
-  .bnav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;height:68px;background:#fff;border-top:1px solid var(--line);z-index:40;padding-bottom:env(safe-area-inset-bottom)}
-  .bnav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;color:#4A423A;text-decoration:none}
+  .bnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;height:68px;background:#fff;border-top:1px solid var(--line);z-index:40;padding-bottom:env(safe-area-inset-bottom)}
+  .bnav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;color:#4A423A;text-decoration:none}
   .bnav a[aria-current=page]{color:var(--btn);font-weight:700}
   .bnav .ico{width:24px;height:24px}
   .md{padding:0;align-items:flex-end}

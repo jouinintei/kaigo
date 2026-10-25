@@ -870,4 +870,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "お人形", diff: "中級", file: "up_1792757115508_3.png", sample: "up_1792757115508_3_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792757113508" },
   { season: "通年", genre: "人物", title: "舞妓さん", diff: "上級", file: "up_1792755705172_18.png", sample: "up_1792755705172_18_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792755688172" },
   { season: "通年", genre: "人物", title: "舞妓さん", diff: "中級", file: "up_1792755706172_19.png", sample: "up_1792755706172_19_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792755688172" },
+  { kind: "壁紙作り", season: "秋", people: "6人", title: "秋の山里", file: "hekimen_akinoyamazato.png", pdf: "hekimen_akinoyamazato.pdf", added: "2026-10", date: "2026-10-26", v: "1792857600000" },
 ];
