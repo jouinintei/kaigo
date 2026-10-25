@@ -257,7 +257,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
   function openMd(file, tab, src) {
     const n = LIST.find(x => x.file === file); if (!n) return;
     mdN = n; mdTab = tab || "l"; zoom = 100; mdPg = -1; mdSrc = src || window.RK_SRC; mdCtx = src ? null : window.RK_CTX; renderMd();
-    if (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ") logOpen(n.file, "lb", mdSrc); if (mdTab === "s") logOpen(n.sample, "smp", mdSrc);
+    if (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ" || kindOf(n) === "壁紙作り") logOpen(n.file, "lb", mdSrc); if (mdTab === "s") logOpen(n.sample, "smp", mdSrc);
     const md = document.querySelector(".md"); if (!md.classList.contains("on")) { try { history.pushState({ md: 1 }, ""); } catch (e) {} } md.classList.add("on"); document.body.style.overflow = "hidden";
     const bx = md.querySelector(".box"); bx.setAttribute("tabindex", "-1"); bx.focus({ preventScroll: true });
   }

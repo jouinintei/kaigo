@@ -1534,7 +1534,7 @@
           if (op) b.push('<span class="ob">開いた' + (op > 1 ? '×' + op : '') + '</span>');
           if (sv) b.push('<span class="ob sv">💾保存' + (sv > 1 ? '×' + sv : '') + '</span>');
           Object.keys(x.src).forEach(function(s){ var p = s.split(":"); b.push('<span class="ob" style="background:#fff;border:1px solid #e5ddd0;color:#8a8477">' + esc(srcLabel(p[0], p[1])) + '</span>'); });
-          html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + (it && kindOf(it) === "脳トレ" ? '<span class="odf" style="margin:0 4px 0 0">脳トレ</span>' : '') + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
+          html += '<div class="oit">' + fbThumb(f) + '<div class="body"><div class="ttl">' + (it && (kindOf(it) === "脳トレ" || kindOf(it) === "壁紙作り") ? '<span class="odf" style="margin:0 4px 0 0">' + kindOf(it) + '</span>' : '') + esc(it ? it.title : f) + (it && it.diff ? '<span class="odf">' + esc(it.diff) + '</span>' : '') + '</div><div class="obs">' + b.join('') + '</div></div></div>';
         });
         html += '</div></details>';
       });
