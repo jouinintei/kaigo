@@ -275,7 +275,7 @@ img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit
 html{font-synthesis-weight:none}
 
 .hd .hl{display:flex;align-items:center;gap:18px}
-.favbtn.fv{height:36px;font-size:14px;padding:0 12px;gap:6px;color:var(--sub)}.favbtn.fv .ico{width:18px;height:18px;color:var(--btn)}.favbtn.fv .n{margin-left:2px}.favbtn.fv.on{border-color:var(--btn);color:var(--btn)}
+.favbtn.fv{height:38px;font-family:var(--mincho);font-weight:700;font-size:16px;padding:0 14px;gap:6px;color:var(--sub)}.favbtn.fv .n{font-family:var(--body)}.favbtn.fv .ico{width:18px;height:18px;color:var(--btn)}.favbtn.fv .n{margin-left:2px}.favbtn.fv.on{border-color:var(--btn);color:var(--btn)}
 .md .wpages{border-top:1px solid var(--line);padding-top:14px}.md .wpages h3{margin:0 0 10px;font-size:16px}.md .wpages h3 small{font-size:13px;color:var(--sub);font-weight:400;margin-left:4px}
 .md .wpg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}.md .wpg figure{margin:0;text-align:center;font-size:13px;color:var(--sub)}.md .wpg img{display:block;width:100%;aspect-ratio:.707;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:4px;margin-bottom:4px}
 @media (max-width:640px){.md .wpg{grid-template-columns:repeat(4,minmax(0,1fr))}}
