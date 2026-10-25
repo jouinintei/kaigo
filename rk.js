@@ -246,7 +246,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
   }
 
   /* ---------- modal ---------- */
-  let mdN = null, mdTab = "l", zoom = 100;
+  let mdN = null, mdTab = "l", zoom = 100, mdPg = -1;
   function related(n) {
     const k = kindOf(n), pool = LIST.filter(x => x.file !== n.file && kindOf(x) === k && x.title !== n.title);
     const head = t => String(t).split(/[ 　(（]/)[0];
@@ -256,7 +256,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
   let mdSrc = "list", mdCtx = null;
   function openMd(file, tab, src) {
     const n = LIST.find(x => x.file === file); if (!n) return;
-    mdN = n; mdTab = tab || "l"; zoom = 100; mdSrc = src || window.RK_SRC; mdCtx = src ? null : window.RK_CTX; renderMd();
+    mdN = n; mdTab = tab || "l"; zoom = 100; mdPg = -1; mdSrc = src || window.RK_SRC; mdCtx = src ? null : window.RK_CTX; renderMd();
     if (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ") logOpen(n.file, "lb", mdSrc); if (mdTab === "s") logOpen(n.sample, "smp", mdSrc);
     const md = document.querySelector(".md"); if (!md.classList.contains("on")) { try { history.pushState({ md: 1 }, ""); } catch (e) {} } md.classList.add("on"); document.body.style.overflow = "hidden";
     const bx = md.querySelector(".box"); bx.setAttribute("tabindex", "-1"); bx.focus({ preventScroll: true });
@@ -273,11 +273,13 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
     const tabs = k === "脳トレ" ? (n.answer ? [["l", "問題"], ["a", "答え"]] : [["l", "問題"]]) : (n.sample ? [["l", "線画"], ["s", "色見本"]] : [["l", "線画"]]);
     const f = mdTab === "s" ? n.sample : mdTab === "a" ? n.answer : (k === "壁紙作り" && n.pdf ? n.pdf : n.file);
     const PGL = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫";
-    const wpages = k === "壁紙作り" && n.pages && n.pages.length ? `<div class="wpages"><h3>保存・印刷される内容<small>（A4縦・全${n.pages.length}枚）</small></h3><div class="wpg">${n.pages.map((p, i) => `<figure><img loading="lazy" alt="" src="${IMG + p + ver(n)}"><figcaption>${i ? PGL[i - 1] : "全体図"}</figcaption></figure>`).join("")}</div></div>` : "";
+    const vf = k === "壁紙作り" && mdTab !== "s" && mdPg >= 0 && n.pages && n.pages[mdPg] ? n.pages[mdPg] : (f === n.pdf ? n.file : f);
+    const wpages = k === "壁紙作り" && n.pages && n.pages.length ? `<div class="wpages"><h3>保存・印刷される内容<small>（A4縦・全${n.pages.length}枚）　押すと上に大きく表示します</small></h3><div class="wpg">${n.pages.map((p, i) => `<button type="button" data-wpg="${i}" aria-pressed="${mdPg === i}"><img loading="lazy" alt="" src="${sthumb(n, p)}"><span>${i ? PGL[i - 1] : "全体図"}</span></button>`).join("")}</div></div>` : "";
     const rel = related(n);
+    document.querySelector(".md .box").classList.toggle("wall", !!wpages);
     document.querySelector(".md .box").innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
 <div class="scr">
-<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, f === n.pdf ? n.file : f)}" data-full="${full(n, f === n.pdf ? n.file : f)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"><button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button></div>${wpages}
+<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, vf)}" data-full="${full(n, vf)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"><button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button></div>${wpages}
 
 ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : k === "壁紙作り" ? "壁紙作り" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" && mdTab !== "s" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : k === "壁紙作り" ? "まとめて保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(n.file) ? " pdone" : ""}" data-print="${esc(n.file)}">${ico("print", 17)}${isPrinted(n.file) ? "もう一度印刷" : k === "壁紙作り" ? "まとめて印刷" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "壁紙作り" ? "まとめて保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
 </div>`;
@@ -314,7 +316,8 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     if (t.dataset.print) { const inMd = !!t.closest(".md"); printIt(t.dataset.print, t, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : window.RK_CTX); return; }
     if (t.dataset.save) { const inMd = !!t.closest(".md"); save(t.dataset.save, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : undefined); return; }
     if (t.dataset.open) { openMd(t.dataset.open, t.dataset.tab, t.dataset.src || (t.closest(".md") ? "nita" : null)); return; }
-    if (t.dataset.mtab) { mdTab = t.dataset.mtab; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp", mdSrc); return; }
+    if (t.dataset.wpg !== undefined) { const i = +t.dataset.wpg; mdPg = mdPg === i ? -1 : i; if (mdTab === "s") mdTab = "l"; renderMd(); return; }
+    if (t.dataset.mtab) { mdTab = t.dataset.mtab; mdPg = -1; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp", mdSrc); return; }
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeMd(); });
   document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
