@@ -355,6 +355,16 @@
     <div id="openWrap"><p class="empty">読み込み中…</p></div>
   </section>
 
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>壁紙作り（分割塗り絵）</h2>
+        <p class="note">作品ごとの保存数と開いた数。「累計」は公開からの合計で自分の分も含みます。「今日」は自分の端末を除いた数と端末数です。</p>
+      </div>
+    </div>
+    <div id="wallWrap"><p class="empty">読み込み中…</p></div>
+  </section>
+
 
   <section class="card pop" id="popInq">
     <div class="card-head">
@@ -549,6 +559,7 @@
         wrap.classList.remove("fading");
         render(d);
         try { drawOpens(d); } catch(e){}
+        try { drawWall(d); } catch(e){}
         setStatus(null);
       })
       .catch(function(e){
@@ -1549,6 +1560,40 @@
       el.addEventListener("toggle", function(){ if (el.open) openDevs[el.dataset.dev] = 1; else delete openDevs[el.dataset.dev]; });
     });
     var os = document.getElementById("openStatus"); if (os) os.textContent = "最終更新 " + hhmm(Date.now());
+  }
+
+  /* ---------- 壁紙作り（分割塗り絵） ---------- */
+  function drawWall(d){
+    var wrap = document.getElementById("wallWrap"); if (!wrap) return;
+    var walls = Object.keys(INFO).map(function(k){ return INFO[k]; }).filter(function(it){ return it && !it.isSample && kindOf(it) === "壁紙作り"; });
+    if (!walls.length) { wrap.innerHTML = '<p class="empty">壁紙作りの作品がありません。</p>'; return; }
+    var O = d.opens || {}, ot = O.tot || {}, lbT = ot.lb || {}, smT = ot.smp || {}, sv = d.totals || {};
+    var t = todayKey(), today = (d.days || {})[t] || {};
+    var html = '', all = { op: 0, save: 0, tOp: 0, tSave: 0, dev: {} };
+    walls.sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
+    walls.forEach(function(it){
+      var f = it.file, sm = it.sample || "";
+      var op = (lbT[f] || 0) + (sm ? (smT[sm] || 0) : 0);
+      var save = (sv[f] || 0) + (sm ? (sv[sm] || 0) : 0);
+      var tOp = 0, tSave = 0, dev = {};
+      (Array.isArray(O.ev) ? O.ev : []).forEach(function(e){
+        if ((e.f !== f && e.f !== sm) || dayKey(e.t) !== t || isMine(e.d)) return;
+        tOp++; if (e.d) { dev[e.d] = 1; all.dev[e.d] = 1; }
+      });
+      (d.events || []).forEach(function(e){
+        if ((e.f !== f && e.f !== sm) || dayKey(e.t) !== t || isMine(e.d)) return;
+        tSave++; if (e.d) { dev[e.d] = 1; all.dev[e.d] = 1; }
+      });
+      all.op += op; all.save += save; all.tOp += tOp; all.tSave += tSave;
+      var nd = Object.keys(dev).length;
+      html += '<div class="oit" style="padding:8px 2px;border-bottom:1px solid var(--line)">' + fbThumb(f) + '<div class="body"><div class="ttl">' + esc(it.title || f) +
+        (it.people ? '<span class="odf">' + esc(it.people) + '</span>' : '') + '</div><div class="obs">' +
+        '<span class="ob">累計 開いた ' + op + '</span><span class="ob sv">累計 💾保存 ' + save + '</span>' +
+        '<span class="ob" style="background:#fff;border:1px solid #e5ddd0;color:#8a8477">今日 開いた ' + tOp + '・保存 ' + tSave + '（' + nd + '台）</span>' +
+        '</div></div></div>';
+    });
+    wrap.innerHTML = '<div class="fbsum"><div>累計 開いた<b>' + all.op + '</b></div><div>累計 保存<b>' + all.save + '</b></div>' +
+      '<div>今日 開いた<b>' + all.tOp + '</b></div><div>今日 保存<b>' + all.tSave + '</b></div><div>今日の端末<b>' + Object.keys(all.dev).length + '</b></div></div>' + html;
   }
 
   /* ---------- ☆お気に入り（表示は終了） ---------- */
