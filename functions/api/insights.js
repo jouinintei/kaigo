@@ -27,6 +27,7 @@ export async function onRequest({ request, env }) {
     if (src === "gsc") return json(await fetchGSC(env));
     if (src === "bing") return json(await bingCached(env));
     if (src === "version") return json({ version: VERSION });
+    if (src === "gamins") return json(await fetchGAMins(env, url.searchParams.get("mins") || ""));
     if (src === "garegion") return json(await fetchGARegion(env, url.searchParams.get("region") || "Kyoto", Number(url.searchParams.get("days") || 14)));
     return json({ error: "src は ga / gsc / bing のどれかを指定してください" }, 400);
   } catch (e) {
@@ -201,6 +202,33 @@ async function fetchGARegion(env, region, days) {
     regions: (regions.rows || []).map(x => [x.dimensionValues[0].value, Number(x.metricValues[0].value)]),
     rows: (r.rows || []).map(x => x.dimensionValues.map(v => v.value).concat(x.metricValues.map(v => Number(v.value))))
   };
+}
+
+/* ---------- GA4: 指定した分(前後1分)の地域 ---------- */
+async function fetchGAMins(env, mins) {
+  const pid = env.GA_PROPERTY_ID;
+  if (!pid) throw new Error("GA_PROPERTY_ID がありません");
+  const set = new Set();
+  mins.split(",").filter(x => /^\d{12}$/.test(x)).forEach(m => {
+    const t = Date.UTC(+m.slice(0,4), +m.slice(4,6)-1, +m.slice(6,8), +m.slice(8,10), +m.slice(10,12));
+    for (let k = -1; k <= 1; k++) {
+      const d = new Date(t + k * 60000);
+      const z = n => String(n).padStart(2, "0");
+      set.add("" + d.getUTCFullYear() + z(d.getUTCMonth()+1) + z(d.getUTCDate()) + z(d.getUTCHours()) + z(d.getUTCMinutes()));
+    }
+  });
+  if (!set.size) throw new Error("mins がありません");
+  const token = await googleToken(env, "https://www.googleapis.com/auth/analytics.readonly");
+  const base = "https://analyticsdata.googleapis.com/v1beta/properties/" + pid;
+  const r = await gpost(base + ":runReport", token, {
+    dateRanges: [{ startDate: "30daysAgo", endDate: "today" }],
+    dimensions: [{ name: "dateHourMinute" }, { name: "region" }, { name: "city" }, { name: "browser" }],
+    metrics: [{ name: "activeUsers" }],
+    dimensionFilter: { filter: { fieldName: "dateHourMinute", inListFilter: { values: Array.from(set) } } },
+    orderBys: [{ dimension: { dimensionName: "dateHourMinute" } }],
+    limit: 20000
+  });
+  return { n: set.size, rows: (r.rows || []).map(x => x.dimensionValues.map(v => v.value).concat(x.metricValues.map(v => Number(v.value)))) };
 }
 
 /* ---------- Search Console ---------- */

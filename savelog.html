@@ -1789,6 +1789,15 @@
   // ?region=Kyoto で、その都道府県のGA4アクセス(分単位)を文字で出す(端末の突き合わせ用)
   try {
     var rg = new URLSearchParams(location.search).get("region");
+    var gm = new URLSearchParams(location.search).get("mins");
+    if (gm && saved) {
+      var pre2 = document.createElement("pre"); pre2.style.cssText = "white-space:pre-wrap;font-size:11px;margin:12px"; pre2.textContent = "読み込み中…";
+      document.body.insertBefore(pre2, document.body.firstChild);
+      fetch("api/insights?src=gamins&mins=" + encodeURIComponent(gm) + "&key=" + encodeURIComponent(saved) + "&_=" + Date.now(), {cache:"no-store"})
+        .then(function(r){ return r.json(); })
+        .then(function(j){ pre2.textContent = j.error ? "ERR " + j.error : "MINS " + j.n + " ROWS " + j.rows.length + "\n" + j.rows.map(function(x){ return x.join("\t"); }).join("\n") + "\nEND"; })
+        .catch(function(e){ pre2.textContent = "ERR " + e; });
+    }
     if (rg && saved) {
       var pre = document.createElement("pre"); pre.id = "regionDump"; pre.style.cssText = "white-space:pre-wrap;font-size:11px;margin:12px";
       pre.textContent = "読み込み中…"; document.body.insertBefore(pre, document.body.firstChild);
