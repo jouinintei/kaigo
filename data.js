@@ -871,4 +871,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "舞妓さん", diff: "上級", file: "up_1792755705172_18.png", sample: "up_1792755705172_18_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792755688172" },
   { season: "通年", genre: "人物", title: "舞妓さん", diff: "中級", file: "up_1792755706172_19.png", sample: "up_1792755706172_19_sample.jpg", added: "2026-10", date: "2026-10-23", v: "1792755688172" },
   { kind: "壁紙作り", season: "秋", people: "6人", title: "秋の山里", file: "hekimen_akinoyamazato.png", pdf: "hekimen_akinoyamazato.pdf", sample: "hekimen_akinoyamazato_sample.jpg", pages: ["hekimen_akinoyamazato_p0.jpg","hekimen_akinoyamazato_p1.jpg","hekimen_akinoyamazato_p2.jpg","hekimen_akinoyamazato_p3.jpg","hekimen_akinoyamazato_p4.jpg","hekimen_akinoyamazato_p5.jpg","hekimen_akinoyamazato_p6.jpg"], added: "2026-10", date: "2026-10-26", v: "1792859400000" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "カレンダー計算", file: "calendar_keisan.png", answer: "calendar_keisan_ans.png", added: "2026-10", date: "2026-10-27" },
 ];
