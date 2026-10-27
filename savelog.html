@@ -1786,6 +1786,21 @@
   var saved = urlKey || localStorage.getItem(KEY_STORE);
   if (saved) start(saved);
   else document.getElementById("keyInput").focus();
+  // ?region=Kyoto で、その都道府県のGA4アクセス(分単位)を文字で出す(端末の突き合わせ用)
+  try {
+    var rg = new URLSearchParams(location.search).get("region");
+    if (rg && saved) {
+      var pre = document.createElement("pre"); pre.id = "regionDump"; pre.style.cssText = "white-space:pre-wrap;font-size:11px;margin:12px";
+      pre.textContent = "読み込み中…"; document.body.insertBefore(pre, document.body.firstChild);
+      fetch("api/insights?src=garegion&region=" + encodeURIComponent(rg) + "&days=" + (new URLSearchParams(location.search).get("days") || 21) + "&key=" + encodeURIComponent(saved) + "&_=" + Date.now(), {cache:"no-store"})
+        .then(function(r){ return r.json(); })
+        .then(function(j){
+          if (j.error) { pre.textContent = "ERR " + j.error; return; }
+          pre.textContent = "REGIONS " + JSON.stringify(j.regions) + "\nROWS " + j.rows.length + "\n" + j.rows.map(function(x){ return x.join("\t"); }).join("\n") + "\nEND";
+        })
+        .catch(function(e){ pre.textContent = "ERR " + e; });
+    }
+  } catch(e){}
 })();
 </script>
 </body>
