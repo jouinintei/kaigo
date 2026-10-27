@@ -879,4 +879,9 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "計算", title: "数の並び 次は何? その2", file: "kazu_narabi2.png", answer: "kazu_narabi2_ans.png", added: "2026-10", date: "2026-10-27" },
   { kind: "脳トレ", season: "通年", genre: "計算", title: "数の並び 穴あき", file: "kazu_narabi3.png", answer: "kazu_narabi3_ans.png", added: "2026-10", date: "2026-10-27" },
   { kind: "脳トレ", season: "通年", genre: "計算", title: "数の並び 次は何? 上級", file: "kazu_narabi4.png", answer: "kazu_narabi4_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "文字の間違い探し その1", file: "moji_machigai1.png", answer: "moji_machigai1_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "文字の間違い探し その2", file: "moji_machigai2.png", answer: "moji_machigai2_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "文字の間違い探し その3", file: "moji_machigai3.png", answer: "moji_machigai3_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "文字の間違い探し その4", file: "moji_machigai4.png", answer: "moji_machigai4_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "文字の間違い探し その5", file: "moji_machigai5.png", answer: "moji_machigai5_ans.png", added: "2026-10", date: "2026-10-27" },
 ];
