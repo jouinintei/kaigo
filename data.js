@@ -875,4 +875,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "計算", title: "カレンダー計算 その2", file: "calendar_keisan2.png", answer: "calendar_keisan2_ans.png", added: "2026-10", date: "2026-10-27" },
   { kind: "脳トレ", season: "通年", genre: "計算", title: "カレンダー計算 その3", file: "calendar_keisan3.png", answer: "calendar_keisan3_ans.png", added: "2026-10", date: "2026-10-27" },
   { kind: "脳トレ", season: "通年", genre: "計算", title: "カレンダー計算 その4", file: "calendar_keisan4.png", answer: "calendar_keisan4_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "数の並び 次は何?", file: "kazu_narabi.png", answer: "kazu_narabi_ans.png", added: "2026-10", date: "2026-10-27" },
 ];
