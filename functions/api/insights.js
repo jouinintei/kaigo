@@ -27,6 +27,7 @@ export async function onRequest({ request, env }) {
     if (src === "gsc") return json(await fetchGSC(env));
     if (src === "bing") return json(await bingCached(env));
     if (src === "version") return json({ version: VERSION });
+    if (src === "garegion") return json(await fetchGARegion(env, url.searchParams.get("region") || "Kyoto", Number(url.searchParams.get("days") || 14)));
     return json({ error: "src は ga / gsc / bing のどれかを指定してください" }, 400);
   } catch (e) {
     return json({ error: String(e && e.message || e) }, 200);
@@ -170,6 +171,35 @@ async function fetchGA(env) {
     daily: rows(daily).map(x => ({ date: x.d[0].replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"), users: x.m[0], views: x.m[1], sessions: x.m[2] })),
     pages: rows(pages).map(x => ({ path: x.d[0], views: x.m[0], users: x.m[1] })),
     sources: rows(sources).map(x => ({ name: x.d[0], sessions: x.m[0] }))
+  };
+}
+
+/* ---------- GA4: 都道府県ごとの分単位アクセス(端末の突き合わせ用) ---------- */
+async function fetchGARegion(env, region, days) {
+  const pid = env.GA_PROPERTY_ID;
+  if (!pid) throw new Error("GA_PROPERTY_ID がありません");
+  const token = await googleToken(env, "https://www.googleapis.com/auth/analytics.readonly");
+  const base = "https://analyticsdata.googleapis.com/v1beta/properties/" + pid;
+  days = Math.max(1, Math.min(60, days || 14));
+  const r = await gpost(base + ":runReport", token, {
+    dateRanges: [{ startDate: days + "daysAgo", endDate: "today" }],
+    dimensions: [{ name: "dateHourMinute" }, { name: "city" }, { name: "deviceCategory" }, { name: "browser" }, { name: "sessionSource" }],
+    metrics: [{ name: "activeUsers" }, { name: "eventCount" }],
+    dimensionFilter: { filter: { fieldName: "region", stringFilter: { value: region } } },
+    orderBys: [{ dimension: { dimensionName: "dateHourMinute" } }],
+    limit: 10000
+  });
+  const regions = await gpost(base + ":runReport", token, {
+    dateRanges: [{ startDate: days + "daysAgo", endDate: "today" }],
+    dimensions: [{ name: "region" }],
+    metrics: [{ name: "activeUsers" }],
+    orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }],
+    limit: 15
+  });
+  return {
+    region, days,
+    regions: (regions.rows || []).map(x => [x.dimensionValues[0].value, Number(x.metricValues[0].value)]),
+    rows: (r.rows || []).map(x => x.dimensionValues.map(v => v.value).concat(x.metricValues.map(v => Number(v.value))))
   };
 }
 
