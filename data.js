@@ -884,4 +884,8 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "文字の間違い探し その3", file: "moji_machigai3.png", answer: "moji_machigai3_ans.png", added: "2026-10", date: "2026-10-27" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "文字の間違い探し その4", file: "moji_machigai4.png", answer: "moji_machigai4_ans.png", added: "2026-10", date: "2026-10-27" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "文字の間違い探し その5", file: "moji_machigai5.png", answer: "moji_machigai5_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "なぞなぞ", file: "nazonazo.png", answer: "nazonazo_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "なぞなぞ その2", file: "nazonazo2.png", answer: "nazonazo2_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "なぞなぞ その3", file: "nazonazo3.png", answer: "nazonazo3_ans.png", added: "2026-10", date: "2026-10-27" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "なぞなぞ その4", file: "nazonazo4.png", answer: "nazonazo4_ans.png", added: "2026-10", date: "2026-10-27" },
 ];
