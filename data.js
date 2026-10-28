@@ -1019,4 +1019,7 @@ window.NURIE_LIST = [
   { season: "冬", genre: "風景", title: "空飛ぶ郵便そり", diff: "中級", file: "up_1793154451567_33.png", sample: "up_1793154451567_33_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
   { season: "冬", genre: "風景", title: "雪の夜に灯る空のランタン", diff: "上級", file: "up_1793154453567_35.png", sample: "up_1793154453567_35_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
   { season: "通年", genre: "食べ物", title: "クリームソーダとナポリタン", diff: "中級", file: "up_1793154457567_39.png", sample: "up_1793154457567_39_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
+  { season: "通年", genre: "食べ物", title: "天ぷら盛り合わせ", diff: "初級", file: "up_1793157556228_1.png", sample: "up_1793157556228_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793157555228" },
+  { season: "通年", genre: "食べ物", title: "ちらし寿司", diff: "初級", file: "up_1793157557228_2.png", sample: "up_1793157557228_2_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793157555228" },
+  { season: "通年", genre: "食べ物", title: "洋食屋のハンバーグ", diff: "初級", file: "up_1793157558228_3.png", sample: "up_1793157558228_3_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793157555228" },
 ];
