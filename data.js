@@ -1055,4 +1055,12 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "冬", genre: "言葉遊び", title: "ことばさがし ふゆ", file: "kotoba_fuyu.png", answer: "kotoba_fuyu_ans.png", added: "2026-10", date: "2026-10-28" },
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "ことばさがし りょうり", file: "kotoba_ryouri.png", answer: "kotoba_ryouri_ans.png", added: "2026-10", date: "2026-10-28" },
   { season: "通年", genre: "花", title: "観葉植物とペンダントライト", diff: "中級", file: "up_1793167964984_1.png", sample: "up_1793167964984_1_sample2.jpg", added: "2026-10", date: "2026-10-28", v: "1793168575813" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "たし算・ひき算 その2", file: "tashizan_hikizan2.png", answer: "tashizan_hikizan2_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "たし算・ひき算 その3", file: "tashizan_hikizan3.png", answer: "tashizan_hikizan3_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "虫食い算 その5", file: "mushikuizan5.png", answer: "mushikuizan5_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "虫食い算 その6", file: "mushikuizan6.png", answer: "mushikuizan6_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "お買い物計算 その7", file: "okaimono_keisan7.png", answer: "okaimono_keisan7_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "お買い物計算 その8", file: "okaimono_keisan8.png", answer: "okaimono_keisan8_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "時間の計算 その2", file: "jikan_keisan2.png", answer: "jikan_keisan2_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "計算", title: "時間の計算 その3", file: "jikan_keisan3.png", answer: "jikan_keisan3_ans.png", added: "2026-10", date: "2026-10-28" },
 ];
