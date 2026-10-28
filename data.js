@@ -1033,4 +1033,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "縁側でお茶を点てる女性", diff: "中級", file: "up_1793160393152_2.png", sample: "up_1793160393152_2_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160391152" },
   { season: "通年", genre: "風景", title: "盆栽の中の山寺", diff: "上級", file: "up_1793160971327_1.png", sample: "up_1793160971327_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160971327" },
   { season: "通年", genre: "食べ物", title: "風呂敷包みとお弁当", diff: "初級", file: "up_1793161611547_1.png", sample: "up_1793161611547_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793161611547" },
+  { season: "通年", genre: "風物詩", title: "たばこ屋の店先と赤電話", diff: "上級", file: "up_1793163269933_1.png", sample: "up_1793163269933_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793163268933" },
+  { season: "通年", genre: "風物詩", title: "昭和の映画館と手描き看板", diff: "上級", file: "up_1793163270933_2.png", sample: "up_1793163270933_2_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793163268933" },
 ];
