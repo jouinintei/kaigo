@@ -8,9 +8,19 @@ const IMG_ORIGIN = "https://img.rekupuri.com/images/";
 const SAFE = /^[A-Za-z0-9_.-]{1,120}\.(png|jpe?g|webp|gif|pdf)$/i;
 const TYPES = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif", pdf: "application/pdf" };
 
+// サイト内の保存ボタンから呼ばれたときだけ通す(アドレスを直接開いた・よそのサイトから呼んだ場合は断る)
+function fromOwnSite(request, u) {
+  const site = request.headers.get("Sec-Fetch-Site");
+  if (site) return site === "same-origin";
+  const ref = request.headers.get("Referer");
+  if (!ref) return false;
+  try { return new URL(ref).host === u.host; } catch (e) { return false; }
+}
+
 export async function onRequest({ request }) {
   if (request.method !== "GET" && request.method !== "HEAD") return new Response("method not allowed", { status: 405 });
   const u = new URL(request.url);
+  if (!fromOwnSite(request, u)) return new Response("forbidden", { status: 403, headers: { "Cache-Control": "no-store" } });
   const f = u.searchParams.get("f") || "";
   if (!SAFE.test(f) || f.indexOf("..") >= 0) return new Response("bad file", { status: 400 });
 
@@ -21,7 +31,8 @@ export async function onRequest({ request }) {
   const ext = f.slice(f.lastIndexOf(".") + 1).toLowerCase();
   const h = new Headers();
   h.set("Content-Type", TYPES[ext] || "application/octet-stream");
-  h.set("Cache-Control", "public, max-age=3600");
+  h.set("Cache-Control", "private, max-age=3600");
+  h.set("Vary", "Sec-Fetch-Site, Referer");
   const n = (u.searchParams.get("n") || "").replace(/[\r\n"\\\/:*?<>|]/g, "").slice(0, 150);
   if (n) {
     const ascii = f;
