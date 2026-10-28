@@ -1054,5 +1054,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "ことばさがし のりもの", file: "kotoba_norimono.png", answer: "kotoba_norimono_ans.png", added: "2026-10", date: "2026-10-28" },
   { kind: "脳トレ", season: "冬", genre: "言葉遊び", title: "ことばさがし ふゆ", file: "kotoba_fuyu.png", answer: "kotoba_fuyu_ans.png", added: "2026-10", date: "2026-10-28" },
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "ことばさがし りょうり", file: "kotoba_ryouri.png", answer: "kotoba_ryouri_ans.png", added: "2026-10", date: "2026-10-28" },
-  { season: "通年", genre: "花", title: "観葉植物とペンダントライト", diff: "中級", file: "up_1793167964984_1.png", sample: "up_1793167964984_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793167964984" },
+  { season: "通年", genre: "花", title: "観葉植物とペンダントライト", diff: "中級", file: "up_1793167964984_1.png", sample: "up_1793167964984_1_sample2.jpg", added: "2026-10", date: "2026-10-28", v: "1793168575813" },
 ];
