@@ -213,7 +213,8 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
     return { url: cv.toDataURL("image/jpeg", 0.92), w: bmp.width, h: bmp.height };
   }
   async function printIt(file, btn, src, ctx) {
-    const n = LIST.find(x => x.file === file); if (!n || busy.has("p:" + file)) return;
+    const n = LIST.find(x => x.file === file || x.sample === file); if (!n || busy.has("p:" + file)) return;
+    const isS = file === n.sample;
     busy.add("p:" + file);
     const win = window.open("", "_blank");
     if (win) win.document.write('<p style="font:16px sans-serif;padding:24px">印刷用のPDFを作成しています…</p>');
@@ -227,7 +228,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
         busy.delete("p:" + file); return;
       }
       const JsPDF = await loadPdf();
-      const files = [n.file].concat(kindOf(n) === "脳トレ" && n.answer ? [n.answer] : []);
+      const files = isS ? [n.sample] : [n.file].concat(kindOf(n) === "脳トレ" && n.answer ? [n.answer] : []);
       let doc = null;
       for (const f of files) {
         const im = await toJpeg(await getBlob(n, f)), land = im.w > im.h, W = land ? 297 : 210, H = land ? 210 : 297;
@@ -235,14 +236,14 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
         const r = Math.min(W / im.w, H / im.h), w = im.w * r, h = im.h * r;
         doc.addImage(im.url, "JPEG", (W - w) / 2, (H - h) / 2, w, h);
       }
-      doc.setProperties({ title: n.title }); doc.autoPrint();
+      doc.setProperties({ title: n.title + (isS ? "（見本）" : "") }); doc.autoPrint();
       const url = URL.createObjectURL(doc.output("blob"));
       if (win) win.location.href = url; else window.open(url, "_blank");
-      markPrinted(n.file); logSave(n.file, src || window.RK_SRC, Object.assign({}, ctx || {}, { pr: "1" })); refreshCard(n.file);
-      document.querySelectorAll(`.md [data-print="${CSS.escape(n.file)}"]`).forEach(b => { b.classList.add("pdone"); });
-      toast(`「${n.title}」の印刷画面を開きました`, "A4サイズで印刷してください");
+      markPrinted(file); logSave(file, src || window.RK_SRC, Object.assign({}, ctx || {}, { pr: "1" })); if (!isS) refreshCard(n.file);
+      document.querySelectorAll(`.md [data-print="${CSS.escape(file)}"]`).forEach(b => { b.classList.add("pdone"); });
+      toast(`「${n.title}」${isS ? "の色見本" : ""}の印刷画面を開きました`, "A4サイズで印刷してください");
     } catch (e) { if (win) win.close(); toast("印刷用PDFを作れませんでした", "保存してから印刷してください"); }
-    if (btn && btn.textContent === "作成中…") btn.textContent = old; refreshCard(file); busy.delete("p:" + file);
+    if (btn && btn.textContent === "作成中…") btn.textContent = old; if (!isS) refreshCard(file); busy.delete("p:" + file);
   }
 
   /* ---------- modal ---------- */
@@ -275,13 +276,13 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
     const PGL = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫";
     const vf = k === "壁紙作り" && mdTab !== "s" && mdPg >= 0 && n.pages && n.pages[mdPg] ? n.pages[mdPg] : (f === n.pdf ? n.file : f);
     const wpages = k === "壁紙作り" && mdTab !== "s" && n.pages && n.pages.length ? `<div class="wpages"><h3>保存・印刷される内容<small>A4縦・全${n.pages.length}枚<br>押すと大きく表示</small></h3><div class="wpg">${n.pages.map((p, i) => `<button type="button" data-wpg="${i}" aria-pressed="${mdPg === i}"><img loading="lazy" alt="" src="${sthumb(n, p)}"><span>${i ? PGL[i - 1] : "全体図"}</span></button>`).join("")}</div></div>` : "";
-    const rel = related(n);
+    const rel = related(n), pf = mdTab === "s" ? n.sample : n.file;
     document.querySelector(".md .box").classList.toggle("wall", k === "壁紙作り");
     document.querySelector(".md .box").innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">${esc(n.title)}</h2><div class="meta">${esc(metaOf(n))}</div></div><div class="tb" role="tablist">${tabs.map(([id, t]) => `<button role="tab" aria-selected="${mdTab === id}" data-mtab="${id}">${t}</button>`).join("")}</div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
 <div class="scr">
-<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, vf)}" data-full="${full(n, vf)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)"><button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button>${wpages}</div>
+<div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, vf)}" data-full="${full(n, vf)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)">${k !== "カレンダー" ? `<button class="vstar" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}" aria-label="お気に入り">${ico("star", 24)}</button>` : ""}<button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button>${wpages}</div>
 
-${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : k === "壁紙作り" ? "壁紙作り" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" && mdTab !== "s" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : k === "壁紙作り" ? "まとめて保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(n.file) ? " pdone" : ""}" data-print="${esc(n.file)}">${ico("print", 17)}${isPrinted(n.file) ? "もう一度印刷" : k === "壁紙作り" ? "まとめて印刷" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "壁紙作り" ? "まとめて保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
+${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : k === "壁紙作り" ? "壁紙作り" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : k === "壁紙作り" ? "まとめて保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(pf) ? " pdone" : ""}" data-print="${esc(pf)}">${ico("print", 17)}${isPrinted(pf) ? "もう一度印刷" : mdTab === "s" ? "色見本を印刷" : k === "壁紙作り" ? "まとめて印刷" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "壁紙作り" ? "まとめて保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
 </div>`;
     upgradeMd();
   }
