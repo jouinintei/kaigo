@@ -1029,4 +1029,6 @@ window.NURIE_LIST = [
   { season: "夏", genre: "人物", title: "朝顔の手入れをする女性", diff: "中級", file: "up_1793160005000_5.png", sample: "up_1793160005000_5_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160000000" },
   { season: "秋", genre: "人物", title: "文机で手紙を書く女性", diff: "中級", file: "up_1793160006000_6.png", sample: "up_1793160006000_6_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160000000" },
   { season: "通年", genre: "人物", title: "花屋の店先の女性", diff: "中級", file: "up_1793159476877_1.png", sample: "up_1793159476877_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793159476877" },
+  { season: "通年", genre: "人物", title: "生け花をする女性", diff: "中級", file: "up_1793160392152_1.png", sample: "up_1793160392152_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160391152" },
+  { season: "通年", genre: "人物", title: "縁側でお茶を点てる女性", diff: "中級", file: "up_1793160393152_2.png", sample: "up_1793160393152_2_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160391152" },
 ];
