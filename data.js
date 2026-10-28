@@ -1022,4 +1022,10 @@ window.NURIE_LIST = [
   { season: "通年", genre: "食べ物", title: "天ぷら盛り合わせ", diff: "初級", file: "up_1793157556228_1.png", sample: "up_1793157556228_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793157555228" },
   { season: "通年", genre: "食べ物", title: "ちらし寿司", diff: "初級", file: "up_1793157557228_2.png", sample: "up_1793157557228_2_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793157555228" },
   { season: "通年", genre: "食べ物", title: "洋食屋のハンバーグ", diff: "初級", file: "up_1793157558228_3.png", sample: "up_1793157558228_3_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793157555228" },
+  { season: "秋", genre: "人物", title: "町の花屋の女性", diff: "中級", file: "up_1793160001000_1.png", sample: "up_1793160001000_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160000000" },
+  { season: "秋", genre: "人物", title: "縁側で刺し子をする女性", diff: "中級", file: "up_1793160002000_2.png", sample: "up_1793160002000_2_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160000000" },
+  { season: "冬", genre: "人物", title: "こたつで編み物をする女性", diff: "中級", file: "up_1793160003000_3.png", sample: "up_1793160003000_3_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160000000" },
+  { season: "春", genre: "人物", title: "呉服店で和傘を見る女性", diff: "中級", file: "up_1793160004000_4.png", sample: "up_1793160004000_4_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160000000" },
+  { season: "夏", genre: "人物", title: "朝顔の手入れをする女性", diff: "中級", file: "up_1793160005000_5.png", sample: "up_1793160005000_5_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160000000" },
+  { season: "秋", genre: "人物", title: "文机で手紙を書く女性", diff: "中級", file: "up_1793160006000_6.png", sample: "up_1793160006000_6_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793160000000" },
 ];
