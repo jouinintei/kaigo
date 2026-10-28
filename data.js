@@ -422,6 +422,7 @@ window.NURIE_LIST = [
   { season: "春", genre: "風景", title: "春の棚田", diff: "上級", file: "haru_tanada_jo.png", sample: "haru_tanada_jo_sample.jpg", added: "2026-08", v: "1792434155938" },
   { season: "春", genre: "風景", title: "春の風景", diff: "初級", file: "haru_fukei_sho.png", sample: "haru_fukei_sho_sample.jpg", added: "2026-08", v: "1792434155938" },
   { season: "春", genre: "行事", title: "春分の日", diff: "初級", file: "shunbun_no_hi_sho.png", sample: "shunbun_no_hi_sho_sample.jpg", added: "2026-08", v: "1792434155938" },
+  { season: "春", genre: "人物", title: "春の夜をずんずん歩く女性", diff: "中級", file: "up_1790000012345_1.png", sample: "up_1790000012345_1_sample.jpg", added: "2026-08", v: "1790000012345" },
   { season: "春", genre: "行事", title: "昭和の日", diff: "初級", file: "showa_no_hi_sho.png", sample: "showa_no_hi_sho_sample.jpg", added: "2026-08", v: "1792434155938" },
   { season: "夏", genre: "行事", title: "織姫と彦星", diff: "中級", file: "orihime_hikoboshi_chu.png", sample: "orihime_hikoboshi_chu_sample.jpg", added: "2026-08", v: "1792434155938" },
   { season: "夏", genre: "風物詩", title: "色んなうちわ", diff: "初級", file: "ironna_uchiwa_sho.png", sample: "ironna_uchiwa_sho_sample.jpg", added: "2026-08", v: "1792434155938" },
