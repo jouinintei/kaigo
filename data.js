@@ -1037,4 +1037,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風物詩", title: "たばこ屋の店先と赤電話", diff: "上級", file: "up_1793163269933_1.png", sample: "up_1793163269933_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793163268933" },
   { season: "通年", genre: "風物詩", title: "昭和の映画館と手描き看板", diff: "上級", file: "up_1793163270933_2.png", sample: "up_1793163270933_2_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793163268933" },
   { season: "通年", genre: "風物詩", title: "阪急電車", diff: "上級", file: "up_1793164020240_1.png", sample: "up_1793164020240_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793164020240" },
+  { season: "通年", genre: "その他", title: "がまぐち財布", diff: "初級", file: "up_1793165067999_1.png", sample: "up_1793165067999_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793165067999" },
 ];
