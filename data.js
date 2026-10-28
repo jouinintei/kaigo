@@ -1038,4 +1038,10 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風物詩", title: "昭和の映画館と手描き看板", diff: "上級", file: "up_1793163270933_2.png", sample: "up_1793163270933_2_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793163268933" },
   { season: "通年", genre: "風物詩", title: "阪急電車", diff: "上級", file: "up_1793164020240_1.png", sample: "up_1793164020240_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793164020240" },
   { season: "通年", genre: "その他", title: "がまぐち財布", diff: "初級", file: "up_1793165067999_1.png", sample: "up_1793165067999_1_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793165067999" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "童謡・唱歌 歌詞穴埋め その1", file: "kashi_anaume1.png", answer: "kashi_anaume1_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "童謡・唱歌 歌詞穴埋め その2", file: "kashi_anaume2.png", answer: "kashi_anaume2_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "童謡・唱歌 歌詞穴埋め その3", file: "kashi_anaume3.png", answer: "kashi_anaume3_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県 かたち当て その1", file: "ken_katachi1.png", answer: "ken_katachi1_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県 かたち当て その2", file: "ken_katachi2.png", answer: "ken_katachi2_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県 かたち当て その3", file: "ken_katachi3.png", answer: "ken_katachi3_ans.png", added: "2026-10", date: "2026-10-28" },
 ];
