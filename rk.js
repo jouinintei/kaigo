@@ -321,8 +321,9 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     if (t.dataset.mtab) { mdTab = t.dataset.mtab; mdPg = -1; renderMd(); if (mdTab === "s") logOpen(mdN.sample, "smp", mdSrc); return; }
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeMd(); });
-  document.addEventListener("contextmenu", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
-  document.addEventListener("dragstart", e => { if (e.target && e.target.tagName === "IMG") e.preventDefault(); });
+  const inZoom = t => t && t.tagName === "IMG" && !!t.closest(".md .view, .fsv");
+  document.addEventListener("contextmenu", e => { if (inZoom(e.target)) e.preventDefault(); });
+  document.addEventListener("dragstart", e => { if (inZoom(e.target)) e.preventDefault(); });
 
   window.RK = { PT, resetHist, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
 })();
