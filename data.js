@@ -1017,7 +1017,6 @@ window.NURIE_LIST = [
   { season: "冬", genre: "その他", title: "毛糸で編まれた冬の家", diff: "初級", file: "up_1793154449567_31.png", sample: "up_1793154449567_31_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
   { season: "冬", genre: "動物", title: "編み物をするしろくま", diff: "初級", file: "up_1793154450567_32.png", sample: "up_1793154450567_32_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
   { season: "冬", genre: "風景", title: "空飛ぶ郵便そり", diff: "中級", file: "up_1793154451567_33.png", sample: "up_1793154451567_33_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
-  { season: "冬", genre: "風物詩", title: "暖炉の上の小さな雪の町", diff: "中級", file: "up_1793154452567_34.png", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
   { season: "冬", genre: "風景", title: "雪の夜に灯る空のランタン", diff: "上級", file: "up_1793154453567_35.png", sample: "up_1793154453567_35_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
   { season: "通年", genre: "食べ物", title: "天ぷら盛り合わせ", diff: "初級", file: "up_1793154454567_36.png", sample: "up_1793154454567_36_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
   { season: "通年", genre: "食べ物", title: "ちらし寿司", diff: "初級", file: "up_1793154455567_37.png", sample: "up_1793154455567_37_sample.jpg", added: "2026-10", date: "2026-10-28", v: "1793154418567" },
