@@ -23,6 +23,20 @@ function ghHeaders(env) {
   };
 }
 
+// 文字列⇔base64 の変換(以前の escape/encodeURIComponent 方式より軽い)
+function b64ToText(b64) {
+  const bin = atob(String(b64).replace(/\s/g, ""));
+  const u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(u8);
+}
+function textToB64(str) {
+  const u8 = new TextEncoder().encode(str);
+  let bin = "";
+  for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
 function blankFav() {
   return { days: {}, tot: {}, ev: [] };
 }
@@ -39,7 +53,7 @@ async function ghRead(env) {
   const j = await r.json();
   let data = null;
   try {
-    if (j.content) data = JSON.parse(decodeURIComponent(escape(atob(String(j.content).replace(/\n/g, "")))));
+    if (j.content) data = JSON.parse(b64ToText(j.content));
   } catch (e) {}
   // 1MBを超えるとcontentが空で返ってくるので、そのときは中身だけを取り直す
   if (!data && j.size > 0) {
@@ -78,7 +92,7 @@ async function ghWrite(env, sha, data) {
   const repo = cleanRepo(env.MEMBER_REPO);
   const body = {
     message: "save-log update",
-    content: btoa(unescape(encodeURIComponent(JSON.stringify(data))))
+    content: textToB64(JSON.stringify(data))
   };
   if (sha) body.sha = sha;
   const r = await fetch("https://api.github.com/repos/" + repo + "/contents/" + FILE_PATH, {

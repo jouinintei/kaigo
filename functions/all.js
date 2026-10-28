@@ -1,4 +1,4 @@
-export async function onRequest(context) {
+async function render(context) {
   {
     const _u = new URL(context.request.url);
     if (_u.hostname === "kaigo-no-rekupuri.edgeone.dev") {
@@ -169,4 +169,23 @@ export async function onRequest(context) {
       "cache-control": "public, max-age=600"
     }
   });
+}
+
+
+// 作られたページをCloudflareのキャッシュに置き、同じURLへの次のアクセスは組み立てずに返す
+// (data.js を毎回読み込んで解析するとCPU制限(無料枠10ms)を超えるため)
+export async function onRequest(context) {
+  const req = context.request;
+  if (req.method !== "GET") return render(context);
+  const cache = (typeof caches !== "undefined") ? caches.default : null;
+  const u = new URL(req.url);
+  const ck = new Request(u.origin + u.pathname + "?__v=1");
+  if (cache) { try { const hit = await cache.match(ck); if (hit) return hit; } catch (e) {} }
+  const res = await render(context);
+  if (cache && (res.status === 200 || res.status === 404)) {
+    const c = new Response(res.clone().body, res);
+    c.headers.set("Cache-Control", "public, max-age=" + (res.status === 200 ? 1800 : 300));
+    try { context.waitUntil(cache.put(ck, c)); } catch (e) {}
+  }
+  return res;
 }

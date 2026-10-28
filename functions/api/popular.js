@@ -3,8 +3,22 @@
 // 非公開リポジトリ data/save-log.json の fd(日ごとの保存端末)と days(日ごとの枚数)を集計する
 // 環境変数: GITHUB_TOKEN, MEMBER_REPO(log-save.js と同じもの)
 
-export async function onRequest({ request, env }) {
+// 大きな save-log.json を毎回読むとCPU制限(無料枠10ms)を超えるので、
+// 結果をCloudflareのキャッシュに10分置いて、その間はキャッシュから返す
+export async function onRequest(ctx) {
+  const { request } = ctx;
   if (request.method !== "GET") return new Response("method not allowed", { status: 405 });
+  const cache = (typeof caches !== "undefined") ? caches.default : null;
+  const ck = new Request("https://rekupuri.com/__cache/popular-v1");
+  if (cache) { try { const hit = await cache.match(ck); if (hit) return hit; } catch (e) {} }
+  const res = await build(ctx);
+  if (cache && res.status === 200) {
+    try { ctx.waitUntil(cache.put(ck, res.clone())); } catch (e) {}
+  }
+  return res;
+}
+
+async function build({ request, env }) {
 
   const headers = {
     "Content-Type": "application/json; charset=utf-8",
@@ -55,6 +69,7 @@ export async function onRequest({ request, env }) {
 
     // 順位だけ返す(数字は公開しない)
     return new Response(JSON.stringify({ files }), { headers });
+
   } catch (e) {
     return new Response(JSON.stringify({ files: [] }), { headers });
   }
