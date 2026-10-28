@@ -1049,4 +1049,9 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "童謡・唱歌 歌詞穴埋め その6", file: "kashi_anaume6.png", answer: "kashi_anaume6_ans.png", added: "2026-10", date: "2026-10-28" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "童謡・唱歌 歌詞穴埋め その7", file: "kashi_anaume7.png", answer: "kashi_anaume7_ans.png", added: "2026-10", date: "2026-10-28" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "童謡・唱歌 歌詞穴埋め その8", file: "kashi_anaume8.png", answer: "kashi_anaume8_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "ことばさがし はな", file: "kotoba_hana.png", answer: "kotoba_hana_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "ことばさがし さかな", file: "kotoba_sakana.png", answer: "kotoba_sakana_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "ことばさがし のりもの", file: "kotoba_norimono.png", answer: "kotoba_norimono_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "冬", genre: "言葉遊び", title: "ことばさがし ふゆ", file: "kotoba_fuyu.png", answer: "kotoba_fuyu_ans.png", added: "2026-10", date: "2026-10-28" },
+  { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "ことばさがし りょうり", file: "kotoba_ryouri.png", answer: "kotoba_ryouri_ans.png", added: "2026-10", date: "2026-10-28" },
 ];
