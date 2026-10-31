@@ -1202,4 +1202,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "四字熟語 穴埋め その8", file: "yojijukugo8.png", answer: "yojijukugo8_ans.png", added: "2026-10", date: "2026-10-31" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "四字熟語 穴埋め その9", file: "yojijukugo9.png", answer: "yojijukugo9_ans.png", added: "2026-10", date: "2026-10-31" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "四字熟語 穴埋め その10", file: "yojijukugo10.png", answer: "yojijukugo10_ans.png", added: "2026-10", date: "2026-10-31" },
+  { season: "冬", genre: "風景", title: "こたつのある冬の茶の間", diff: "上級", file: "kotatsu_chanoma_jo.png", sample: "kotatsu_chanoma_jo_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793455806336" },
 ];
