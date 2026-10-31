@@ -1062,7 +1062,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風景", title: "漁港と漁船", diff: "上級", file: "gyoko_jo.png", sample: "gyoko_jo_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "通年", genre: "人物", title: "渓流釣り", diff: "中級", file: "keiryu_zuri_chu.png", sample: "keiryu_zuri_chu_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "通年", genre: "その他", title: "大工道具", diff: "初級", file: "daiku_dougu_sho.png", sample: "daiku_dougu_sho_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793451637883" },
-  { season: "通年", genre: "人物", title: "草野球", diff: "中級", file: "kusayakyu_chu.png", sample: "kusayakyu_chu_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793451352088" },
+  { season: "通年", genre: "人物", title: "草野球", diff: "中級", file: "kusayakyu_chu.png", sample: "kusayakyu_chu_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793452172795" },
   { season: "通年", genre: "風景", title: "灯台と海", diff: "中級", file: "toudai_chu.png", sample: "toudai_chu_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "通年", genre: "乗り物", title: "帆船", diff: "上級", file: "hansen_jo.png", sample: "hansen_jo_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "通年", genre: "乗り物", title: "熱気球", diff: "初級", file: "kikyu_sho.png", sample: "kikyu_sho_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
