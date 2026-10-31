@@ -1249,4 +1249,9 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし その8", file: "kigo_sagashi8.png", answer: "kigo_sagashi8_ans.png", added: "2026-11", date: "2026-11-01" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし その9", file: "kigo_sagashi9.png", answer: "kigo_sagashi9_ans.png", added: "2026-11", date: "2026-11-01" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし その10", file: "kigo_sagashi10.png", answer: "kigo_sagashi10_ans.png", added: "2026-11", date: "2026-11-01" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級", file: "kigo_jokyu.png", answer: "kigo_jokyu_ans.png", added: "2026-11", date: "2026-11-01" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その2", file: "kigo_jokyu2.png", answer: "kigo_jokyu2_ans.png", added: "2026-11", date: "2026-11-01" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その3", file: "kigo_jokyu3.png", answer: "kigo_jokyu3_ans.png", added: "2026-11", date: "2026-11-01" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その4", file: "kigo_jokyu4.png", answer: "kigo_jokyu4_ans.png", added: "2026-11", date: "2026-11-01" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その5", file: "kigo_jokyu5.png", answer: "kigo_jokyu5_ans.png", added: "2026-11", date: "2026-11-01" },
 ];
