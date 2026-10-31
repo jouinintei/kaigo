@@ -1211,4 +1211,5 @@ window.NURIE_LIST = [
   { season: "冬", genre: "動物", title: "くまの冬ごもり支度", diff: "中級", file: "up_1793456809363_6.png", sample: "up_1793456809363_6_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
   { season: "秋", genre: "動物", title: "ハリネズミの落ち葉布団", diff: "初級", file: "up_1793456809363_7.png", sample: "up_1793456809363_7_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
   { season: "秋", genre: "風景", title: "紅葉の渓谷と吊り橋", diff: "上級", file: "up_1793456809363_8.png", sample: "up_1793456809363_8_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
+  { season: "秋", genre: "動物", title: "動物たちの焼き芋会", diff: "中級", file: "up_1793456845081_1.png", sample: "up_1793456845081_1_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456845081" },
 ];
