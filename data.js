@@ -1061,7 +1061,6 @@ window.NURIE_LIST = [
   { season: "秋", genre: "動物", title: "湯呑みの中の露天風呂", diff: "中級", file: "up_1793449171714_4.png", sample: "up_1793449171714_4_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449171714" },
   { season: "通年", genre: "風景", title: "急須から流れる川と村", diff: "上級", file: "up_1793449171714_5.png", sample: "up_1793449171714_5_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449171714" },
   { season: "通年", genre: "その他", title: "扇子の中の四季", diff: "中級", file: "up_1793449171714_6.png", sample: "up_1793449171714_6_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449171714" },
-  { season: "通年", genre: "風景", title: "重箱の中の町", diff: "上級", file: "up_1793449171714_7.png", sample: "up_1793449171714_7_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449171714" },
   { season: "通年", genre: "動物", title: "招き猫の商店街", diff: "中級", file: "up_1793449171714_8.png", sample: "up_1793449171714_8_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449171714" },
   { season: "通年", genre: "その他", title: "信楽焼たぬきの行列", diff: "初級", file: "up_1793449171714_9.png", sample: "up_1793449171714_9_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449171714" },
   { season: "通年", genre: "その他", title: "だるまの家族写真", diff: "初級", file: "up_1793449171714_10.png", sample: "up_1793449171714_10_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449171714" },
