@@ -1075,7 +1075,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "ラジオとレコード", diff: "初級", file: "radio_record_sho.png", sample: "radio_record_sho_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "通年", genre: "その他", title: "柱時計", diff: "初級", file: "hashiradokei_sho.png", sample: "hashiradokei_sho_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "春", genre: "風景", title: "風車とチューリップ", diff: "中級", file: "fusha_chu.png", sample: "fusha_chu_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
-  { season: "通年", genre: "その他", title: "丸型ポスト", diff: "初級", file: "posuto_sho.png", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
+  { season: "通年", genre: "その他", title: "丸型ポスト", diff: "初級", file: "posuto_sho.png", sample: "posuto_sho_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "通年", genre: "風景", title: "田舎の駅", diff: "上級", file: "eki_jo.png", sample: "eki_jo_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "通年", genre: "人物", title: "相撲の土俵", diff: "中級", file: "sumo_chu.png", sample: "sumo_chu_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
   { season: "通年", genre: "風景", title: "かまどのある台所", diff: "上級", file: "kamado_daidokoro_jo.png", sample: "kamado_daidokoro_jo_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793449639821" },
