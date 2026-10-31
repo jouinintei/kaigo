@@ -1203,4 +1203,12 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "四字熟語 穴埋め その9", file: "yojijukugo9.png", answer: "yojijukugo9_ans.png", added: "2026-10", date: "2026-10-31" },
   { kind: "脳トレ", season: "通年", genre: "漢字", title: "四字熟語 穴埋め その10", file: "yojijukugo10.png", answer: "yojijukugo10_ans.png", added: "2026-10", date: "2026-10-31" },
   { season: "冬", genre: "風景", title: "こたつのある冬の茶の間", diff: "上級", file: "kotatsu_chanoma_jo.png", sample: "kotatsu_chanoma_jo_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793455806336" },
+  { season: "秋", genre: "ステンドグラス", title: "柿のステンドグラス", diff: "初級", file: "up_1793456809363_1.png", sample: "up_1793456809363_1_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
+  { season: "冬", genre: "ステンドグラス", title: "椿と雪のステンドグラス", diff: "中級", file: "up_1793456809363_2.png", sample: "up_1793456809363_2_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
+  { season: "冬", genre: "動物", title: "毛糸玉で遊ぶ子猫", diff: "初級", file: "up_1793456809363_3.png", sample: "up_1793456809363_3_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
+  { season: "秋", genre: "風景", title: "紅葉の山のロープウェイ", diff: "中級", file: "up_1793456809363_4.png", sample: "up_1793456809363_4_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
+  { season: "秋", genre: "人物", title: "干し柿を吊るす女性", diff: "中級", file: "up_1793456809363_5.png", sample: "up_1793456809363_5_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
+  { season: "冬", genre: "動物", title: "くまの冬ごもり支度", diff: "中級", file: "up_1793456809363_6.png", sample: "up_1793456809363_6_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
+  { season: "秋", genre: "動物", title: "ハリネズミの落ち葉布団", diff: "初級", file: "up_1793456809363_7.png", sample: "up_1793456809363_7_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
+  { season: "秋", genre: "風景", title: "紅葉の渓谷と吊り橋", diff: "上級", file: "up_1793456809363_8.png", sample: "up_1793456809363_8_sample.jpg", added: "2026-11", date: "2026-11-01", v: "1793456809363" },
 ];
