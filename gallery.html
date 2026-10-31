@@ -85,7 +85,7 @@
   document.getElementById("ft").innerHTML=RK.footer(K);
   RK.updFavCount();
   const main=document.getElementById("main");
-  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
+  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false,ser:qs.get("ser")||""};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
   let pop=[],seed=Math.random()*1e9|0;
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
@@ -94,6 +94,21 @@
   const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],wall:["壁紙作り","みんなで塗って、つなげると壁一面の作品になる大きな塗り絵です。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
   const items=()=>LIST.filter(n=>kindOf(n)===KIND);
   const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
+  const SER_RE=[[/^難読漢字/,"難読漢字"],[/^ことばさがし/,"ことばさがし"],[/^数字探し/,"数字探し"],[/^穴あき言葉/,"穴あき言葉"],[/^昭和の大スター穴埋め/,"昭和の大スター穴埋め"],[/^ことわざ穴埋め/,"ことわざ穴埋め"],[/^慣用句/,"慣用句"],[/^数の並び 次は何/,"数の並び 次は何?"]];
+  const serKey=n=>{const t=String(n.title).replace(/\s*その\s*\d+\s*$/,"").trim();for(const [re,k] of SER_RE)if(re.test(t))return k;return t;};
+  const serNo=n=>{const m=String(n.title).match(/その\s*(\d+)\s*$/);return m?+m[1]:(/上級$/.test(n.title)?99:1);};
+  const serSort=g=>g.slice().sort((a,b)=>serNo(a)-serNo(b)||String(a.title).localeCompare(String(b.title),"ja"));
+  function groupSeries(a){const m=new Map();a.forEach(n=>{const k=serKey(n);if(!m.has(k))m.set(k,[]);m.get(k).push(n);});return [...m.entries()];}
+  function serCard(k,g){const s=serSort(g),c=s[0],fresh=g.some(n=>RK.isNew&&RK.isNew(n));
+    return `<article class="card wk v ser"><div style="position:relative"><button class="ph" data-ser="${esc(k)}" aria-label="${esc(k)}のシリーズを開く"><img class="sk" loading="lazy" decoding="async" alt="" src="${RK.sthumb(c)}" onload="this.classList.remove('sk')"></button><span class="sercnt">全${g.length}枚</span>${fresh?'<span class="new">NEW</span>':""}</div>
+<div class="tt"><b>${esc(k)}</b><span>${esc([c.genre,"シリーズ・全"+g.length+"枚"].filter(Boolean).join(" ・ "))}</span></div><div class="acts one"><button class="btn p" data-ser="${esc(k)}">${g.length}枚を見る →</button></div></article>`;}
+  function renderSer(){
+    const g=serSort(filtered().filter(n=>serKey(n)===st.ser));
+    if(!g.length){st.ser="";return render0();}
+    main.innerHTML=head()+`<div class="serhd"><button class="btn g" data-serback>← 脳トレ一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div><div class="grid">${g.map(n=>card(n)).join("")}</div>`;
+  }
+  function openSer(k,push){st.ser=k;if(push){try{const u=new URL(location.href);if(k)u.searchParams.set("ser",k);else u.searchParams.delete("ser");history.pushState({ser:k},"",u);}catch(e){}}render();scrollTo({top:0});}
+  window.addEventListener("popstate",e=>{if(K!=="noutore")return;st.ser=(e.state&&e.state.ser)||new URL(location.href).searchParams.get("ser")||"";render();});
   let YOMI={},YK=[],AUTO_T={};
   fetch("https://img.rekupuri.com/search/yomi.json",{mode:"cors"}).then(r=>r.ok?r.json():null).then(j=>{if(!j)return;AUTO_T=j.t||{};YOMI=j.w||{};YK=Object.keys(YOMI).sort((a,b)=>b.length-a.length);if(st.q)render();}).catch(()=>{});
   const withYomi=t=>{let a="";YK.forEach(k=>{if(t.indexOf(k)>=0)a+=YOMI[k];});return t+a;};
@@ -115,10 +130,10 @@
     else if(st.sort==="rand"){a=a.map(n=>[rk(n.file),n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
     return a;
   }
-  function pager(total){
+  function pager(total,unit="枚"){
     const pages=Math.ceil(total/PER);if(pages<=1)return"";
     const p=st.page,nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-p)<=1)nums.push(i);else if(nums[nums.length-1]!=="…")nums.push("…");}
-    return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav><p class="pginfo">${total}枚中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}枚目</p>`;
+    return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav><p class="pginfo">${total}${unit}中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}${unit}目</p>`;
   }
   const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K==="nurie"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
   function filters(){
@@ -156,10 +171,13 @@
   function render0(){
     if(K==="fav")return renderFav();
     if(K==="cal")return renderCal();
-    const a=filtered(),tot=a.length,pages=Math.max(1,Math.ceil(tot/PER));if(st.page>pages)st.page=pages;
-    const pageItems=a.slice((st.page-1)*PER,st.page*PER);
+    if(K==="noutore"&&st.ser)return renderSer();
+    const a=filtered(),tot=a.length;
+    const units=K==="noutore"?groupSeries(a):a.map(n=>[null,[n]]);
+    const pages=Math.max(1,Math.ceil(units.length/PER));if(st.page>pages)st.page=pages;
+    const pageItems=units.slice((st.page-1)*PER,st.page*PER);
     main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、何枚かのA4用紙に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面の大きな作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>分けた塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p><p><b>推奨人数</b>は、分けた紙の枚数と同じです（一人1枚）。</p><p>印刷すると紙のまわりに白いふちが出ます。<b>白いふちは、のりしろに使うか、切り取るかして</b>貼り合わせてください。</p><p class="wtry">壁紙作りはお試し中のコーナーです。使ってみた感想を、ぜひ<a href="/contact.html?type=壁紙作りの感想">お聞かせください</a>。仕上がった作品の写真も大歓迎です。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
-      (tot?`<div class="grid">${pageItems.map(n=>card(n)).join("")}</div>${pager(tot)}`:
+      (tot?`<div class="grid">${pageItems.map(([k,g])=>g.length>1?serCard(k,g):card(g[0])).join("")}</div>${pager(units.length,K==="noutore"?"件":"枚")}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><button class="btn p" data-reset>条件をリセット</button></div>`);
   }
   function renderCal(){
@@ -179,9 +197,11 @@
   }
   main.addEventListener("click",async e=>{
     const t=e.target.closest("button,[data-chk]");if(!t)return;
-    if(t.dataset.ftg!==undefined){fopen=!fopen;render();}
+    if(t.dataset.ser!==undefined){openSer(t.dataset.ser,true);}
+    else if(t.dataset.serback!==undefined){if(history.state&&history.state.ser)history.back();else openSer("",true);}
+    else if(t.dataset.ftg!==undefined){fopen=!fopen;render();}
     else if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
-    else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;render();}
+    else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;st.ser="";render();}
     else if(t.dataset.pg){st.page=+t.dataset.pg;render();const el=main.querySelector(".bar")||main.querySelector(".fl")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
     else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1,unused:false});try{localStorage.setItem("rk_unused","0");}catch(e){}render();}
     else if(t.dataset.sort){if(t.dataset.sort==="rand"&&st.sort==="rand")seed=Math.random()*1e9|0;st.sort=t.dataset.sort;st.page=1;render();}

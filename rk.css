@@ -293,3 +293,10 @@ html{font-synthesis-weight:none}
 .md .vstar{position:absolute;right:16px;top:16px;z-index:3;width:48px;height:48px;border-radius:999px;background:rgba(255,255,255,.95);border:1px solid var(--line);box-shadow:0 1px 4px rgba(50,40,30,.15);display:flex;align-items:center;justify-content:center;color:#7A6F64;cursor:pointer}
 .md .vstar[aria-pressed=true]{color:var(--btn);border-color:#E3C9B6}
 .md .vstar[aria-pressed=true] svg{fill:var(--acc);stroke:var(--btn)}
+/* 脳トレのシリーズまとめ */
+.card.ser .ph{box-shadow:6px 6px 0 -1px var(--card),6px 6px 0 0 var(--line),12px 12px 0 -1px var(--card),12px 12px 0 0 var(--line)}
+.card.ser{padding-bottom:16px}
+.sercnt{position:absolute;right:16px;bottom:12px;z-index:3;background:#C8612A;color:#fff;font-weight:700;font-size:14px;padding:3px 10px;border-radius:999px}
+.serhd{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin:20px 0 24px}
+.serhd h2{margin:0;font-size:24px}
+.serhd h2 small{font-size:15px;color:var(--sub);font-weight:400;margin-left:6px}
