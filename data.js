@@ -1053,6 +1053,8 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "冬", genre: "言葉遊び", title: "ことばさがし ふゆ", file: "kotoba_fuyu.png", answer: "kotoba_fuyu_ans.png", added: "2026-10", date: "2026-10-28" },
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "ことばさがし りょうり", file: "kotoba_ryouri.png", answer: "kotoba_ryouri_ans.png", added: "2026-10", date: "2026-10-28" },
   { season: "通年", genre: "花", title: "観葉植物とペンダントライト", diff: "中級", file: "up_1793167964984_1.png", sample: "up_1793167964984_1_sample2.jpg", added: "2026-10", date: "2026-10-28", v: "1793168575813" },
+  { season: "春", genre: "人物", title: "花咲く庭の少女", diff: "中級", file: "up_1793428359537_1.png", sample: "up_1793428359537_1_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793428359537" },
+  { season: "通年", genre: "曼荼羅", title: "薔薇と牡丹の曼荼羅", diff: "上級", file: "up_1793428359537_2.png", sample: "up_1793428359537_2_sample.jpg", added: "2026-10", date: "2026-10-31", v: "1793428359537" },
   { kind: "脳トレ", season: "通年", genre: "計算", title: "たし算・ひき算 その2", file: "tashizan_hikizan2.png", answer: "tashizan_hikizan2_ans.png", added: "2026-10", date: "2026-10-28" },
   { kind: "脳トレ", season: "通年", genre: "計算", title: "たし算・ひき算 その3", file: "tashizan_hikizan3.png", answer: "tashizan_hikizan3_ans.png", added: "2026-10", date: "2026-10-28" },
   { kind: "脳トレ", season: "通年", genre: "計算", title: "虫食い算 その5", file: "mushikuizan5.png", answer: "mushikuizan5_ans.png", added: "2026-10", date: "2026-10-28" },
