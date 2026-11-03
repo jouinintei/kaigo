@@ -82,17 +82,22 @@
 
 ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a>`}</div></header>`;
   }
+  function calNew() {
+    const c = LIST.filter(n => kindOf(n) === "カレンダー" && n.year && n.month); if (!c.length) return 0;
+    const top = c.reduce((m, n) => Math.max(m, n.year * 100 + n.month), 0), d = new Date(), now = d.getFullYear() * 100 + d.getMonth() + 1;
+    return top >= now && c.some(n => n.year * 100 + n.month === top && n.added) ? top % 100 : 0;
+  }
   function tabs(cur) {
     const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["壁紙作り", "wall", "wall", "WALL"]];
     const cnt = k => k === "fav" ? favs().length : LIST.filter(n => kindOf(n) === { nurie: "塗り絵", noutore: "脳トレ", cal: "カレンダー", wall: "壁紙作り" }[k]).length;
     const v = new URLSearchParams(location.search).get("tab") || "bc";
-    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc"${k === "fav" ? " data-favtab" : ""}>${cnt(k)}</span>${k === "wall" ? '<span class="tnew">NEW</span>' : ""}</a>`).join("")}</div></nav>`;
+    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc"${k === "fav" ? " data-favtab" : ""}>${cnt(k)}</span>${k === "wall" ? '<span class="tnew">NEW</span>' : ""}${k === "cal" && calNew() ? `<span class="tbub">${calNew()}月追加</span>` : ""}</a>`).join("")}</div></nav>`;
   }
   function footer(cur) {
     const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["壁紙作り", "wall", "wall"], ["お気に入り", "fav", "star"]];
     return `<section class="req"><div class="wrap"><div><h3>「こんな${cur === "noutore" ? "脳トレ" : cur === "cal" ? "カレンダー" : cur === "wall" ? "壁紙作り" : cur === "fav" || cur === "" ? "素材" : "塗り絵"}がほしい」をお聞かせください</h3><p>ご要望・不具合のご連絡はこちらから。いただいた声をもとに素材を増やしています。</p></div><a class="btn p" href="${ROOT}contact.html" style="height:52px">ご要望を送る</a></div></section>
 <footer class="ft"><div class="wrap"><span>© 介護のレクプリ</span><nav aria-label="サイトについて"><a href="${ROOT}terms.html">素材のご利用について</a><a href="${ROOT}privacy.html">プライバシーポリシー</a><a href="${ROOT}contact.html">お問い合わせ</a></nav></div></footer>
-<nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="${L(k)}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}${k === "wall" ? '<span class="bnew">NEW</span>' : ""}</a>`).join("")}</nav>
+<nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="${L(k)}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}${k === "wall" ? '<span class="bnew">NEW</span>' : ""}${k === "cal" && calNew() ? `<span class="bnew bcal">${calNew()}月</span>` : ""}</a>`).join("")}</nav>
 <div class="toast" role="status" aria-live="polite"><span class="ok">${ico("check", 18)}</span><span class="tx"></span></div>
 <div class="md" role="dialog" aria-modal="true" aria-labelledby="mdT"><div class="box"></div></div>`;
   }

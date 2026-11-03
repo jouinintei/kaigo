@@ -300,3 +300,8 @@ html{font-synthesis-weight:none}
 .serhd{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin:20px 0 24px}
 .serhd h2{margin:0;font-size:24px}
 .serhd h2 small{font-size:15px;color:var(--sub);font-weight:400;margin-left:6px}
+
+.tabs a{position:relative}
+.tabs .tbub{position:absolute;top:-6px;right:6px;z-index:2;padding:0 8px;border-radius:8px;background:#fff;border:1.5px solid var(--acc);color:var(--btn);font-family:var(--body);font-size:11.5px;font-weight:700;line-height:19px;white-space:nowrap;pointer-events:none}
+.tabs .tbub::after{content:"";position:absolute;left:12px;bottom:-5px;width:7px;height:7px;background:#fff;border-right:1.5px solid var(--acc);border-bottom:1.5px solid var(--acc);transform:rotate(45deg)}
+.bnav .bnew.bcal{white-space:nowrap;background:#fff;color:var(--btn);border:1px solid var(--acc);line-height:13px}
