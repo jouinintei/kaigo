@@ -71,7 +71,7 @@
     const [cb, nb] = await Promise.all([blobOf(cal.file, cal.v), blobOf(nu.file, nu.v)]);
     if (nb.height >= nb.width) { TATE.add(nu.file); throw new Error("tate"); }
     const A = blankArea(cb), T = trim(nb), W = cb.width, H = cb.height;
-    const px = W * .018, ptop = Math.min(W * .018, A.h * .03), pbot = Math.min(W * .014, A.h * .025);
+    const eg = W * .012 + W * .0018, px = eg, ptop = Math.max(0, eg - A.y) || Math.min(W * .012, A.h * .03), pbot = Math.min(W * .014, A.h * .025);
     const bw = A.w - px * 2, bh = A.h - ptop - pbot;
     let sc = Math.min(bw / T.w, bh / T.h), cut = T.own ? 1 : 1.06;
     sc = Math.min(sc * cut, Math.max(bw / T.w, bh / T.h));
