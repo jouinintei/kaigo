@@ -919,6 +919,7 @@
     if (s === "osusume") return "おすすめ塗り絵から開いて保存";
     if (s === "nita") return "似た塗り絵から開いて保存";
     if (s === "rank") return "今週の人気塗り絵から開いて保存";
+    if (s === "hame") return "貼り付け用カレンダーにはめ込んで保存";
     if (s === "fav") return "お気に入りから保存";
     if (s === "bulk") return "お気に入りの「まとめて保存」で保存";
     if (s === "sample") return "色見本を開いて保存";
@@ -980,7 +981,7 @@
   function srcLabel(s, o){ var b = SRC_SHORT[s] || s; return (o && SORT_JA[o]) ? b + "（" + SORT_JA[o] + "）" : b; }
   var SRC_SHORT = {
     top: "トップから", lp: "特集ページから", list: "一覧から", osusume: "おすすめから", nita: "似た塗り絵から", rank: "ランキングから",
-    fav: "お気に入りから", bulk: "まとめて保存", noutore: "脳トレ一覧から", calendar: "カレンダーから", wall: "壁紙作りから"
+    fav: "お気に入りから", bulk: "まとめて保存", noutore: "脳トレ一覧から", calendar: "カレンダーから", wall: "壁紙作りから", hame: "カレンダーにはめ込み"
   };
   document.getElementById("rankSeg").addEventListener("click", function(e){
     var b = e.target.closest("button");
