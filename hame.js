@@ -68,8 +68,13 @@
     const [cb, nb] = await Promise.all([blobOf(cal.file, cal.v), blobOf(nu.file, nu.v)]);
     if (nb.height >= nb.width) { TATE.add(nu.file); throw new Error("tate"); }
     const A = blankArea(cb), T = trim(nb), W = cb.width, H = cb.height;
-    const px = W * .045, ptop = Math.min(W * .045, A.h * .06), pbot = Math.min(W * .03, A.h * .05);
-    const bw = A.w - px * 2, bh = A.h - ptop - pbot, sc = Math.min(bw / T.w, bh / T.h), dw = T.w * sc, dh = T.h * sc;
+    const px = W * .018, ptop = Math.min(W * .018, A.h * .03), pbot = Math.min(W * .014, A.h * .025);
+    const bw = A.w - px * 2, bh = A.h - ptop - pbot;
+    let sc = Math.min(bw / T.w, bh / T.h), cut = 1.06;
+    sc = Math.min(sc * cut, Math.max(bw / T.w, bh / T.h));
+    const vw = Math.min(T.w, bw / sc), vh = Math.min(T.h, bh / sc);
+    T.x += (T.w - vw) / 2; T.y += (T.h - vh) / 2; T.w = vw; T.h = vh;
+    const dw = T.w * sc, dh = T.h * sc;
     const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
     x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); x.drawImage(cb, 0, 0);
     x.imageSmoothingQuality = "high";
