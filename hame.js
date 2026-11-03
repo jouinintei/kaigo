@@ -152,7 +152,7 @@
   function hsave() {
     const c = comp[cur.file]; if (!c) return;
     const a = document.createElement("a"); a.href = c.url; a.download = cur.title.replace(/[（(]貼り付け用[)）]/, "") + "（" + c.nu.title + "）.png"; document.body.appendChild(a); a.click(); a.remove();
-    R.markUsed(cur.file); R.logSave(cur.file, "hame", null); R.logSave(c.nu.file, "hame", null); R.refreshCard(cur.file);
+    R.markUsed(cur.file); R.logSave(cur.file, "hame", { hm: c.nu.file }); R.refreshCard(cur.file);
     R.toast(`「${c.nu.title}」入りのカレンダーを保存しました`, "A4サイズで印刷してお使いください");
   }
   async function hprint() {
@@ -162,7 +162,7 @@
       const JsPDF = await R.loadPdf(), doc = new JsPDF({ orientation: "p", unit: "mm", format: "a4" });
       doc.addImage(c.jpg, "JPEG", 0, 0, 210, 297); doc.setProperties({ title: cur.title + "（" + c.nu.title + "）" }); doc.autoPrint();
       const url = URL.createObjectURL(doc.output("blob")); if (win) win.location.href = url; else window.open(url, "_blank");
-      R.markPrinted(cur.file); R.logSave(cur.file, "hame", { pr: "1" }); R.logSave(c.nu.file, "hame", { pr: "1" }); R.refreshCard(cur.file);
+      R.markPrinted(cur.file); R.logSave(cur.file, "hame", { hm: c.nu.file, pr: "1" }); R.refreshCard(cur.file);
       R.toast("印刷画面を開きました", "A4サイズで印刷してください");
     } catch (e) { if (win) win.close(); R.toast("印刷用PDFを作れませんでした", "保存してから印刷してください"); }
   }

@@ -258,6 +258,7 @@ export async function onRequest({ request, env }) {
     ["se", "ge", "di", "us", "q", "sr", "so", "lp", "pr"].forEach(k => {
       if (typeof c[k] === "string" && c[k].trim()) o[k] = c[k].trim().slice(0, 30);
     });
+    if (typeof c.hm === "string" && /^[\w.\-]{1,120}$/.test(c.hm)) o.hm = c.hm;
     return o;
   };
   const items = files.map((f, i) => [f, String(srcs[i] || "unknown").replace(/[^a-z]/g, "").slice(0, 12) || "unknown", cleanCtx(ctxs[i])])
