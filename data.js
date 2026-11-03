@@ -1276,4 +1276,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "花の輪の中でまどろむ", diff: "上級", file: "hana_madoromu_jo.png", sample: "hana_madoromu_jo_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793720271729" },
   { season: "通年", genre: "人物", title: "ハーブを摘む女性", diff: "上級", file: "herb_tsumu_jo.png", sample: "herb_tsumu_jo_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793720271876" },
   { season: "通年", genre: "人物", title: "花の額縁の肖像", diff: "上級", file: "hana_gakubuchi_jo.png", sample: "hana_gakubuchi_jo_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793720271990" },
+  { season: "通年", genre: "その他", title: "楽器だけの演奏会", diff: "中級", file: "gakki_ensoukai_chu.png", sample: "gakki_ensoukai_chu_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793722431894" },
+  { season: "通年", genre: "人物", title: "ツバメの郵便を見送る", diff: "中級", file: "tsubame_yuubin_chu.png", sample: "tsubame_yuubin_chu_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793722431894" },
 ];
