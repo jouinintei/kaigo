@@ -1267,8 +1267,8 @@ window.NURIE_LIST = [
   { season: "冬", genre: "花", title: "葉牡丹の鉢植え", diff: "初級", file: "habotan_hachi_sho.png", sample: "habotan_hachi_sho_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
   { season: "冬", genre: "動物", title: "冬の花のしろくま", diff: "中級", file: "shirokuma_fuyuhana_chu.png", sample: "shirokuma_fuyuhana_chu_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
   { season: "冬", genre: "風景", title: "湯気の向こうの雪景色", diff: "中級", file: "yunomi_yukigeshiki_chu.png", sample: "yunomi_yukigeshiki_chu_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
-  { season: "通年", genre: "その他", title: "折り鶴と千代紙", diff: "中級", file: "orizuru_chiyogami_chu.png", sample: "orizuru_chiyogami_chu_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
   { season: "冬", genre: "花", title: "水仙と岬の灯台", diff: "初級", file: "suisen_toudai_sho.png", sample: "suisen_toudai_sho_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
-  { season: "通年", genre: "風景", title: "富士山の見える銭湯", diff: "上級", file: "sento_fuji_jo.png", sample: "sento_fuji_jo_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
-  { season: "冬", genre: "その他", title: "雪松と鶴の屏風", diff: "上級", file: "byobu_yukimatsu_tsuru_jo.png", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
+  { season: "通年", genre: "その他", title: "松と鶴の屏風", diff: "中級", file: "byobu_matsu_tsuru_chu.png", sample: "byobu_matsu_tsuru_chu_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793704304499" },
+  { season: "通年", genre: "風景", title: "街道の絵巻", diff: "上級", file: "kaidou_emaki_jo.png", sample: "kaidou_emaki_jo_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793704304499" },
+  { season: "通年", genre: "風景", title: "富士山の見える銭湯", diff: "上級", file: "sento_penkie_jo.png", sample: "sento_penkie_jo_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793704304499" },
 ];
