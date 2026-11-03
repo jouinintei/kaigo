@@ -74,8 +74,11 @@
     x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); x.drawImage(cb, 0, 0);
     x.imageSmoothingQuality = "high";
     x.drawImage(nb, T.x, T.y, T.w, T.h, A.x + (A.w - dw) / 2, A.y + ptop + (bh - dh) / 2, dw, dh);
-    const blob = await new Promise(res => c.toBlob(res, "image/png"));
-    return { blob, url: URL.createObjectURL(blob), nu, jpg: c.toDataURL("image/jpeg", .92) };
+    let blob = await new Promise(res => c.toBlob(res, "image/png"));
+    if (window.rekupuriFrame) { try { blob = await window.rekupuriFrame(blob); } catch (e) {} }
+    const fb = await createImageBitmap(blob), j = document.createElement("canvas"); j.width = fb.width; j.height = fb.height;
+    const jx = j.getContext("2d"); jx.fillStyle = "#fff"; jx.fillRect(0, 0, j.width, j.height); jx.drawImage(fb, 0, 0);
+    return { blob, url: URL.createObjectURL(blob), nu, jpg: j.toDataURL("image/jpeg", .92) };
   }
 
   /* ---------- modal footer ---------- */
