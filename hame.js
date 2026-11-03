@@ -58,6 +58,8 @@
     return { x: 0, y: best[0] / s, w: bmp.width, h: (best[1] - best[0]) / s };
   }
   function trim(bmp) {
+    const of = window.rekupuriOwnFrame && window.rekupuriOwnFrame(bmp);
+    if (of) { const [x0, y0, x1, y1] = of.box; return { x: x0, y: y0, w: x1 - x0, h: y1 - y0, own: true }; }
     const { g, w, h, s } = gray(bmp, 900); let l = w, t = h, r = -1, b = -1;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (g[y * w + x] < 200) { if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y; }
     if (r < 0) return { x: 0, y: 0, w: bmp.width, h: bmp.height };

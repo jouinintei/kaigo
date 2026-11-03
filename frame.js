@@ -355,6 +355,7 @@
     });
   }
 
+  window.rekupuriOwnFrame = function (src) { try { return ownFrame(src); } catch (e) { return null; } };
   window.rekupuriStamp = async function (blob) {
     try {
       var src = await loadBitmap(blob), W = src.width, H = src.height, m = Math.min(W, H);
