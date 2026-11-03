@@ -1271,5 +1271,4 @@ window.NURIE_LIST = [
   { season: "冬", genre: "花", title: "水仙と岬の灯台", diff: "初級", file: "suisen_toudai_sho.png", sample: "suisen_toudai_sho_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
   { season: "通年", genre: "風景", title: "富士山の見える銭湯", diff: "上級", file: "sento_fuji_jo.png", sample: "sento_fuji_jo_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
   { season: "冬", genre: "その他", title: "雪松と鶴の屏風", diff: "上級", file: "byobu_yukimatsu_tsuru_jo.png", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
-  { season: "冬", genre: "風景", title: "冬の街道絵巻", diff: "上級", file: "fuyu_kaidou_emaki_jo.png", sample: "fuyu_kaidou_emaki_jo_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
 ];
