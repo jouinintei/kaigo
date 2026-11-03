@@ -84,7 +84,7 @@
     const ox = A.x + (A.w - dw) / 2, oy = A.y + ptop + (bh - dh) / 2;
     if (T.own) x.drawImage(nb, T.x, T.y, T.w, T.h, ox, oy, dw, dh);
     else {
-      const lw = Math.round(W * .0056), rr = Math.round(W * .011), rect = () => { x.beginPath(); x.roundRect ? x.roundRect(ox, oy, dw, dh, rr) : x.rect(ox, oy, dw, dh); };
+      const lw = Math.round(W * .0036), rr = Math.round(W * .011), rect = () => { x.beginPath(); x.roundRect ? x.roundRect(ox, oy, dw, dh, rr) : x.rect(ox, oy, dw, dh); };
       x.save(); rect(); x.clip(); x.fillStyle = "#fff"; x.fillRect(ox, oy, dw, dh); x.drawImage(nb, T.x, T.y, T.w, T.h, ox, oy, dw, dh); x.restore();
       rect(); x.lineWidth = lw; x.strokeStyle = "#000"; x.stroke();
     }
