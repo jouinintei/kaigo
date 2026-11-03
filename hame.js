@@ -62,7 +62,10 @@
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (g[y * w + x] < 200) { if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y; }
     if (r < 0) return { x: 0, y: 0, w: bmp.width, h: bmp.height };
     const p = 2; l = Math.max(0, l - p); t = Math.max(0, t - p); r = Math.min(w - 1, r + p); b = Math.min(h - 1, b + p);
-    return { x: l / s, y: t / s, w: (r - l + 1) / s, h: (b - t + 1) / s };
+    const ed = (x0, y0, x1, y1) => { let n = 0, k = 0; for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { k++; if (g[y * w + x] < 140) n++; } return n / k; };
+    const bd = Math.max(3, Math.round(Math.min(w, h) * .006));
+    const own = [ed(l, t, r, t + bd), ed(l, b - bd, r, b), ed(l, t, l + bd, b), ed(r - bd, t, r, b)].filter(v => v > .6).length >= 3;
+    return { x: l / s, y: t / s, w: (r - l + 1) / s, h: (b - t + 1) / s, own };
   }
   async function build(cal, nu) {
     const [cb, nb] = await Promise.all([blobOf(cal.file, cal.v), blobOf(nu.file, nu.v)]);
@@ -70,7 +73,7 @@
     const A = blankArea(cb), T = trim(nb), W = cb.width, H = cb.height;
     const px = W * .018, ptop = Math.min(W * .018, A.h * .03), pbot = Math.min(W * .014, A.h * .025);
     const bw = A.w - px * 2, bh = A.h - ptop - pbot;
-    let sc = Math.min(bw / T.w, bh / T.h), cut = 1.06;
+    let sc = Math.min(bw / T.w, bh / T.h), cut = T.own ? 1 : 1.06;
     sc = Math.min(sc * cut, Math.max(bw / T.w, bh / T.h));
     const vw = Math.min(T.w, bw / sc), vh = Math.min(T.h, bh / sc);
     T.x += (T.w - vw) / 2; T.y += (T.h - vh) / 2; T.w = vw; T.h = vh;
@@ -78,9 +81,14 @@
     const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
     x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); x.drawImage(cb, 0, 0);
     x.imageSmoothingQuality = "high";
-    x.drawImage(nb, T.x, T.y, T.w, T.h, A.x + (A.w - dw) / 2, A.y + ptop + (bh - dh) / 2, dw, dh);
+    const ox = A.x + (A.w - dw) / 2, oy = A.y + ptop + (bh - dh) / 2;
+    if (T.own) x.drawImage(nb, T.x, T.y, T.w, T.h, ox, oy, dw, dh);
+    else {
+      const lw = Math.round(W * .0056), rr = Math.round(W * .011), rect = () => { x.beginPath(); x.roundRect ? x.roundRect(ox, oy, dw, dh, rr) : x.rect(ox, oy, dw, dh); };
+      x.save(); rect(); x.clip(); x.fillStyle = "#fff"; x.fillRect(ox, oy, dw, dh); x.drawImage(nb, T.x, T.y, T.w, T.h, ox, oy, dw, dh); x.restore();
+      rect(); x.lineWidth = lw; x.strokeStyle = "#000"; x.stroke();
+    }
     let blob = await new Promise(res => c.toBlob(res, "image/png"));
-    if (window.rekupuriFrame) { try { blob = await window.rekupuriFrame(blob); } catch (e) {} }
     const fb = await createImageBitmap(blob), j = document.createElement("canvas"); j.width = fb.width; j.height = fb.height;
     const jx = j.getContext("2d"); jx.fillStyle = "#fff"; jx.fillRect(0, 0, j.width, j.height); jx.drawImage(fb, 0, 0);
     return { blob, url: URL.createObjectURL(blob), nu, jpg: j.toDataURL("image/jpeg", .92) };
