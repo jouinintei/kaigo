@@ -37,6 +37,32 @@ function textToB64(str) {
   return btoa(bin);
 }
 
+
+// おおよその地域(Cloudflareが付ける情報)。IPアドレスは保存しない
+const JP_PREF = ["","北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"];
+function geoOf(request) {
+  const cf = request.cf || {};
+  const g = {};
+  const cc = String(cf.country || "").slice(0, 2);
+  if (cc && cc !== "JP") g.n = cc;
+  let p = "";
+  const rc = String(cf.regionCode || "").replace(/^JP-/, "");
+  if (cc === "JP" && /^\d{1,2}$/.test(rc)) p = JP_PREF[Number(rc)] || "";
+  if (!p && cf.region) p = String(cf.region).slice(0, 30);
+  if (p) g.p = p;
+  if (cf.city) g.c = String(cf.city).slice(0, 30);
+  if (cf.asOrganization) g.i = String(cf.asOrganization).slice(0, 40);
+  return Object.keys(g).length ? g : null;
+}
+function putGeo(data, did, g) {
+  if (!g || !did || did === "unknown") return;
+  if (!data.geo || typeof data.geo !== "object") data.geo = {};
+  g.t = Date.now();
+  data.geo[did] = g;
+  const old = Date.now() - KEEP_DAYS * 24 * 3600 * 1000;
+  Object.keys(data.geo).forEach(k => { if (!data.geo[k] || data.geo[k].t < old) delete data.geo[k]; });
+}
+
 function blankFav() {
   return { days: {}, tot: {}, ev: [] };
 }
@@ -184,6 +210,7 @@ export async function onRequest({ request, env }) {
           if (oent && i === 0) oe.r = oent;
           O.ev.push(oe);
         });
+        putGeo(cur.data, odid, geoOf(request));
         if (oent) {
           if (!cur.data.ent[odid]) cur.data.ent[odid] = {};
           cur.data.ent[odid][oent] = (cur.data.ent[odid][oent] || 0) + 1;
@@ -225,6 +252,7 @@ export async function onRequest({ request, env }) {
           if (pg) ev.p = pg;
           F.ev.push(ev);
         });
+        putGeo(cur.data, fdid, geoOf(request));
         if (F.ev.length > KEEP_EVENTS) F.ev = F.ev.slice(F.ev.length - KEEP_EVENTS);
         const fk = Object.keys(F.days).sort();
         while (fk.length > KEEP_DAYS) delete F.days[fk.shift()];
@@ -294,6 +322,7 @@ export async function onRequest({ request, env }) {
         const fl = d.fd[day][f] || (d.fd[day][f] = []);
         if (fl.indexOf(did) < 0) fl.push(did);
       });
+      putGeo(d, did, geoOf(request));
       compact(d, day);
       if (await ghWrite(env, cur.sha, d)) return json({ ok: true });
     } catch (e) {}

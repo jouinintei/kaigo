@@ -995,6 +995,20 @@
     drawRank(lastData);
   });
 
+  /* ---------- おおよその地域 ---------- */
+  function geoOf(d, id){ return (d && d.geo && d.geo[id]) || null; }
+  function isMobileNet(i){ return /docomo|kddi|softbank|rakuten|mobile/i.test(i || ""); }
+  function geoTag(d, id){
+    var g = geoOf(d, id); if (!g) return "";
+    var t = g.n ? "🌐 " + g.n : "📍 " + (g.p || "不明");
+    return '<span class="tag">' + esc(t) + (isMobileNet(g.i) ? "?" : "") + '</span>';
+  }
+  function geoLine(d, id){
+    var g = geoOf(d, id); if (!g) return "";
+    var s = (g.n ? "国: " + g.n + "　" : "") + "地域: " + (g.p || "不明") + (g.c ? "（" + g.c + " 付近）" : "");
+    if (g.i) s += "　回線: " + g.i + (isMobileNet(g.i) ? "（スマホ回線のため地域はずれやすい）" : "");
+    return '<div class="note" style="margin:2px 0 8px;font-size:12px">📍 ' + esc(s) + '</div>';
+  }
   /* ---------- 端末ごとの利用状況 ---------- */
   var devStats = {};
   var lastEvents = [];
@@ -1546,7 +1560,8 @@
         html += '<details class="odev" data-dev="' + esc(id) + '"' + (openDevs[id] ? ' open' : '') + '><summary class="ohead"><span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(id) + '">' + esc(shortId(id)) +
           (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
           (en ? '<span class="tag entry ' + entClass(en) + '">' + esc(entShort(en)) + '</span>' : '<span class="tag">入口の記録なし</span>') +
-          '<span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + '　最終 ' + hhmm(P.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">';
+          geoTag(d, id) +
+          '<span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + '　最終 ' + hhmm(P.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">' + geoLine(d, id);
         files.forEach(function(f){
           var x = P.items[f], it = info(f), b = [];
           if (x.lb) b.push('<span class="ob">開いた' + (x.lb > 1 ? '×' + x.lb : '') + '</span>');
