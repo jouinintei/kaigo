@@ -1280,4 +1280,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "花の額縁の肖像", diff: "上級", file: "hana_gakubuchi_jo.png", sample: "hana_gakubuchi_jo_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793720271990" },
   { season: "通年", genre: "人物", title: "木屋町しぐれ", diff: "上級", file: "kiyamachi_shigure_jo.png", sample: "kiyamachi_shigure_jo_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793799343444" },
   { season: "通年", genre: "動物", title: "動物たちのサーカス", diff: "中級", file: "doubutsu_circus_chu.png", sample: "doubutsu_circus_chu_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793801185274" },
+  { season: "通年", genre: "動物", title: "動物たちのサーカス", diff: "初級", file: "doubutsu_circus_sho.png", sample: "doubutsu_circus_sho_sample.jpg", added: "2026-11", date: "2026-11-04", v: "1793801775993" },
 ];
