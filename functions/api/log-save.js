@@ -52,6 +52,12 @@ function geoOf(request) {
   if (p) g.p = p;
   if (cf.city) g.c = String(cf.city).slice(0, 30);
   if (cf.asOrganization) g.i = String(cf.asOrganization).slice(0, 40);
+  // 端末の種類(スマホ/タブレット/PC)。User-Agentそのものは保存しない
+  const ua = String(request.headers.get("User-Agent") || "");
+  const chm = request.headers.get("Sec-CH-UA-Mobile");
+  if (/iPad|Tablet|PlayBook|Silk|Kindle/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua))) g.m = "tab";
+  else if (chm === "?1" || /iPhone|iPod|Android.*Mobile|Mobile.*Firefox|Windows Phone/i.test(ua)) g.m = "sp";
+  else if (ua) g.m = "pc";
   return Object.keys(g).length ? g : null;
 }
 function putGeo(data, did, g) {

@@ -1283,9 +1283,12 @@
 
   // 端末符号に名前を付ける(先頭4文字で判定)
   var DEV_NAMES = { "we64": "千春会東向日", "yvi2": "千春会東向日", "jhqa": "千春会東向日", "8qmx": "自分", "qo2f": "問い合わせ1" };
+  var DEV_MARK = { sp: "📱", tab: "📟", pc: "💻" };
   function shortId(id){
     var k = String(id).slice(0,4);
-    return DEV_NAMES[k] || ("端末" + k);
+    var g = lastData && lastData.geo && lastData.geo[id];
+    var mk = (g && DEV_MARK[g.m]) ? DEV_MARK[g.m] + " " : "";
+    return mk + (DEV_NAMES[k] || ("端末" + k));
   }
 
   function drawFeed(events, devs){
