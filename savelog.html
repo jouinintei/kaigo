@@ -1009,6 +1009,18 @@
     if (g.i) s += "　回線: " + g.i + (isMobileNet(g.i) ? "（スマホ回線のため地域はずれやすい）" : "");
     return '<div class="note" style="margin:2px 0 8px;font-size:12px">📍 ' + esc(s) + '</div>';
   }
+  function entLine(d, id){
+    var m = (d && d.ent && d.ent[id]) || null;
+    var ds = Object.keys((d && d.devs) || {}).filter(function(k){ return d.devs[k] && d.devs[k][id]; }).sort();
+    if (!m && !ds.length) return "";
+    var parts = [];
+    if (m) parts.push("入口: " + Object.keys(m).sort(function(a,b){ return m[b] - m[a]; }).map(function(k){ return entLabel(k) + " " + m[k] + "回"; }).join("・"));
+    if (ds.length) {
+      var md = function(x){ var a = x.split("-"); return Number(a[1]) + "/" + Number(a[2]); };
+      parts.push("初めて来た日: " + md(ds[0]) + "　来た日数: " + ds.length + "日");
+    }
+    return '<div class="note" style="margin:2px 0 8px;font-size:12px">🚪 ' + esc(parts.join("　")) + '</div>';
+  }
   /* ---------- 端末ごとの利用状況 ---------- */
   var devStats = {};
   var lastEvents = [];
@@ -1282,7 +1294,7 @@
   }
 
   // 端末符号に名前を付ける(先頭4文字で判定)
-  var DEV_NAMES = { "we64": "千春会東向日", "yvi2": "千春会東向日", "jhqa": "千春会東向日", "8qmx": "自分", "qo2f": "問い合わせ1" };
+  var DEV_NAMES = { "we64": "千春会東向日", "yvi2": "千春会東向日", "jhqa": "千春会東向日", "8qmx": "自分", "qo2f": "問い合わせ1", "7yi7": "千春会伏見っぽい" };
   var DEV_MARK = { sp: "📱", tab: "📟", pc: "💻" };
   function shortId(id){
     var k = String(id).slice(0,4);
@@ -1564,7 +1576,7 @@
           (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
           (en ? '<span class="tag entry ' + entClass(en) + '">' + esc(entShort(en)) + '</span>' : '<span class="tag">入口の記録なし</span>') +
           geoTag(d, id) +
-          '<span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + '　最終 ' + hhmm(P.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">' + geoLine(d, id);
+          '<span class="ocnt">開いた ' + P.open + '・保存 ' + P.save + '　最終 ' + hhmm(P.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">' + geoLine(d, id) + entLine(d, id);
         files.forEach(function(f){
           var x = P.items[f], it = info(f), b = [];
           if (x.lb) b.push('<span class="ob">開いた' + (x.lb > 1 ? '×' + x.lb : '') + '</span>');
