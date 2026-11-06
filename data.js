@@ -1340,4 +1340,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 広島県（かんたん）", diff: "初級", file: "gotochi_hiroshima_sho.png", sample: "gotochi_hiroshima_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、厳島神社の大鳥居、牡蠣、もみじ饅頭、広島風お好み焼き", v: "1793974079065" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 山口県", diff: "上級", file: "gotochi_yamaguchi_jo.png", sample: "gotochi_yamaguchi_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "岩国の錦帯橋と錦川、角島大橋とエメラルドの海、ふぐ刺し、ふぐ提灯、瓦そば、夏みかん、萩焼の茶碗", v: "1793974178548" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 山口県（かんたん）", diff: "初級", file: "gotochi_yamaguchi_sho.png", sample: "gotochi_yamaguchi_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、錦帯橋、ふぐ刺し、瓦そば、夏みかん", v: "1793974178548" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 神奈川県", diff: "上級", file: "gotochi_kanagawa_jo.png", sample: "gotochi_kanagawa_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "横浜の赤レンガ倉庫と観覧車・高層ビル、江の島と灯台、江ノ電、富士山、あじさい、シウマイ、肉まん、箱根の黒たまご、小田原かまぼこ、箱根寄木細工", v: "1793974238180" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 神奈川県（かんたん）", diff: "初級", file: "gotochi_kanagawa_sho.png", sample: "gotochi_kanagawa_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、横浜の赤レンガ倉庫、江ノ電、シウマイ、箱根の黒たまご", v: "1793974238180" },
 ];
