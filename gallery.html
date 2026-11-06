@@ -114,9 +114,14 @@
     if(!g.length){st.ser="";return render0();}
     const ns=NSER[st.ser];
     const cd=n=>{const c=card(n);if(!ns||!n.desc)return c;const i=c.lastIndexOf("</article>");return c.slice(0,i)+`<div class="gdesc" style="margin:4px 14px 14px;padding:10px 12px;background:var(--bg2,#f7f3ee);border-radius:10px;font-size:15px;line-height:1.7"><b style="display:block;font-size:14px;color:var(--sub,#6b6b6b)">${/日本地図/.test(n.title)?"使い方":"描かれているもの"}</b>${esc(n.desc)}</div>`+c.slice(i);};
-    main.innerHTML=(ns?`<div style="height:24px"></div>`:head())+`<div class="serhd"><button class="btn g" data-serback>← ${K==="nurie"?"塗り絵":"脳トレ"}一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div>${ns?`<div class="wabout"><h3>${esc(st.ser)}とは？</h3><p>${[].concat(ns.intro).map(esc).join("<br>")}</p>${ns.uses?`<ul style="margin:10px 0 0 1.4em;line-height:1.9">${ns.uses.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>`:""}${ns.tail?`<p style="margin-top:8px">${esc(ns.tail)}</p>`:""}</div>`:""}<div class="grid">${g.map(cd).join("")}</div>`;
+    main.innerHTML=(ns?`<div style="height:24px"></div>`:head())+`<div class="serhd"><button class="btn g" data-serback>← ${K==="nurie"?"塗り絵":"脳トレ"}一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div>${ns?`<div class="wabout"><h3>${esc(st.ser)}とは？</h3><p>${[].concat(ns.intro).map(esc).join("<br>")}</p>${ns.uses?`<ul style="margin:10px 0 0 1.4em;line-height:1.9">${ns.uses.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>`:""}${ns.tail?`<p style="margin-top:8px">${esc(ns.tail)}</p>`:""}</div>`:""}${ns?prefNav(g):""}<div class="grid" id="sergrid" style="margin-top:20px">${(ns?prefFilter(g):g).map(cd).join("")}</div>`;
   }
-  function openSer(k,push){if(k)lastSer=k;st.ser=k;if(push){try{const u=new URL(location.href);if(k)u.searchParams.set("ser",k);else u.searchParams.delete("ser");history.pushState({ser:k},"",u);}catch(e){}}render();if(k)scrollTo({top:0});else backToSer();}
+  const REGIONS=[["北海道・東北",0,7],["関東",7,14],["中部",14,23],["近畿",23,30],["中国・四国",30,39],["九州・沖縄",39,47]];
+  const prefOfN=n=>{const t=String(n.title);if(/日本地図/.test(t))return "";return PREFS.find(p=>t.includes(p))||"";};
+  function prefFilter(g){if(!st.pref)return g.filter(n=>/日本地図/.test(n.title));return g.filter(n=>prefOfN(n)===st.pref);}
+  function prefNav(g){const have=new Set(g.map(prefOfN).filter(Boolean));
+    return `<div class="wabout" style="margin-top:16px"><h3>都道府県をえらぶ</h3><p style="margin-bottom:10px">県名を押すと、その県の塗り絵（上級・かんたん）が下に出てきます。色の薄い県はこれから追加していきます。</p>${REGIONS.map(([nm,a,b])=>`<div style="margin-top:10px"><div style="font-size:14px;font-weight:700;color:var(--sub,#6b6b6b);margin-bottom:6px">${nm}</div><div style="display:flex;flex-wrap:wrap;gap:8px">${PREFS.slice(a,b).map(p=>have.has(p)?`<button class="chip" data-pref="${esc(p)}" aria-pressed="${st.pref===p}" style="padding:0 14px;border-color:var(--btn);font-weight:700">${esc(p)}</button>`:`<button class="chip" disabled style="padding:0 14px;opacity:.35;cursor:default">${esc(p)}</button>`).join("")}</div></div>`).join("")}${st.pref?`<div style="margin-top:14px"><button class="btn g" data-pref="">日本地図にもどる</button></div>`:""}</div>`;}
+  function openSer(k,push){if(k)lastSer=k;st.ser=k;st.pref="";if(push){try{const u=new URL(location.href);if(k)u.searchParams.set("ser",k);else u.searchParams.delete("ser");history.pushState({ser:k},"",u);}catch(e){}}render();if(k)scrollTo({top:0});else backToSer();}
   let lastSer="";
   const backToSer=()=>{if(st.ser||!lastSer)return;const b=main.querySelector(`.ser [data-ser="${CSS.escape(lastSer)}"]`);if(b){const a=b.closest("article");const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+16;scrollTo({top:a.getBoundingClientRect().top+scrollY-off});}};
   window.addEventListener("popstate",e=>{const pp=+(new URL(location.href).searchParams.get("p"))||1;if(pp!==st.page){st.page=pp;if(K!=="noutore"&&K!=="nurie"){render();return;}}if(K!=="noutore"&&K!=="nurie")return;st.ser=(e.state&&e.state.ser)||new URL(location.href).searchParams.get("ser")||"";render();backToSer();});
@@ -215,6 +220,7 @@
   main.addEventListener("click",async e=>{
     const t=e.target.closest("button,[data-chk]");if(!t)return;
     if(t.dataset.ser!==undefined){openSer(t.dataset.ser,true);}
+    else if(t.dataset.pref!==undefined){st.pref=t.dataset.pref;render();const gr=document.getElementById("sergrid");if(gr){const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+16;scrollTo({top:gr.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}}
     else if(t.dataset.serback!==undefined){if(history.state&&history.state.ser)history.back();else openSer("",true);}
     else if(t.dataset.ftg!==undefined){fopen=!fopen;render();}
     else if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
