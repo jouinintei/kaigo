@@ -1311,5 +1311,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風景", title: "竜宮城と玉手箱", diff: "上級", file: "ryugujo_tamatebako_jo.png", sample: "ryugujo_tamatebako_jo_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793950323434" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 埼玉県", diff: "上級", file: "saitama_chu.png", sample: "saitama_chu_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793955229855" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 兵庫県", diff: "上級", file: "hyogo_chu.png", sample: "hyogo_chu_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793964834529" },
-  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 京都府", diff: "上級", file: "gotochi_kyoto_jo.png", sample: "gotochi_kyoto_jo_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793965140686" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 京都府", diff: "上級", file: "gotochi_kyoto_jo.png", sample: "gotochi_kyoto_jo_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793965247453" },
 ];
