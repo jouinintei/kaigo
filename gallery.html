@@ -96,7 +96,7 @@
   const items=()=>LIST.filter(n=>kindOf(n)===KIND);
   const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
   const SER_RE=[[/^難読漢字/,"難読漢字"],[/^ことばさがし/,"ことばさがし"],[/^数字探し/,"数字探し"],[/^穴あき言葉/,"穴あき言葉"],[/^昭和の大スター穴埋め/,"昭和の大スター穴埋め"],[/^ことわざ穴埋め/,"ことわざ穴埋め"],[/^慣用句/,"慣用句"],[/^数の並び 次は何/,"数の並び 次は何?"],[/^ご当地名産めぐり/,"ご当地名産めぐり"]];
-  const NSER={"ご当地名産めぐり":{intro:"都道府県ごとに、その土地の名所と名産を1枚に集めた塗り絵のシリーズです。塗りながら「行ったことある？」「食べたことある？」と、旅の思い出やふるさとの話にもつながります。1枚目の「日本地図」は、塗り終えた県に色をぬっていく記録用の塗り絵です。県を塗るたびに地図が色でうまっていき、全部そろえば日本一周の達成です。",uses:["出身地や旅行で行ったことのある県を選んで、昔の思い出話をしながら塗る","日本地図を壁に貼っておき、塗り終えた県に色をぬって、みんなで「日本一周」をめざす","同じ県でも、元気な方には上級、ゆっくり塗りたい方にはかんたん版と、難しさを分けて配る","描かれた名産の食べ物をきっかけに、「好きな食べ物」や「ふるさとの味」を語り合う","旅行の企画や季節の行事に合わせて、その土地の塗り絵を選ぶ"],tail:"各々の施設やご家庭で使い方を工夫してみてください。"}};
+  const NSER={"ご当地名産めぐり":{intro:["都道府県ごとに、その土地の名所と名産を1枚に集めた塗り絵のシリーズです。","塗りながら「行ったことある？」「食べたことある？」と、旅の思い出やふるさとの話にもつながります。"],uses:["出身地や旅行で行ったことのある県を選んで、昔の思い出話をしながら塗る","日本地図を壁に貼っておき、塗り終えた県に色をぬって、みんなで「日本一周」をめざす","同じ県でも、元気な方には上級、ゆっくり塗りたい方にはかんたん版と、難しさを分けて配る"],tail:"各々の施設やご家庭で使い方を工夫してみてください。"}};
   const PREFS=["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","新潟","富山","石川","福井","山梨","長野","岐阜","静岡","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"];
   const prefNo=n=>{const t=String(n.title);if(/日本地図/.test(t))return -1;const i=PREFS.findIndex(p=>t.includes(p));return i<0?999:i;};
   const serKey=n=>{const t=String(n.title).replace(/\s*その\s*\d+\s*$/,"").trim();for(const [re,k] of SER_RE)if(re.test(t))return k;return t;};
@@ -112,7 +112,7 @@
     if(!g.length){st.ser="";return render0();}
     const ns=NSER[st.ser];
     const cd=n=>{const c=card(n);if(!ns||!n.desc)return c;const i=c.lastIndexOf("</article>");return c.slice(0,i)+`<div class="gdesc" style="margin:4px 14px 14px;padding:10px 12px;background:var(--bg2,#f7f3ee);border-radius:10px;font-size:15px;line-height:1.7"><b style="display:block;font-size:14px;color:var(--sub,#6b6b6b)">${/日本地図/.test(n.title)?"使い方":"描かれているもの"}</b>${esc(n.desc)}</div>`+c.slice(i);};
-    main.innerHTML=(ns?`<div style="height:24px"></div>`:head())+`<div class="serhd"><button class="btn g" data-serback>← ${K==="nurie"?"塗り絵":"脳トレ"}一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div>${ns?`<div class="wabout"><h3>${esc(st.ser)}とは？</h3><p>${esc(ns.intro)}</p>${ns.uses?`<p style="margin-top:10px"><b>使い方の例</b></p><ul style="margin:4px 0 0 1.4em;line-height:1.9">${ns.uses.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>`:""}${ns.tail?`<p style="margin-top:8px">${esc(ns.tail)}</p>`:""}</div>`:""}<div class="grid">${g.map(cd).join("")}</div>`;
+    main.innerHTML=(ns?`<div style="height:24px"></div>`:head())+`<div class="serhd"><button class="btn g" data-serback>← ${K==="nurie"?"塗り絵":"脳トレ"}一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div>${ns?`<div class="wabout"><h3>${esc(st.ser)}とは？</h3><p>${[].concat(ns.intro).map(esc).join("<br>")}</p>${ns.uses?`<ul style="margin:10px 0 0 1.4em;line-height:1.9">${ns.uses.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>`:""}${ns.tail?`<p style="margin-top:8px">${esc(ns.tail)}</p>`:""}</div>`:""}<div class="grid">${g.map(cd).join("")}</div>`;
   }
   function openSer(k,push){if(k)lastSer=k;st.ser=k;if(push){try{const u=new URL(location.href);if(k)u.searchParams.set("ser",k);else u.searchParams.delete("ser");history.pushState({ser:k},"",u);}catch(e){}}render();if(k)scrollTo({top:0});else backToSer();}
   let lastSer="";
