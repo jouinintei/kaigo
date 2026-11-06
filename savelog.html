@@ -1108,11 +1108,18 @@
         '<span class="stat">保存 <b>' + s.nDays + '</b>日・<b>' + s.total + '</b>件</span>' +
         (s.first ? '<span class="stat">保存の初回 ' + fmtMD(s.first) + '　最終 ' + lastLbl + '</span>' : '') +
         '<span class="stat">開いた <b>' + os.nDays + '</b>日・<b>' + os.total + '</b>回' + (os.first ? '（初回 ' + fmtMD(os.first) + '）' : '') + '</span>' +
-        entStat(id) +
+        entStat(id) + geoStat(id) +
         '<span class="strip">' + strip + '</span>' +
         devFilesHtml(id) +
       '</div>';
       return html;
+  }
+  function geoStat(id){
+    var g = geoOf(lastData, id); if (!g) return "";
+    var t = g.n ? "🌐 " + g.n : "📍 " + (g.p || "不明") + (g.c ? "（" + g.c + " 付近）" : "");
+    if (g.i) t += "・" + g.i;
+    if (isMobileNet(g.i)) t += "（スマホ回線のため地域はずれやすい）";
+    return '<span class="stat">' + esc(t) + '</span>';
   }
   function openStat(id){
     var days = (((lastData || {}).opens || {}).days) || {}, r = { nDays: 0, total: 0, first: "", days: {} };
