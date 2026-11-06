@@ -1352,4 +1352,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 長野県（かんたん）", diff: "初級", file: "gotochi_nagano_sho.png", sample: "gotochi_nagano_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、松本城、信州そば、おやき、りんごとぶどう", v: "1793975812031" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 山梨県", diff: "上級", file: "gotochi_yamanashi_jo.png", sample: "gotochi_yamanashi_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "新倉山浅間公園の忠霊塔（五重塔）と富士山、桜、ぶどう棚と桃畑、ほうとう、ぶどう、桃、信玄餅、ワイン", v: "1793975846110" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 山梨県（かんたん）", diff: "初級", file: "gotochi_yamanashi_sho.png", sample: "gotochi_yamanashi_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、五重塔と富士山、ぶどう、桃、ほうとう", v: "1793975846110" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 徳島県", diff: "上級", file: "gotochi_tokushima_jo.png", sample: "gotochi_tokushima_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "鳴門の渦潮と大鳴門橋・観潮船、祖谷のかずら橋、阿波おどりの提灯と編み笠、徳島ラーメン、すだち、なると金時、藍染めの布", v: "1793975985433" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 徳島県（かんたん）", diff: "初級", file: "gotochi_tokushima_sho.png", sample: "gotochi_tokushima_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、鳴門の渦潮と大鳴門橋、阿波おどりの編み笠と提灯、すだち、徳島ラーメン", v: "1793975985433" },
 ];
