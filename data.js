@@ -1309,5 +1309,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その4", file: "showa_kayou_sen4.png", answer: "showa_kayou_sen4_ans.png", added: "2026-11", date: "2026-11-06" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その5", file: "showa_kayou_sen5.png", answer: "showa_kayou_sen5_ans.png", added: "2026-11", date: "2026-11-06" },
   { season: "通年", genre: "風景", title: "竜宮城と玉手箱", diff: "上級", file: "ryugujo_tamatebako_jo.png", sample: "ryugujo_tamatebako_jo_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793950323434" },
-  { season: "通年", genre: "風景", title: "埼玉", diff: "中級", file: "saitama_chu.png", sample: "saitama_chu_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793952005905" },
+  { season: "通年", genre: "風景", title: "埼玉", diff: "中級", file: "saitama_chu.png", sample: "saitama_chu_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793953529786" },
 ];
