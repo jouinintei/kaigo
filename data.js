@@ -1346,4 +1346,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 静岡県（かんたん）", diff: "初級", file: "gotochi_shizuoka_sho.png", sample: "gotochi_shizuoka_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、富士山と茶畑、急須とお茶、うな重、みかん", v: "1793974990198" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福井県", diff: "上級", file: "gotochi_fukui_jo.png", sample: "gotochi_fukui_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "東尋坊の断崖と日本海の荒波、恐竜（フクイラプトル）、越前がに、越前おろしそば、鯖江のめがね、羽二重餅、若狭塗の箸", v: "1793975020629" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福井県（かんたん）", diff: "初級", file: "gotochi_fukui_sho.png", sample: "gotochi_fukui_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、恐竜、越前がに、めがね、越前おろしそば", v: "1793975020629" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 和歌山県", diff: "上級", file: "gotochi_wakayama_jo.png", sample: "gotochi_wakayama_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "那智の滝と青岸渡寺の三重塔、白浜の円月島、紀州南高梅の梅干し、有田みかん、めはり寿司、和歌山ラーメン", v: "1793975055181" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 和歌山県（かんたん）", diff: "初級", file: "gotochi_wakayama_sho.png", sample: "gotochi_wakayama_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、三重塔と那智の滝、梅干し、みかん、めはり寿司", v: "1793975055181" },
 ];
