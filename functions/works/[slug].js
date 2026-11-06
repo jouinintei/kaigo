@@ -121,7 +121,7 @@ async function render(context) {
     "<link rel=\"icon\" href=\"/favicon.ico\" sizes=\"48x48\">\n" +
     "<script src=\"/entry.js\"></script>\n" +
     "<script src=\"/analytics.js\" defer></script>\n" +
-    "<script src=\"/frame.js?v=12\"></script>\n" +
+    "<script src=\"/frame.js?v=13\"></script>\n" +
     "<script type=\"application/ld+json\">" + JSON.stringify(ld) + "</script>\n" +
     "<style>\n" +
     "body{font-family:\"Hiragino Maru Gothic ProN\",\"BIZ UDGothic\",\"Yu Gothic\",\"Meiryo\",sans-serif;background:#faf6ef;color:#3a3a3a;line-height:1.7;margin:0}\n" +

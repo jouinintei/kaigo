@@ -165,7 +165,7 @@
   }
 
   // 元の枠線をそのまま使い、下の枠線の右寄りに rekupuri.com を載せる
-  function drawOnOwnFrame(src, of, W, H) {
+  function drawOnOwnFrame(src, of, W, H, pic) {
     var c = document.createElement("canvas");
     c.width = W; c.height = H;
     var ctx = c.getContext("2d", { willReadFrequently: true });
@@ -229,6 +229,13 @@
     var r0 = right;
     while (right > minRight && busy(right) > 0.08) right -= step;
     if (right <= minRight) right = r0;
+    if (pic && pic !== src) {
+      // 色見本は線画と同じ位置・大きさで描き直す（重ねてぴったり合うように）
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, W, H);
+      var px = pic.width / src.width, py = pic.height / src.height;
+      ctx.drawImage(pic, b[0] * px, b[1] * py, w * px, h * py, dx, dy, dw, dh);
+    }
     ctx.fillStyle = "#fff";
     ctx.fillRect(right - boxW, top, boxW, boxH);
     ctx.fillStyle = CFG.logoColor;
@@ -250,17 +257,23 @@
     ctx.closePath();
   }
 
-  async function frameBlob(blob) {
+  async function frameBlob(blob, overBlob, type) {
     var src = await loadBitmap(blob);
+    // overBlob があれば、配置は線画(blob)で決めて、描くのは overBlob（色見本）
+    var pic = overBlob ? await loadBitmap(overBlob) : src;
+    var PX = pic.width / src.width, PY = pic.height / src.height;
+    function put(ctx, sx, sy, sw, sh, dx, dy, dw, dh) { ctx.drawImage(pic, sx * PX, sy * PY, sw * PX, sh * PY, dx, dy, dw, dh); }
+    var mime = type || "image/png", q = mime === "image/jpeg" ? 0.92 : undefined;
     var size = src.width >= src.height ? A4L : A4P;
     var W = size[0], H = size[1];
 
     var of = ownFrame(src);
     if (of) {
-      var oc = drawOnOwnFrame(src, of, W, H);
+      var oc = drawOnOwnFrame(src, of, W, H, pic);
       if (src.close) { try { src.close(); } catch (e) {} }
+      if (pic !== src && pic.close) { try { pic.close(); } catch (e) {} }
       return await new Promise(function (res, rej) {
-        oc.toBlob(function (b) { b ? res(b) : rej(new Error("toBlob")); }, "image/png");
+        oc.toBlob(function (b) { b ? res(b) : rej(new Error("toBlob")); }, mime, q);
       });
     }
 
@@ -300,7 +313,7 @@
     if (edge) {
       var stretch = Math.abs((iw / ih) / (w / h) - 1);
       if (stretch <= CFG.maxStretch) {
-        ctx.drawImage(src, r[0], r[1], w, h, ix, iy, iw, ih);
+        put(ctx, r[0], r[1], w, h, ix, iy, iw, ih);
       } else {
         var sc = Math.max(iw / w, ih / h);
         var cut = Math.max(1 - iw / (w * sc), 1 - ih / (h * sc));
@@ -310,7 +323,7 @@
         ctx.beginPath();
         ctx.rect(ix, iy, iw, ih);
         ctx.clip();
-        ctx.drawImage(src, r[0], r[1], w, h, ix + (iw - ew) / 2, iy + (ih - eh) / 2, ew, eh);
+        put(ctx, r[0], r[1], w, h, ix + (iw - ew) / 2, iy + (ih - eh) / 2, ew, eh);
         ctx.restore();
       }
     } else {
@@ -323,7 +336,7 @@
       var aw = iw - 2 * p, ah = ih - 2 * p;
       var s3 = Math.min(aw / sw, ah / sh);
       var mw = sw * s3, mh = sh * s3;
-      ctx.drawImage(src, r[0] + sx, r[1] + sy, sw, sh, ix + (iw - mw) / 2, iy + (ih - mh) / 2, mw, mh);
+      put(ctx, r[0] + sx, r[1] + sy, sw, sh, ix + (iw - mw) / 2, iy + (ih - mh) / 2, mw, mh);
     }
     ctx.restore();
 
@@ -349,9 +362,10 @@
       ctx.fillText(label, lx, ly + lh / 2 + 1);
     }
     if (src.close) { try { src.close(); } catch (e) {} }
+    if (pic !== src && pic.close) { try { pic.close(); } catch (e) {} }
 
     return await new Promise(function (res, rej) {
-      c.toBlob(function (b) { b ? res(b) : rej(new Error("toBlob")); }, "image/png");
+      c.toBlob(function (b) { b ? res(b) : rej(new Error("toBlob")); }, mime, q);
     });
   }
 
@@ -371,6 +385,15 @@
       ctx.fillStyle = CFG.logoColor; ctx.fillText(label, lx, ly + lh / 2 + 1);
       return await new Promise(function (res, rej) { c.toBlob(function (b) { b ? res(b) : rej(new Error("toBlob")); }, "image/png"); });
     } catch (e) { return blob; }
+  };
+
+  // 色見本：線画と同じ枠・同じ配置で保存する（重ねるとぴったり合う）
+  window.rekupuriFrameSample = async function (lineBlob, sampleBlob) {
+    try {
+      return await frameBlob(lineBlob, sampleBlob, "image/jpeg");
+    } catch (e) {
+      return null;
+    }
   };
 
   window.rekupuriFrame = async function (blob) {

@@ -183,6 +183,13 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
       return await new Promise(res => cv.toBlob(b => res(b || blob), "image/jpeg", 0.92));
     } catch (e) { return blob; }
   }
+  async function getBlob0(n, file) {
+    let r = null;
+    try { r = await fetch(full(n, file), { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
+    if ((!r || !r.ok) && PROD) { try { r = await fetch("/api/dl?f=" + encodeURIComponent(file), { cache: "no-store" }); } catch (e) { r = null; } }
+    if (!r || !r.ok) throw new Error("load");
+    return await r.blob();
+  }
   async function getBlob(n, file) {
     let r = null;
     try { r = await fetch(full(n, file), { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
@@ -191,6 +198,9 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
     const b = await r.blob();
     if (file === n.file && kindOf(n) === "塗り絵" && window.rekupuriFrame) return await window.rekupuriFrame(b);
     if ((file === n.file || file === n.answer) && kindOf(n) === "脳トレ" && window.rekupuriStamp) return await window.rekupuriStamp(b);
+    if (file === n.sample && n.file && kindOf(n) === "塗り絵" && window.rekupuriFrameSample) {
+      try { const lb = await getBlob0(n, n.file); const fb = await window.rekupuriFrameSample(lb, b); if (fb) return fb; } catch (e) {}
+    }
     if (file === n.sample) return await stampSample(b);
     return b;
   }
