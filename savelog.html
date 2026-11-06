@@ -1307,7 +1307,8 @@
     var k = String(id).slice(0,4);
     var g = lastData && lastData.geo && lastData.geo[id];
     var mk = (g && DEV_MARK[g.m]) ? DEV_MARK[g.m] + " " : "";
-    return mk + (DEV_NAMES[k] || ("端末" + k));
+    var near = !DEV_NAMES[k] && g && /Open Computer Network/i.test(g.i || "") && (g.p === "京都府" || g.p === "大阪府");
+    return mk + (near ? "🏠 " : "") + (DEV_NAMES[k] || ("端末" + k));
   }
 
   function drawFeed(events, devs){
