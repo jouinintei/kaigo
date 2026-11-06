@@ -1318,4 +1318,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 日本地図", diff: "中級", file: "gotochi_nihonchizu.png", desc: "県境だけを描いた日本地図です。ご当地名産めぐりの塗り絵を1枚塗り終えるごとに、その県を地図で色分けして、日本一周をめざしましょう。", added: "2026-11", date: "2026-11-06", v: "1793966401014" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 大阪府", diff: "上級", file: "gotochi_osaka_jo.png", sample: "gotochi_osaka_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "大阪城と石垣、通天閣、岸和田のだんじり、道頓堀の川と石橋、たこ焼き（鉄板と舟皿）、お好み焼きとコテ、串カツ、堺の包丁、泉州の水なす", v: "1793968633882" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 大阪府（かんたん）", diff: "初級", file: "gotochi_osaka_sho.png", sample: "gotochi_osaka_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、大阪城、たこ焼き、通天閣、串カツ", v: "1793968633882" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 東京都", diff: "上級", file: "gotochi_tokyo_jo.png", sample: "gotochi_tokyo_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "浅草の雷門と大提灯、東京スカイツリー、隅田川の屋形船と橋、江戸前寿司、もんじゃ焼き、江戸切子のグラス、江戸風鈴、雷おこし", v: "1793968816242" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 東京都（かんたん）", diff: "初級", file: "gotochi_tokyo_sho.png", sample: "gotochi_tokyo_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、雷門、東京スカイツリー、江戸前寿司、江戸風鈴", v: "1793968816242" },
 ];
