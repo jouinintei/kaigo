@@ -1315,5 +1315,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 兵庫県（かんたん）", diff: "初級", file: "gotochi_hyogo_sho.png", sample: "gotochi_hyogo_sho_sample.jpg", desc: "4つのマスに1つずつ、姫路城、明石焼き、淡路島の玉ねぎ、灘の酒樽", added: "2026-11", date: "2026-11-06", v: "1793967322406" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 京都府", diff: "上級", file: "gotochi_kyoto_jo.png", sample: "gotochi_kyoto_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "八坂の塔と産寧坂の町並み、もみじ、賀茂なす、聖護院かぶら、湯豆腐、宇治の抹茶と茶筅、生八ツ橋、京扇子、清水焼の湯のみ、鴨川の流れ", v: "1793965247453" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 京都府（かんたん）", diff: "初級", file: "gotochi_kyoto_sho.png", sample: "gotochi_kyoto_sho_sample.jpg", desc: "4つのマスに1つずつ、八坂の塔、生八ツ橋、宇治の抹茶と茶筅、賀茂なすと聖護院かぶら", added: "2026-11", date: "2026-11-06", v: "1793967322406" },
-  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 日本地図", diff: "中級", file: "gotochi_nihonchizu.png", desc: "県境だけを描いた日本地図です。ご当地名産めぐりの塗り絵を1枚塗り終えるごとに、その県に色をぬって、日本一周をめざしましょう。", added: "2026-11", date: "2026-11-06", v: "1793966401014" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 日本地図", diff: "中級", file: "gotochi_nihonchizu.png", desc: "県境だけを描いた日本地図です。ご当地名産めぐりの塗り絵を1枚塗り終えるごとに、その県を地図で色分けして、日本一周をめざしましょう。", added: "2026-11", date: "2026-11-06", v: "1793966401014" },
 ];

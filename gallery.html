@@ -96,7 +96,7 @@
   const items=()=>LIST.filter(n=>kindOf(n)===KIND);
   const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
   const SER_RE=[[/^難読漢字/,"難読漢字"],[/^ことばさがし/,"ことばさがし"],[/^数字探し/,"数字探し"],[/^穴あき言葉/,"穴あき言葉"],[/^昭和の大スター穴埋め/,"昭和の大スター穴埋め"],[/^ことわざ穴埋め/,"ことわざ穴埋め"],[/^慣用句/,"慣用句"],[/^数の並び 次は何/,"数の並び 次は何?"],[/^ご当地名産めぐり/,"ご当地名産めぐり"]];
-  const NSER={"ご当地名産めぐり":{intro:["都道府県ごとに、その土地の名所と名産を1枚に集めた塗り絵のシリーズです。","塗りながら「行ったことある？」「食べたことある？」と、旅の思い出やふるさとの話にもつながります。"],uses:["出身地や旅行で行ったことのある県を選んで、昔の思い出話をしながら塗る","日本地図を壁に貼っておき、塗り終えた県に色をぬって、みんなで「日本一周」をめざす","同じ県でも、元気な方には上級、ゆっくり塗りたい方にはかんたん版と、難しさを分けて配る"],tail:"各々の施設やご家庭で使い方を工夫してみてください。"}};
+  const NSER={"ご当地名産めぐり":{intro:["都道府県ごとに、その土地の名所と名産を1枚に集めた塗り絵のシリーズです。","塗りながら「行ったことある？」「食べたことある？」と、旅の思い出やふるさとの話にもつながります。"],uses:["出身地や旅行で行ったことのある県を選んで、昔の思い出話をしながら塗る","日本地図を壁に貼っておき、塗り終えた県を地図で色分けして、みんなで「日本一周」をめざす","同じ県でも、元気な方には上級、ゆっくり塗りたい方にはかんたん版と、難しさを分けて配る"],tail:"各々の施設やご家庭で使い方を工夫してみてください。"}};
   const PREFS=["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","新潟","富山","石川","福井","山梨","長野","岐阜","静岡","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"];
   const prefNo=n=>{const t=String(n.title);if(/日本地図/.test(t))return -1;const i=PREFS.findIndex(p=>t.includes(p));return i<0?999:i;};
   const serKey=n=>{const t=String(n.title).replace(/\s*その\s*\d+\s*$/,"").trim();for(const [re,k] of SER_RE)if(re.test(t))return k;return t;};
@@ -104,9 +104,11 @@
   const serSort=g=>g.slice().sort((a,b)=>(NSER[serKey(a)]?prefNo(a)-prefNo(b):0)||serNo(a)-serNo(b)||String(a.title).localeCompare(String(b.title),"ja"));
   function groupNurie(a){const m=new Map(),out=[];a.forEach(n=>{const k=serKey(n);if(NSER[k]){if(!m.has(k)){m.set(k,[]);out.push([k,m.get(k)]);}m.get(k).push(n);}else out.push([null,[n]]);});return out;}
   function groupSeries(a){const m=new Map();a.forEach(n=>{const k=serKey(n);if(!m.has(k))m.set(k,[]);m.get(k).push(n);});return [...m.entries()];}
-  function serCard(k,g){const s=serSort(g),c=s[0],fresh=g.some(n=>RK.isNew&&RK.isNew(n));
+  const prefOf=n=>String(n.title).replace(/^ご当地名産めぐり\s*/,"").replace(/（.*?）/g,"").trim();
+  function serAdded(k,g){if(!NSER[k])return"";const f=g.filter(n=>RK.isNew&&RK.isNew(n)&&!/日本地図/.test(n.title));if(!f.length)return"";const L=RK.LIST;f.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))||L.indexOf(a)-L.indexOf(b));const ps=[...new Set(f.map(prefOf))];return ps.slice(0,3).join("・")+(ps.length>3?"など":"")+"を追加";}
+  function serCard(k,g){const s=serSort(g),c=s[0],fresh=g.some(n=>RK.isNew&&RK.isNew(n)),add=serAdded(k,g);
     return `<article class="card wk v ser"><div style="position:relative"><button class="ph" data-ser="${esc(k)}" aria-label="${esc(k)}のシリーズを開く"><img class="sk" loading="lazy" decoding="async" alt="" src="${RK.sthumb(c)}" onload="this.classList.remove('sk')"></button><span class="sercnt">全${g.length}枚</span>${fresh?'<span class="new">NEW</span>':""}</div>
-<div class="tt"><b>${esc(k)}</b><span>${esc([c.genre,"シリーズ・全"+g.length+"枚"].filter(Boolean).join(" ・ "))}</span></div><div class="acts one"><button class="btn p" data-ser="${esc(k)}">${g.length}枚を見る →</button></div></article>`;}
+<div class="tt"><b>${esc(k)}</b>${add?`<span class="seradd" style="display:block;color:#C8612A;font-weight:700">${esc(add)}</span>`:""}<span>${esc([c.genre,"シリーズ・全"+g.length+"枚"].filter(Boolean).join(" ・ "))}</span></div><div class="acts one"><button class="btn p" data-ser="${esc(k)}">${g.length}枚を見る →</button></div></article>`;}
   function renderSer(){
     const g=serSort(filtered().filter(n=>serKey(n)===st.ser));
     if(!g.length){st.ser="";return render0();}
