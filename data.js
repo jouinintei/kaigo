@@ -1284,4 +1284,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "食べ物", title: "トレイのパン", diff: "初級", file: "tray_no_pan_sho.png", sample: "tray_no_pan_sho_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793930748132" },
   { season: "通年", genre: "食べ物", title: "洋菓子店のショーケース", diff: "中級", file: "cake_showcase_chu.png", sample: "cake_showcase_chu_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793931781301" },
   { season: "秋", genre: "食べ物", title: "亥の子餅とお抹茶", diff: "初級", file: "inoko_mochi_sho.png", sample: "inoko_mochi_sho_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793932232694" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の大スター穴埋め 歌手編 その2", file: "showa_star_kashu2.png", answer: "showa_star_kashu2_ans.png", added: "2026-11", date: "2026-11-06" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の大スター穴埋め 俳優編 その2", file: "showa_star_haiyu2.png", answer: "showa_star_haiyu2_ans.png", added: "2026-11", date: "2026-11-06" },
 ];
