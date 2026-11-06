@@ -1392,4 +1392,8 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 島根県（かんたん）", diff: "初級", file: "gotochi_shimane_sho.png", sample: "gotochi_shimane_sho_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "4つのマスに1つずつ、出雲大社の大しめ縄、割子そば、しじみ汁、和菓子と抹茶", v: "1793982152554" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 岡山県", diff: "上級", file: "gotochi_okayama_jo.png", sample: "gotochi_okayama_jo_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "倉敷美観地区の白壁の蔵と柳・川舟、白桃、マスカット、きびだんご、ばら寿司", v: "1793982152554" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 岡山県（かんたん）", diff: "初級", file: "gotochi_okayama_sho.png", sample: "gotochi_okayama_sho_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "4つのマスに1つずつ、倉敷の白壁と柳、白桃、マスカット、きびだんご", v: "1793982152554" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 愛媛県", diff: "上級", file: "gotochi_ehime_jo.png", sample: "gotochi_ehime_jo_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "道後温泉本館と石畳、みかん、鯛めし、じゃこ天、砥部焼の器", v: "1793981936589" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 愛媛県（かんたん）", diff: "初級", file: "gotochi_ehime_sho.png", sample: "gotochi_ehime_sho_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "4つのマスに1つずつ、道後温泉本館、みかん、鯛めし、砥部焼の器", v: "1793981936589" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 高知県", diff: "上級", file: "gotochi_kochi_jo.png", sample: "gotochi_kochi_jo_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "四万十川の沈下橋と屋形船・山並み、かつおのたたき、柚子、文旦、芋けんぴ", v: "1793982172332" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 高知県（かんたん）", diff: "初級", file: "gotochi_kochi_sho.png", sample: "gotochi_kochi_sho_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "4つのマスに1つずつ、四万十川の沈下橋、かつおのたたき、柚子、文旦", v: "1793982172332" },
 ];
