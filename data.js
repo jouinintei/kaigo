@@ -1330,4 +1330,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 熊本県（かんたん）", diff: "初級", file: "gotochi_kumamoto_sho.png", sample: "gotochi_kumamoto_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、熊本城、からし蓮根、デコポン、いきなり団子", v: "1793971512584" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福島県", diff: "上級", file: "gotochi_fukushima_jo.png", sample: "gotochi_fukushima_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "会津のさざえ堂と杉木立、磐梯山、大内宿の茅葺きの家並み、赤べこ、福島の桃、喜多方ラーメン、会津塗りの椀", v: "1793971512584" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福島県（かんたん）", diff: "初級", file: "gotochi_fukushima_sho.png", sample: "gotochi_fukushima_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、会津のさざえ堂、赤べこ、桃、喜多方ラーメン", v: "1793971512584" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 沖縄県", diff: "上級", file: "gotochi_okinawa_jo.png", sample: "gotochi_okinawa_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "首里城正殿、赤瓦の家と屋根のシーサー、エメラルドの海、ハイビスカス、沖縄そば（ソーキそば）、ゴーヤチャンプルー、サーターアンダギー、パイナップル、三線", v: "1793972993352" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 沖縄県（かんたん）", diff: "初級", file: "gotochi_okinawa_sho.png", sample: "gotochi_okinawa_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、首里城、シーサー、ゴーヤ、サーターアンダギー", v: "1793972993352" },
 ];
