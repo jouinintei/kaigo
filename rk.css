@@ -142,6 +142,8 @@ html,body{overflow-x:clip}
 .pg button[aria-current=page]{background:var(--btn);border-color:var(--btn);color:#fff;font-weight:700}
 .pg button:disabled{opacity:.4;cursor:default}
 .pg .dots{color:var(--mute);padding:0 4px}
+.pgjump{display:flex;justify-content:center;align-items:center;gap:6px;margin:4px 0 8px;font-size:15px;color:var(--mute)}
+.pgjump select{height:44px;border-radius:10px;border:1px solid var(--line);font:inherit;font-size:17px;padding:0 10px;color:var(--ink);background:#fff;cursor:pointer}
 .pginfo{text-align:center;color:var(--mute);font-size:14px}
 
 .empty{text-align:center;padding:60px 20px}

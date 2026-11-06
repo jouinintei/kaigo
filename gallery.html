@@ -21,7 +21,7 @@
 <script src="/frame.js?v=12"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="/rk.css?v=1793190002">
+<link rel="stylesheet" href="/rk.css?v=1793933953">
 <style>
 .ph1 h1,.bar .big b,.mo b,.h2 h2,.md h2,.empty h3,.req h3{font-weight:700}
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
@@ -109,7 +109,7 @@
     main.innerHTML=head()+`<div class="serhd"><button class="btn g" data-serback>← 脳トレ一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div><div class="grid">${g.map(n=>card(n)).join("")}</div>`;
   }
   function openSer(k,push){st.ser=k;if(push){try{const u=new URL(location.href);if(k)u.searchParams.set("ser",k);else u.searchParams.delete("ser");history.pushState({ser:k},"",u);}catch(e){}}render();scrollTo({top:0});}
-  window.addEventListener("popstate",e=>{if(K!=="noutore")return;st.ser=(e.state&&e.state.ser)||new URL(location.href).searchParams.get("ser")||"";render();});
+  window.addEventListener("popstate",e=>{const pp=+(new URL(location.href).searchParams.get("p"))||1;if(pp!==st.page){st.page=pp;if(K!=="noutore"){render();return;}}if(K!=="noutore")return;st.ser=(e.state&&e.state.ser)||new URL(location.href).searchParams.get("ser")||"";render();});
   let YOMI={},YK=[],AUTO_T={};
   fetch("https://img.rekupuri.com/search/yomi.json",{mode:"cors"}).then(r=>r.ok?r.json():null).then(j=>{if(!j)return;AUTO_T=j.t||{};YOMI=j.w||{};YK=Object.keys(YOMI).sort((a,b)=>b.length-a.length);if(st.q)render();}).catch(()=>{});
   const withYomi=t=>{let a="";YK.forEach(k=>{if(t.indexOf(k)>=0)a+=YOMI[k];});return t+a;};
@@ -133,8 +133,9 @@
   }
   function pager(total,unit="枚"){
     const pages=Math.ceil(total/PER);if(pages<=1)return"";
-    const p=st.page,nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-p)<=1)nums.push(i);else if(nums[nums.length-1]!=="…")nums.push("…");}
-    return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav><p class="pginfo">${total}${unit}中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}${unit}目</p>`;
+    const p=st.page,nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-p)<=2||(pages>12&&i%(pages>40?20:10)===0))nums.push(i);else if(nums[nums.length-1]!=="…")nums.push("…");}
+    const jump=pages>8?`<div class="pgjump"><label>ページを選んで移動 <select class="pgsel" aria-label="ページを選んで移動">${Array.from({length:pages},(_,k)=>`<option value="${k+1}"${k+1===p?" selected":""}>${k+1}ページ</option>`).join("")}</select></label><span> / 全${pages}ページ</span></div>`:"";
+    return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav>${jump}<p class="pginfo">${total}${unit}中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}${unit}目</p>`;
   }
   const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K==="nurie"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
   function filters(){
@@ -168,6 +169,11 @@
   }
   function render(){
     render0();ftoggle();
+    if(K!=="fav"&&K!=="cal"){
+      const btn=main.querySelectorAll(".pg button[data-pg]");if(btn.length){const mx=Math.max(...[...btn].map(b=>+b.dataset.pg).filter(n=>n>0));if(st.page>mx&&mx>0){st.page=mx;return render();}}
+      try{const u=new URL(location.href);if(st.page>1)u.searchParams.set("p",st.page);else u.searchParams.delete("p");if(u.href!==location.href)history.replaceState(history.state,"",u);}catch(e){}
+      try{sessionStorage.setItem("rk_gal_"+K,JSON.stringify({page:st.page,season:st.season,genre:st.genre,diff:st.diff,q:st.q,sort:st.sort}));}catch(e){}
+    }
   }
   function render0(){
     if(K==="fav")return renderFav();
@@ -203,7 +209,7 @@
     else if(t.dataset.ftg!==undefined){fopen=!fopen;render();}
     else if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
     else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;st.ser="";render();}
-    else if(t.dataset.pg){st.page=+t.dataset.pg;render();const el=main.querySelector(".bar")||main.querySelector(".fl")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
+    else if(t.dataset.pg){const np=+t.dataset.pg;if(np!==st.page){try{const u=new URL(location.href);if(np>1)u.searchParams.set("p",np);else u.searchParams.delete("p");history.pushState(Object.assign({},history.state||{},{pg:np}),"",u);}catch(e){}}st.page=np;render();const el=main.querySelector(".bar")||main.querySelector(".fl")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
     else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1,unused:false});try{localStorage.setItem("rk_unused","0");}catch(e){}render();}
     else if(t.dataset.sort){if(t.dataset.sort==="rand"&&st.sort==="rand")seed=Math.random()*1e9|0;st.sort=t.dataset.sort;st.page=1;render();}
     else if(t.dataset.unused!==undefined){st.unused=!st.unused;try{localStorage.setItem("rk_unused",st.unused?"1":"0");}catch(e){}st.page=1;render();}
@@ -214,10 +220,14 @@
     else if(t.dataset.hreset){const k=t.dataset.hreset,nm=k==="save"?"保存":"印刷";if(!confirm(`${nm}の記録をすべて消しますか？\n（このパソコンの記録だけが消えます。元には戻せません）`))return;const n=RK.resetHist(k);render();RK.toast(`${nm}の記録をリセットしました`,n?`${n}件の記録を消しました`:"消す記録はありませんでした");}
     else if(t.dataset.bulk!==undefined){for(const f of st.sel){await RK.save(f,"bulk",null);await new Promise(r=>setTimeout(r,600));}RK.toast(`${st.sel.size}枚を保存しました`,"A4サイズで印刷してお使いください");}
   });
-  main.addEventListener("change",e=>{if(e.target.id==="genre")st.genre=e.target.value;if(e.target.id==="diff")st.diff=e.target.value;st.page=1;render();});
+  main.addEventListener("change",e=>{if(e.target.classList.contains("pgsel")){const b=document.createElement("button");b.dataset.pg=e.target.value;b.hidden=true;e.target.closest(".pgjump").appendChild(b);b.click();return;}if(e.target.id==="genre")st.genre=e.target.value;if(e.target.id==="diff")st.diff=e.target.value;st.page=1;render();});
   let qt;main.addEventListener("input",e=>{if(e.target.id!=="q")return;clearTimeout(qt);qt=setTimeout(()=>{st.q=e.target.value;st.page=1;const pos=e.target.selectionStart;render();const q=document.getElementById("q");q.focus();q.setSelectionRange(pos,pos);},300);});
   document.addEventListener("favchange",()=>{if(K==="fav")render();});
   main.innerHTML=head()+filters()+`<div class="grid" style="margin-top:24px">${skeleton(6)}</div>`;
+  (function(){const SK="rk_gal_"+K;let sv=null;try{sv=JSON.parse(sessionStorage.getItem(SK)||"null");}catch(e){}
+    const up=+qs.get("p");const explicit=["s","season","genre","q","sort","ser"].some(k=>qs.has(k));
+    if(sv&&!explicit){["season","genre","diff","q","sort"].forEach(k=>{if(sv[k]!==undefined)st[k]=sv[k];});st.page=sv.page||1;}
+    if(up>0)st.page=up;})();
   let rdone=0;const go=()=>{if(!rdone){rdone=1;render();}};requestAnimationFrame(()=>setTimeout(go,50));setTimeout(go,400);
 })();
 </script>
