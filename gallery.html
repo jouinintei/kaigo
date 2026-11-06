@@ -106,9 +106,9 @@
   function groupSeries(a){const m=new Map();a.forEach(n=>{const k=serKey(n);if(!m.has(k))m.set(k,[]);m.get(k).push(n);});return [...m.entries()];}
   const prefOf=n=>String(n.title).replace(/^ご当地名産めぐり\s*/,"").replace(/（.*?）/g,"").trim();
   function serAdded(k,g){if(!NSER[k])return"";const f=g.filter(n=>RK.isNew&&RK.isNew(n)&&!/日本地図/.test(n.title));if(!f.length)return"";const L=RK.LIST;f.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))||L.indexOf(a)-L.indexOf(b));const ps=[...new Set(f.map(prefOf))];return ps.slice(0,3).join("・")+(ps.length>3?"など":"")+"を追加";}
-  function serCard(k,g){const s=serSort(g),c=s[0],fresh=g.some(n=>RK.isNew&&RK.isNew(n)),add=serAdded(k,g);
+  function serCard(k,g){const s=serSort(g),c=s[0],fresh=g.some(n=>RK.isNew&&RK.isNew(n));
     return `<article class="card wk v ser"><div style="position:relative"><button class="ph" data-ser="${esc(k)}" aria-label="${esc(k)}のシリーズを開く"><img class="sk" loading="lazy" decoding="async" alt="" src="${RK.sthumb(c)}" onload="this.classList.remove('sk')"></button><span class="sercnt">全${g.length}枚</span>${fresh?'<span class="new">NEW</span>':""}</div>
-<div class="tt"><b>${esc(k)}</b>${add?`<span class="seradd" style="display:block;color:#C8612A;font-weight:700">${esc(add)}</span>`:""}<span>${esc([c.genre,"シリーズ・全"+g.length+"枚"].filter(Boolean).join(" ・ "))}</span></div><div class="acts one"><button class="btn p" data-ser="${esc(k)}">${g.length}枚を見る →</button></div></article>`;}
+<div class="tt"><b>${esc(k)}</b><span>${esc([c.genre,"シリーズ・全"+g.length+"枚"].filter(Boolean).join(" ・ "))}</span></div><div class="acts one"><button class="btn p" data-ser="${esc(k)}">${g.length}枚を見る →</button></div></article>`;}
   function renderSer(){
     const g=serSort(filtered().filter(n=>serKey(n)===st.ser));
     if(!g.length){st.ser="";return render0();}
