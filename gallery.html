@@ -133,7 +133,7 @@
   }
   function pager(total,unit="枚"){
     const pages=Math.ceil(total/PER);if(pages<=1)return"";
-    const p=st.page,nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-p)<=2)nums.push(i);else if(nums[nums.length-1]!=="…")nums.push("…");}
+    const p=st.page,nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-p)<=2||i===p+20)nums.push(i);else if(nums[nums.length-1]!=="…")nums.push("…");}
     const jump=pages>8?`<div class="pgjump"><label>ページを選んで移動 <select class="pgsel" aria-label="ページを選んで移動">${Array.from({length:pages},(_,k)=>`<option value="${k+1}"${k+1===p?" selected":""}>${k+1}ページ</option>`).join("")}</select></label><span> / 全${pages}ページ</span></div>`:"";
     return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav>${jump}<p class="pginfo">${total}${unit}中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}${unit}目</p>`;
   }
