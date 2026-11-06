@@ -1324,4 +1324,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 北海道（かんたん）", diff: "初級", file: "gotochi_hokkaido_sho.png", sample: "gotochi_hokkaido_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、札幌の時計台、毛ガニ、とうもろこし、夕張メロン", v: "1793969271068" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福岡県", diff: "上級", file: "gotochi_fukuoka_jo.png", sample: "gotochi_fukuoka_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "太宰府天満宮と飛梅、福岡タワー、那珂川と中洲の屋台、博多とんこつラーメン、もつ鍋、明太子、あまおう苺、梅ヶ枝餅", v: "1793970084330" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福岡県（かんたん）", diff: "初級", file: "gotochi_fukuoka_sho.png", sample: "gotochi_fukuoka_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、福岡タワー、博多ラーメン、明太子、あまおう苺", v: "1793969271068" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 愛知県", diff: "上級", file: "gotochi_aichi_jo.png", sample: "gotochi_aichi_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "名古屋城と金のしゃちほこ、常滑焼の急須と湯のみ、瀬戸焼の大皿、ひつまぶし、味噌カツ、手羽先、天むす、小倉トースト", v: "1793971125599" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 愛知県（かんたん）", diff: "初級", file: "gotochi_aichi_sho.png", sample: "gotochi_aichi_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、名古屋城、ひつまぶし、手羽先、小倉トースト", v: "1793971125599" },
 ];
