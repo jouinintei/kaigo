@@ -95,10 +95,14 @@
   const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],wall:["壁紙作り","みんなで塗って、つなげると壁一面の作品になる大きな塗り絵です。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
   const items=()=>LIST.filter(n=>kindOf(n)===KIND);
   const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
-  const SER_RE=[[/^難読漢字/,"難読漢字"],[/^ことばさがし/,"ことばさがし"],[/^数字探し/,"数字探し"],[/^穴あき言葉/,"穴あき言葉"],[/^昭和の大スター穴埋め/,"昭和の大スター穴埋め"],[/^ことわざ穴埋め/,"ことわざ穴埋め"],[/^慣用句/,"慣用句"],[/^数の並び 次は何/,"数の並び 次は何?"]];
+  const SER_RE=[[/^難読漢字/,"難読漢字"],[/^ことばさがし/,"ことばさがし"],[/^数字探し/,"数字探し"],[/^穴あき言葉/,"穴あき言葉"],[/^昭和の大スター穴埋め/,"昭和の大スター穴埋め"],[/^ことわざ穴埋め/,"ことわざ穴埋め"],[/^慣用句/,"慣用句"],[/^数の並び 次は何/,"数の並び 次は何?"],[/^ご当地名産めぐり/,"ご当地名産めぐり"]];
+  const NSER={"ご当地名産めぐり":{intro:"都道府県ごとに、その土地の名所と名産を1枚に集めた塗り絵のシリーズです。塗りながら「行ったことある？」「食べたことある？」と、旅の思い出やふるさとの話にもつながります。少しずつ県を増やしていきます。"}};
+  const PREF="北海道青森岩手宮城秋田山形福島茨城栃木群馬埼玉千葉東京神奈川新潟富山石川福井山梨長野岐阜静岡愛知三重滋賀京都大阪兵庫奈良和歌山鳥取島根岡山広島山口徳島香川愛媛高知福岡佐賀長崎熊本大分宮崎鹿児島沖縄";
+  const prefNo=n=>{const m=String(n.title).match(/(北海道|東京|京都|大阪|神奈川|和歌山|鹿児島|..)(都|道|府|県)?$/);const i=m?PREF.indexOf(m[1]):-1;return i<0?999:i;};
   const serKey=n=>{const t=String(n.title).replace(/\s*その\s*\d+\s*$/,"").trim();for(const [re,k] of SER_RE)if(re.test(t))return k;return t;};
   const serNo=n=>{const m=String(n.title).match(/その\s*(\d+)\s*$/);return m?+m[1]:(/上級$/.test(n.title)?99:1);};
-  const serSort=g=>g.slice().sort((a,b)=>serNo(a)-serNo(b)||String(a.title).localeCompare(String(b.title),"ja"));
+  const serSort=g=>g.slice().sort((a,b)=>(NSER[serKey(a)]?prefNo(a)-prefNo(b):0)||serNo(a)-serNo(b)||String(a.title).localeCompare(String(b.title),"ja"));
+  function groupNurie(a){const m=new Map(),out=[];a.forEach(n=>{const k=serKey(n);if(NSER[k]){if(!m.has(k)){m.set(k,[]);out.push([k,m.get(k)]);}m.get(k).push(n);}else out.push([null,[n]]);});return out;}
   function groupSeries(a){const m=new Map();a.forEach(n=>{const k=serKey(n);if(!m.has(k))m.set(k,[]);m.get(k).push(n);});return [...m.entries()];}
   function serCard(k,g){const s=serSort(g),c=s[0],fresh=g.some(n=>RK.isNew&&RK.isNew(n));
     return `<article class="card wk v ser"><div style="position:relative"><button class="ph" data-ser="${esc(k)}" aria-label="${esc(k)}のシリーズを開く"><img class="sk" loading="lazy" decoding="async" alt="" src="${RK.sthumb(c)}" onload="this.classList.remove('sk')"></button><span class="sercnt">全${g.length}枚</span>${fresh?'<span class="new">NEW</span>':""}</div>
@@ -106,10 +110,12 @@
   function renderSer(){
     const g=serSort(filtered().filter(n=>serKey(n)===st.ser));
     if(!g.length){st.ser="";return render0();}
-    main.innerHTML=head()+`<div class="serhd"><button class="btn g" data-serback>← 脳トレ一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div><div class="grid">${g.map(n=>card(n)).join("")}</div>`;
+    const ns=NSER[st.ser];
+    const cd=n=>{const c=card(n);if(!ns||!n.desc)return c;const i=c.lastIndexOf("</article>");return c.slice(0,i)+`<div class="gdesc" style="margin:4px 14px 14px;padding:10px 12px;background:var(--bg2,#f7f3ee);border-radius:10px;font-size:15px;line-height:1.7"><b style="display:block;font-size:14px;color:var(--sub,#6b6b6b)">描かれているもの</b>${esc(n.desc)}</div>`+c.slice(i);};
+    main.innerHTML=head()+`<div class="serhd"><button class="btn g" data-serback>← ${K==="nurie"?"塗り絵":"脳トレ"}一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div>${ns?`<div class="wabout"><h3>${esc(st.ser)}とは？</h3><p>${esc(ns.intro)}</p></div>`:""}<div class="grid">${g.map(cd).join("")}</div>`;
   }
   function openSer(k,push){st.ser=k;if(push){try{const u=new URL(location.href);if(k)u.searchParams.set("ser",k);else u.searchParams.delete("ser");history.pushState({ser:k},"",u);}catch(e){}}render();scrollTo({top:0});}
-  window.addEventListener("popstate",e=>{const pp=+(new URL(location.href).searchParams.get("p"))||1;if(pp!==st.page){st.page=pp;if(K!=="noutore"){render();return;}}if(K!=="noutore")return;st.ser=(e.state&&e.state.ser)||new URL(location.href).searchParams.get("ser")||"";render();});
+  window.addEventListener("popstate",e=>{const pp=+(new URL(location.href).searchParams.get("p"))||1;if(pp!==st.page){st.page=pp;if(K!=="noutore"&&K!=="nurie"){render();return;}}if(K!=="noutore"&&K!=="nurie")return;st.ser=(e.state&&e.state.ser)||new URL(location.href).searchParams.get("ser")||"";render();});
   let YOMI={},YK=[],AUTO_T={};
   fetch("https://img.rekupuri.com/search/yomi.json",{mode:"cors"}).then(r=>r.ok?r.json():null).then(j=>{if(!j)return;AUTO_T=j.t||{};YOMI=j.w||{};YK=Object.keys(YOMI).sort((a,b)=>b.length-a.length);if(st.q)render();}).catch(()=>{});
   const withYomi=t=>{let a="";YK.forEach(k=>{if(t.indexOf(k)>=0)a+=YOMI[k];});return t+a;};
@@ -178,13 +184,13 @@
   function render0(){
     if(K==="fav")return renderFav();
     if(K==="cal")return renderCal();
-    if(K==="noutore"&&st.ser)return renderSer();
+    if((K==="noutore"||K==="nurie")&&st.ser)return renderSer();
     const a=filtered(),tot=a.length;
-    const units=K==="noutore"?groupSeries(a):a.map(n=>[null,[n]]);
+    const units=K==="noutore"?groupSeries(a):(K==="nurie"&&!st.genre&&!st.q)?groupNurie(a):a.map(n=>[null,[n]]);
     const pages=Math.max(1,Math.ceil(units.length/PER));if(st.page>pages)st.page=pages;
     const pageItems=units.slice((st.page-1)*PER,st.page*PER);
     main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、何枚かのA4用紙に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面の大きな作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>分けた塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p><p><b>推奨人数</b>は、分けた紙の枚数と同じです（一人1枚）。</p><p>印刷すると紙のまわりに白いふちが出ます。<b>白いふちは、のりしろに使うか、切り取るかして</b>貼り合わせてください。</p><p class="wtry">壁紙作りはお試し中のコーナーです。使ってみた感想を、ぜひ<a href="/contact.html?type=壁紙作りの感想">お聞かせください</a>。仕上がった作品の写真も大歓迎です。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
-      (tot?`<div class="grid">${pageItems.map(([k,g])=>g.length>1?serCard(k,g):card(g[0])).join("")}</div>${pager(units.length,K==="noutore"?"件":"枚")}`:
+      (tot?`<div class="grid">${pageItems.map(([k,g])=>(k&&(g.length>1||NSER[k]))?serCard(k,g):card(g[0])).join("")}</div>${pager(units.length,K==="noutore"?"件":"枚")}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><button class="btn p" data-reset>条件をリセット</button></div>`);
   }
   function renderCal(){

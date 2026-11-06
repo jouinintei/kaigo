@@ -1309,7 +1309,7 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その4", file: "showa_kayou_sen4.png", answer: "showa_kayou_sen4_ans.png", added: "2026-11", date: "2026-11-06" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その5", file: "showa_kayou_sen5.png", answer: "showa_kayou_sen5_ans.png", added: "2026-11", date: "2026-11-06" },
   { season: "通年", genre: "風景", title: "竜宮城と玉手箱", diff: "上級", file: "ryugujo_tamatebako_jo.png", sample: "ryugujo_tamatebako_jo_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793950323434" },
-  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 埼玉県", diff: "上級", file: "saitama_chu.png", sample: "saitama_chu_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793955229855" },
-  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 兵庫県", diff: "上級", file: "hyogo_chu.png", sample: "hyogo_chu_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793964834529" },
-  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 京都府", diff: "上級", file: "gotochi_kyoto_jo.png", sample: "gotochi_kyoto_jo_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793965247453" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 埼玉県", diff: "上級", file: "saitama_chu.png", sample: "saitama_chu_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "川越の「時の鐘」と蔵造りの町並み、越谷だるま、岩槻のひな人形、草加せんべい、川越のさつまいも、狭山茶、深谷ねぎ、秩父の芝桜", v: "1793955229855" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 兵庫県", diff: "上級", file: "hyogo_chu.png", sample: "hyogo_chu_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "姫路城（白鷺城）と石垣、明石焼き、灘の酒（酒樽と徳利）、淡路島の玉ねぎ、神戸牛と但馬牛の置物、丹波の黒豆、播州そろばん、瀬戸内海の波", v: "1793964834529" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 京都府", diff: "上級", file: "gotochi_kyoto_jo.png", sample: "gotochi_kyoto_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "八坂の塔と産寧坂の町並み、もみじ、賀茂なす、聖護院かぶら、湯豆腐、宇治の抹茶と茶筅、生八ツ橋、京扇子、清水焼の湯のみ、鴨川の流れ", v: "1793965247453" },
 ];
