@@ -1332,4 +1332,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福島県（かんたん）", diff: "初級", file: "gotochi_fukushima_sho.png", sample: "gotochi_fukushima_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、会津のさざえ堂、赤べこ、桃、喜多方ラーメン", v: "1793971512584" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 沖縄県", diff: "上級", file: "gotochi_okinawa_jo.png", sample: "gotochi_okinawa_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "首里城正殿、赤瓦の家と屋根のシーサー、エメラルドの海、ハイビスカス、沖縄そば（ソーキそば）、ゴーヤチャンプルー、サーターアンダギー、パイナップル、三線", v: "1793972993352" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 沖縄県（かんたん）", diff: "初級", file: "gotochi_okinawa_sho.png", sample: "gotochi_okinawa_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、首里城、シーサー、ゴーヤ、サーターアンダギー", v: "1793972993352" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 奈良県", diff: "上級", file: "gotochi_nara_jo.png", sample: "gotochi_nara_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "東大寺の大仏さま（盧舎那仏）、奈良公園の鹿、興福寺の五重塔、柿の葉寿司、柿、三輪そうめん、奈良墨と筆、奈良漬", v: "1793973224003" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 奈良県（かんたん）", diff: "初級", file: "gotochi_nara_sho.png", sample: "gotochi_nara_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、奈良の大仏さま、鹿、柿の葉寿司、柿", v: "1793973224003" },
 ];
