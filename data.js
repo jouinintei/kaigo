@@ -1286,4 +1286,9 @@ window.NURIE_LIST = [
   { season: "秋", genre: "食べ物", title: "亥の子餅とお抹茶", diff: "初級", file: "inoko_mochi_sho.png", sample: "inoko_mochi_sho_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793932232694" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の大スター穴埋め 歌手編 その2", file: "showa_star_kashu2.png", answer: "showa_star_kashu2_ans.png", added: "2026-11", date: "2026-11-06" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の大スター穴埋め 俳優編 その2", file: "showa_star_haiyu2.png", answer: "showa_star_haiyu2_ans.png", added: "2026-11", date: "2026-11-06" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その1", file: "showa_kayou_sen1.png", answer: "showa_kayou_sen1_ans.png", added: "2026-11", date: "2026-11-06" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その2", file: "showa_kayou_sen2.png", answer: "showa_kayou_sen2_ans.png", added: "2026-11", date: "2026-11-06" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その3", file: "showa_kayou_sen3.png", answer: "showa_kayou_sen3_ans.png", added: "2026-11", date: "2026-11-06" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その4", file: "showa_kayou_sen4.png", answer: "showa_kayou_sen4_ans.png", added: "2026-11", date: "2026-11-06" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その5", file: "showa_kayou_sen5.png", answer: "showa_kayou_sen5_ans.png", added: "2026-11", date: "2026-11-06" },
 ];
