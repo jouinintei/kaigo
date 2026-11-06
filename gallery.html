@@ -112,7 +112,7 @@
     if(!g.length){st.ser="";return render0();}
     const ns=NSER[st.ser];
     const cd=n=>{const c=card(n);if(!ns||!n.desc)return c;const i=c.lastIndexOf("</article>");return c.slice(0,i)+`<div class="gdesc" style="margin:4px 14px 14px;padding:10px 12px;background:var(--bg2,#f7f3ee);border-radius:10px;font-size:15px;line-height:1.7"><b style="display:block;font-size:14px;color:var(--sub,#6b6b6b)">描かれているもの</b>${esc(n.desc)}</div>`+c.slice(i);};
-    main.innerHTML=head()+`<div class="serhd"><button class="btn g" data-serback>← ${K==="nurie"?"塗り絵":"脳トレ"}一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div>${ns?`<div class="wabout"><h3>${esc(st.ser)}とは？</h3><p>${esc(ns.intro)}</p></div>`:""}<div class="grid">${g.map(cd).join("")}</div>`;
+    main.innerHTML=head(!!ns)+`<div class="serhd"><button class="btn g" data-serback>← ${K==="nurie"?"塗り絵":"脳トレ"}一覧にもどる</button><h2>${esc(st.ser)}<small>（全${g.length}枚）</small></h2></div>${ns?`<div class="wabout"><h3>${esc(st.ser)}とは？</h3><p>${esc(ns.intro)}</p></div>`:""}<div class="grid">${g.map(cd).join("")}</div>`;
   }
   function openSer(k,push){st.ser=k;if(push){try{const u=new URL(location.href);if(k)u.searchParams.set("ser",k);else u.searchParams.delete("ser");history.pushState({ser:k},"",u);}catch(e){}}render();scrollTo({top:0});}
   window.addEventListener("popstate",e=>{const pp=+(new URL(location.href).searchParams.get("p"))||1;if(pp!==st.page){st.page=pp;if(K!=="noutore"&&K!=="nurie"){render();return;}}if(K!=="noutore"&&K!=="nurie")return;st.ser=(e.state&&e.state.ser)||new URL(location.href).searchParams.get("ser")||"";render();});
@@ -143,7 +143,7 @@
     const jump=pages>8?`<div class="pgjump"><label>ページを選んで移動 <select class="pgsel" aria-label="ページを選んで移動">${Array.from({length:pages},(_,k)=>`<option value="${k+1}"${k+1===p?" selected":""}>${k+1}ページ</option>`).join("")}</select></label><span> / 全${pages}ページ</span></div>`:"";
     return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav>${jump}<p class="pginfo">${total}${unit}中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}${unit}目</p>`;
   }
-  const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K==="nurie"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
+  const head=(ns)=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K==="nurie"&&!ns?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
   function filters(){
     if(K==="nurie")return `<div class="fl"><div class="chr">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}</div><span class="sp"></span><div class="slr">
 <label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option value="${g}"${st.genre===g?" selected":""}>ジャンル：${g}</option>`).join("")}</select></label>
