@@ -1338,4 +1338,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 青森県（かんたん）", diff: "初級", file: "gotochi_aomori_sho.png", sample: "gotochi_aomori_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、ねぶた、りんご、ほたて、金魚ねぶた", v: "1793973465669" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 広島県", diff: "上級", file: "gotochi_hiroshima_jo.png", sample: "gotochi_hiroshima_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "宮島・厳島神社の大鳥居と海に建つ社殿、弥山、もみじ、焼き牡蠣、広島風お好み焼き、もみじ饅頭、宮島しゃもじ、レモン", v: "1793974079065" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 広島県（かんたん）", diff: "初級", file: "gotochi_hiroshima_sho.png", sample: "gotochi_hiroshima_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、厳島神社の大鳥居、牡蠣、もみじ饅頭、広島風お好み焼き", v: "1793974079065" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 山口県", diff: "上級", file: "gotochi_yamaguchi_jo.png", sample: "gotochi_yamaguchi_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "岩国の錦帯橋と錦川、角島大橋とエメラルドの海、ふぐ刺し、ふぐ提灯、瓦そば、夏みかん、萩焼の茶碗", v: "1793974178548" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 山口県（かんたん）", diff: "初級", file: "gotochi_yamaguchi_sho.png", sample: "gotochi_yamaguchi_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、錦帯橋、ふぐ刺し、瓦そば、夏みかん", v: "1793974178548" },
 ];
