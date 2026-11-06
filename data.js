@@ -1344,4 +1344,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 神奈川県（かんたん）", diff: "初級", file: "gotochi_kanagawa_sho.png", sample: "gotochi_kanagawa_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、横浜の赤レンガ倉庫、江ノ電、シウマイ、箱根の黒たまご", v: "1793974457283" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 静岡県", diff: "上級", file: "gotochi_shizuoka_jo.png", sample: "gotochi_shizuoka_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "富士山と茶畑、三保の松原と駿河湾、緑茶と急須、浜名湖のうなぎ（うな重）、わさびとおろし金、静岡おでん、みかん", v: "1793974990198" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 静岡県（かんたん）", diff: "初級", file: "gotochi_shizuoka_sho.png", sample: "gotochi_shizuoka_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、富士山と茶畑、急須とお茶、うな重、みかん", v: "1793974990198" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福井県", diff: "上級", file: "gotochi_fukui_jo.png", sample: "gotochi_fukui_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "東尋坊の断崖と日本海の荒波、恐竜（フクイラプトル）、越前がに、越前おろしそば、鯖江のめがね、羽二重餅、若狭塗の箸", v: "1793975020629" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福井県（かんたん）", diff: "初級", file: "gotochi_fukui_sho.png", sample: "gotochi_fukui_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、恐竜、越前がに、めがね、越前おろしそば", v: "1793975020629" },
 ];
