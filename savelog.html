@@ -1171,25 +1171,14 @@
 
   function drawTiles(dayTotal, totals, devs){
     var t = todayKey(), y = shiftKey(t,-1);
-    var week = 0;
-    for (var i=0;i<7;i++) week += dayTotal[shiftKey(t,-i)] || 0;
     var all = 0;
     Object.keys(totals).forEach(function(f){ all += totals[f]; });
-    var kinds = 0;
-    Object.keys(totals).forEach(function(){ kinds++; });
-
-    var weekDev = {};
-    for (var j=0;j<7;j++){
-      var o = devs[shiftKey(t,-j)] || {};
-      Object.keys(o).forEach(function(id){ weekDev[id] = 1; });
-    }
 
     var rows = [
       ["今日の保存", dayTotal[t] || 0, "件"],
       ["今日の端末", Object.keys(devs[t] || {}).length, "台"],
-      ["昨日", dayTotal[y] || 0, "件"],
-      ["この7日間", week, "件"],
-      ["7日間の端末", Object.keys(weekDev).length, "台"],
+      ["昨日の保存", dayTotal[y] || 0, "件"],
+      ["昨日の端末", Object.keys(devs[y] || {}).length, "台"],
       ["累計", all, "件"]
     ];
     document.getElementById("tiles").innerHTML = rows.map(function(r){
