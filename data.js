@@ -37,6 +37,7 @@ window.NURIE_LIST = [
   { season: "夏", genre: "花", title: "花菖蒲", diff: "初級", file: "hanashobu_sho.png", sample: "hanashobu_sho_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793944918562" },
   { season: "春", genre: "食べ物", title: "桜餅", diff: "初級", file: "sakuramochi_sara_sho.png", sample: "sakuramochi_sara_sho_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793944918562" },
   { season: "春", genre: "花", title: "梅の枝", diff: "初級", file: "ume_eda_sho.png", sample: "ume_eda_sho_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793944918562" },
+  { season: "夏", genre: "食べ物", title: "メロン", diff: "初級", file: "melon_sho.png", sample: "melon_sho_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793950235880" },
   { season: "夏", genre: "花", title: "百日紅", diff: "中級", file: "sarusuberi_chu.png", sample: "sarusuberi_chu_sample.jpg", v: "1792512134682" },
   { season: "夏", genre: "花", title: "蓮", diff: "初級", file: "hasu_chu.png", sample: "hasu_chu_sample.jpg", v: "1792512202151" },
   { season: "夏", genre: "食べ物", title: "かき氷", diff: "初級", file: "kakigori_sho.png", sample: "kakigori_sho_sample.jpg", v: "1792494189037" },
@@ -1307,4 +1308,5 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その3", file: "showa_kayou_sen3.png", answer: "showa_kayou_sen3_ans.png", added: "2026-11", date: "2026-11-06" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その4", file: "showa_kayou_sen4.png", answer: "showa_kayou_sen4_ans.png", added: "2026-11", date: "2026-11-06" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "昭和の歌手と名曲 線つなぎ その5", file: "showa_kayou_sen5.png", answer: "showa_kayou_sen5_ans.png", added: "2026-11", date: "2026-11-06" },
+  { season: "通年", genre: "風景", title: "竜宮城と玉手箱", diff: "上級", file: "ryugujo_tamatebako_jo.png", sample: "ryugujo_tamatebako_jo_sample.jpg", added: "2026-11", date: "2026-11-06", v: "1793950323434" },
 ];
