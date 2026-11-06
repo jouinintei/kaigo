@@ -217,7 +217,7 @@ export async function onRequest({ request, env }) {
           O.ev.push(oe);
         });
         putGeo(cur.data, odid, geoOf(request));
-        if (oent) {
+        if (oent && openBody.ent.c !== 0) {
           if (!cur.data.ent[odid]) cur.data.ent[odid] = {};
           cur.data.ent[odid][oent] = (cur.data.ent[odid][oent] || 0) + 1;
         }
@@ -273,7 +273,7 @@ export async function onRequest({ request, env }) {
   let did = "";
   let srcs = [];
   let ctxs = [];
-  let ent = null;
+  let ent = null, entCount = true;
   try {
     const b = await request.json();
     files = Array.isArray(b.files) ? b.files : [];
@@ -283,6 +283,7 @@ export async function onRequest({ request, env }) {
       const k = String(b.ent.k || "").replace(/[^a-z]/g, "").slice(0, 10);
       const h = String(b.ent.h || "").toLowerCase().replace(/[^a-z0-9.-]/g, "").slice(0, 40);
       if (k) ent = k === "other" && h ? "o:" + h : k;
+      entCount = b.ent.c !== 0;
     }
     did = String(b.did || "").replace(/[^a-z0-9]/gi, "").slice(0, 16);
   } catch (e) {}
@@ -311,7 +312,7 @@ export async function onRequest({ request, env }) {
       if (!d.days[day]) d.days[day] = {};
       if (!d.devs[day]) d.devs[day] = {};
       if (!d.src[day]) d.src[day] = {};
-      if (ent) {
+      if (ent && entCount) {
         if (!d.ent[did]) d.ent[did] = {};
         d.ent[did][ent] = (d.ent[did][ent] || 0) + 1;
       }

@@ -142,7 +142,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
     return id;
   }
   function entOnce(flag) {
-    try { if (!sessionStorage.getItem(flag)) { const e = JSON.parse(sessionStorage.getItem("rk_ent") || "null"); if (e) sessionStorage.setItem(flag, "1"); return e; } } catch (e) {}
+    try { if (!sessionStorage.getItem(flag)) { const e = JSON.parse(sessionStorage.getItem("rk_ent") || "null"); if (e) { sessionStorage.setItem(flag, "1"); const c = sessionStorage.getItem("rk_ent_cnt") ? 0 : 1; sessionStorage.setItem("rk_ent_cnt", "1"); e.c = c; } return e; } } catch (e) {}
     return null;
   }
   const API = ROOT + "api/log-save";
