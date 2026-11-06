@@ -1326,4 +1326,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福岡県（かんたん）", diff: "初級", file: "gotochi_fukuoka_sho.png", sample: "gotochi_fukuoka_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、福岡タワー、博多ラーメン、明太子、あまおう苺", v: "1793969271068" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 愛知県", diff: "上級", file: "gotochi_aichi_jo.png", sample: "gotochi_aichi_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "名古屋城と金のしゃちほこ、常滑焼の急須と湯のみ、瀬戸焼の大皿、ひつまぶし、味噌カツ、手羽先、天むす、小倉トースト", v: "1793971125599" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 愛知県（かんたん）", diff: "初級", file: "gotochi_aichi_sho.png", sample: "gotochi_aichi_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、名古屋城、ひつまぶし、手羽先、小倉トースト", v: "1793971125599" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 熊本県", diff: "上級", file: "gotochi_kumamoto_jo.png", sample: "gotochi_kumamoto_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "熊本城と石垣、阿蘇の草千里と馬、阿蘇山、からし蓮根、いきなり団子、デコポン、スイカ、熊本ラーメン、肥後てまり", v: "1793971279119" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 熊本県（かんたん）", diff: "初級", file: "gotochi_kumamoto_sho.png", sample: "gotochi_kumamoto_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、熊本城、からし蓮根、デコポン、いきなり団子", v: "1793971279119" },
 ];
