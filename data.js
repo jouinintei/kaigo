@@ -1348,4 +1348,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福井県（かんたん）", diff: "初級", file: "gotochi_fukui_sho.png", sample: "gotochi_fukui_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、恐竜、越前がに、めがね、越前おろしそば", v: "1793975262932" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 和歌山県", diff: "上級", file: "gotochi_wakayama_jo.png", sample: "gotochi_wakayama_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "那智の滝と青岸渡寺の三重塔、白浜の円月島、紀州南高梅の梅干し、有田みかん、めはり寿司、和歌山ラーメン", v: "1793975262932" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 和歌山県（かんたん）", diff: "初級", file: "gotochi_wakayama_sho.png", sample: "gotochi_wakayama_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、三重塔と那智の滝、梅干し、みかん、めはり寿司", v: "1793975262932" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 長野県", diff: "上級", file: "gotochi_nagano_jo.png", sample: "gotochi_nagano_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "松本城とお堀・赤い橋、北アルプス、りんご畑、信州そば、おやき、ぶどう、信州りんご、野沢菜漬け", v: "1793975812031" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 長野県（かんたん）", diff: "初級", file: "gotochi_nagano_sho.png", sample: "gotochi_nagano_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、松本城、信州そば、おやき、りんごとぶどう", v: "1793975812031" },
 ];
