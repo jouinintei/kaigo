@@ -1322,4 +1322,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 東京都（かんたん）", diff: "初級", file: "gotochi_tokyo_sho.png", sample: "gotochi_tokyo_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、雷門、東京スカイツリー、江戸前寿司、江戸風鈴", v: "1793968816242" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 北海道", diff: "上級", file: "gotochi_hokkaido_jo.png", sample: "gotochi_hokkaido_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "札幌の時計台、富良野のラベンダー畑、牧場の乳牛、丹頂鶴、毛ガニ、夕張メロン、とうもろこし、じゃがバター、ラーメン、新巻鮭", v: "1793969023899" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 北海道（かんたん）", diff: "初級", file: "gotochi_hokkaido_sho.png", sample: "gotochi_hokkaido_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、札幌の時計台、毛ガニ、とうもろこし、夕張メロン", v: "1793969023899" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福岡県", diff: "上級", file: "gotochi_fukuoka_jo.png", sample: "gotochi_fukuoka_jo_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "太宰府天満宮と飛梅、福岡タワー、那珂川と中洲の屋台、博多とんこつラーメン、もつ鍋、明太子、あまおう苺、梅ヶ枝餅", v: "1793969159857" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 福岡県（かんたん）", diff: "初級", file: "gotochi_fukuoka_sho.png", sample: "gotochi_fukuoka_sho_sample.jpg", added: "2026-11", date: "2026-11-06", desc: "4つのマスに1つずつ、福岡タワー、博多ラーメン、明太子、あまおう苺", v: "1793969159857" },
 ];
