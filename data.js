@@ -1396,4 +1396,8 @@ window.NURIE_LIST = [
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 愛媛県（かんたん）", diff: "初級", file: "gotochi_ehime_sho.png", sample: "gotochi_ehime_sho_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "4つのマスに1つずつ、道後温泉本館、みかん、鯛めし、砥部焼の器", v: "1793982639022" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 高知県", diff: "上級", file: "gotochi_kochi_jo.png", sample: "gotochi_kochi_jo_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "四万十川の沈下橋と屋形船・山並み、かつおのたたき、柚子、文旦、芋けんぴ", v: "1793982639022" },
   { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 高知県（かんたん）", diff: "初級", file: "gotochi_kochi_sho.png", sample: "gotochi_kochi_sho_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "4つのマスに1つずつ、四万十川の沈下橋、かつおのたたき、柚子、文旦", v: "1793982639022" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 佐賀県", diff: "上級", file: "gotochi_saga_jo.png", sample: "gotochi_saga_jo_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "祐徳稲荷神社の朱色の本殿と鳥居・石段、呼子のイカの活き造り、佐賀牛、有田焼の器、小城羊羹", v: "1793982172349" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 佐賀県（かんたん）", diff: "初級", file: "gotochi_saga_sho.png", sample: "gotochi_saga_sho_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "4つのマスに1つずつ、祐徳稲荷神社、イカの活き造り、有田焼の器、小城羊羹", v: "1793982172349" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 長崎県", diff: "上級", file: "gotochi_nagasaki_jo.png", sample: "gotochi_nagasaki_jo_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "眼鏡橋と中島川・柳、長崎ちゃんぽん、カステラ、皿うどん、角煮まんじゅう", v: "1793982501236" },
+  { season: "通年", genre: "都道府県", title: "ご当地名産めぐり 長崎県（かんたん）", diff: "初級", file: "gotochi_nagasaki_sho.png", sample: "gotochi_nagasaki_sho_sample.jpg", added: "2026-11", date: "2026-11-07", desc: "4つのマスに1つずつ、眼鏡橋、ちゃんぽん、カステラ、角煮まんじゅう", v: "1793982501236" },
 ];
