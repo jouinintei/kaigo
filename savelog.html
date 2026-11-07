@@ -363,7 +363,7 @@
     <div class="card-head">
       <div>
         <h2>都道府県（ご当地名産めぐり）</h2>
-        <p class="note">端末ごとに、どの県の何を開いた・保存したかを出しています（新しい順）。端末を押すと県ごとの内訳が出ます。上級・かんたん・色見本・日本地図を含みます。自分の端末は数えていません。</p>
+        <p class="note">端末ごとに、何を開いた・保存したかを出しています（新しい順）。端末名の横はその端末のおおよその地域です。上級・かんたん・色見本・日本地図を含みます。自分の端末は数えていません。</p>
       </div>
       <div class="tools">
         <div class="seg" id="prefSeg">
@@ -1684,7 +1684,7 @@
       var pfs = Object.keys(g.prefs).sort(function(a,b){ return g.prefs[b].last - g.prefs[a].last; });
       html += '<details class="odev" data-pref="' + esc(id) + '"' + (prefOpen[id] ? ' open' : '') + '><summary class="ohead">' +
         '<span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(id) + '">' + esc(shortId(id)) + (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' +
-        '<span style="font-weight:700">' + esc(pfs.join("・")) + '</span>' +
+        (function(){ var gg = geoOf(d, id); return gg ? '<span class="ocnt">' + esc(gg.n ? "🌐 " + gg.n : "📍 " + (gg.p || "不明")) + '</span>' : ''; })() +
         '<span class="ocnt">開いた ' + g.op + '・保存 ' + g.save + '　最終 ' + when(g.last) + '</span><span class="ochev">▸</span></summary><div class="oitems">';
       pfs.forEach(function(pf){
         var x = g.prefs[pf], b = [];
@@ -1693,9 +1693,9 @@
           if (r.op) s2.push("開いた" + (r.op > 1 ? "×" + r.op : ""));
           if (r.smp) s2.push("色見本" + (r.smp > 1 ? "×" + r.smp : ""));
           if (r.save) s2.push("💾保存" + (r.save > 1 ? "×" + r.save : ""));
-          b.push('<span class="ob' + (r.save ? ' sv' : '') + '">' + esc(r.kind) + '：' + s2.join(' ') + '</span>');
+          b.push('<span class="ob' + (r.save ? ' sv' : '') + '">' + esc(r.kind === "日本地図" ? "日本地図" : pf + " " + r.kind) + '：' + s2.join(' ') + '</span>');
         });
-        html += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:5px 0;border-bottom:1px dashed var(--line)"><span class="tag" style="font-weight:700">' + esc(pf) + '</span>' + b.join('') + '<span class="ocnt">' + when(x.last) + '</span></div>';
+        html += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:5px 0;border-bottom:1px dashed var(--line)">' + b.join('') + '<span class="ocnt">' + when(x.last) + '</span></div>';
       });
       html += '</div></details>';
     });
