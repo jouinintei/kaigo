@@ -1412,6 +1412,6 @@ window.NURIE_LIST = [
   { season: "通年", genre: "花", title: "じょうろから花", diff: "初級", file: "joro_hana_sho.png", sample: "joro_hana_sho_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "じょうろから水の代わりに花がこぼれて、植木鉢に降りそそぐ", v: "1794109909780" },
   { season: "冬", genre: "風物詩", title: "ポストと雪うさぎ", diff: "初級", file: "post_yukiusagi_sho.png", sample: "post_yukiusagi_sho_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "雪の積もった丸ポストの上で、雪うさぎが手紙を持っている", v: "1794109909780" },
   { season: "秋", genre: "風物詩", title: "柿の実が提灯に", diff: "初級", file: "kaki_chochin_sho.png", sample: "kaki_chochin_sho_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "柿の実のひとつが、ほんのり光る提灯に。枝にはスズメ", v: "1794109909780" },
-  { season: "通年", genre: "その他", title: "いろいろなかばん", diff: "中級", file: "bag_chu.png", sample: "bag_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "花柄のハンドバッグ、リュック、トート、ショルダー、かごバッグ、巾着の6つ", v: "1794115499472" },
-  { season: "通年", genre: "その他", title: "いろいろなかばん", diff: "初級", file: "bag_sho.png", sample: "bag_sho_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "太い線で大きく描いた6つのかばん。ハンドバッグ、リュック、かごバッグ、巾着など", v: "1794115499472" },
+  { season: "通年", genre: "その他", title: "いろいろなかばん", diff: "中級", file: "bag_chu.png", sample: "bag_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "花柄のハンドバッグ、リュック、トート、ショルダー、かごバッグ、巾着の6つ", v: "1794115682163" },
+  { season: "通年", genre: "その他", title: "いろいろなかばん", diff: "初級", file: "bag_sho.png", sample: "bag_sho_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "太い線で大きく描いた6つのかばん。ハンドバッグ、リュック、かごバッグ、巾着など", v: "1794115682163" },
 ];
