@@ -138,6 +138,8 @@
     if (!m.box) return null;
     var dark = m.dark, aw = m.aw;
     var x0 = m.box[0], y0 = m.box[1], x1 = m.box[2], y1 = m.box[3];
+    // 紙の端ぴったりに描かれた線は、印刷すると消えるので枠と見なさない（サイトの枠を付ける）
+    if (x0 <= 0 || y0 <= 0 || x1 >= m.aw - 1 || y1 >= m.ah - 1) return null;
     var bw = x1 - x0 + 1, bh = y1 - y0 + 1;
     var band = Math.max(2, Math.round(Math.min(m.aw, m.ah) * 0.015));
     function rowAny(ya, yb) { var n = 0; for (var xx = x0; xx <= x1; xx++) for (var yy = ya; yy <= yb; yy++) if (dark[yy * aw + xx]) { n++; break; } return n / bw; }
