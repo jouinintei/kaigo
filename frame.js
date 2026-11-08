@@ -206,7 +206,7 @@
     var top = Math.max(0, Math.min(H - boxH, Math.round(cy - boxH / 2)));
     // 角の飾りや絵にかぶらない位置まで左へずらす
     var bandTop = fBot - bandH - 2, bandBot = fBot + 2;
-    var scanW = Math.min(W, Math.round(Math.min(W, H) * 0.15) + boxW);
+    var scanW = Math.min(W, Math.round(Math.min(W, H) * 0.6) + boxW);
     var sx0 = Math.round(fRight - scanW);
     var img = ctx.getImageData(sx0, top, scanW, boxH).data;
     function busy(right) {
@@ -214,7 +214,7 @@
       for (var yy = 0; yy < boxH; yy++) {
         var gy = top + yy;
         if (gy >= bandTop && gy <= bandBot) continue;
-        for (var xx = right - boxW; xx < right; xx++) {
+        for (var xx = right - boxW - gap; xx < right + gap; xx++) {
           var lx = xx - sx0; if (lx < 0 || lx >= scanW) continue;
           var i = (yy * scanW + lx) * 4;
           t++;
@@ -224,11 +224,8 @@
       return t ? n / t : 0;
     }
     var right = Math.round(fRight - Math.min(W, H) * CFG.logoRight);
-    var minRight = Math.round(fRight - Math.min(W, H) * 0.15);
-    var step = Math.max(4, Math.round(lh * 0.25));
-    var r0 = right;
-    while (right > minRight && busy(right) > 0.08) right -= step;
-    if (right <= minRight) right = r0;
+    var minRight = Math.max(sx0 + boxW, Math.round(fRight - Math.min(W, H) * 0.6));
+    right = bestSpot(busy, right, minRight, Math.max(4, Math.round(lh * 0.25)));
     if (pic && pic !== src) {
       // 色見本は線画と同じ位置・大きさで描き直す（重ねてぴったり合うように）
       ctx.fillStyle = "#fff";
@@ -241,6 +238,18 @@
     ctx.fillStyle = CFG.logoColor;
     ctx.fillText(label, right - boxW + gap, top + vg + lh / 2 + 1);
     return c;
+  }
+
+  // 右から左へ探して、絵にかぶらない（いちばん空いている）位置を選ぶ
+  function bestSpot(busy, right, minRight, step) {
+    var best = right, bv = busy(right);
+    if (bv <= 0.04) return right;
+    for (var r = right - step; r > minRight; r -= step) {
+      var v = busy(r);
+      if (v <= 0.04) return r;
+      if (v < bv - 0.005) { bv = v; best = r; }
+    }
+    return best;
   }
 
   function roundRect(ctx, x, y, w, h, r) {
@@ -262,7 +271,8 @@
     // overBlob があれば、配置は線画(blob)で決めて、描くのは overBlob（色見本）
     var pic = overBlob ? await loadBitmap(overBlob) : src;
     var PX = pic.width / src.width, PY = pic.height / src.height;
-    function put(ctx, sx, sy, sw, sh, dx, dy, dw, dh) { ctx.drawImage(pic, sx * PX, sy * PY, sw * PX, sh * PY, dx, dy, dw, dh); }
+    var calls = [];
+    function put(ctx, sx, sy, sw, sh, dx, dy, dw, dh) { calls.push([sx, sy, sw, sh, dx, dy, dw, dh]); ctx.drawImage(pic, sx * PX, sy * PY, sw * PX, sh * PY, dx, dy, dw, dh); }
     var mime = type || "image/png", q = mime === "image/jpeg" ? 0.92 : undefined;
     var size = src.width >= src.height ? A4L : A4P;
     var W = size[0], H = size[1];
@@ -356,6 +366,33 @@
       var vg = Math.round(lh * 0.15);
       var lx = fx + fw - Math.round(Math.min(W, H) * CFG.logoRight) - lw;
       var ly = Math.min(Math.round(fy + fh - L / 2 - lh / 2), H - lh - vg - 4);
+      (function () {
+        var bw2 = lw + gap * 2, bh2 = lh + vg * 2, top2 = ly - vg, b0 = fy + fh - L - 3, b1 = fy + fh + 3;
+        var sw2 = Math.min(W, Math.round(Math.min(W, H) * 0.6) + bw2), sx2 = Math.max(0, lx + lw + gap - sw2);
+        var g2 = ctx;
+        if (pic !== src) {
+          // 色見本のときも、位置は線画で決める（線画と同じ場所に入るように）
+          var tc = document.createElement("canvas"); tc.width = W; tc.height = H;
+          g2 = tc.getContext("2d", { willReadFrequently: true }); g2.fillStyle = "#fff"; g2.fillRect(0, 0, W, H);
+          calls.forEach(function (a) { g2.drawImage(src, a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7]); });
+        }
+        var d2 = g2.getImageData(sx2, top2, sw2, bh2).data;
+        function busy2(right) {
+          var n = 0, t = 0;
+          for (var yy = 0; yy < bh2; yy++) {
+            var gy = top2 + yy; if (gy >= b0 && gy <= b1) continue;
+            for (var xx = right - bw2; xx < right; xx++) {
+              var lx2 = xx - sx2; if (lx2 < 0 || lx2 >= sw2) continue;
+              var i = (yy * sw2 + lx2) * 4; t++;
+              if (d2[i] * 0.299 + d2[i + 1] * 0.587 + d2[i + 2] * 0.114 < 200) n++;
+            }
+          }
+          return t ? n / t : 0;
+        }
+        var r0 = lx + lw + gap;
+        var r = bestSpot(busy2, r0, Math.max(sx2 + bw2, Math.round(r0 - Math.min(W, H) * 0.6)), Math.max(4, Math.round(lh * 0.25)));
+        lx = r - gap - lw;
+      })();
       ctx.fillStyle = "#fff";
       ctx.fillRect(lx - gap, ly - vg, lw + gap * 2, lh + vg * 2);
       ctx.fillStyle = CFG.logoColor;
@@ -374,15 +411,27 @@
     try {
       var src = await loadBitmap(blob), W = src.width, H = src.height, m = Math.min(W, H);
       var c = document.createElement("canvas"); c.width = W; c.height = H;
-      var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H); ctx.drawImage(src, 0, 0);
-      if (src.close) { try { src.close(); } catch (e) {} }
+      var ctx = c.getContext("2d", { willReadFrequently: true }); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H); ctx.drawImage(src, 0, 0);
       var lh = Math.round(m * CFG.logoH), fs = Math.round(lh * 0.95), label = CFG.label;
       ctx.font = "bold " + fs + "px 'Helvetica Neue', Arial, 'Hiragino Sans', sans-serif";
       ctx.textBaseline = "middle"; ctx.textAlign = "left";
       var lw = Math.ceil(ctx.measureText(label).width), gap = Math.round(lh * 0.35), vg = Math.round(lh * 0.15);
       var lx = W - Math.round(m * CFG.logoRight) - lw, ly = H - Math.round(m * 0.03) - lh;
+      var bw = lw + gap * 2, bh = lh + vg * 2;
+      function busyAt(x, y) {
+        var d = ctx.getImageData(x, y, bw, bh).data, n = 0;
+        for (var i = 0; i < d.length; i += 4) if (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114 < 200) n++;
+        return n / (d.length / 4);
+      }
+      if (busyAt(lx - gap, ly - vg) > 0.01) {
+        // 右下が文字や絵でふさがっているときは、絵を少し縮めて下に余白を作る
+        var need = H - (ly - vg) + Math.round(m * 0.01), sc = (H - need) / H;
+        ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H);
+        ctx.drawImage(src, (W - W * sc) / 2, 0, W * sc, H * sc);
+      }
       ctx.fillStyle = "#fff"; ctx.fillRect(lx - gap, ly - vg, lw + gap * 2, lh + vg * 2);
       ctx.fillStyle = CFG.logoColor; ctx.fillText(label, lx, ly + lh / 2 + 1);
+      if (src.close) { try { src.close(); } catch (e) {} }
       return await new Promise(function (res, rej) { c.toBlob(function (b) { b ? res(b) : rej(new Error("toBlob")); }, "image/png"); });
     } catch (e) { return blob; }
   };
