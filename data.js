@@ -1430,4 +1430,7 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県クイズ その6", file: "todofuken_quiz6.png", answer: "todofuken_quiz6_ans.png", added: "2026-11", date: "2026-11-08", v: "1794121267107" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県クイズ その7", file: "todofuken_quiz7.png", answer: "todofuken_quiz7_ans.png", added: "2026-11", date: "2026-11-08", v: "1794121267107" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "都道府県クイズ その8", file: "todofuken_quiz8.png", answer: "todofuken_quiz8_ans.png", added: "2026-11", date: "2026-11-08", v: "1794121267107" },
+  { season: "通年", genre: "人物", title: "和人形 1", diff: "中級", file: "wa_ningyo1_chu.png", sample: "wa_ningyo1_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "振袖で正座し、手まりを持つ市松人形の少女。松の屏風を背に", v: "1794144104522" },
+  { season: "通年", genre: "人物", title: "和人形 2", diff: "中級", file: "wa_ningyo2_chu.png", sample: "wa_ningyo2_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "椿の着物に赤い和傘をさした人形の少女。椿と石灯籠の庭で", v: "1794144104522" },
+  { season: "通年", genre: "人物", title: "和人形 3", diff: "中級", file: "wa_ningyo3_chu.png", sample: "wa_ningyo3_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "十二単で桧扇を持つ、おひなさまの少女。ぼんぼりと桃の花", v: "1794144104522" },
 ];
