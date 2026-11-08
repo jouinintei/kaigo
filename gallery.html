@@ -108,7 +108,7 @@
   function serAdded(k,g){if(!NSER[k])return"";const f=g.filter(n=>RK.isNew&&RK.isNew(n)&&!/日本地図/.test(n.title));if(!f.length)return"";const L=RK.LIST;f.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))||L.indexOf(a)-L.indexOf(b));const ps=[...new Set(f.map(prefOf))];return ps.slice(0,3).join("・")+(ps.length>3?"など":"")+"を追加";}
   function serCard(k,g){const s=serSort(g),c=s[0],fresh=g.some(n=>RK.isNew&&RK.isNew(n));
     return `<article class="card wk v ser"><div style="position:relative"><button class="ph" data-ser="${esc(k)}" aria-label="${esc(k)}のシリーズを開く"><img class="sk" loading="lazy" decoding="async" alt="" src="${RK.sthumb(c)}" onload="this.classList.remove('sk')"></button><span class="sercnt">全${g.length}枚</span>${fresh?'<span class="new">NEW</span>':""}</div>
-<div class="tt"><b>${esc(k)}</b><span>${esc([c.genre,"シリーズ・全"+g.length+"枚"].filter(Boolean).join(" ・ "))}</span></div><div class="acts one"><button class="btn p" data-ser="${esc(k)}">${g.length}枚を見る →</button></div></article>`;}
+<div class="tt"><b>${esc(k)}</b><span>${esc(NSER[k]?"シリーズ ・ 全"+g.length+"枚":[c.genre,"シリーズ・全"+g.length+"枚"].filter(Boolean).join(" ・ "))}</span></div><div class="acts one"><button class="btn p" data-ser="${esc(k)}">${g.length}枚を見る →</button></div></article>`;}
   function renderSer(){
     const g=serSort(filtered().filter(n=>serKey(n)===st.ser));
     if(!g.length){st.ser="";return render0();}
@@ -195,7 +195,7 @@
     if(K==="cal")return renderCal();
     if((K==="noutore"||K==="nurie")&&st.ser)return renderSer();
     const a=filtered(),tot=a.length;
-    const units=K==="noutore"?groupSeries(a):(K==="nurie"&&!st.genre&&!st.q)?groupNurie(a):a.map(n=>[null,[n]]);
+    let units=K==="noutore"?groupSeries(a):(K==="nurie"&&!st.q)?groupNurie(a):a.map(n=>[null,[n]]);if(K==="nurie")units=units.filter(u=>u[0]&&NSER[u[0]]).concat(units.filter(u=>!(u[0]&&NSER[u[0]])));
     const pages=Math.max(1,Math.ceil(units.length/PER));if(st.page>pages)st.page=pages;
     const pageItems=units.slice((st.page-1)*PER,st.page*PER);
     main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、何枚かのA4用紙に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面の大きな作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>分けた塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p><p><b>推奨人数</b>は、分けた紙の枚数と同じです（一人1枚）。</p><p>印刷すると紙のまわりに白いふちが出ます。<b>白いふちは、のりしろに使うか、切り取るかして</b>貼り合わせてください。</p><p class="wtry">壁紙作りはお試し中のコーナーです。使ってみた感想を、ぜひ<a href="/contact.html?type=壁紙作りの感想">お聞かせください</a>。仕上がった作品の写真も大歓迎です。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+

@@ -1641,7 +1641,7 @@
     var wrap = document.getElementById("prefWrap"); if (!wrap) return;
     var FM = {};   // file -> {pref, kind, sample}
     Object.keys(INFO).forEach(function(k){
-      var it = INFO[k]; if (!it || it.isSample || it.genre !== "都道府県") return;
+      var it = INFO[k]; if (!it || it.isSample || !/^ご当地名産めぐり/.test(it.title || "")) return;
       var m = { pref: prefNameOf(it), kind: prefKindOf(it), it: it };
       FM[it.file] = m;
       if (it.sample) FM[it.sample] = { pref: m.pref, kind: m.kind, it: it, smp: 1 };
