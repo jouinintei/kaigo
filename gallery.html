@@ -5,13 +5,13 @@
 <script src="/entry.js"></script>
 <script>window.IMG_BASE="https://img.rekupuri.com/images/";window.THUMB_BASE="https://img.rekupuri.com/thumbs/";addEventListener("error",function(e){var t=e.target;if(!t||t.tagName!=="IMG")return;var s=t.src,T=window.THUMB_BASE,B=window.IMG_BASE;if(s.indexOf(T)===0){t.src=B+s.slice(T.length).replace(/\.jpg(\?.*)?$/,"");e.stopPropagation();return;}if(s.indexOf(B)===0&&!t.dataset.fb){t.dataset.fb="1";t.src="images/"+s.slice(B.length);e.stopPropagation();}},true);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>作品一覧(塗り絵・脳トレ・カレンダー・壁紙作り)|介護のレクプリ</title>
-<meta name="description" content="高齢者向けの無料塗り絵・脳トレ・月間カレンダーの一覧ページ。季節やジャンルで絞り込んで、A4サイズでそのまま印刷・保存できます。">
+<title>塗り絵を探す（1000枚以上）｜高齢者向け 無料の塗り絵一覧｜介護のレクプリ</title>
+<meta name="description" content="高齢者向けの無料塗り絵1000枚以上。季節・ジャンル・難しさで絞り込んで、A4サイズでそのまま印刷できます。色見本つき。">
 <link rel="canonical" href="https://rekupuri.com/gallery.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="介護のレクプリ">
-<meta property="og:title" content="作品一覧(塗り絵・脳トレ・カレンダー)|介護のレクプリ">
-<meta property="og:description" content="高齢者向けの無料塗り絵・脳トレ・月間カレンダーの一覧ページ。A4印刷対応。">
+<meta property="og:title" content="塗り絵を探す（1000枚以上）｜高齢者向け 無料の塗り絵一覧｜介護のレクプリ">
+<meta property="og:description" content="高齢者向けの無料塗り絵1000枚以上。季節・ジャンル・難しさで絞り込んで、A4サイズでそのまま印刷できます。色見本つき。">
 <meta property="og:url" content="https://rekupuri.com/gallery.html">
 <meta property="og:image" content="https://rekupuri.com/logo.png">
 <link rel="icon" href="favicon.ico?v=3" sizes="48x48">
@@ -72,7 +72,7 @@
   window.RK_SRC=window.RK_PAGE=({nurie:"list",noutore:"noutore",cal:"calendar",wall:"wall",fav:"fav"})[K];
   const KIND={nurie:"塗り絵",noutore:"脳トレ",cal:"カレンダー",wall:"壁紙作り"}[K];
   (()=>{const cnt=k=>RK.LIST.filter(n=>RK.kindOf(n)===k).length;
-    const M={nurie:[`高齢者向け 無料の塗り絵一覧（${cnt("塗り絵")}枚）｜季節・ジャンル・難しさで探せる｜介護のレクプリ`,`高齢者向けの無料塗り絵${cnt("塗り絵")}枚。季節・ジャンル・難しさで絞り込んで、A4サイズでそのまま印刷できます。色見本つき。`,"gallery.html"],
+    const M={nurie:[`塗り絵を探す（${cnt("塗り絵")}枚）｜高齢者向け 無料の塗り絵一覧｜介護のレクプリ`,`高齢者向けの無料塗り絵${cnt("塗り絵")}枚。季節・ジャンル・難しさで絞り込んで、A4サイズでそのまま印刷できます。色見本つき。`,"gallery.html"],
       noutore:[`高齢者向け 無料の脳トレプリント一覧（${cnt("脳トレ")}枚）｜答えつき・A4印刷｜介護のレクプリ`,`漢字・計算・言葉遊び・クイズなど、高齢者向けの無料脳トレプリント${cnt("脳トレ")}枚。すべて答えつきで、A4でそのまま印刷できます。`,"gallery.html?page=noutore"],
       cal:[`塗って飾れる 無料の月間カレンダー（${cnt("カレンダー")}種類）｜高齢者向け｜介護のレクプリ`,`塗り絵になった月間カレンダーを無料で配布しています。毎月の行事に合わせた絵柄を、A4でそのまま印刷できます。`,"gallery.html?page=calendar"],
       wall:[`みんなで塗って壁面飾りに 無料の壁紙作り塗り絵（${cnt("壁紙作り")}作品）｜高齢者向け｜介護のレクプリ`,`1枚の絵を何枚かのA4に分けた大きな塗り絵です。一人1枚ずつ塗って、つなげると壁一面の作品に。デイサービスや介護施設の壁面飾りにどうぞ。`,"gallery.html?page=wall"],
