@@ -173,14 +173,35 @@ export async function onRequest({ request, env }) {
     }
     try {
       // 中身を読み解かずにそのまま流す（大きくなっても処理時間を食わない）
+      //  part なし → 今日の分(save-log.json)
+      //  過去の分は毎晩 rekupuri-member の GitHub Actions が data/log/ へ移している
+      //   part=day&d=日付 → data/log/日付.json      (その日の 絵ごとの枚数・保存端末)
+      //   part=ev&d=日付  → data/log/ev-日付.json   (その日の 保存履歴・開いた履歴)
+      //   part=month&m=年月 → data/log/年月.json    (その月の 端末別件数・保存元・開いた数・日の合計)
+      //   part=devices    → data/log/devices.json  (端末ごとの 地域・入口)
+      const part = url.searchParams.get("part") || "";
+      let path = FILE_PATH, fixed = false;
+      if (part) {
+        const dd = String(url.searchParams.get("d") || ""), mm = String(url.searchParams.get("m") || "");
+        if (part === "day" && /^\d{4}-\d{2}-\d{2}$/.test(dd)) { path = "data/log/" + dd + ".json"; fixed = true; }
+        else if (part === "ev" && /^\d{4}-\d{2}-\d{2}$/.test(dd)) { path = "data/log/ev-" + dd + ".json"; fixed = true; }
+        else if (part === "month" && /^\d{4}-\d{2}$/.test(mm)) path = "data/log/" + mm + ".json";
+        else if (part === "devices") path = "data/log/devices.json";
+        else return json({ error: "bad part" }, 400);
+      }
       const repo = cleanRepo(env.MEMBER_REPO);
-      const r = await fetch("https://api.github.com/repos/" + repo + "/contents/" + FILE_PATH, {
+      const r = await fetch("https://api.github.com/repos/" + repo + "/contents/" + path, {
         headers: Object.assign(ghHeaders(env), { "Accept": "application/vnd.github.raw" })
       });
-      if (r.status === 404) return json(blank());
+      if (r.status === 404) return part ? json({}, 404) : json(blank());
       if (!r.ok) throw new Error("github read " + r.status);
       return new Response(r.body, {
-        headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" }
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          // 前の日のファイルは基本的に変わらないので、ブラウザに半日置いておく
+          "Cache-Control": fixed ? "private, max-age=43200" : "no-store",
+          "X-Robots-Tag": "noindex"
+        }
       });
     } catch (e) {
       return json({ error: String(e) }, 500);

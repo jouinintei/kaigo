@@ -566,6 +566,90 @@
   function fmtMD(k){ return Number(k.slice(5,7)) + "月" + Number(k.slice(8,10)) + "日"; }
 
   /* ---------- 取得 ---------- */
+  // 記録は「今日の分」(save-log.json) と「過去の分」(日ごと・月ごとのファイル) に分かれている。
+  // 過去の分は日付が変わるまで変わらないので1回だけ読み、今日の分と合わせて元と同じ形にしてから描く。
+  var LOG_START_MONTH = "2026-08";
+  var ARCH = null;   // { liveDay, today, months: {ym: {...}}, days: {k: {days, fd}}, ev: {events, opensEv}, devices: {geo, ent} }
+  function getPart(q){
+    return fetch("api/log-save?key=" + encodeURIComponent(key) + "&" + q)
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .catch(function(){ return null; });
+  }
+  function loadArchive(liveDay){
+    var t = todayKey(), jobs = [], A = { liveDay: liveDay, today: t, months: {}, days: {}, ev: null };
+    var ym = LOG_START_MONTH, endYm = t.slice(0, 7);
+    while (ym <= endYm){
+      (function(m){
+        // 今月のファイルは毎日増えるので、ブラウザの控えを使わない
+        jobs.push(getPart("part=month&m=" + m + (m === endYm ? "&_=" + Date.now() : "")).then(function(x){ if (x) A.months[m] = x; }));
+      })(ym);
+      var y = +ym.slice(0, 4), mo = +ym.slice(5, 7) + 1;
+      if (mo > 12) { y++; mo = 1; }
+      ym = y + "-" + (mo < 10 ? "0" : "") + mo;
+    }
+    for (var i = 1; i < 30; i++){
+      (function(k){
+        jobs.push(getPart("part=day&d=" + k).then(function(x){ if (x) A.days[k] = x; }));
+      })(shiftKey(t, -i));
+    }
+    jobs.push(getPart("part=ev&d=" + shiftKey(t, -1)).then(function(x){ if (x) A.ev = x; }));
+    jobs.push(getPart("part=devices&_=" + Date.now()).then(function(x){ if (x) A.devices = x; }));
+    return Promise.all(jobs).then(function(){ return A; });
+  }
+  // 今日の分 + 過去の分 → 以前の save-log.json と同じ形
+  function mergeLog(live, A){
+    var t = todayKey();
+    var d = {};
+    Object.keys(live).forEach(function(k){ d[k] = live[k]; });
+    var days = {}, fd = {}, devs = {}, src = {}, dtot = {}, odays = {};
+    Object.keys(live.dtot || {}).forEach(function(k){ dtot[k] = live.dtot[k]; });
+    var fileFrom = shiftKey(t, -29), fdFrom = shiftKey(t, -7), odFrom = shiftKey(t, -119);
+    Object.keys(A.months).sort().forEach(function(m){
+      var M = A.months[m] || {};
+      Object.keys(M.devs || {}).forEach(function(k){ devs[k] = M.devs[k]; });
+      Object.keys(M.src || {}).forEach(function(k){ src[k] = M.src[k]; });
+      Object.keys(M.opensDays || {}).forEach(function(k){ if (k >= odFrom) odays[k] = M.opensDays[k]; });
+      Object.keys(M.dt || {}).forEach(function(k){ if (k < fileFrom && !(k in dtot)) dtot[k] = M.dt[k]; });
+    });
+    Object.keys(A.days).forEach(function(k){
+      var x = A.days[k] || {};
+      if (k >= fileFrom && x.days) days[k] = x.days;
+      if (k >= fdFrom && x.fd && Object.keys(x.fd).length) fd[k] = x.fd;
+    });
+    // 今日の分（日付が変わった直後は、まだ移す前の昨日の分も入っている）
+    Object.keys(live.days || {}).forEach(function(k){ days[k] = live.days[k]; });
+    Object.keys(live.fd || {}).forEach(function(k){ fd[k] = live.fd[k]; });
+    Object.keys(live.devs || {}).forEach(function(k){ devs[k] = live.devs[k]; });
+    Object.keys(live.src || {}).forEach(function(k){ src[k] = live.src[k]; });
+    var lo = live.opens || {};
+    Object.keys(lo.days || {}).forEach(function(k){ odays[k] = lo.days[k]; });
+    var evFrom = Date.parse(shiftKey(t, -1) + "T00:00:00+09:00");
+    var ev0 = (A.ev && Array.isArray(A.ev.events)) ? A.ev.events : [];
+    var oev0 = (A.ev && Array.isArray(A.ev.opensEv)) ? A.ev.opensEv : [];
+    var lev = Array.isArray(live.events) ? live.events : [];
+    var loev = Array.isArray(lo.ev) ? lo.ev : [];
+    var seen = function(arr){ var s = {}; arr.forEach(function(e){ s[e.t + "|" + e.f + "|" + e.d] = 1; }); return s; };
+    var ls = seen(lev), los = seen(loev);
+    d.events = ev0.filter(function(e){ return e.t >= evFrom && !ls[e.t + "|" + e.f + "|" + e.d]; }).concat(lev.filter(function(e){ return e.t >= evFrom; }));
+    var opens = {};
+    Object.keys(lo).forEach(function(k){ opens[k] = lo[k]; });
+    opens.days = odays;
+    opens.ev = oev0.filter(function(e){ return e.t >= evFrom && !los[e.t + "|" + e.f + "|" + e.d]; }).concat(loev.filter(function(e){ return e.t >= evFrom; }));
+    d.opens = opens;
+    d.days = days; d.fd = fd; d.devs = devs; d.src = src; d.dtot = dtot;
+    // 端末ごとの地域・入口: 今日来た端末は今日の分、それ以外は devices.json
+    var V = A.devices || {}, geo = {}, ent = {};
+    Object.keys(V.geo || {}).forEach(function(id){ geo[id] = V.geo[id]; });
+    Object.keys(live.geo || {}).forEach(function(id){ geo[id] = live.geo[id]; });
+    [V.ent || {}, live.ent || {}].forEach(function(src2){
+      Object.keys(src2).forEach(function(id){
+        var o = ent[id] || (ent[id] = {}), m = src2[id] || {};
+        Object.keys(m).forEach(function(k){ o[k] = (o[k] || 0) + m[k]; });
+      });
+    });
+    d.geo = geo; d.ent = ent;
+    return d;
+  }
   function load(silent){
     var wrap = document.getElementById("feedWrap");
     if (silent) wrap.classList.add("fading");
@@ -574,6 +658,11 @@
         if (r.status === 404) throw new Error("キーが違います");
         if (!r.ok) throw new Error("読み込みに失敗しました (" + r.status + ")");
         return r.json();
+      })
+      .then(function(live){
+        // 日付が変わった / 今日の分が移された ときは、過去の分を読み直す
+        if (ARCH && ARCH.today === todayKey() && ARCH.liveDay === (live.day || "")) return mergeLog(live, ARCH);
+        return loadArchive(live.day || "").then(function(A){ ARCH = A; return mergeLog(live, A); });
       })
       .then(function(d){
         wrap.classList.remove("fading");

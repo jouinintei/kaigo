@@ -1,6 +1,6 @@
 // functions/api/popular.js
 // 直近7日間に保存された作品を「保存した端末数」で並べて返す(件数は返さない)
-// 非公開リポジトリ data/save-log.json の fd(日ごとの保存端末)と days(日ごとの枚数)を集計する
+// 非公開リポジトリ data/save-log.json(今日の分) と data/log/日付.json(過去の分) の fd(日ごとの保存端末)と days(日ごとの枚数)を集計する
 // 環境変数: GITHUB_TOKEN, MEMBER_REPO(log-save.js と同じもの)
 
 // 大きな save-log.json を毎回読むとCPU制限(無料枠10ms)を超えるので、
@@ -9,7 +9,7 @@ export async function onRequest(ctx) {
   const { request } = ctx;
   if (request.method !== "GET") return new Response("method not allowed", { status: 405 });
   const cache = (typeof caches !== "undefined") ? caches.default : null;
-  const ck = new Request("https://rekupuri.com/__cache/popular-v1");
+  const ck = new Request("https://rekupuri.com/__cache/popular-v2");
   if (cache) { try { const hit = await cache.match(ck); if (hit) return hit; } catch (e) {} }
   const res = await build(ctx);
   if (cache && res.status === 200) {
@@ -31,20 +31,30 @@ async function build({ request, env }) {
     const token = env.GITHUB_TOKEN;
     if (!repo || !token) return new Response(JSON.stringify({ files: [] }), { headers });
 
-    const r = await fetch("https://api.github.com/repos/" + repo + "/contents/data/save-log.json?ref=main", {
+    const get = path => fetch("https://api.github.com/repos/" + repo + "/contents/" + path + "?ref=main", {
       headers: {
         "Authorization": "Bearer " + token,
         "Accept": "application/vnd.github.raw",
         "User-Agent": "rekupuri-popular"
       }
-    });
-    if (!r.ok) return new Response(JSON.stringify({ files: [] }), { headers });
-    const log = await r.json();
+    }).then(r => r.ok ? r.json() : null).catch(() => null);
 
     // 直近7日(日本時間・今日を含む)の日付
     const dayStart = Date.parse(new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10) + "T00:00:00+09:00");
     const keys = [];
     for (let i = 0; i < 7; i++) keys.push(new Date(dayStart - i * 24 * 3600 * 1000 + 9 * 3600 * 1000).toISOString().slice(0, 10));
+
+    // 今日の分は save-log.json、昨日より前は日ごとのファイル(data/log/日付.json)にある
+    const parts = await Promise.all([get("data/save-log.json")].concat(keys.slice(1).map(k => get("data/log/" + k + ".json"))));
+    const live = parts[0];
+    if (!live) return new Response(JSON.stringify({ files: [] }), { headers });
+    const log = { fd: Object.assign({}, live.fd || {}), days: Object.assign({}, live.days || {}) };
+    keys.slice(1).forEach((k, i) => {
+      const p = parts[i + 1];
+      if (!p) return;
+      if (!log.fd[k] && p.fd) log.fd[k] = p.fd;
+      if (!log.days[k] && p.days) log.days[k] = p.days;
+    });
 
     // ファイルごとに「保存した端末の集合」と「保存回数」を集める
     // 端末は fd(日ごと・絵ごとの保存端末)、回数は days(日ごと・絵ごとの枚数)から
