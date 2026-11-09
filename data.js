@@ -1434,4 +1434,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "人物", title: "和人形 2", diff: "中級", file: "wa_ningyo2_chu.png", sample: "wa_ningyo2_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "椿の着物に赤い和傘をさした人形の少女。椿と石灯籠の庭で", v: "1794144104522" },
   { season: "通年", genre: "人物", title: "和人形 3", diff: "中級", file: "wa_ningyo3_chu.png", sample: "wa_ningyo3_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "十二単で桧扇を持つ、おひなさまの少女。ぼんぼりと桃の花", v: "1794144104522" },
   { season: "通年", genre: "その他", title: "鳳凰", diff: "初級", file: "houou_sho.png", sample: "houou_sho_sample.jpg", added: "2026-11", date: "2026-11-09", desc: "大きく翼を広げて舞う鳳凰と、ふたつの瑞雲", v: "1794201563900" },
+  { season: "通年", genre: "その他", title: "鳳凰", diff: "上級", file: "houou_jo.png", sample: "houou_jo_sample.jpg", added: "2026-11", date: "2026-11-09", desc: "太陽を背に桐の木の上を舞う鳳凰。瑞雲と遠くの山並み", v: "1794201960785" },
 ];
