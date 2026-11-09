@@ -172,8 +172,16 @@ export async function onRequest({ request, env }) {
       return new Response("Not found", { status: 404 });
     }
     try {
-      const cur = await ghRead(env);
-      return json(cur.data);
+      // 中身を読み解かずにそのまま流す（大きくなっても処理時間を食わない）
+      const repo = cleanRepo(env.MEMBER_REPO);
+      const r = await fetch("https://api.github.com/repos/" + repo + "/contents/" + FILE_PATH, {
+        headers: Object.assign(ghHeaders(env), { "Accept": "application/vnd.github.raw" })
+      });
+      if (r.status === 404) return json(blank());
+      if (!r.ok) throw new Error("github read " + r.status);
+      return new Response(r.body, {
+        headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" }
+      });
     } catch (e) {
       return json({ error: String(e) }, 500);
     }
