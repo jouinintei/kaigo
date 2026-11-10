@@ -7,6 +7,14 @@ const KEEP_DAYS = 120;
 const KEEP_EVENTS = 300;
 const KEEP_FILE_DAYS = 30;  // 絵ごとの日別枚数を持つ日数（それより前はその日の合計枚数だけ残す）
 const KEEP_FD_DAYS = 8;     // 絵ごとの保存端末(人気ランキングの端末数用)を持つ日数
+// 1件ずつの履歴(保存・開いた)は、1時間ごとの小さいファイルに分けて書く。
+// save-log.json を1日かけて膨らませないため（無料枠のCPU 10ms対策）。
+// 前の日の分は毎晩 rekupuri-member の GitHub Actions が data/log/ev-日付.json にまとめて消す。
+const HOUR_DIR = "data/log/h/";
+
+function hourKeyOf(ms) {
+  return new Date(ms + 9 * 3600 * 1000).toISOString().slice(0, 13).replace("T", "-");
+}
 
 function cleanRepo(r) {
   return String(r || "")
@@ -135,6 +143,51 @@ async function ghWrite(env, sha, data) {
   return r.ok;
 }
 
+// 1時間ごとの履歴ファイルに追記する { events: [...保存], opensEv: [...開いた] }
+async function appendHour(env, now, evs, oevs) {
+  if (!evs.length && !oevs.length) return true;
+  const repo = cleanRepo(env.MEMBER_REPO);
+  const url = "https://api.github.com/repos/" + repo + "/contents/" + HOUR_DIR + "evh-" + hourKeyOf(now) + ".json";
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const r = await fetch(url, { headers: ghHeaders(env) });
+      let sha = null, x = null;
+      if (r.ok) {
+        const j = await r.json();
+        sha = j.sha;
+        try { x = JSON.parse(b64ToText(j.content || "")); } catch (e) {}
+        if (!x && j.size > 0) throw new Error("hour log unreadable");
+      } else if (r.status !== 404) throw new Error("github read " + r.status);
+      if (!x || typeof x !== "object") x = {};
+      if (!Array.isArray(x.events)) x.events = [];
+      if (!Array.isArray(x.opensEv)) x.opensEv = [];
+      evs.forEach(e => x.events.push(e));
+      oevs.forEach(e => x.opensEv.push(e));
+      const body = { message: "save-log hour", content: textToB64(JSON.stringify(x)) };
+      if (sha) body.sha = sha;
+      const w = await fetch(url, {
+        method: "PUT",
+        headers: Object.assign(ghHeaders(env), { "Content-Type": "application/json" }),
+        body: JSON.stringify(body)
+      });
+      if (w.ok) return true;
+    } catch (e) {}
+  }
+  return false;
+}
+
+// 今日の分(save-log.json)の数字を書き換える。update(data) で中身を足す
+async function updateLive(env, update, tries) {
+  for (let attempt = 0; attempt < tries; attempt++) {
+    try {
+      const cur = await ghRead(env);
+      update(cur.data);
+      if (await ghWrite(env, cur.sha, cur.data)) return true;
+    } catch (e) {}
+  }
+  return false;
+}
+
 function json(obj, status) {
   return new Response(JSON.stringify(obj, null, 1), {
     status: status || 200,
@@ -179,6 +232,8 @@ export async function onRequest({ request, env }) {
       //   part=ev&d=日付  → data/log/ev-日付.json   (その日の 保存履歴・開いた履歴)
       //   part=month&m=年月 → data/log/年月.json    (その月の 端末別件数・保存元・開いた数・日の合計)
       //   part=devices    → data/log/devices.json  (端末ごとの 地域・入口)
+      //   part=evh&h=日付-時 → data/log/h/evh-日付-時.json (その1時間の 保存履歴・開いた履歴)
+      //   part=hlist      → data/log/h/ の一覧 (まだまとめていない1時間ごとのファイル)
       const part = url.searchParams.get("part") || "";
       let path = FILE_PATH, fixed = false;
       if (part) {
@@ -187,13 +242,20 @@ export async function onRequest({ request, env }) {
         else if (part === "ev" && /^\d{4}-\d{2}-\d{2}$/.test(dd)) { path = "data/log/ev-" + dd + ".json"; fixed = true; }
         else if (part === "month" && /^\d{4}-\d{2}$/.test(mm)) path = "data/log/" + mm + ".json";
         else if (part === "devices") path = "data/log/devices.json";
+        else if (part === "evh" && /^\d{4}-\d{2}-\d{2}-\d{2}$/.test(String(url.searchParams.get("h") || ""))) {
+          const hh = String(url.searchParams.get("h"));
+          path = HOUR_DIR + "evh-" + hh + ".json";
+          // 2時間以上前の分はもう書き足されないので、ブラウザに置いておける
+          fixed = hh < hourKeyOf(Date.now() - 3600 * 1000);
+        }
+        else if (part === "hlist") path = HOUR_DIR.replace(/\/$/, "");
         else return json({ error: "bad part" }, 400);
       }
       const repo = cleanRepo(env.MEMBER_REPO);
       const r = await fetch("https://api.github.com/repos/" + repo + "/contents/" + path, {
-        headers: Object.assign(ghHeaders(env), { "Accept": "application/vnd.github.raw" })
+        headers: part === "hlist" ? ghHeaders(env) : Object.assign(ghHeaders(env), { "Accept": "application/vnd.github.raw" })
       });
-      if (r.status === 404) return part ? json({}, 404) : json(blank());
+      if (r.status === 404) return part === "hlist" ? json([]) : part ? json({}, 404) : json(blank());
       if (!r.ok) throw new Error("github read " + r.status);
       return new Response(r.body, {
         headers: {
@@ -227,39 +289,40 @@ export async function onRequest({ request, env }) {
     }
     const onow = Date.now();
     const oday = new Date(onow + 9 * 3600 * 1000).toISOString().slice(0, 10);
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        const cur = await ghRead(env);
-        const O = cur.data.opens;
+    const oevs = ops.map(([f, k], i) => {
+      const oe = { t: onow, f: f, k: k, d: odid };
+      const os = String((ops[i] && ops[i][2]) || "").replace(/[^a-z]/g, "").slice(0, 12);
+      if (os) oe.s = os;
+      const oo = String((ops[i] && ops[i][3]) || "");
+      if (os && /^(new|pop|rand)$/.test(oo)) oe.o = oo;
+      if (oent && i === 0) oe.r = oent;
+      return oe;
+    });
+    const ogeo = geoOf(request);
+    const res = await Promise.all([
+      appendHour(env, onow, [], oevs),
+      updateLive(env, data => {
+        const O = data.opens;
         if (!O.days[oday]) O.days[oday] = { lb: {}, smp: {} };
         const D = O.days[oday];
-        ops.forEach(([f, k], i) => {
+        ops.forEach(([f, k]) => {
           D[k][odid] = (D[k][odid] || 0) + 1;
           if (!O.tot[k]) O.tot[k] = {};
           O.tot[k][f] = (O.tot[k][f] || 0) + 1;
-          const oe = { t: onow, f: f, k: k, d: odid };
-          const os = String((ops[i] && ops[i][2]) || "").replace(/[^a-z]/g, "").slice(0, 12);
-          if (os) oe.s = os;
-          const oo = String((ops[i] && ops[i][3]) || "");
-          if (os && /^(new|pop|rand)$/.test(oo)) oe.o = oo;
-          if (oent && i === 0) oe.r = oent;
-          O.ev.push(oe);
         });
-        putGeo(cur.data, odid, geoOf(request));
+        putGeo(data, odid, ogeo ? Object.assign({}, ogeo) : null);
         if (oent && openBody.ent.c !== 0) {
-          if (!cur.data.ent[odid]) cur.data.ent[odid] = {};
-          cur.data.ent[odid][oent] = (cur.data.ent[odid][oent] || 0) + 1;
+          if (!data.ent[odid]) data.ent[odid] = {};
+          data.ent[odid][oent] = (data.ent[odid][oent] || 0) + 1;
         }
-        // 今日と昨日(日本時間)の分はすべて残す。それより古い記録は消す（念のため上限5000件）
+        // 以前ここに溜めていた履歴の残り(移行前の分)は、今日と昨日の分だけ残す
         const keepFrom = Date.parse(oday + "T00:00:00+09:00") - 24 * 3600 * 1000;
         O.ev = O.ev.filter(e => e.t >= keepFrom);
-        if (O.ev.length > 5000) O.ev = O.ev.slice(O.ev.length - 5000);
         const ok = Object.keys(O.days).sort();
         while (ok.length > KEEP_DAYS) delete O.days[ok.shift()];
-        if (await ghWrite(env, cur.sha, cur.data)) return json({ ok: true });
-      } catch (e) {}
-    }
-    return json({ ok: false }, 500);
+      }, 3)
+    ]);
+    return res[0] && res[1] ? json({ ok: true }) : json({ ok: false }, 500);
   }
 
   // ☆の記録 (POST): { favs: [["xxx.png", 1(付けた)|0(外した), "ページ"], ...], did: "端末の符号" }
@@ -334,10 +397,16 @@ export async function onRequest({ request, env }) {
   const now = Date.now();
   const day = new Date(now + 9 * 3600 * 1000).toISOString().slice(0, 10);
 
-  for (let attempt = 0; attempt < 2; attempt++) {
-    try {
-      const cur = await ghRead(env);
-      const d = cur.data;
+  const evs = items.map(([f, s, c], i) => {
+    const ev = { t: now, f: f, d: did, s: s };
+    if (c) ev.c = c;
+    if (ent && i === 0) ev.r = ent;
+    return ev;
+  });
+  const sgeo = geoOf(request);
+  const res = await Promise.all([
+    appendHour(env, now, evs, []),
+    updateLive(env, d => {
       if (!d.days[day]) d.days[day] = {};
       if (!d.devs[day]) d.devs[day] = {};
       if (!d.src[day]) d.src[day] = {};
@@ -345,23 +414,18 @@ export async function onRequest({ request, env }) {
         if (!d.ent[did]) d.ent[did] = {};
         d.ent[did][ent] = (d.ent[did][ent] || 0) + 1;
       }
-      items.forEach(([f, s, c], i) => {
+      items.forEach(([f, s]) => {
         d.src[day][s] = (d.src[day][s] || 0) + 1;
         d.totals[f] = (d.totals[f] || 0) + 1;
         d.days[day][f] = (d.days[day][f] || 0) + 1;
         d.devs[day][did] = (d.devs[day][did] || 0) + 1;
-        const ev = { t: now, f: f, d: did, s: s };
-        if (c) ev.c = c;
-        if (ent && i === 0) ev.r = ent;
-        d.events.push(ev);
         if (!d.fd[day]) d.fd[day] = {};
         const fl = d.fd[day][f] || (d.fd[day][f] = []);
         if (fl.indexOf(did) < 0) fl.push(did);
       });
-      putGeo(d, did, geoOf(request));
+      putGeo(d, did, sgeo ? Object.assign({}, sgeo) : null);
       compact(d, day);
-      if (await ghWrite(env, cur.sha, d)) return json({ ok: true });
-    } catch (e) {}
-  }
-  return json({ ok: false }, 500);
+    }, 2)
+  ]);
+  return res[0] && res[1] ? json({ ok: true }) : json({ ok: false }, 500);
 }
