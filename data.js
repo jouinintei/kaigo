@@ -1446,7 +1446,7 @@ window.NURIE_LIST = [
   { season: "冬", genre: "動物", title: "丹頂鶴", diff: "中級", file: "tancho_chu.png", sample: "tancho_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "雪の湿原で羽を広げて舞う、つがいの丹頂鶴", v: "1794628185147" },
   { season: "冬", genre: "動物", title: "白鳥の湖", diff: "上級", file: "hakucho_jo.png", sample: "hakucho_jo_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "雪山を背に、冬の湖に浮かぶ白鳥たち", v: "1794628186147" },
   { season: "冬", genre: "風景", title: "雪吊りの庭園", diff: "上級", file: "yukizuri_jo.png", sample: "yukizuri_jo_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "雪吊りの松が並ぶ冬の日本庭園。太鼓橋と雪見灯籠", v: "1794629773571" },
-  { season: "冬", genre: "風景", title: "昭和の茶の間", diff: "上級", file: "showa_chanoma_jo.png", sample: "showa_chanoma_jo_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "ちゃぶ台にみかんと急須、火鉢と柱時計。座布団で眠る猫", v: "1794670420688" },
+  { season: "冬", genre: "風景", title: "昭和の茶の間", diff: "上級", file: "showa_chanoma_jo.png", sample: "showa_chanoma_jo_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "ちゃぶ台にみかんと急須、火鉢と柱時計。座布団で眠る猫", v: "1794671604718" },
   { season: "冬", genre: "風物詩", title: "大根干し", diff: "中級", file: "daikonboshi_chu.png", sample: "daikonboshi_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "農家の軒先にずらりと並ぶ干し大根と雪の山", v: "1794628189147" },
   { season: "冬", genre: "行事", title: "クリスマスツリー", diff: "初級", file: "christmas_tree_sho.png", sample: "christmas_tree_sho_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "オーナメントで飾ったツリーと、足もとのプレゼント", v: "1794628190147" },
   { season: "冬", genre: "行事", title: "靴下のプレゼント", diff: "初級", file: "kutsushita_present_sho.png", sample: "kutsushita_present_sho_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "ひいらぎのリースに下げた2つの靴下とプレゼント", v: "1794628191147" },
