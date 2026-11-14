@@ -1505,6 +1505,7 @@ window.NURIE_LIST = [
   { season: "冬", genre: "乗り物", title: "雪山をのぼる登山鉄道", diff: "上級", file: "tozan_tetsudo_jo.png", sample: "tozan_tetsudo_jo_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "雪山の石橋とトンネルを越えて、山の駅へのぼる登山電車", v: "1794663384450" },
   { season: "秋", genre: "乗り物", title: "紅葉のトンネルを抜けるバス", diff: "中級", file: "momiji_tunnel_bus_chu.png", sample: "momiji_tunnel_bus_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "紅葉のトンネルの山道を走る、昔なつかしいボンネットバス", v: "1794663385450" },
   { season: "秋", genre: "その他", title: "ティーカップの紅葉の庭", diff: "中級", file: "teacup_momiji_niwa_chu.png", sample: "teacup_momiji_niwa_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "ティーカップの中に広がる、太鼓橋と灯籠のある紅葉の庭", v: "1794663725467" },
-  { season: "冬", genre: "風景", title: "秋から冬へ移る一本の木", diff: "初級", file: "aki_fuyu_ippon_ki_sho.png", sample: "aki_fuyu_ippon_ki_sho_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "左は紅葉、右は雪。秋から冬へ移る一本の大きな木", v: "1794663387450" },
+  { season: "冬", genre: "風景", title: "秋から冬へ移る一本の木", diff: "初級", file: "aki_fuyu_ippon_ki_sho.png", sample: "aki_fuyu_ippon_ki_sho_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "左は紅葉、右は雪。秋から冬へ移る一本の大きな木", v: "1794664319989" },
+  { season: "秋", genre: "風景", title: "飛び出す絵本の秋の古都", diff: "中級", file: "ehon_koto_aki_chu.png", sample: "ehon_koto_aki_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "開いた絵本から飛び出す、五重塔と門、紅葉の木", v: "1794664319990" },
   { season: "秋", genre: "人物", title: "落ち葉の着物の女性", diff: "中級", file: "ochiba_kimono_josei_chu.png", sample: "ochiba_kimono_josei_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "紅葉といちょうの柄の着物で、番傘をさして歩く女性", v: "1794663388450" },
 ];
