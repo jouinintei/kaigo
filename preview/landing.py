@@ -146,6 +146,13 @@ for name, (ey, glink) in PAGES.items():
       for(var i=0;o.length<list.length-rest.length;i++)q.forEach(function(a){{if(a[i])o.push(a[i]);}});
       return o.concat(rest);
     }}
+    var SER_RE=[[/^難読漢字/,"難読漢字"],[/^ことばさがし/,"ことばさがし"],[/^数字探し/,"数字探し"],[/^穴あき言葉/,"穴あき言葉"],[/^昭和の大スター穴埋め/,"昭和の大スター穴埋め"],[/^ことわざ穴埋め/,"ことわざ穴埋め"],[/^慣用句/,"慣用句"],[/^数の並び 次は何/,"数の並び 次は何?"]];
+    function sk(n){{var t=String(n.title).replace(/\\s*その\\s*\\d+\\s*$/,"").trim();for(var i=0;i<SER_RE.length;i++)if(SER_RE[i][0].test(t))return SER_RE[i][1];return t;}}
+    function sn(n){{var m=String(n.title).match(/その\\s*(\\d+)\\s*$/);return m?+m[1]:1;}}
+    var SERN={{}};list.forEach(function(n){{var k=sk(n);(SERN[k]=SERN[k]||[]).push(n);}});
+    function units(o){{var seen={{}},u=[];o.forEach(function(n){{var k=sk(n);if(SERN[k].length>1){{if(seen[k])return;seen[k]=1;u.push([k,SERN[k]]);}}else u.push([null,[n]]);}});return u;}}
+    function serCard(k,g){{var c=g.slice().sort(function(a,b){{return sn(a)-sn(b);}})[0],h="gallery.html?page=noutore&ser="+encodeURIComponent(k);
+      return '<article class="card wk v ser"><div style="position:relative"><a class="ph" style="cursor:pointer" href="'+h+'" aria-label="'+RK.esc(k)+'のシリーズを開く"><img loading="lazy" decoding="async" alt="'+RK.esc(k)+'" src="'+RK.sthumb(c)+'"></a><span class="sercnt">全'+g.length+'枚</span></div><div class="tt"><b>'+RK.esc(k)+'</b><span>'+RK.esc([c.genre,"シリーズ・全"+g.length+"枚"].filter(Boolean).join(" ・ "))+'</span></div><div class="acts one"><a class="btn p" href="'+h+'">'+g.length+'枚を見る →</a></div></article>';}}
     var chipsEl=document.getElementById("lpchips");
     function chips(){{
       chipsEl.innerHTML=[["","すべて",list.length]].concat(GEN.map(function(g){{return [g,g,list.filter(function(n){{return n.genre===g;}}).length];}})).filter(function(c){{return c[2]>0;}})
@@ -153,9 +160,9 @@ for name, (ey, glink) in PAGES.items():
     }}
     var m=document.getElementById("lpmore");
     function draw(){{
-      var o=ordered();document.getElementById("lpgrid").innerHTML=o.slice(0,shown).map(function(n){{return RK.card(n);}}).join("");
+      var o=units(ordered());document.getElementById("lpgrid").innerHTML=o.slice(0,shown).map(function(u){{return u[0]?serCard(u[0],u[1]):RK.card(u[1][0]);}}).join("");
       var left=o.length-shown;
-      if(left>0){{m.textContent="もっと見る（あと"+left+"枚）";m.href="#";m.dataset.more="1";}}
+      if(left>0){{m.textContent="もっと見る（あと"+left+"件）";m.href="#";m.dataset.more="1";}}
       else{{m.textContent=(G?G+"の脳トレを":"")+"一覧で絞り込んで探す →";m.href=G?"{glink}&genre="+encodeURIComponent(G):"{glink}";delete m.dataset.more;}}
     }}
     m.addEventListener("click",function(e){{if(!m.dataset.more)return;e.preventDefault();shown+=STEP;draw();}});
