@@ -21,7 +21,7 @@
 <script src="/frame.js?v=15"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="/rk.css?v=1794100800">
+<link rel="stylesheet" href="/rk.css?v=1794101200">
 <style>
 .ph1 h1,.bar .big b,.mo b,.h2 h2,.md h2,.empty h3,.req h3{font-weight:700}
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
@@ -62,7 +62,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1794100800"></script>
+<script src="/rk.js?v=1794101200"></script>
 <script src="/hame.js?v=8"></script>
 <script>
 (function(){
@@ -86,7 +86,7 @@
   document.getElementById("ft").innerHTML=RK.footer(K);
   RK.updFavCount();
   const main=document.getElementById("main");
-  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false,ser:qs.get("ser")||""};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
+  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false,ser:qs.get("ser")||"",req:qs.get("req")==="1"?"1":""};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
   let pop=[],seed=Math.random()*1e9|0;
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
@@ -134,12 +134,14 @@
   const synOf=w=>{const nw=norm(w);const g=SYN.find(g=>g.some(x=>norm(x)===nw));return g||[w];};
   const norm=s=>String(s).normalize("NFKC").toLowerCase().replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).replace(/\s+/g,"");
   const hira=s=>String(s).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
+  function dropReq(){try{const u=new URL(location.href);if(u.searchParams.has("req")){u.searchParams.delete("req");history.replaceState(history.state,"",u);}}catch(e){}}
   function filtered(){
     let a=items();
     if((K==="nurie"||K==="wall")&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
     if(st.diff)a=a.filter(n=>n.diff===st.diff);
     if(st.unused)a=a.filter(n=>!RK.isUsed(n.file));
+    if(st.req)a=a.filter(n=>n.req);
     if(st.q){const ws=st.q.trim().split(/[\s,、]+/).filter(Boolean);a=a.filter(n=>{const b=[n.title,n.genre,n.season,n.diff].join(" ");const hay=norm(b)+"|"+norm(toKana(b))+"|"+norm(withYomi(b))+"|"+norm(AUTO_T[n.file]||"");return ws.every(w=>synOf(w).some(v=>hay.includes(norm(v))||hay.includes(norm(toKana(v)))));});}
     window.RK_CTX=(()=>{const c={};if((K==="nurie"||K==="wall")&&st.season!=="すべて")c.se=st.season;if(st.genre)c.ge=st.genre;if(st.diff)c.di=st.diff;if(st.q&&st.q.trim())c.q=st.q.trim().slice(0,30);if(st.unused)c.us="未使用だけ";if(K!=="cal")c.so=st.sort;return c;})();window.RK_SORT=K!=="cal"?st.sort:"";
     if(st.sort==="pop"){const r=new Map(pop.map((f,i)=>[f,i]));a=a.map((n,i)=>[r.has(n.file)?r.get(n.file):1e6+i,n]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
@@ -168,6 +170,7 @@
     if(st.diff)cond.push(["diff",st.diff]);
     if(st.q)cond.push(["q","「"+st.q+"」"]);
     if(st.unused)cond.push(["unused","使用済みを除く"]);
+    if(st.req)cond.push(["req","リクエスト作品"]);
     const chips=cond.map(([k,t])=>`<button class="cc" data-clr="${k}" aria-label="${esc(t)}の条件を外す">${esc(t)}${ico("x",14)}</button>`).join("");
     return `<div class="n"><div class="cl">${cond.length?chips+`<span class="of">の${KIND}</span>`:`<span class="of">すべての${KIND}</span>`}</div><div class="big"><b>${tot}</b><span>${K==="wall"?"作品":"枚"}</span>${cond.length?`<small>（全${all}枚中）</small>`:""}${cond.length>0?`<button class="clr" data-reset>すべて外す</button>`:""}</div></div>`;
   }
@@ -226,10 +229,10 @@
     else if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
     else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;st.ser="";render();}
     else if(t.dataset.pg){const np=+t.dataset.pg;if(np!==st.page){try{const u=new URL(location.href);if(np>1)u.searchParams.set("p",np);else u.searchParams.delete("p");history.pushState(Object.assign({},history.state||{},{pg:np}),"",u);}catch(e){}}st.page=np;render();const el=main.querySelector(".bar")||main.querySelector(".fl")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
-    else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1,unused:false});try{localStorage.setItem("rk_unused","0");}catch(e){}render();}
+    else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1,unused:false,req:""});dropReq();try{localStorage.setItem("rk_unused","0");}catch(e){}render();}
     else if(t.dataset.sort){if(t.dataset.sort==="rand"&&st.sort==="rand")seed=Math.random()*1e9|0;st.sort=t.dataset.sort;st.page=1;render();}
     else if(t.dataset.unused!==undefined){st.unused=!st.unused;try{localStorage.setItem("rk_unused",st.unused?"1":"0");}catch(e){}st.page=1;render();}
-    else if(t.dataset.clr){const k=t.dataset.clr;if(k==="season")st.season="すべて";else if(k==="unused"){st.unused=false;try{localStorage.setItem("rk_unused","0");}catch(e){}}else st[k]="";st.page=1;render();}
+    else if(t.dataset.clr){const k=t.dataset.clr;if(k==="season")st.season="すべて";else if(k==="unused"){st.unused=false;try{localStorage.setItem("rk_unused","0");}catch(e){}}else st[k]="";if(k==="req")dropReq();st.page=1;render();}
     else if(t.dataset.month){st.month=t.dataset.month;render();}
     else if(t.dataset.chk){st.sel.has(t.dataset.chk)?st.sel.delete(t.dataset.chk):st.sel.add(t.dataset.chk);render();}
     else if(t.dataset.all!==undefined){const f=favs();st.sel=st.sel.size===f.length?new Set():new Set(f);render();}

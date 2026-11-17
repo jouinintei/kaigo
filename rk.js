@@ -76,15 +76,15 @@
 
   /* ---------- layout ---------- */
   const RQ_EX = {
-    "塗り絵": ["ほしい塗り絵をリクエスト（例：たぬき）", "ほしい絵は？", "例：たぬき、お餅つき、京都の紅葉", "例：猫が2匹いると嬉しいです", "塗り絵"],
-    "脳トレ": ["ほしい脳トレをリクエスト（例：四字熟語）", "ほしい脳トレは？", "例：四字熟語の穴埋め、間違い探し、お金の計算", "例：文字を大きめにしてほしい", "脳トレ"],
-    "カレンダー": ["ほしいカレンダーをリクエスト（例：干支の絵柄）", "ほしい月は？", "例：来年1月、干支の絵柄", "例：日付の枠を大きくしてほしい", "カレンダー"]
+    "塗り絵": ["ほしい塗り絵は？（例：たぬき）", "ほしい絵は？", "例：たぬき、お餅つき、京都の紅葉", "例：猫が2匹いると嬉しいです", "塗り絵"],
+    "脳トレ": ["ほしい脳トレは？（例：四字熟語）", "ほしい脳トレは？", "例：四字熟語の穴埋め、間違い探し、お金の計算", "例：文字を大きめにしてほしい", "脳トレ"],
+    "カレンダー": ["ほしいカレンダーは？（例：干支）", "ほしい月は？", "例：来年1月、干支の絵柄", "例：日付の枠を大きくしてほしい", "カレンダー"]
   };
   const rqKind = cur => cur === "noutore" || /noutore/.test(location.pathname) ? "脳トレ" : cur === "cal" || /calendar/.test(location.pathname) || /page=calendar/.test(location.search) ? "カレンダー" : "塗り絵";
   function header(cur) {
     const nav = [["塗り絵", L("nurie"), "nurie"], ["脳トレ", L("noutore"), "noutore"], ["カレンダー", L("cal"), "cal"]];
     return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
-<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><form class="rqf" data-k="${rqKind(cur)}" aria-label="${RQ_EX[rqKind(cur)][4]}のリクエスト"><input type="text" name="q" maxlength="60" placeholder="${RQ_EX[rqKind(cur)][innerWidth <= 640 ? 1 : 0]}" aria-label="ほしい${RQ_EX[rqKind(cur)][4]}"><button type="submit">${innerWidth <= 640 ? "送る" : "リクエスト"}</button></form><a class="rqd" href="#" data-req-more>詳しく<span class="rqd2">リクエスト</span></a></div>`}
+<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><form class="rqf" data-k="${rqKind(cur)}" aria-label="${RQ_EX[rqKind(cur)][4]}のリクエスト"><span class="rqi">${ico("pen", 18)}</span><input type="text" name="q" maxlength="60" placeholder="${RQ_EX[rqKind(cur)][innerWidth <= 640 ? 1 : 0]}" aria-label="ほしい${RQ_EX[rqKind(cur)][4]}"><a class="rqd" href="#" data-req-more title="線の太さや構図も選んでリクエスト">詳しく</a><button type="submit">${innerWidth <= 640 ? "送る" : "リクエスト"}</button></form></div>`}
 
 ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ</a>`}</div></header>`;
   }
@@ -128,7 +128,7 @@ ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 
 ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.on ? "true" : "false"}" data-chk="${esc(f)}" aria-label="選ぶ">${opt.on ? ico("check", 20) : ""}</span>` : (isNew(n) ? '<span class="new">NEW</span>' : "")}
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${badges(f)}</div>
-<div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
+<div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span>${n.req ? `<span class="rqtag">${ico("pen", 13)}リクエストから生まれました</span>` : ""}</div>
 ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""}<div class="acts${btn2 ? " a2" : ""}">${saveBtn}<button class="btn ptb half${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷" : W ? "まとめて印刷" : "直接印刷する"}</button></div>` : `<div class="acts${btn2 ? "" : " one"}">${saveBtn}${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn ptb${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷する" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}`}</article>`;
   }
   function skeleton(n) {
@@ -365,26 +365,43 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     ["dir", "向き", [["縦向き", "d1"], ["横向き", "d2"]], "c", "n"]
   ];
   const rqGenres = kind => { const c = {}; LIST.forEach(n => { if (kindOf(n) === kind && n.genre && n.genre !== "その他") c[n.genre] = (c[n.genre] || 0) + 1; }); return Object.keys(c).sort((x, y) => c[y] - c[x]).slice(0, 12).map(g => [g]); };
-  let rqEl = null;
-  function rqClose() { if (rqEl) { rqEl.remove(); rqEl = null; document.documentElement.style.overflow = ""; } }
+  let rqEl = null, rqLast = null;
+  function rqClose() {
+    if (!rqEl) return; const el = rqEl; rqEl = null;
+    el.classList.remove("on"); document.documentElement.style.overflow = "";
+    setTimeout(() => el.remove(), 220);
+  }
+  function rqShell(inner) {
+    if (rqEl) { rqEl.innerHTML = inner; return rqEl; }
+    rqEl = document.createElement("div"); rqEl.className = "rqp"; rqEl.innerHTML = inner;
+    document.body.appendChild(rqEl); document.documentElement.style.overflow = "hidden";
+    rqEl.addEventListener("click", e => {
+      if (e.target === rqEl || e.target.closest(".rqx")) { rqClose(); return; }
+      const o = e.target.closest("[data-rqopen]"); if (o) { e.preventDefault(); const f = o.dataset.rqopen; rqClose(); setTimeout(() => openMd(f, "l", "req"), 230); return; }
+      if (e.target.closest("[data-rqagain]")) { openReq("", rqLast && rqLast.kind); }
+    });
+    requestAnimationFrame(() => requestAnimationFrame(() => rqEl && rqEl.classList.add("on")));
+    return rqEl;
+  }
+  const RQ_HEAD = t => `<div class="rqh"><h2 id="rqT">${t}</h2><button type="button" class="rqx rqxi" aria-label="閉じる">${ico("x", 22)}</button></div>`;
   function openReq(q, kind) {
-    rqClose();
     const sv = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${RQ_SV[k]}</svg>`;
     const opt = (k, t, v, ic, on) => `<label><input type="${t}" name="rq_${k}" value="${esc(v)}"${on ? " checked" : ""}><span>${ic ? sv(ic) : ""}${esc(v)}</span></label>`;
     const auto = k => `<label><input type="radio" name="rq_${k}" value="" checked><span>おまかせ</span></label>`;
     const grp = ([k, lb, opts, ty]) => `<fieldset class="rqg" data-g="${k}"><legend>${lb}</legend><div class="rqo">${ty === "c" ? auto(k) : ""}${(opts || []).map(([v, ic]) => opt(k, "radio", v, ic, ty === "r" && v === (kind || "塗り絵"))).join("")}</div></fieldset>`;
-    rqEl = document.createElement("div");
-    rqEl.className = "rqp";
-    rqEl.innerHTML = `<form class="rqb" role="dialog" aria-modal="true" aria-labelledby="rqT"><div class="rqh"><h2 id="rqT">リクエストを送る</h2><button type="button" class="rqx" aria-label="閉じる">${ico("x", 22)}</button></div>
-<p class="rqs">ほしいものを書いて送るだけでOKです。下の項目は最初は全部「おまかせ」になっています。こだわりたいところだけ選んでください。</p>
-<label class="rqm"><span>ほしいもの</span><input type="text" name="q" maxlength="60" required placeholder="" value="${esc(q || "")}"></label>
+    const el = rqShell(`<form class="rqb" role="dialog" aria-modal="true" aria-labelledby="rqT">${RQ_HEAD("リクエストを送る")}
+<div class="rqbody"><p class="rqs">ほしいものを書いて送るだけでOKです。下の項目は最初はすべて「おまかせ」です。こだわりたいところだけ選んでください。</p>
+<label class="rqm"><span>ほしいもの<em>必須</em></span><input type="text" name="q" maxlength="60" required placeholder="" value="${esc(q || "")}"></label>
 ${RQ_G.map(grp).join("")}
-<label class="rqm"><span>ひとこと（任意）</span><textarea name="memo" maxlength="200" rows="2" placeholder=""></textarea></label>
-<div class="rqa"><button type="button" class="btn rqx">やめる</button><button type="submit" class="btn p">この内容で送る</button></div>
-<p class="rqn">お名前やご連絡先は不要です。いただいたリクエストをもとに素材を増やしています（すべてにお応えできるとは限りません）。</p></form>`;
-    document.body.appendChild(rqEl);
-    document.documentElement.style.overflow = "hidden";
-    const f = rqEl.querySelector("form");
+<label class="rqm"><span>ひとこと<em class="o">任意</em></span><textarea name="memo" maxlength="200" rows="2" placeholder=""></textarea></label>
+<p class="rqn">お名前やご連絡先は不要です。いただいたリクエストをもとに素材を増やしています（すべてにお応えできるとは限りません）。</p></div>
+<div class="rqft"><div class="rqsum" aria-live="polite"></div><div class="rqa"><button type="button" class="btn rqx">やめる</button><button type="submit" class="btn p">この内容で送る</button></div></div></form>`);
+    const f = el.querySelector("form");
+    const sum = () => {
+      const v = [f.q.value.trim() || "（ほしいものを入力）"];
+      RQ_G.forEach(([k]) => { const fs = f.querySelector(`[data-g="${k}"]`); if (fs.hidden) return; const c = fs.querySelector("input:checked"); if (c && c.value) v.push(c.value); });
+      f.querySelector(".rqsum").innerHTML = `<small>送る内容</small>` + v.map((x, i) => `<span class="${i ? "" : "q"}">${esc(x)}</span>`).join("");
+    };
     const sync = () => {
       const k = (f.querySelector('[name="rq_kind"]:checked') || {}).value;
       RQ_G.forEach(g => { if (g[4] === "n") f.querySelector(`[data-g="${g[0]}"]`).hidden = k !== "塗り絵"; });
@@ -393,23 +410,40 @@ ${RQ_G.map(grp).join("")}
       gf.hidden = !gs.length;
       f.querySelector('[data-g="diff"]').hidden = k === "カレンダー";
       const ex = RQ_EX[k] || RQ_EX["塗り絵"]; f.q.placeholder = ex[2]; f.memo.placeholder = ex[3];
+      sum();
     };
-    sync(); f.addEventListener("change", sync);
-    rqEl.addEventListener("click", e => { if (e.target === rqEl || e.target.closest(".rqx")) rqClose(); });
-    const inp = f.querySelector('[name="q"]'); setTimeout(() => { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }, 30);
+    sync(); f.addEventListener("change", sync); f.q.addEventListener("input", sum);
+    const inp = f.q; setTimeout(() => { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }, 60);
     f.addEventListener("submit", e => {
       e.preventDefault();
       const v = inp.value.trim(); if (!v) { inp.focus(); return; }
       const b = { q: v, memo: f.memo.value.trim(), p: location.pathname + location.search, did: deviceId() };
       RQ_G.forEach(([k]) => { const fs = f.querySelector(`[data-g="${k}"]`); if (fs.hidden) return; const c = fs.querySelector("input:checked"); if (c && c.value) b[k] = c.value; });
       const sb = f.querySelector('[type="submit"]'); sb.disabled = true; sb.textContent = "送信中…";
-      sendReq(b).then(() => rqClose()).catch(() => { sb.disabled = false; sb.textContent = "この内容で送る"; });
+      sendReq(b).catch(() => { sb.disabled = false; sb.textContent = "この内容で送る"; });
     });
+  }
+  function rqNear(b) {
+    const ws = b.q.split(/[\s,、・]+/).filter(w => w.length >= 1);
+    const k = b.kind || "塗り絵";
+    const hit = LIST.filter(n => kindOf(n) === k && ws.some(w => [n.title, n.genre].join(" ").includes(w)));
+    return (hit.length ? hit : []).slice(0, 4);
+  }
+  function rqDone(b) {
+    rqLast = b;
+    const near = rqNear(b), hasReq = LIST.some(n => n.req);
+    const tags = [b.q].concat(RQ_G.map(([k]) => k !== "kind" ? b[k] : "").filter(Boolean));
+    rqShell(`<div class="rqb rqdone" role="dialog" aria-modal="true" aria-labelledby="rqT">${RQ_HEAD("")}
+<div class="rqbody"><div class="rqok"><span class="rqck">${ico("check", 34)}</span><h2>リクエストを受け付けました</h2><p>ありがとうございます。作れたものから順にサイトに追加して、新着に載せます。<br>リクエストから作った作品には「リクエストから生まれました」の印が付きます。</p>
+<div class="rqsum done"><small>送った内容</small>${tags.map((x, i) => `<span class="${i ? "" : "q"}">${esc(x)}</span>`).join("")}</div></div>
+${near.length ? `<div class="rqnear"><h3>今ある作品から、近いもの</h3><div class="rqng">${near.map(n => `<button type="button" data-rqopen="${esc(n.file)}"><img src="${sthumb(n)}" alt="" loading="lazy"><b>${esc(n.title)}</b></button>`).join("")}</div></div>` : ""}
+${hasReq ? `<a class="rqlink" href="${L(b.kind === "脳トレ" ? "noutore" : "nurie")}${b.kind === "脳トレ" ? "&" : "?"}req=1">リクエストから生まれた作品を見る ${ico("arrow", 16)}</a>` : ""}</div>
+<div class="rqft"><div class="rqa"><button type="button" class="btn o" data-rqagain>続けてリクエストする</button><button type="button" class="btn p rqx">閉じる</button></div></div></div>`);
   }
   function sendReq(b) {
     return fetch("/api/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) })
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(j => { if (!j || !j.ok) throw 0; document.querySelectorAll(".rqf input").forEach(x => x.value = ""); toast("リクエストを受け付けました", "ありがとうございます。追加されたら新着に載ります。"); })
+      .then(j => { if (!j || !j.ok) throw 0; document.querySelectorAll(".rqf input").forEach(x => x.value = ""); rqDone(b); })
       .catch(e => { alert("送信できませんでした。時間をおいてもう一度お試しください。"); throw e; });
   }
   document.addEventListener("submit", e => {
