@@ -148,6 +148,51 @@ export async function onRequest(context) {
     }
   }
 
+  if (request.method === "DELETE") {
+    const url = new URL(request.url);
+    if (!env || !env.STATS_KEY || url.searchParams.get("key") !== env.STATS_KEY) {
+      return new Response("Not found", { status: 404 });
+    }
+    const gtoken = String(env.GITHUB_TOKEN || "").trim();
+    const grepo = cleanRepo(env.MEMBER_REPO);
+    let b = null;
+    try { b = await request.json(); } catch (e) {}
+    const date = String((b && b.date) || ""), d = String((b && b.d) || "");
+    if (!gtoken || !grepo || !date) return new Response(JSON.stringify({ ok: false, error: "bad" }), { status: 400, headers });
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const cur = await ghGet(grepo, gtoken);
+        const hit = cur.data.filter(x => x.date === date && String(x.d || "") === d);
+        if (!hit.length) return new Response(JSON.stringify({ ok: true, removed: 0 }), { status: 200, headers });
+        const rest = cur.data.filter(x => !(x.date === date && String(x.d || "") === d));
+        const r = await fetch("https://api.github.com/repos/" + grepo + "/contents/" + FILE_PATH, {
+          method: "PUT",
+          headers: Object.assign(ghHeaders(gtoken), { "Content-Type": "application/json" }),
+          body: JSON.stringify({ message: "お問い合わせ削除 (計" + rest.length + "件)", content: b64encodeUtf8(JSON.stringify(rest, null, 2)), sha: cur.sha })
+        });
+        if (r.status === 409 || r.status === 422) continue;
+        if (!r.ok) return new Response(JSON.stringify({ ok: false, error: "gh_" + r.status }), { status: 500, headers });
+        for (const it of hit) {
+          for (const n of (Array.isArray(it.photos) ? it.photos : [])) {
+            if (!/^[0-9A-Za-z_-]+\.jpg$/.test(n)) continue;
+            try {
+              const g = await fetch("https://api.github.com/repos/" + grepo + "/contents/" + PHOTO_DIR + n, { headers: ghHeaders(gtoken) });
+              if (!g.ok) continue;
+              const gj = await g.json();
+              await fetch("https://api.github.com/repos/" + grepo + "/contents/" + PHOTO_DIR + n, {
+                method: "DELETE",
+                headers: Object.assign(ghHeaders(gtoken), { "Content-Type": "application/json" }),
+                body: JSON.stringify({ message: "お問い合わせの写真を削除", sha: gj.sha })
+              });
+            } catch (e) {}
+          }
+        }
+        return new Response(JSON.stringify({ ok: true, removed: hit.length }), { status: 200, headers });
+      } catch (e) {}
+    }
+    return new Response(JSON.stringify({ ok: false, error: "conflict" }), { status: 500, headers });
+  }
+
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ ok: false, error: "method" }), { status: 405, headers });
   }

@@ -79,6 +79,27 @@ export async function onRequest({ request, env }) {
     catch (e) { return json({ ok: false, error: String(e && e.message) }, 500); }
   }
 
+  if (request.method === "DELETE") {
+    const url = new URL(request.url);
+    if (!env.STATS_KEY || url.searchParams.get("key") !== env.STATS_KEY) return new Response("Not found", { status: 404 });
+    let b = null;
+    try { b = await request.json(); } catch (e) {}
+    const t = String((b && b.t) || ""), d = String((b && b.d) || "");
+    if (!t) return json({ ok: false, error: "bad" }, 400);
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const cur = await ghRead(env);
+        const items = cur.items.filter(x => !(x.t === t && String(x.d || "") === d));
+        if (items.length === cur.items.length) return json({ ok: true, removed: 0 });
+        const r = await ghWrite(env, cur.sha, items, "リクエスト削除");
+        if (r.ok) return json({ ok: true, removed: cur.items.length - items.length });
+        if (r.status === 409 || r.status === 422) continue;
+        return json({ ok: false, error: "gh_" + r.status }, 500);
+      } catch (e) {}
+    }
+    return json({ ok: false, error: "conflict" }, 500);
+  }
+
   if (request.method !== "POST") return json({ ok: false, error: "method" }, 405);
 
   let b = null;

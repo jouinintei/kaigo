@@ -266,6 +266,8 @@
   .inq .top{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
   .inq .when{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
   .inq .tag.dev{margin-left:0}
+  .inq .inqdel{margin-left:auto;border:1px solid var(--line);background:none;border-radius:999px;padding:2px 10px;font-size:12px;color:var(--ink-3);cursor:pointer}
+  .inq .inqdel:hover{color:#c0392b;border-color:#e8b4ad}
   .inq .tag.bug{background:#fdecea;border-color:transparent;color:#c0392b}
   .inq .txt{font-size:14px;line-height:1.75;white-space:pre-wrap;word-break:break-word}
   .inq .from{font-size:12px;color:var(--ink-3);margin-top:5px;word-break:break-all}
@@ -1589,6 +1591,7 @@
       } else {
         tags += '<span class="tag dev">端末不明</span>';
       }
+      tags += '<button type="button" class="inqdel" data-inqdel="' + inqItems.indexOf(it) + '" title="削除">🗑 削除</button>';
       if (it.rq){
         html += '<div class="inq"><div class="top">' + tags + '</div>' +
           '<div class="txt"><b style="font-size:16px">' + esc(it.q) + '</b>' + (it.opts.length ? ' <span style="color:var(--ink-3);font-size:13px">' + it.opts.map(esc).join(" / ") + '</span>' : '') +
@@ -1621,9 +1624,24 @@
     v.querySelector("img").src = u; v.querySelector("a").href = u;
     v.classList.add("show");
   });
+  document.addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest("[data-inqdel]");
+    if (!b || !inqItems) return;
+    var it = inqItems[Number(b.getAttribute("data-inqdel"))];
+    if (!it) return;
+    var label = it.rq ? "リクエスト「" + it.q + "」" : (it.type || "お問い合わせ") + (it.text ? "「" + String(it.text).slice(0, 20) + "」" : "");
+    if (!confirm(label + " を削除しますか？\n元に戻せません。" + (it.photos && it.photos.length ? "\n送られた写真も削除されます。" : ""))) return;
+    b.disabled = true; b.textContent = "削除中…";
+    var url = (it.rq ? "api/request" : "api/contact") + "?key=" + encodeURIComponent(key);
+    var body = it.rq ? it.raw : { date: it.date, d: it.d || "" };
+    fetch(url, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok || !j.ok) throw new Error(j.error || r.status); }); })
+      .then(function(){ inqItems = inqItems.filter(function(x){ return x !== it; }); drawInquiries(); updateInqAlert(); })
+      .catch(function(err){ alert("削除できませんでした（" + (err.message || err) + "）"); b.disabled = false; b.textContent = "🗑 削除"; });
+  });
   function rqToInq(x){
     var J = function(v){ return Array.isArray(v) ? v.join("・") : (v || ""); };
-    return { date: x.t, type: "リクエスト", rq: true, q: x.q || "", memo: x.memo || "", d: x.d, p: x.p || "",
+    return { date: x.t, type: "リクエスト", rq: true, raw: { t: x.t, d: x.d || "" }, q: x.q || "", memo: x.memo || "", d: x.d, p: x.p || "",
       opts: [x.kind, J(x.season), x.genre ? "ジャンル:" + J(x.genre) : "", x.line ? "線:" + J(x.line) : "", x.comp ? "構図:" + J(x.comp) : "", J(x.diff), J(x.dir)].filter(Boolean) };
   }
   function loadInquiries(){
