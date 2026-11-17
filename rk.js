@@ -78,9 +78,9 @@
   function header(cur) {
     const nav = [["塗り絵", L("nurie"), "nurie"], ["脳トレ", L("noutore"), "noutore"], ["カレンダー", L("cal"), "cal"]];
     return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
-<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><a class="favbtn fv${cur === "fav" ? " on" : ""}" href="${L("fav")}">${ico("star", 18)}お気に入り<span class="n" data-favtab>${favs().length}</span>件</a></div>`}
+<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><form class="rqf" aria-label="塗り絵のリクエスト"><input type="text" name="q" maxlength="60" placeholder="${innerWidth <= 640 ? "ほしい絵は？" : "ほしい塗り絵をリクエスト（例：たぬき）"}" aria-label="ほしい塗り絵"><button type="submit">${innerWidth <= 640 ? "送る" : "リクエスト"}</button></form><a class="rqd" href="#" data-req-more>詳しく<span class="rqd2">リクエスト</span></a></div>`}
 
-${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ・要望</a>`}</div></header>`;
+${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ</a>`}</div></header>`;
   }
   function calNew() {
     const c = LIST.filter(n => kindOf(n) === "カレンダー" && n.year && n.month); if (!c.length) return 0;
@@ -88,16 +88,16 @@ ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 
     return top >= now && c.some(n => n.year * 100 + n.month === top && n.added) ? top % 100 : 0;
   }
   function tabs(cur) {
-    const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["壁紙作り", "wall", "wall", "WALL"]];
+    const t = [["塗り絵", "nurie", "pen", "COLORING"], ["脳トレ", "noutore", "brain", "BRAIN"], ["カレンダー", "cal", "cal", "CALENDAR"], ["お気に入り", "fav", "star", "FAVORITE"]];
     const cnt = k => k === "fav" ? favs().length : LIST.filter(n => kindOf(n) === { nurie: "塗り絵", noutore: "脳トレ", cal: "カレンダー", wall: "壁紙作り" }[k]).length;
     const v = new URLSearchParams(location.search).get("tab") || "bc";
-    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc"${k === "fav" ? " data-favtab" : ""}>${cnt(k)}</span>${k === "wall" ? '<span class="tnew">NEW</span>' : ""}${k === "cal" && calNew() ? `<span class="tbub">${calNew()}月追加</span>` : ""}</a>`).join("")}</div></nav>`;
+    return `<nav class="tabs tabs-${v}" aria-label="素材の種類"><div class="wrap">${t.map(([n, k, i, en]) => `<a href="${L(k)}${!PROD && v !== "bc" ? "&tab=" + v : ""}"${cur === k ? ' aria-current="page"' : ""}><span class="ti">${ico(i, 22)}</span><span class="tl"><span class="en">${en}</span><span class="jp">${n}</span></span><span class="tc"${k === "fav" ? " data-favtab" : ""}>${cnt(k)}</span>${k === "cal" && calNew() ? `<span class="tbub">${calNew()}月追加</span>` : ""}</a>`).join("")}</div></nav>`;
   }
   function footer(cur) {
-    const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["壁紙作り", "wall", "wall"], ["お気に入り", "fav", "star"]];
-    return `<section class="req"><div class="wrap"><div><h3>「こんな${cur === "noutore" ? "脳トレ" : cur === "cal" ? "カレンダー" : cur === "wall" ? "壁紙作り" : cur === "fav" || cur === "" ? "素材" : "塗り絵"}がほしい」をお聞かせください</h3><p>ご要望・不具合のご連絡はこちらから。いただいた声をもとに素材を増やしています。</p></div><a class="btn p" href="${ROOT}contact.html" style="height:52px">ご要望を送る</a></div></section>
+    const b = [["塗り絵", "nurie", "pen"], ["脳トレ", "noutore", "brain"], ["カレンダー", "cal", "cal"], ["お気に入り", "fav", "star"]];
+    return `<section class="req"><div class="wrap"><div><h3>「こんな${cur === "noutore" ? "脳トレ" : cur === "cal" ? "カレンダー" : cur === "wall" ? "壁紙作り" : cur === "fav" || cur === "" ? "素材" : "塗り絵"}がほしい」をお聞かせください</h3><p>題材を一言書くだけで送れます。線の太さや構図も選べます。いただいたリクエストをもとに素材を増やしています。</p></div><a class="btn p" href="#" data-req="" data-reqk="${cur === "noutore" ? "脳トレ" : cur === "cal" ? "カレンダー" : "塗り絵"}" style="height:52px">リクエストする</a></div></section>
 <footer class="ft"><div class="wrap"><span>© 介護のレクプリ</span><nav aria-label="サイトについて"><a href="${ROOT}terms.html">素材のご利用について</a><a href="${ROOT}privacy.html">プライバシーポリシー</a><a href="${ROOT}contact.html">お問い合わせ</a></nav></div></footer>
-<nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="${L(k)}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}${k === "wall" ? '<span class="bnew">NEW</span>' : ""}${k === "cal" && calNew() ? `<span class="bnew bcal">${calNew()}月</span>` : ""}</a>`).join("")}</nav>
+<nav class="bnav" aria-label="下部メニュー">${b.map(([t, k, i]) => `<a href="${L(k)}"${cur === k ? ' aria-current="page"' : ""}>${ico(i)}${t}${k === "cal" && calNew() ? `<span class="bnew bcal">${calNew()}月</span>` : ""}</a>`).join("")}</nav>
 <div class="toast" role="status" aria-live="polite"><span class="ok">${ico("check", 18)}</span><span class="tx"></span></div>
 <div class="md" role="dialog" aria-modal="true" aria-labelledby="mdT"><div class="box"></div></div>`;
   }
@@ -341,5 +341,78 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
   document.addEventListener("contextmenu", e => { if (inZoom(e.target)) e.preventDefault(); });
   document.addEventListener("dragstart", e => { if (inZoom(e.target)) e.preventDefault(); });
 
-  window.RK = { logSave, markUsed, markPrinted, refreshCard, loadPdf, PT, resetHist, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, seasonNow, isNew, metaOf, openMd };
+  /* ---------- request ---------- */
+  const RQ_SV = {
+    l1: '<path d="M3 12h18" stroke-width="1"/>', l2: '<path d="M3 12h18" stroke-width="2.4"/>', l3: '<path d="M3 12h18" stroke-width="4.5"/>',
+    c1: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="6"/>',
+    c2: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 17l5-6 4 4 3-3 6 6"/><circle cx="16" cy="8" r="1.6"/>',
+    c3: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="9" r="2.2"/><circle cx="16" cy="9" r="2.2"/><circle cx="8" cy="16" r="2.2"/><circle cx="16" cy="16" r="2.2"/>',
+    d1: '<rect x="7" y="3" width="10" height="18" rx="1.5"/>', d2: '<rect x="3" y="7" width="18" height="10" rx="1.5"/>'
+  };
+  const RQ_G = [
+    ["kind", "種類", [["塗り絵"], ["脳トレ"], ["カレンダー"]], "r"],
+    ["season", "季節", [["春"], ["夏"], ["秋"], ["冬"], ["通年"]], "c", "n"],
+    ["genre", "ジャンル", null, "c"],
+    ["line", "線の太さ", [["細め", "l1"], ["ふつう", "l2"], ["太め", "l3"]], "c", "n"],
+    ["comp", "構図", [["大きく1つ", "c1"], ["背景・風景あり", "c2"], ["いくつか並べる", "c3"]], "c", "n"],
+    ["diff", "難しさ", [["初級"], ["中級"], ["上級"]], "c"],
+    ["dir", "向き", [["縦向き", "d1"], ["横向き", "d2"]], "c", "n"]
+  ];
+  const rqGenres = kind => { const c = {}; LIST.forEach(n => { if (kindOf(n) === kind && n.genre && n.genre !== "その他") c[n.genre] = (c[n.genre] || 0) + 1; }); return Object.keys(c).sort((x, y) => c[y] - c[x]).slice(0, 12).map(g => [g]); };
+  let rqEl = null;
+  function rqClose() { if (rqEl) { rqEl.remove(); rqEl = null; document.documentElement.style.overflow = ""; } }
+  function openReq(q, kind) {
+    rqClose();
+    const sv = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${RQ_SV[k]}</svg>`;
+    const opt = (k, t, v, ic, on) => `<label><input type="${t}" name="rq_${k}" value="${esc(v)}"${on ? " checked" : ""}><span>${t === "checkbox" ? '<i class="ck"></i>' : ""}${ic ? sv(ic) : ""}${esc(v)}</span></label>`;
+    const grp = ([k, lb, opts, ty]) => `<fieldset class="rqg" data-g="${k}"><legend>${lb}${ty === "c" ? '<small>（いくつでも・選ばなければおまかせ）</small>' : ""}</legend><div class="rqo">${(opts || []).map(([v, ic]) => opt(k, ty === "r" ? "radio" : "checkbox", v, ic, ty === "r" && v === (kind || "塗り絵"))).join("")}</div></fieldset>`;
+    rqEl = document.createElement("div");
+    rqEl.className = "rqp";
+    rqEl.innerHTML = `<form class="rqb" role="dialog" aria-modal="true" aria-labelledby="rqT"><div class="rqh"><h2 id="rqT">リクエストを送る</h2><button type="button" class="rqx" aria-label="閉じる">${ico("x", 22)}</button></div>
+<p class="rqs">ほしいものを書いて送るだけでOKです。下の項目は、こだわりがあるところだけチェックしてください。</p>
+<label class="rqm"><span>ほしいもの</span><input type="text" name="q" maxlength="60" required placeholder="例：たぬき、お餅つき、京都の紅葉" value="${esc(q || "")}"></label>
+${RQ_G.map(grp).join("")}
+<label class="rqm"><span>ひとこと（任意）</span><textarea name="memo" maxlength="200" rows="2" placeholder="例：猫が2匹いると嬉しいです"></textarea></label>
+<div class="rqa"><button type="button" class="btn rqx">やめる</button><button type="submit" class="btn p">この内容で送る</button></div>
+<p class="rqn">お名前やご連絡先は不要です。いただいたリクエストをもとに素材を増やしています（すべてにお応えできるとは限りません）。</p></form>`;
+    document.body.appendChild(rqEl);
+    document.documentElement.style.overflow = "hidden";
+    const f = rqEl.querySelector("form");
+    const sync = () => {
+      const k = (f.querySelector('[name="rq_kind"]:checked') || {}).value;
+      RQ_G.forEach(g => { if (g[4] === "n") f.querySelector(`[data-g="${g[0]}"]`).hidden = k !== "塗り絵"; });
+      const gf = f.querySelector('[data-g="genre"]'), gs = k === "カレンダー" ? [] : rqGenres(k);
+      if (gf.dataset.k !== k) { const keep = new Set([...gf.querySelectorAll("input:checked")].map(x => x.value)); gf.dataset.k = k; gf.querySelector(".rqo").innerHTML = gs.map(([v]) => opt("genre", "checkbox", v, "", keep.has(v))).join(""); }
+      gf.hidden = !gs.length;
+      f.querySelector('[data-g="diff"]').hidden = k === "カレンダー";
+    };
+    sync(); f.addEventListener("change", sync);
+    rqEl.addEventListener("click", e => { if (e.target === rqEl || e.target.closest(".rqx")) rqClose(); });
+    const inp = f.querySelector('[name="q"]'); setTimeout(() => { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }, 30);
+    f.addEventListener("submit", e => {
+      e.preventDefault();
+      const v = inp.value.trim(); if (!v) { inp.focus(); return; }
+      const b = { q: v, memo: f.memo.value.trim(), p: location.pathname + location.search, did: deviceId() };
+      RQ_G.forEach(([k]) => { const fs = f.querySelector(`[data-g="${k}"]`); if (fs.hidden) return; const v = [...fs.querySelectorAll("input:checked")].map(x => x.value); if (v.length) b[k] = k === "kind" ? v[0] : v; });
+      const sb = f.querySelector('[type="submit"]'); sb.disabled = true; sb.textContent = "送信中…";
+      sendReq(b).then(() => rqClose()).catch(() => { sb.disabled = false; sb.textContent = "この内容で送る"; });
+    });
+  }
+  function sendReq(b) {
+    return fetch("/api/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(j => { if (!j || !j.ok) throw 0; document.querySelectorAll(".rqf input").forEach(x => x.value = ""); toast("リクエストを受け付けました", "ありがとうございます。追加されたら新着に載ります。"); })
+      .catch(e => { alert("送信できませんでした。時間をおいてもう一度お試しください。"); throw e; });
+  }
+  document.addEventListener("submit", e => {
+    const f = e.target.closest && e.target.closest(".rqf"); if (!f) return; e.preventDefault();
+    const v = f.q.value.trim(); if (!v) { f.q.focus(); return; }
+    const bt = f.querySelector("button"); bt.disabled = true;
+    sendReq({ q: v, p: location.pathname + location.search, did: deviceId() }).catch(() => {}).then(() => { bt.disabled = false; });
+  });
+  document.addEventListener("click", e => { const t = e.target.closest && e.target.closest("[data-req-more]"); if (!t) return; e.preventDefault(); const i = document.querySelector(".rqf input"); openReq(i ? i.value.trim() : ""); });
+  document.addEventListener("click", e => { const t = e.target.closest && e.target.closest("[data-req]"); if (!t) return; e.preventDefault(); openReq(t.dataset.req || "", t.dataset.reqk || ""); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && rqEl) rqClose(); });
+
+  window.RK = { logSave, markUsed, markPrinted, refreshCard, loadPdf, PT, resetHist, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, openReq, seasonNow, isNew, metaOf, openMd };
 })();

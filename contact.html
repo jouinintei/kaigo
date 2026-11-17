@@ -12,15 +12,15 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>お問い合わせ・要望|介護のレクプリ</title>
-<meta name="description" content="「介護のレクプリ」へのご要望・不具合のご連絡・お問い合わせはこちらから。">
+<title>お問い合わせ|介護のレクプリ</title>
+<meta name="description" content="「介護のレクプリ」へのお問い合わせ・不具合のご連絡・作品写真の投稿はこちらから。">
 <link rel="canonical" href="https://rekupuri.com/contact.html">
 <link rel="icon" href="favicon.ico?v=3" sizes="48x48">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png?v=3">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <script src="/analytics.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="/rk.css?v=1793933953">
+<link rel="stylesheet" href="/rk.css?v=1794100000">
 <style>
 .cw{max-width:820px;margin:0 auto;padding:0 24px}
 .ph1{padding:36px 0 8px}
@@ -71,19 +71,16 @@
 <body>
 <div id="hd"></div>
 <main class="cw">
-<div class="ph1"><div class="ey">CONTACT</div><h1>お問い合わせ・要望</h1><p>「こんな素材がほしい」「ここが使いづらい」など、お気軽にお寄せください。</p></div>
+<div class="ph1"><div class="ey">CONTACT</div><h1>お問い合わせ</h1><p>「ここが使いづらい」「保存できない」などのご連絡や、塗った作品の写真はこちらから。</p></div>
 
 <section class="card box">
-<h2>ご意見・ご要望を送る</h2>
-<p>いただいた声をもとに、素材やサイトを増やし、直していきます。</p>
-<ul class="ex" aria-label="ご要望の例">
-<li>来月の行事の塗り絵がほしい</li><li>線が太めのやさしい絵がほしい</li><li>男性が喜ぶ題材（車・釣りなど）</li><li>計算の脳トレをもっと</li><li>保存ができない</li>
-</ul>
-<p class="hint">「題材」「季節や行事」「難しさ」「使う場面（人数・時間など）」が書いてあると、より形にしやすくなります。</p>
+<h2>お問い合わせを送る</h2>
+<p>いただいた声をもとに、サイトを直していきます。</p>
+<div class="photo-call" style="background:#FBF3EC;border:1px solid #EBD3C2"><b>✏️ ほしい素材のリクエストは別の窓口です</b><p>「こんな塗り絵がほしい」は、ページ上部の「リクエスト」欄に一言書くだけで送れます。線の太さや構図も選びたいときは <a href="#" data-req-more style="color:var(--btn);font-weight:700">詳しくリクエスト</a> からどうぞ。</p></div>
 <div class="photo-call"><b>🖍️ 塗った作品の写真もお待ちしています</b><p>「こんな色で塗りました」「利用者さんがこんな風に仕上げました」など、お気軽にお送りください。写真だけの送信でも大丈夫です。</p></div>
 <div class="form">
 <label for="cType">種類</label>
-<select id="cType"><option value="ご要望">ご要望</option><option value="作品の写真">作品の写真</option><option value="壁紙作りの感想">壁紙作りの感想</option><option value="不具合">不具合</option><option value="その他">その他</option></select>
+<select id="cType"><option value="ご意見">ご意見</option><option value="作品の写真">作品の写真</option><option value="不具合">不具合</option><option value="その他">その他</option></select>
 <label for="cText">内容</label>
 <textarea id="cText" rows="6" maxlength="1000" placeholder="内容をご記入ください"></textarea>
 <div class="count" id="cCount">0 / 1000</div>
@@ -119,7 +116,7 @@
 </section>
 </main>
 <div id="ft"></div>
-<script src="/rk.js?v=1793956000"></script>
+<script src="/rk.js?v=1794100000"></script>
 <script>
 (function () {
   document.getElementById("hd").innerHTML = RK.header("contact");
@@ -166,7 +163,7 @@
     document.getElementById("pWarn").style.display = has ? "" : "none";
     document.getElementById("pAgreeL").style.display = has ? "" : "none";
     pNote.textContent = has ? photos.length + " / 3枚" : "";
-    if (has && sel.value === "ご要望") sel.value = "作品の写真";
+    if (has && sel.value === "ご意見") sel.value = "作品の写真";
   }
   pFile.onchange = async () => {
     const files = [...pFile.files]; pFile.value = "";

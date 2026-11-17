@@ -378,6 +378,19 @@
   <section class="card">
     <div class="card-head">
       <div>
+        <h2>届いたリクエスト</h2>
+        <p class="note" id="rqNote">サイト上部の「リクエスト」欄から届いたもの。新しい順。</p>
+      </div>
+      <div class="tools">
+        <button class="btn-ghost" id="rqReloadBtn">更新</button>
+      </div>
+    </div>
+    <div id="rqWrap"><p class="empty">読み込み中…</p></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
         <h2>壁紙作り（分割塗り絵）</h2>
         <p class="note">今日、どの端末が開いた・保存したかを作品ごとに出しています（新しい順）。自分の端末は数えていません。</p>
       </div>
@@ -1952,6 +1965,35 @@
       });
   }
 
+  /* ---------- リクエスト ---------- */
+  var RQ_SEEN_KEY = "rk_rq_seen";
+  function drawRequests(items){
+    var wrap = document.getElementById("rqWrap");
+    if (!items.length){ wrap.innerHTML = '<p class="empty">まだリクエストはありません。</p>'; return; }
+    var seen = 0; try { seen = Number(localStorage.getItem(RQ_SEEN_KEY)) || 0; } catch(e){}
+    var a = items.slice().sort(function(x,y){ return Date.parse(y.t) - Date.parse(x.t); });
+    var html = '<p class="sub" style="margin:0 0 8px">全' + a.length + '件</p>';
+    a.forEach(function(x){
+      var t = Date.parse(x.t) || 0;
+      var J = function(v){ return Array.isArray(v) ? v.join("・") : (v || ""); };
+      var opts = [x.kind, J(x.season), x.genre ? "ジャンル:" + J(x.genre) : "", x.line ? "線:" + J(x.line) : "", x.comp ? "構図:" + J(x.comp) : "", J(x.diff), J(x.dir)].filter(Boolean).map(function(v){ return '<span class="tag">' + esc(v) + '</span>'; }).join(" ");
+      var dv = (x.d && x.d !== "unknown") ? esc(shortId(x.d)) : "端末不明";
+      html += '<div class="rqi" style="padding:10px 2px;border-bottom:1px solid #eee"><div style="font-size:16px;font-weight:700">' + (t > seen ? '<span class="tag newinq">NEW</span> ' : '') + esc(x.q) + '</div>' +
+        (opts ? '<div style="margin-top:4px">' + opts + '</div>' : '') +
+        (x.memo ? '<div style="margin-top:4px;white-space:pre-wrap">' + esc(x.memo) + '</div>' : '') +
+        '<div class="sub" style="font-size:12px;margin-top:4px">' + fmtMD(dayKey(t)) + ' ' + hhmm(t) + ' ・ ' + dv + (x.p ? ' ・ ' + esc(x.p) : '') + '</div></div>';
+    });
+    wrap.innerHTML = html;
+    var latest = Date.parse(a[0].t) || 0;
+    setTimeout(function(){ try { localStorage.setItem(RQ_SEEN_KEY, String(latest)); } catch(e){} }, 1500);
+  }
+  function loadRequests(){
+    fetch("api/request?key=" + encodeURIComponent(key) + "&_=" + Date.now(), {cache:"no-store"})
+      .then(function(r){ if (!r.ok) throw new Error("読み込みに失敗しました (" + r.status + ")"); return r.json(); })
+      .then(function(j){ drawRequests(Array.isArray(j.items) ? j.items : []); })
+      .catch(function(e){ document.getElementById("rqWrap").innerHTML = '<p class="empty">' + esc(String(e.message || e)) + '</p>'; });
+  }
+
   /* ---------- 起動 ---------- */
   function start(k){
     key = k;
@@ -1961,8 +2003,10 @@
     load(false);
     schedule();
     loadInquiries();
+    loadRequests();
     loadInsights();
   }
+  document.getElementById("rqReloadBtn").addEventListener("click", function(){ loadRequests(); });
 
   document.getElementById("goBtn").addEventListener("click", function(){
     var v = document.getElementById("keyInput").value.trim();
