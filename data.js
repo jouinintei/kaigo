@@ -1497,6 +1497,7 @@ window.NURIE_LIST = [
   { season: "冬", genre: "風物詩", title: "交差点の傘", diff: "中級", file: "kousaten_kasa_ue_chu.png", sample: "kousaten_kasa_ue_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "雪の交差点を真上から。色とりどりの傘が行き交う", v: "1794628236147" },
   { season: "冬", genre: "その他", title: "ランプの中の雪の村", diff: "中級", file: "lamp_yuki_mura_chu.png", sample: "lamp_yuki_mura_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "窓辺のランプのガラスの中に広がる、かやぶき屋根の雪の村", v: "1794663374450" },
   { season: "秋", genre: "動物", title: "軒下の干し柿と猫", diff: "初級", file: "hoshigaki_neko_sho.png", sample: "hoshigaki_neko_sho_sample.jpg", added: "2026-11", date: "2026-11-15", v: "1794672756197" },
+  { season: "秋", genre: "動物", title: "もみじの池のおしどり", diff: "初級", file: "oshidori_ike_sho.png", sample: "oshidori_ike_sho_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794890635703" },
   { season: "冬", genre: "その他", title: "毛糸玉からほどける冬景色", diff: "初級", file: "keito_fuyugeshiki_sho.png", sample: "keito_fuyugeshiki_sho_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "毛糸玉からほどけた糸が、雪の家と森の景色に変わっていく", v: "1794663375450" },
   { season: "冬", genre: "人物", title: "雪の結晶の傘の女性", diff: "中級", file: "yuki_kessho_kasa_chu.png", sample: "yuki_kessho_kasa_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "雪の結晶の形の傘をさして、雪の街角にたたずむ女性", v: "1794663376450" },
   { season: "冬", genre: "その他", title: "柚子湯の小さな庭", diff: "初級", file: "yuzuyu_niwa_sho.png", sample: "yuzuyu_niwa_sho_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "柚子の浮かぶ木の湯船と、湯気に浮かぶ松と灯籠の小さな庭", v: "1794663377450" },
