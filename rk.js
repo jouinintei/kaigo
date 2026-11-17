@@ -429,6 +429,11 @@ ${RQ_G.map(grp).join("")}
     const hit = LIST.filter(n => kindOf(n) === k && ws.some(w => [n.title, n.genre].join(" ").includes(w)));
     return (hit.length ? hit : []).slice(0, 4);
   }
+  function rqBack(b) {
+    const nt = b.kind === "脳トレ", lb = (nt ? "脳トレ" : "塗り絵") + "に戻る", pg = new URLSearchParams(location.search).get("page") || "";
+    const here = /gallery/.test(location.pathname) && (nt ? pg === "noutore" : (!pg || pg === "nurie"));
+    return here ? `<button type="button" class="btn p rqx">${lb}</button>` : `<a class="btn p" href="${L(nt ? "noutore" : "nurie")}">${lb}</a>`;
+  }
   function rqDone(b) {
     rqLast = b;
     const near = rqNear(b), hasReq = LIST.some(n => n.req);
@@ -438,7 +443,7 @@ ${RQ_G.map(grp).join("")}
 <div class="rqsum done"><small>送った内容</small>${tags.map((x, i) => `<span class="${i ? "" : "q"}">${esc(x)}</span>`).join("")}</div></div>
 ${near.length ? `<div class="rqnear"><h3>今ある作品から、近いもの</h3><div class="rqng">${near.map(n => `<button type="button" data-rqopen="${esc(n.file)}"><img src="${sthumb(n)}" alt="" loading="lazy"><b>${esc(n.title)}</b></button>`).join("")}</div></div>` : ""}
 ${hasReq ? `<a class="rqlink" href="${L(b.kind === "脳トレ" ? "noutore" : "nurie")}${b.kind === "脳トレ" ? "&" : "?"}req=1">リクエストから生まれた作品を見る ${ico("arrow", 16)}</a>` : ""}</div>
-<div class="rqft"><div class="rqa"><button type="button" class="btn o" data-rqagain>続けてリクエストする</button><button type="button" class="btn p rqx">閉じる</button></div></div></div>`);
+<div class="rqft"><div class="rqa"><button type="button" class="btn o" data-rqagain>続けてリクエストする</button>${rqBack(b)}</div></div></div>`);
   }
   function sendReq(b) {
     return fetch("/api/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) })
