@@ -394,3 +394,8 @@ html{font-synthesis-weight:none}
 .wk .tt .rqtag{display:flex!important;width:max-content}
 .rqok p{max-width:470px}
 @media (max-width:640px){.rqok h2{font-size:20px}.rqok p{font-size:13px}}
+.rqf .rqd{gap:5px;height:30px;margin-right:6px;padding:0 11px;border:1px solid #E6D2C2;border-radius:999px;background:#FBF3EC;color:var(--btn);font-size:13px;transition:background .15s,border-color .15s}
+.rqf .rqd:hover{background:#F5E4D6;border-color:#D9B9A2;color:var(--btn)}
+.rqf .rqd .ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+@media (max-width:640px){.rqf .rqd{height:28px;padding:0 8px;margin-right:4px;gap:3px;font-size:12px}.rqf .rqd .ico{width:14px;height:14px}}
+.rqf{flex-basis:540px}

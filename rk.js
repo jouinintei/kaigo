@@ -11,7 +11,7 @@
     brain: '<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a2 2 0 0 0-3-1z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/>',
     cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
     print: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',
-    check: '<path d="M5 12l5 5 9-10"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    check: '<path d="M5 12l5 5 9-10"/>', sliders: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
     arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>', full: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', left: '<path d="M15 6l-6 6 6 6"/>', right: '<path d="M9 6l6 6-6 6"/>', home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', wall: '<rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M9 4v16M15 4v16M3 12h18"/>', mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'
   };
   const PROD = location.pathname.indexOf("/preview/") < 0;
@@ -84,7 +84,7 @@
   function header(cur) {
     const nav = [["塗り絵", L("nurie"), "nurie"], ["脳トレ", L("noutore"), "noutore"], ["カレンダー", L("cal"), "cal"]];
     return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
-<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><form class="rqf" data-k="${rqKind(cur)}" aria-label="${RQ_EX[rqKind(cur)][4]}のリクエスト"><span class="rqi">${ico("pen", 18)}</span><input type="text" name="q" maxlength="60" placeholder="${RQ_EX[rqKind(cur)][innerWidth <= 640 ? 1 : 0]}" aria-label="ほしい${RQ_EX[rqKind(cur)][4]}"><a class="rqd" href="#" data-req-more title="線の太さや構図も選んでリクエスト">詳しく</a><button type="submit">${innerWidth <= 640 ? "送る" : "リクエスト"}</button></form></div>`}
+<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><form class="rqf" data-k="${rqKind(cur)}" aria-label="${RQ_EX[rqKind(cur)][4]}のリクエスト"><span class="rqi">${ico("pen", 18)}</span><input type="text" name="q" maxlength="60" placeholder="${RQ_EX[rqKind(cur)][innerWidth <= 640 ? 1 : 0]}" aria-label="ほしい${RQ_EX[rqKind(cur)][4]}"><a class="rqd" href="#" data-req-more title="線の太さ・構図・難しさなどを選んでリクエスト">${ico("sliders", 16)}<span>${innerWidth <= 640 ? "条件" : "条件を指定"}</span></a><button type="submit">${innerWidth <= 640 ? "送る" : "リクエスト"}</button></form></div>`}
 
 ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ</a>`}</div></header>`;
   }
