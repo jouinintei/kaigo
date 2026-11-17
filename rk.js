@@ -75,10 +75,16 @@
   function updFavCount() { const n = favs().length; document.querySelectorAll("[data-favn]").forEach(e => { e.textContent = n; e.style.display = n ? "" : "none"; }); document.querySelectorAll("[data-favtab]").forEach(e => { e.textContent = n; }); }
 
   /* ---------- layout ---------- */
+  const RQ_EX = {
+    "塗り絵": ["ほしい塗り絵をリクエスト（例：たぬき）", "ほしい絵は？", "例：たぬき、お餅つき、京都の紅葉", "例：猫が2匹いると嬉しいです", "塗り絵"],
+    "脳トレ": ["ほしい脳トレをリクエスト（例：四字熟語）", "ほしい脳トレは？", "例：四字熟語の穴埋め、間違い探し、お金の計算", "例：文字を大きめにしてほしい", "脳トレ"],
+    "カレンダー": ["ほしいカレンダーをリクエスト（例：干支の絵柄）", "ほしい月は？", "例：来年1月、干支の絵柄", "例：日付の枠を大きくしてほしい", "カレンダー"]
+  };
+  const rqKind = cur => cur === "noutore" || /noutore/.test(location.pathname) ? "脳トレ" : cur === "cal" || /calendar/.test(location.pathname) || /page=calendar/.test(location.search) ? "カレンダー" : "塗り絵";
   function header(cur) {
     const nav = [["塗り絵", L("nurie"), "nurie"], ["脳トレ", L("noutore"), "noutore"], ["カレンダー", L("cal"), "cal"]];
     return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
-<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><form class="rqf" aria-label="塗り絵のリクエスト"><input type="text" name="q" maxlength="60" placeholder="${innerWidth <= 640 ? "ほしい絵は？" : "ほしい塗り絵をリクエスト（例：たぬき）"}" aria-label="ほしい塗り絵"><button type="submit">${innerWidth <= 640 ? "送る" : "リクエスト"}</button></form><a class="rqd" href="#" data-req-more>詳しく<span class="rqd2">リクエスト</span></a></div>`}
+<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><form class="rqf" data-k="${rqKind(cur)}" aria-label="${RQ_EX[rqKind(cur)][4]}のリクエスト"><input type="text" name="q" maxlength="60" placeholder="${RQ_EX[rqKind(cur)][innerWidth <= 640 ? 1 : 0]}" aria-label="ほしい${RQ_EX[rqKind(cur)][4]}"><button type="submit">${innerWidth <= 640 ? "送る" : "リクエスト"}</button></form><a class="rqd" href="#" data-req-more>詳しく<span class="rqd2">リクエスト</span></a></div>`}
 
 ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ</a>`}</div></header>`;
   }
@@ -371,9 +377,9 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     rqEl.className = "rqp";
     rqEl.innerHTML = `<form class="rqb" role="dialog" aria-modal="true" aria-labelledby="rqT"><div class="rqh"><h2 id="rqT">リクエストを送る</h2><button type="button" class="rqx" aria-label="閉じる">${ico("x", 22)}</button></div>
 <p class="rqs">ほしいものを書いて送るだけでOKです。下の項目は最初は全部「おまかせ」になっています。こだわりたいところだけ選んでください。</p>
-<label class="rqm"><span>ほしいもの</span><input type="text" name="q" maxlength="60" required placeholder="例：たぬき、お餅つき、京都の紅葉" value="${esc(q || "")}"></label>
+<label class="rqm"><span>ほしいもの</span><input type="text" name="q" maxlength="60" required placeholder="" value="${esc(q || "")}"></label>
 ${RQ_G.map(grp).join("")}
-<label class="rqm"><span>ひとこと（任意）</span><textarea name="memo" maxlength="200" rows="2" placeholder="例：猫が2匹いると嬉しいです"></textarea></label>
+<label class="rqm"><span>ひとこと（任意）</span><textarea name="memo" maxlength="200" rows="2" placeholder=""></textarea></label>
 <div class="rqa"><button type="button" class="btn rqx">やめる</button><button type="submit" class="btn p">この内容で送る</button></div>
 <p class="rqn">お名前やご連絡先は不要です。いただいたリクエストをもとに素材を増やしています（すべてにお応えできるとは限りません）。</p></form>`;
     document.body.appendChild(rqEl);
@@ -386,6 +392,7 @@ ${RQ_G.map(grp).join("")}
       if (gf.dataset.k !== k) { const cur = (gf.querySelector("input:checked") || {}).value || ""; const has = gs.some(([v]) => v === cur); gf.dataset.k = k; gf.querySelector(".rqo").innerHTML = auto("genre") + gs.map(([v]) => opt("genre", "radio", v, "", has && v === cur)).join(""); if (has) gf.querySelector('input[value=""]').checked = false; }
       gf.hidden = !gs.length;
       f.querySelector('[data-g="diff"]').hidden = k === "カレンダー";
+      const ex = RQ_EX[k] || RQ_EX["塗り絵"]; f.q.placeholder = ex[2]; f.memo.placeholder = ex[3];
     };
     sync(); f.addEventListener("change", sync);
     rqEl.addEventListener("click", e => { if (e.target === rqEl || e.target.closest(".rqx")) rqClose(); });
@@ -409,9 +416,9 @@ ${RQ_G.map(grp).join("")}
     const f = e.target.closest && e.target.closest(".rqf"); if (!f) return; e.preventDefault();
     const v = f.q.value.trim(); if (!v) { f.q.focus(); return; }
     const bt = f.querySelector("button"); bt.disabled = true;
-    sendReq({ q: v, p: location.pathname + location.search, did: deviceId() }).catch(() => {}).then(() => { bt.disabled = false; });
+    sendReq({ q: v, kind: f.dataset.k || "", p: location.pathname + location.search, did: deviceId() }).catch(() => {}).then(() => { bt.disabled = false; });
   });
-  document.addEventListener("click", e => { const t = e.target.closest && e.target.closest("[data-req-more]"); if (!t) return; e.preventDefault(); const i = document.querySelector(".rqf input"); openReq(i ? i.value.trim() : ""); });
+  document.addEventListener("click", e => { const t = e.target.closest && e.target.closest("[data-req-more]"); if (!t) return; e.preventDefault(); const fm = document.querySelector(".rqf"); openReq(fm ? fm.q.value.trim() : "", fm ? fm.dataset.k : ""); });
   document.addEventListener("click", e => { const t = e.target.closest && e.target.closest("[data-req]"); if (!t) return; e.preventDefault(); openReq(t.dataset.req || "", t.dataset.reqk || ""); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && rqEl) rqClose(); });
 
