@@ -1488,6 +1488,8 @@ window.NURIE_LIST = [
   { season: "冬", genre: "風景", title: "雪の城下町", diff: "上級", file: "jokamachi_choukanzu_jo.png", sample: "jokamachi_choukanzu_jo_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "お城を中心に広がる雪の城下町を見下ろして", v: "1794628228147" },
   { season: "冬", genre: "人物", title: "雪の夜の団らん", diff: "中級", file: "yoru_mado_danran_chu.png", sample: "yoru_mado_danran_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "雪の夜、窓の向こうで鍋を囲む老夫婦", v: "1794628229147" },
   { season: "冬", genre: "動物", title: "電線の雀と雪の町", diff: "中級", file: "densen_suzume_machi_chu.png", sample: "densen_suzume_machi_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "電線に並ぶ雀と、雪の温泉町の通り", v: "1794628230147" },
+  { season: "通年", genre: "その他", title: "箪笥の引き出しの中", diff: "中級", file: "tansu_hikidashi_chu.png", sample: "tansu_hikidashi_chu_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794921248438" },
+  { season: "通年", genre: "人物", title: "大鯛を釣り上げた釣り人", diff: "中級", file: "ootai_tsuri_chu.png", sample: "ootai_tsuri_chu_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794921248438" },
   { season: "冬", genre: "動物", title: "白菜とヒヨドリ", diff: "初級", file: "hiyodori_hakusai_sho.png", sample: "hiyodori_hakusai_sho_sample.jpg", added: "2026-11", date: "2026-11-15", v: "1794672756197" },
   { season: "冬", genre: "その他", title: "椿の手鏡", diff: "中級", file: "tekagami_tsubaki_chu.png", sample: "tekagami_tsubaki_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "椿の模様の手鏡に映る雪の庭。麻の葉の袱紗", v: "1794628231147" },
   { season: "冬", genre: "その他", title: "手袋と雪の結晶", diff: "初級", file: "tenohira_kesshou_sho.png", sample: "tenohira_kesshou_sho_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "手袋の両手で包んだ雪の結晶", v: "1794628233147" },
