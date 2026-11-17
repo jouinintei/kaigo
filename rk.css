@@ -399,3 +399,8 @@ html{font-synthesis-weight:none}
 .rqf .rqd .ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
 @media (max-width:640px){.rqf .rqd{height:28px;padding:0 8px;margin-right:4px;gap:3px;font-size:12px}.rqf .rqd .ico{width:14px;height:14px}}
 .rqf{flex-basis:540px}
+
+.rqbtn{flex:none;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 18px;border:1px solid #E6D2C2;border-radius:999px;background:#FBF3EC;color:var(--btn);font:inherit;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.rqbtn:hover{background:#F5E4D6;border-color:#D9B9A2}
+.rqbtn .ico{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+@media (max-width:640px){.rqbtn{height:34px;padding:0 12px;gap:5px;font-size:13px}.rqbtn .ico{width:15px;height:15px}}

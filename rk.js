@@ -84,7 +84,7 @@
   function header(cur) {
     const nav = [["塗り絵", L("nurie"), "nurie"], ["脳トレ", L("noutore"), "noutore"], ["カレンダー", L("cal"), "cal"]];
     return `${PROD ? "" : '<div class="pvnote">新デザインの確認用ページです <a href="../index.html">今のサイトへ</a></div>'}
-<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><form class="rqf" data-k="${rqKind(cur)}" aria-label="${RQ_EX[rqKind(cur)][4]}のリクエスト"><span class="rqi">${ico("pen", 18)}</span><input type="text" name="q" maxlength="60" placeholder="${RQ_EX[rqKind(cur)][innerWidth <= 640 ? 1 : 0]}" aria-label="ほしい${RQ_EX[rqKind(cur)][4]}"><a class="rqd" href="#" data-req-more title="線の太さ・構図・難しさなどを選んでリクエスト">${ico("sliders", 16)}<span>${innerWidth <= 640 ? "条件" : "条件を指定"}</span></a><button type="submit">${innerWidth <= 640 ? "送る" : "リクエスト"}</button></form></div>`}
+<header class="hd${cur === "" ? " top" : ""}"><div class="wrap">${cur === "" ? "" : `<div class="hl"><a class="logo" href="${PROD ? "/" : "index.html"}" aria-label="介護のレクプリ トップへ"><span class="ls">高齢者向けレク素材</span><img class="lmimg" src="/brand/logo.webp?v=3" alt="" width="900" height="283"></a><button type="button" class="rqbtn" data-req="" data-reqk="${rqKind(cur)}" title="線の太さ・構図・難しさなどを選んでリクエストできます">${ico("pen", 17)}<span>${innerWidth <= 640 ? "リクエスト" : "ほしい素材をリクエスト"}</span></button></div>`}
 
 ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 18)}お問い合わせ</a>`}</div></header>`;
   }
