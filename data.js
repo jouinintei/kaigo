@@ -1518,5 +1518,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "その他", title: "裁縫箱の小さな町", diff: "上級", file: "saihoubako_machi_jo.png", sample: "saihoubako_machi_jo_sample.jpg", added: "2026-11", date: "2026-11-17", desc: "糸巻きの家や指ぬきの塔が並ぶ、裁縫箱の中の小さな町", v: "1794919381908" },
   { season: "通年", genre: "食べ物", title: "野菜でできた横顔", diff: "中級", file: "yasai_yokogao_chu.png", sample: "yasai_yokogao_chu_sample.jpg", added: "2026-11", date: "2026-11-17", desc: "かぼちゃやぶどう、トマトにとうもろこし。野菜と果物でできた横顔", v: "1794919381909" },
   { season: "秋", genre: "人物", title: "落ち葉の着物の女性", diff: "中級", file: "ochiba_kimono_josei_chu.png", sample: "ochiba_kimono_josei_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "紅葉といちょうの柄の着物で、番傘をさして歩く女性", v: "1794663388450" },
+  { season: "秋", genre: "風景", title: "茶室と露地の庭", diff: "上級", file: "chashitsu_roji_jo.png", sample: "chashitsu_roji_jo_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794924292138" },
+  { season: "通年", genre: "風景", title: "大漁旗の漁船", diff: "上級", file: "tairyobata_gyosen_jo.png", sample: "tairyobata_gyosen_jo_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794924292138" },
   { season: "通年", genre: "その他", title: "つくも神の夜行列", diff: "上級", file: "tsukumogami_yakou_jo.png", sample: "tsukumogami_yakou_jo_sample.jpg", added: "2026-11", date: "2026-11-17", desc: "月夜の村を、ちょうちんや番傘、やかんたちのつくも神がにぎやかに練り歩く", v: "1794919381914" },
 ];
