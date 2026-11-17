@@ -89,10 +89,10 @@ export async function onRequest({ request, env }) {
   const item = { t: new Date().toISOString(), q: q };
   Object.keys(OPT).forEach(k => {
     const v = (Array.isArray(b[k]) ? b[k] : [b[k]]).map(x => String(x || "")).filter(x => OPT[k].includes(x));
-    if (v.length) item[k] = k === "kind" ? v[0] : [...new Set(v)];
+    if (v.length) item[k] = v[0];
   });
-  const g = (Array.isArray(b.genre) ? b.genre : []).map(x => String(x || "").trim().slice(0, 12)).filter(Boolean).slice(0, 12);
-  if (g.length) item.genre = [...new Set(g)];
+  const g = String((Array.isArray(b.genre) ? b.genre[0] : b.genre) || "").trim().slice(0, 12);
+  if (g) item.genre = g;
   const memo = String(b.memo || "").trim().slice(0, 200);
   if (memo) item.memo = memo;
   const p = String(b.p || "").slice(0, 80);

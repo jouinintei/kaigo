@@ -364,12 +364,13 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
   function openReq(q, kind) {
     rqClose();
     const sv = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${RQ_SV[k]}</svg>`;
-    const opt = (k, t, v, ic, on) => `<label><input type="${t}" name="rq_${k}" value="${esc(v)}"${on ? " checked" : ""}><span>${t === "checkbox" ? '<i class="ck"></i>' : ""}${ic ? sv(ic) : ""}${esc(v)}</span></label>`;
-    const grp = ([k, lb, opts, ty]) => `<fieldset class="rqg" data-g="${k}"><legend>${lb}${ty === "c" ? '<small>（いくつでも・選ばなければおまかせ）</small>' : ""}</legend><div class="rqo">${(opts || []).map(([v, ic]) => opt(k, ty === "r" ? "radio" : "checkbox", v, ic, ty === "r" && v === (kind || "塗り絵"))).join("")}</div></fieldset>`;
+    const opt = (k, t, v, ic, on) => `<label><input type="${t}" name="rq_${k}" value="${esc(v)}"${on ? " checked" : ""}><span>${ic ? sv(ic) : ""}${esc(v)}</span></label>`;
+    const auto = k => `<label><input type="radio" name="rq_${k}" value="" checked><span>おまかせ</span></label>`;
+    const grp = ([k, lb, opts, ty]) => `<fieldset class="rqg" data-g="${k}"><legend>${lb}</legend><div class="rqo">${ty === "c" ? auto(k) : ""}${(opts || []).map(([v, ic]) => opt(k, "radio", v, ic, ty === "r" && v === (kind || "塗り絵"))).join("")}</div></fieldset>`;
     rqEl = document.createElement("div");
     rqEl.className = "rqp";
     rqEl.innerHTML = `<form class="rqb" role="dialog" aria-modal="true" aria-labelledby="rqT"><div class="rqh"><h2 id="rqT">リクエストを送る</h2><button type="button" class="rqx" aria-label="閉じる">${ico("x", 22)}</button></div>
-<p class="rqs">ほしいものを書いて送るだけでOKです。下の項目は、こだわりがあるところだけチェックしてください。</p>
+<p class="rqs">ほしいものを書いて送るだけでOKです。下の項目は最初は全部「おまかせ」になっています。こだわりたいところだけ選んでください。</p>
 <label class="rqm"><span>ほしいもの</span><input type="text" name="q" maxlength="60" required placeholder="例：たぬき、お餅つき、京都の紅葉" value="${esc(q || "")}"></label>
 ${RQ_G.map(grp).join("")}
 <label class="rqm"><span>ひとこと（任意）</span><textarea name="memo" maxlength="200" rows="2" placeholder="例：猫が2匹いると嬉しいです"></textarea></label>
@@ -382,7 +383,7 @@ ${RQ_G.map(grp).join("")}
       const k = (f.querySelector('[name="rq_kind"]:checked') || {}).value;
       RQ_G.forEach(g => { if (g[4] === "n") f.querySelector(`[data-g="${g[0]}"]`).hidden = k !== "塗り絵"; });
       const gf = f.querySelector('[data-g="genre"]'), gs = k === "カレンダー" ? [] : rqGenres(k);
-      if (gf.dataset.k !== k) { const keep = new Set([...gf.querySelectorAll("input:checked")].map(x => x.value)); gf.dataset.k = k; gf.querySelector(".rqo").innerHTML = gs.map(([v]) => opt("genre", "checkbox", v, "", keep.has(v))).join(""); }
+      if (gf.dataset.k !== k) { const cur = (gf.querySelector("input:checked") || {}).value || ""; const has = gs.some(([v]) => v === cur); gf.dataset.k = k; gf.querySelector(".rqo").innerHTML = auto("genre") + gs.map(([v]) => opt("genre", "radio", v, "", has && v === cur)).join(""); if (has) gf.querySelector('input[value=""]').checked = false; }
       gf.hidden = !gs.length;
       f.querySelector('[data-g="diff"]').hidden = k === "カレンダー";
     };
@@ -393,7 +394,7 @@ ${RQ_G.map(grp).join("")}
       e.preventDefault();
       const v = inp.value.trim(); if (!v) { inp.focus(); return; }
       const b = { q: v, memo: f.memo.value.trim(), p: location.pathname + location.search, did: deviceId() };
-      RQ_G.forEach(([k]) => { const fs = f.querySelector(`[data-g="${k}"]`); if (fs.hidden) return; const v = [...fs.querySelectorAll("input:checked")].map(x => x.value); if (v.length) b[k] = k === "kind" ? v[0] : v; });
+      RQ_G.forEach(([k]) => { const fs = f.querySelector(`[data-g="${k}"]`); if (fs.hidden) return; const c = fs.querySelector("input:checked"); if (c && c.value) b[k] = c.value; });
       const sb = f.querySelector('[type="submit"]'); sb.disabled = true; sb.textContent = "送信中…";
       sendReq(b).then(() => rqClose()).catch(() => { sb.disabled = false; sb.textContent = "この内容で送る"; });
     });
