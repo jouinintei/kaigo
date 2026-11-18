@@ -1520,5 +1520,12 @@ window.NURIE_LIST = [
   { season: "秋", genre: "人物", title: "落ち葉の着物の女性", diff: "中級", file: "ochiba_kimono_josei_chu.png", sample: "ochiba_kimono_josei_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "紅葉といちょうの柄の着物で、番傘をさして歩く女性", v: "1794663388450" },
   { season: "秋", genre: "風景", title: "茶室と露地の庭", diff: "上級", file: "chashitsu_roji_jo.png", sample: "chashitsu_roji_jo_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794924292138" },
   { season: "通年", genre: "風景", title: "大漁旗の漁船", diff: "上級", file: "tairyobata_gyosen_jo.png", sample: "tairyobata_gyosen_jo_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794924292138" },
+  { season: "通年", genre: "動物", title: "猫の手も借りたい", diff: "中級", file: "nekonote_chu.png", sample: "nekonote_chu_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
+  { season: "通年", genre: "風景", title: "四つの窓の四季", diff: "中級", file: "yotsumado_shiki_chu.png", sample: "yotsumado_shiki_chu_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
+  { season: "通年", genre: "行事", title: "くす玉と水引の祝い飾り", diff: "中級", file: "kusudama_mizuhiki_chu.png", sample: "kusudama_mizuhiki_chu_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
+  { season: "通年", genre: "その他", title: "続きを描く湯のみと風呂敷", diff: "初級", file: "tsuzuki_yunomi_sho.png", sample: "tsuzuki_yunomi_sho_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
+  { season: "通年", genre: "食べ物", title: "和菓子職人の手元", diff: "中級", file: "wagashi_shokunin_chu.png", sample: "wagashi_shokunin_chu_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
+  { season: "通年", genre: "風景", title: "骨董屋の店先", diff: "上級", file: "kottoya_jo.png", sample: "kottoya_jo_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
+  { season: "通年", genre: "風景", title: "植物園の大温室", diff: "上級", file: "daionshitsu_jo.png", sample: "daionshitsu_jo_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
   { season: "通年", genre: "その他", title: "つくも神の夜行列", diff: "上級", file: "tsukumogami_yakou_jo.png", sample: "tsukumogami_yakou_jo_sample.jpg", added: "2026-11", date: "2026-11-17", desc: "月夜の村を、ちょうちんや番傘、やかんたちのつくも神がにぎやかに練り歩く", v: "1794919381914" },
 ];
