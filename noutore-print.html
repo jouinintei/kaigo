@@ -98,7 +98,7 @@
       for(var i=0;o.length<list.length-rest.length;i++)q.forEach(function(a){if(a[i])o.push(a[i]);});
       return o.concat(rest);
     }
-    var SER_RE=[[/^難読漢字/,"難読漢字"],[/^ことばさがし/,"ことばさがし"],[/^数字探し/,"数字探し"],[/^穴あき言葉/,"穴あき言葉"],[/^昭和の大スター穴埋め/,"昭和の大スター穴埋め"],[/^ことわざ穴埋め/,"ことわざ穴埋め"],[/^慣用句/,"慣用句"],[/^数の並び 次は何/,"数の並び 次は何?"]];
+    var SER_RE=[[/^難読漢字/,"難読漢字"],[/^絵の間違い探し/,"絵の間違い探し"],[/^ことばさがし/,"ことばさがし"],[/^数字探し/,"数字探し"],[/^穴あき言葉/,"穴あき言葉"],[/^昭和の大スター穴埋め/,"昭和の大スター穴埋め"],[/^ことわざ穴埋め/,"ことわざ穴埋め"],[/^慣用句/,"慣用句"],[/^数の並び 次は何/,"数の並び 次は何?"]];
     function sk(n){var t=String(n.title).replace(/\s*その\s*\d+\s*$/,"").trim();for(var i=0;i<SER_RE.length;i++)if(SER_RE[i][0].test(t))return SER_RE[i][1];return t;}
     function sn(n){var m=String(n.title).match(/その\s*(\d+)\s*$/);return m?+m[1]:1;}
     var SERN={};list.forEach(function(n){var k=sk(n);(SERN[k]=SERN[k]||[]).push(n);});

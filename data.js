@@ -1435,6 +1435,7 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "間違い探し", title: "絵の間違い探し 駄菓子屋の店先", file: "e_machigai_dagashi.png", answer: "e_machigai_dagashi_ans.png", req: true, added: "2026-11", date: "2026-11-19", v: "1795019647645" },
   { kind: "脳トレ", season: "通年", genre: "間違い探し", title: "絵の間違い探し 縁側の昼下がり", file: "e_machigai_engawa.png", answer: "e_machigai_engawa_ans.png", req: true, added: "2026-11", date: "2026-11-19", v: "1795019647645" },
   { kind: "脳トレ", season: "夏", genre: "間違い探し", title: "絵の間違い探し 夏祭りの夜店（中級）", file: "e_machigai_matsuri.png", answer: "e_machigai_matsuri_ans.png", req: true, added: "2026-11", date: "2026-11-19", v: "1795019647645" },
+  { kind: "脳トレ", season: "通年", genre: "間違い探し", title: "絵の間違い探し 昭和の商店街（上級）", file: "e_machigai_shoten.png", answer: "e_machigai_shoten_ans.png", req: true, added: "2026-11", date: "2026-11-19", v: "1795019953329" },
   { season: "通年", genre: "人物", title: "和人形 1", diff: "中級", file: "wa_ningyo1_chu.png", sample: "wa_ningyo1_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "振袖で正座し、手まりを持つ市松人形の少女。松の屏風を背に", v: "1794144104522" },
   { season: "通年", genre: "人物", title: "和人形 2", diff: "中級", file: "wa_ningyo2_chu.png", sample: "wa_ningyo2_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "椿の着物に赤い和傘をさした人形の少女。椿と石灯籠の庭で", v: "1794144104522" },
   { season: "通年", genre: "人物", title: "和人形 3", diff: "中級", file: "wa_ningyo3_chu.png", sample: "wa_ningyo3_chu_sample.jpg", added: "2026-11", date: "2026-11-08", desc: "十二単で桧扇を持つ、おひなさまの少女。ぼんぼりと桃の花", v: "1794144104522" },
