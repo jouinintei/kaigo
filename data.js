@@ -1535,4 +1535,8 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風景", title: "骨董屋の店先", diff: "上級", file: "kottoya_jo.png", sample: "kottoya_jo_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
   { season: "通年", genre: "風景", title: "植物園の大温室", diff: "上級", file: "daionshitsu_jo.png", sample: "daionshitsu_jo_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
   { season: "通年", genre: "その他", title: "つくも神の夜行列", diff: "上級", file: "tsukumogami_yakou_jo.png", sample: "tsukumogami_yakou_jo_sample.jpg", added: "2026-11", date: "2026-11-17", desc: "月夜の村を、ちょうちんや番傘、やかんたちのつくも神がにぎやかに練り歩く", v: "1794919381914" },
+  { season: "春", genre: "動物", title: "梅の枝の文鳥", diff: "初級", file: "bunchou_ume_sho.png", sample: "bunchou_ume_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "梅の花が咲く枝に、文鳥が2羽寄り添ってとまる", v: "1795020998182" },
+  { season: "通年", genre: "動物", title: "ラッコの親子", diff: "初級", file: "rakko_oyako_sho.png", sample: "rakko_oyako_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "お母さんラッコがお腹に赤ちゃんを乗せて、波にぷかぷか浮かぶ", v: "1795020998182" },
+  { season: "通年", genre: "その他", title: "こけし三姉妹", diff: "初級", file: "kokeshi_sanshimai_sho.png", sample: "kokeshi_sanshimai_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "花柄の胴をした大中小のこけしと、足もとの椿", v: "1795020998182" },
+  { season: "通年", genre: "食べ物", title: "お菓子の箱", diff: "初級", file: "okashi_hako_sho.png", sample: "okashi_hako_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "カップケーキとマカロンが詰まった、リボン付きのお菓子の箱", v: "1795020998182" },
 ];
