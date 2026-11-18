@@ -1539,4 +1539,10 @@ window.NURIE_LIST = [
   { season: "通年", genre: "動物", title: "ラッコの親子", diff: "初級", file: "rakko_oyako_sho.png", sample: "rakko_oyako_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "お母さんラッコがお腹に赤ちゃんを乗せて、波にぷかぷか浮かぶ", v: "1795020998182" },
   { season: "通年", genre: "その他", title: "こけし三姉妹", diff: "初級", file: "kokeshi_sanshimai_sho.png", sample: "kokeshi_sanshimai_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "花柄の胴をした大中小のこけしと、足もとの椿", v: "1795020998182" },
   { season: "通年", genre: "食べ物", title: "お菓子の箱", diff: "初級", file: "okashi_hako_sho.png", sample: "okashi_hako_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "カップケーキとマカロンが詰まった、リボン付きのお菓子の箱", v: "1795020998182" },
+  { season: "冬", genre: "動物", title: "雪のオコジョ", diff: "初級", file: "okojo_yuki_sho.png", sample: "okojo_yuki_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "雪の小山に立つ白いオコジョと、赤い実の小枝", v: "1795023717090" },
+  { season: "冬", genre: "動物", title: "柚子湯のカピバラ", diff: "初級", file: "kapibara_yuzuyu_sho.png", sample: "kapibara_yuzuyu_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "木の湯おけで柚子湯につかり、目を細めるカピバラ", v: "1795023717090" },
+  { season: "通年", genre: "動物", title: "岩の上のカワウソ", diff: "初級", file: "kawauso_futari_sho.png", sample: "kawauso_futari_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "川辺の岩に並んで座る2匹のカワウソ", v: "1795023717090" },
+  { season: "通年", genre: "食べ物", title: "金平糖の小瓶", diff: "初級", file: "konpeito_bin_sho.png", sample: "konpeito_bin_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "リボンを結んだガラス瓶いっぱいの金平糖", v: "1795023717090" },
+  { season: "通年", genre: "花", title: "多肉植物の鉢植え", diff: "初級", file: "taniku_hachi_sho.png", sample: "taniku_hachi_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "棚板に並んだ3つの小さな多肉植物とサボテンの鉢", v: "1795023717090" },
+  { season: "通年", genre: "その他", title: "手芸かご", diff: "初級", file: "shugei_kago_sho.png", sample: "shugei_kago_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "毛糸玉と編みかけのマフラーが入った手芸かご", v: "1795023717090" },
 ];
