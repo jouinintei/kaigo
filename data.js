@@ -1548,5 +1548,4 @@ window.NURIE_LIST = [
   { season: "冬", genre: "風物詩", title: "キャンドルと柊", diff: "初級", file: "candle_hiiragi_sho.png", sample: "candle_hiiragi_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "3本のろうそくと、柊の葉と赤い実、松ぼっくりの飾り", v: "1795057078729" },
   { season: "通年", genre: "動物", title: "笹を食べるパンダ", diff: "初級", file: "panda_sasa_sho.png", sample: "panda_sasa_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "竹のそばに座って、笹をもぐもぐ食べるパンダ", v: "1795057078729" },
   { season: "通年", genre: "動物", title: "アルパカ", diff: "初級", file: "alpaca_sho.png", sample: "alpaca_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "模様の布を背にかけて、草の小山に立つふわふわのアルパカ", v: "1795057078729" },
-  { season: "通年", genre: "その他", title: "がま口と手ぬぐい", diff: "初級", file: "gamaguchi_sho.png", sample: "gamaguchi_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "梅柄のがま口財布と、波柄の手ぬぐい、鈴の根付", v: "1795057078729" },
 ];
