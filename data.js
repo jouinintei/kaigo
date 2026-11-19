@@ -1580,4 +1580,11 @@ window.NURIE_LIST = [
   { season: "冬", genre: "風物詩", title: "キャンドルと柊", diff: "初級", file: "candle_hiiragi_sho.png", sample: "candle_hiiragi_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "3本のろうそくと、柊の葉と赤い実、松ぼっくりの飾り", v: "1795057078729" },
   { season: "通年", genre: "動物", title: "笹を食べるパンダ", diff: "初級", file: "panda_sasa_sho.png", sample: "panda_sasa_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "竹のそばに座って、笹をもぐもぐ食べるパンダ", v: "1795057078729" },
   { season: "通年", genre: "動物", title: "アルパカ", diff: "初級", file: "alpaca_sho.png", sample: "alpaca_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "模様の布を背にかけて、草の小山に立つふわふわのアルパカ", v: "1795057078729" },
+  { season: "通年", genre: "風景", title: "ベネチアの運河とゴンドラ", diff: "上級", file: "venezia_gondola_jo.png", sample: "venezia_gondola_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "石造りの建物と花のバルコニーにはさまれた運河を、ゴンドラがゆく", v: "1795089126159" },
+  { season: "春", genre: "花", title: "バラ園のガゼボ", diff: "上級", file: "rose_gazebo_jo.png", sample: "rose_gazebo_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "満開のバラのアーチと小道の先に、白いガゼボが建つバラ園", v: "1795089126159" },
+  { season: "通年", genre: "風景", title: "からくり時計台の広場", diff: "上級", file: "karakuri_tokei_jo.png", sample: "karakuri_tokei_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "人形が回るからくり時計台と、石畳の広場のカフェ", v: "1795089126159" },
+  { season: "通年", genre: "風景", title: "港町の石畳の坂道", diff: "上級", file: "minato_saka_jo.png", sample: "minato_saka_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "洋館の並ぶ石畳の坂を、日傘の女性がのぼる港町", v: "1795089126159" },
+  { season: "通年", genre: "風物詩", title: "ヨーロッパの蚤の市", diff: "上級", file: "nominoichi_jo.png", sample: "nominoichi_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "ティーポットや時計、人形が並ぶ広場の蚤の市", v: "1795089126159" },
+  { season: "春", genre: "風景", title: "噴水のある洋館の庭", diff: "上級", file: "funsui_yokan_jo.png", sample: "funsui_yokan_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "噴水と花壇が左右対称に並ぶ、明治の洋館の前庭", v: "1795089126159" },
+  { season: "通年", genre: "その他", title: "ボトルシップと航海道具", diff: "上級", file: "bottleship_jo.png", sample: "bottleship_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "ボトルシップに羅針盤、古い地図と望遠鏡をのせた窓辺の机", v: "1795089126159" },
 ];
