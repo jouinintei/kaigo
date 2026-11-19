@@ -1545,4 +1545,8 @@ window.NURIE_LIST = [
   { season: "通年", genre: "食べ物", title: "金平糖の小瓶", diff: "初級", file: "konpeito_bin_sho.png", sample: "konpeito_bin_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "リボンを結んだガラス瓶いっぱいの金平糖", v: "1795023717090" },
   { season: "通年", genre: "花", title: "多肉植物の鉢植え", diff: "初級", file: "taniku_hachi_sho.png", sample: "taniku_hachi_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "棚板に並んだ3つの小さな多肉植物とサボテンの鉢", v: "1795023717090" },
   { season: "通年", genre: "その他", title: "手芸かご", diff: "初級", file: "shugei_kago_sho.png", sample: "shugei_kago_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "毛糸玉と編みかけのマフラーが入った手芸かご", v: "1795023717090" },
+  { season: "冬", genre: "風物詩", title: "キャンドルと柊", diff: "初級", file: "candle_hiiragi_sho.png", sample: "candle_hiiragi_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "3本のろうそくと、柊の葉と赤い実、松ぼっくりの飾り", v: "1795057078729" },
+  { season: "通年", genre: "動物", title: "笹を食べるパンダ", diff: "初級", file: "panda_sasa_sho.png", sample: "panda_sasa_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "竹のそばに座って、笹をもぐもぐ食べるパンダ", v: "1795057078729" },
+  { season: "通年", genre: "動物", title: "アルパカ", diff: "初級", file: "alpaca_sho.png", sample: "alpaca_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "模様の布を背にかけて、草の小山に立つふわふわのアルパカ", v: "1795057078729" },
+  { season: "通年", genre: "その他", title: "がま口と手ぬぐい", diff: "初級", file: "gamaguchi_sho.png", sample: "gamaguchi_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "梅柄のがま口財布と、波柄の手ぬぐい、鈴の根付", v: "1795057078729" },
 ];
