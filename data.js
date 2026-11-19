@@ -1530,6 +1530,7 @@ window.NURIE_LIST = [
   { season: "秋", genre: "人物", title: "落ち葉の着物の女性", diff: "中級", file: "ochiba_kimono_josei_chu.png", sample: "ochiba_kimono_josei_chu_sample.jpg", added: "2026-11", date: "2026-11-14", desc: "紅葉といちょうの柄の着物で、番傘をさして歩く女性", v: "1794663388450" },
   { season: "秋", genre: "風景", title: "茶室と露地の庭", diff: "上級", file: "chashitsu_roji_jo.png", sample: "chashitsu_roji_jo_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794924292138" },
   { season: "通年", genre: "風景", title: "大漁旗の漁船", diff: "上級", file: "tairyobata_gyosen_jo.png", sample: "tairyobata_gyosen_jo_sample.jpg", added: "2026-11", date: "2026-11-17", v: "1794924292138" },
+  { season: "通年", genre: "風物詩", title: "物干しと猫", diff: "初級", file: "monohoshi_neko_sho.png", sample: "monohoshi_neko_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "縁側の物干しに洗濯物がはためき、座布団の猫が見上げる", v: "1795063581132" },
   { season: "通年", genre: "動物", title: "猫の手も借りたい", diff: "中級", file: "nekonote_chu.png", sample: "nekonote_chu_sample.jpg", added: "2026-11", date: "2026-11-19", v: "1795018392099" },
   { season: "通年", genre: "動物", title: "コアラ", diff: "初級", file: "koala_sho.png", sample: "koala_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "木の股でユーカリの枝を抱えるコアラ", v: "1795060000532" },
   { season: "通年", genre: "動物", title: "ハシビロコウ", diff: "初級", file: "hashibirokou_sho.png", sample: "hashibirokou_sho_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "葦の生えた浅瀬に、じっと立つハシビロコウ", v: "1795060000532" },
