@@ -1587,4 +1587,5 @@ window.NURIE_LIST = [
   { season: "通年", genre: "風物詩", title: "ヨーロッパの蚤の市", diff: "上級", file: "nominoichi_jo.png", sample: "nominoichi_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "ティーポットや時計、人形が並ぶ広場の蚤の市", v: "1795089126159" },
   { season: "春", genre: "風景", title: "噴水のある洋館の庭", diff: "上級", file: "funsui_yokan_jo.png", sample: "funsui_yokan_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "噴水と花壇が左右対称に並ぶ、明治の洋館の前庭", v: "1795089126159" },
   { season: "通年", genre: "その他", title: "ボトルシップと航海道具", diff: "上級", file: "bottleship_jo.png", sample: "bottleship_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "ボトルシップに羅針盤、古い地図と望遠鏡をのせた窓辺の机", v: "1795089126159" },
+  { season: "通年", genre: "風物詩", title: "汽船の見送り", diff: "上級", file: "kisen_miokuri_jo.png", sample: "kisen_miokuri_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "紙テープが舞う昭和の港で、出港する汽船に手をふる人びと", v: "1795090143956" },
 ];
