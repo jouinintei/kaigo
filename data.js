@@ -1588,4 +1588,6 @@ window.NURIE_LIST = [
   { season: "春", genre: "風景", title: "噴水のある洋館の庭", diff: "上級", file: "funsui_yokan_jo.png", sample: "funsui_yokan_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "噴水と花壇が左右対称に並ぶ、明治の洋館の前庭", v: "1795089126159" },
   { season: "通年", genre: "その他", title: "ボトルシップと航海道具", diff: "上級", file: "bottleship_jo.png", sample: "bottleship_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "ボトルシップに羅針盤、古い地図と望遠鏡をのせた窓辺の机", v: "1795089126159" },
   { season: "通年", genre: "風物詩", title: "汽船の見送り", diff: "上級", file: "kisen_miokuri_jo.png", sample: "kisen_miokuri_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "紙テープが舞う昭和の港で、出港する汽船に手をふる人びと", v: "1795090143956" },
+  { season: "通年", genre: "その他", title: "回転木馬", diff: "上級", file: "merrygoround_jo.png", sample: "merrygoround_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "ばらの飾りの屋根の下、おばあちゃんと孫が木馬に乗る回転木馬", v: "1795091300836" },
+  { season: "冬", genre: "風景", title: "雪の宿場町", diff: "上級", file: "shukuba_yuki_jo.png", sample: "shukuba_yuki_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "雪をかぶった家並みと提灯、石畳の街道をゆく旅人たち", v: "1795091300836" },
 ];
