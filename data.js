@@ -1594,4 +1594,5 @@ window.NURIE_LIST = [
   { season: "冬", genre: "探し物", title: "探し物 雪の日の駅前", diff: "中級", file: "sagashi_eki_yuki_chu.png", sample: "sagashi_eki_yuki_chu_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "雪の駅前に、雪だるま・手袋・すずめ・傘・みかんがかくれています", v: "1795094597258" },
   { season: "春", genre: "探し物", title: "探し物 お花見の公園", diff: "上級", file: "sagashi_hanami_jo.png", sample: "sagashi_hanami_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "桜の公園に、うぐいす・麦わら帽子・風船・おにぎり・子犬がかくれています", v: "1795094597258" },
   { season: "夏", genre: "探し物", title: "探し物 夏祭りの縁日", diff: "中級", file: "sagashi_ennichi_chu.png", sample: "sagashi_ennichi_chu_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "お面や風鈴の並ぶ縁日に、眼鏡・鍵・かたつむり・下駄・ふくろうがかくれています", v: "1795097883049" },
+  { season: "秋", genre: "探し物", title: "探し物 柿の木のある庭先", diff: "中級", file: "sagashi_aki_chu.png", sample: "sagashi_aki_chu_sample.jpg", added: "2026-11", date: "2026-11-20", desc: "干し柿の縁側と柿の木の庭に、赤とんぼ・栗・きのこ・リス・鈴がかくれています", v: "1795102885349" },
 ];
