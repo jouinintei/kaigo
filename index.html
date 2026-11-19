@@ -368,7 +368,7 @@
     addEventListener("scroll",()=>{if(!rq)rq=requestAnimationFrame(upd);},{passive:true});addEventListener("resize",upd);setTimeout(upd,300);})();
   const sh=a=>a.slice().sort(()=>Math.random()-.5);
   const REC_SEASONS=["秋","冬","通年"],REC_DIFF=[["初級",2],["中級",6],["上級",2]];
-  const mix=sh(REC_SEASONS.flatMap(s=>REC_DIFF.flatMap(([d,c])=>sh(nu.filter(n=>n.season===s&&n.diff===d)).slice(0,c))));
+  const mix=sh(REC_SEASONS.flatMap(s=>REC_DIFF.flatMap(([d,c])=>sh(nu.filter(n=>n.season===s&&n.diff===d&&!/^ご当地名産めぐり/.test(n.title))).slice(0,c))));
   const rec=n=>`<button class="rec" data-open="${esc(n.file)}" data-src="top"><div class="card c"><img loading="lazy" alt="" ${RK.srcs(n)}><span class="lbl ${n.season==="通年"?"always":"season"}">${n.season==="通年"?"通年":"季節"}</span></div><b>${esc(n.title)}</b><span class="m">${esc([n.genre,n.diff].filter(Boolean).join(" ・ "))}</span></button>`;
 
   (function(){
