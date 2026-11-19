@@ -1590,4 +1590,7 @@ window.NURIE_LIST = [
   { season: "春", genre: "風景", title: "噴水のある洋館の庭", diff: "上級", file: "funsui_yokan_jo.png", sample: "funsui_yokan_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "噴水と花壇が左右対称に並ぶ、明治の洋館の前庭", v: "1795089126159" },
   { season: "通年", genre: "その他", title: "回転木馬", diff: "上級", file: "merrygoround_jo.png", sample: "merrygoround_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "ばらの飾りの屋根の下、おばあちゃんと孫が木馬に乗る回転木馬", v: "1795091300836" },
   { season: "冬", genre: "風景", title: "雪の宿場町", diff: "上級", file: "shukuba_yuki_jo.png", sample: "shukuba_yuki_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "雪をかぶった家並みと提灯、石畳の街道をゆく旅人たち", v: "1795091300836" },
+  { season: "通年", genre: "探し物", title: "探し物 昭和の商店街", diff: "中級", file: "sagashi_shotengai_chu.png", sample: "sagashi_shotengai_chu_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "八百屋や魚屋の並ぶ商店街に、猫・鍵・てるてる坊主・金魚鉢・手袋がかくれています", v: "1795094597258" },
+  { season: "冬", genre: "探し物", title: "探し物 雪の日の駅前", diff: "中級", file: "sagashi_eki_yuki_chu.png", sample: "sagashi_eki_yuki_chu_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "雪の駅前に、雪だるま・手袋・すずめ・傘・みかんがかくれています", v: "1795094597258" },
+  { season: "春", genre: "探し物", title: "探し物 お花見の公園", diff: "上級", file: "sagashi_hanami_jo.png", sample: "sagashi_hanami_jo_sample.jpg", added: "2026-11", date: "2026-11-19", desc: "桜の公園に、うぐいす・麦わら帽子・風船・おにぎり・子犬がかくれています", v: "1795094597258" },
 ];
