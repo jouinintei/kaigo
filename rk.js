@@ -37,7 +37,7 @@
   // 予告（作成中）：pre: 1 の素材は一覧・検索に出さず、トップの「投稿予定」と各一覧の「予定」タブにだけ出す。
   // 保存・印刷はアンケートに答えたときだけ（端末には覚えない。ページを開き直したらもう一度）
   const isPre = n => !!n && n.pre === 1;
-  const LIST = ALL.filter(n => !isPre(n)), PRE = ALL.filter(isPre);
+  const LIST = ALL.filter(n => !isPre(n)), PRE = ALL.filter(isPre).sort((a, b) => String(a.open || "9").localeCompare(String(b.open || "9")));
   // アンケートに1回答えると、予定の素材すべてを保存・印刷できる合言葉が #pass= で渡される（3時間有効・端末には残さない）
   let PASSALL = "";
   try { const m = location.hash.match(/(?:^#|&)pass=([0-9]+\.[0-9a-f]+)/); if (m && +m[1].split(".")[0] > Date.now()) { PASSALL = m[1]; history.replaceState(history.state, "", location.pathname + location.search); } } catch (e) {}
