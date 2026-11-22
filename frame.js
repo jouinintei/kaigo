@@ -254,6 +254,40 @@
     return best;
   }
 
+
+  // 絵が途中でぶつ切れになっている辺（背景の線が何本も同じ直線で切れている辺）を探す。
+  // 画像の端に触れている辺もふくめて、枠をぴったり合わせる辺として返す（左右に切れ目がなければ null）。
+  function cutSides(m) {
+    var d = m.dark, aw = m.aw, ah = m.ah, b = m.box, tol = 0.01, K = 2;
+    function segs(get, n) {
+      var cnt = 0, first = -1, last = -1, prev = -10, i;
+      for (i = 0; i < n; i++) {
+        if (get(i)) {
+          if (i - prev > 3) cnt++;
+          if (first < 0) first = i;
+          last = i; prev = i;
+        }
+      }
+      return { n: cnt, span: first < 0 ? 0 : (last - first + 1) / n };
+    }
+    function col(x0) { return function (i) { var y = b[1] + i; for (var k = 0; k < K; k++) if (d[y * aw + x0 + k]) return 1; return 0; }; }
+    function row(y0) { return function (i) { var x = b[0] + i; for (var k = 0; k < K; k++) if (d[(y0 + k) * aw + x]) return 1; return 0; }; }
+    var bh = b[3] - b[1] + 1, bw = b[2] - b[0] + 1;
+    var mg = { L: b[0] / aw, R: (aw - 1 - b[2]) / aw, T: b[1] / ah, B: (ah - 1 - b[3]) / ah };
+    var st = {
+      L: segs(col(b[0]), bh), R: segs(col(b[2] - K + 1), bh),
+      T: segs(row(b[1]), bw), B: segs(row(b[3] - K + 1), bw)
+    };
+    var cut = function (k) { return st[k].n >= 5 && st[k].span >= 0.25; };
+    var h = {};
+    ["L", "R", "T", "B"].forEach(function (k) { h[k] = mg[k] <= tol; });
+    var lr = (!h.L && cut("L")) || (!h.R && cut("R"));
+    // 左右のどちらかが背景ごとぶつ切れのときだけ合わせる（1辺だけ端に触れている絵は今までどおり真ん中に置く）
+    if (!lr) return null;
+    ["L", "R", "T", "B"].forEach(function (k) { if (!h[k] && cut(k)) h[k] = true; });
+    return h;
+  }
+
   function roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -325,8 +359,16 @@
     if (m.box) {
       var s = m.s;
       var bx0 = m.box[0] / s, by0 = m.box[1] / s, bx1 = (m.box[2] + 1) / s, by1 = (m.box[3] + 1) / s;
+      var hug = edge ? null : cutSides(m);
       if (edge) {
         sx = r[0] + bx0; sy = r[1] + by0; sw = bx1 - bx0; sh = by1 - by0;
+      } else if (hug) {
+        // ぶつ切れの辺は絵の端ぴったり、それ以外の辺は少し余白を残す
+        var gp = Math.min(w, h) * 0.02;
+        var cx0 = hug.L ? bx0 : Math.max(0, bx0 - gp), cy0 = hug.T ? by0 : Math.max(0, by0 - gp);
+        var cx1 = hug.R ? bx1 : Math.min(w, bx1 + gp), cy1 = hug.B ? by1 : Math.min(h, by1 + gp);
+        sx = r[0] + cx0; sy = r[1] + cy0; sw = cx1 - cx0; sh = cy1 - cy0;
+        edge = true;
       } else {
         var px = w * 0.004, py = h * 0.004;
         var ox = Math.max(0, bx0 - px), oy = Math.max(0, by0 - py);
