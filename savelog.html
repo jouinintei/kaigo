@@ -148,9 +148,10 @@
   .tag.dev.rep{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
   @media (prefers-color-scheme: dark){.tag.dev.rep{color:#ffb87a}}
   @media (max-width:600px){.dv .strip{margin-left:0;width:100%}}
+  #inqWrap .tag.dev[data-id],#svWrap .tag.dev[data-id]{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
   #openWrap .tag.dev[data-id]{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
   .tag.dev.rep[data-id]{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
-  .devpop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:16px}
+  .devpop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;align-items:center;justify-content:center;padding:16px}
   .devpop.show{display:flex}
   .devpop .dp-card{background:var(--surface);border-radius:var(--radius);padding:14px 16px;width:100%;max-width:640px;max-height:86vh;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.3)}
   .devpop .dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
@@ -1576,11 +1577,12 @@
         var L = [["place","使う場所"],["state","ご様子"],["from","知ったきっかけ"],["diff","難しさ"],["line","線の太さ"]];
         var v = function(x, k){ return [].concat(x[k] || []).map(function(o){ return o === "その他" && x[k + "_o"] ? "その他（" + x[k + "_o"] + "）" : o; }).join("、"); };
         wrap.innerHTML = it.map(function(x){
-          var t = Date.parse(x.t), dv = x.d && x.d !== "unknown" ? shortId(x.d) : "端末不明";
+          var t = Date.parse(x.t), lv = (x.d && x.d !== "unknown" && typeof devLevel === "function") ? devLevel(x.d) : "";
+          var dv = x.d && x.d !== "unknown" ? '<span class="tag dev' + (lv ? " rep" : "") + '" data-id="' + esc(x.d) + '">' + esc(shortId(x.d)) + (lv === "reg" ? " ★" : lv === "rep" ? " ↻" : "") + '</span>' : '<span class="tag dev">端末不明</span>';
           var rows = L.map(function(q){ return '<div><small style="color:var(--ink-3)">' + q[1] + '</small> ' + esc(v(x, q[0])) + '</div>'; }).join("") +
             (x.want ? '<div><small style="color:var(--ink-3)">ほしい題材</small> ' + esc(x.want) + '</div>' : "") +
             (x.good ? '<div><small style="color:var(--ink-3)">よかった塗り絵</small> ' + esc(x.good) + '</div>' : "");
-          return '<div class="fbi"><div class="body"><div class="ttl">' + esc(dv) + ' <span style="font-weight:400;color:var(--ink-3);font-size:12px">' + fmtMD(dayKey(t)) + ' ' + hhmm(t) + '・「' + esc(x.title || x.f) + '」から</span></div><div style="font-size:13.5px;line-height:1.8">' + rows + '</div></div></div>';
+          return '<div class="fbi"><div class="body"><div class="ttl">' + dv + ' <span style="font-weight:400;color:var(--ink-3);font-size:12px">' + fmtMD(dayKey(t)) + ' ' + hhmm(t) + '・「' + esc(x.title || x.f) + '」から</span></div><div style="font-size:13.5px;line-height:1.8">' + rows + '</div></div></div>';
         }).join("");
       })
       .catch(function(e){ wrap.innerHTML = '<p class="empty">' + esc(String(e.message || e)) + '</p>'; });
@@ -2012,8 +2014,10 @@
     var tg = e.target.closest && e.target.closest(".tag.dev[data-id]");
     if (!tg) return;
     var inOpens = !!tg.closest("#openWrap");
-    if (!inOpens && !devStats[tg.getAttribute("data-id")]) return;
-    if (!inOpens && !tg.classList.contains("rep")) return;
+    // リクエスト・お問い合わせ・アンケートの端末は、保存したことがなくても開ける
+    var inForm = !!tg.closest("#inqWrap, #svWrap");
+    if (!inOpens && !inForm && !devStats[tg.getAttribute("data-id")]) return;
+    if (!inOpens && !inForm && !tg.classList.contains("rep")) return;
     e.stopPropagation(); e.preventDefault();
     openDevPop(tg.getAttribute("data-id"));
   }, true);
