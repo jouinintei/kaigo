@@ -41,7 +41,9 @@
   // アンケートに1回答えると、予定の素材すべてを保存・印刷できる合言葉が #pass= で渡される（3時間有効・端末には残さない）
   let PASSALL = "";
   try { const m = location.hash.match(/(?:^#|&)pass=([0-9]+\.[0-9a-f]+)/); if (m && +m[1].split(".")[0] > Date.now()) { PASSALL = m[1]; history.replaceState(history.state, "", location.pathname + location.search); } } catch (e) {}
-  const PASS = new Proxy({}, { get: () => PASSALL });
+  const todayJ = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  // 公開日を過ぎたもの（差し替え前・古いデータが残っている場合）は、アンケートなしで保存できる
+  const PASS = new Proxy({}, { get: (_, f) => { if (PASSALL) return PASSALL; const n = ALL.find(x => x.file === f); return n && n.open && n.open <= todayJ() ? "open" : ""; } });
   const openLabel = n => { const m = String(n.open || "").match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? `${+m[1]}月${+m[2]}日公開予定` : "近日公開予定"; };
 
   const J = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } };
