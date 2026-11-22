@@ -1668,4 +1668,9 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "並び替えクイズ 4文字 その12", file: "narabekae_4moji12.png", answer: "narabekae_4moji12_ans.png", added: "2026-11", date: "2026-11-28", pre: 1, open: "2026-11-28", v: "1795371303510" },
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "並び替えクイズ 4文字 その13", file: "narabekae_4moji13.png", answer: "narabekae_4moji13_ans.png", added: "2026-11", date: "2026-11-28", pre: 1, open: "2026-11-28", v: "1795371303511" },
   { kind: "脳トレ", season: "通年", genre: "言葉遊び", title: "並び替えクイズ 4文字 その14", file: "narabekae_4moji14.png", answer: "narabekae_4moji14_ans.png", added: "2026-11", date: "2026-11-28", pre: 1, open: "2026-11-28", v: "1795371303512" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その6", file: "kigo_jokyu6.png", answer: "kigo_jokyu6_ans.png", added: "2026-11", date: "2026-11-25", pre: 1, open: "2026-11-25", v: "1795371923917" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その7", file: "kigo_jokyu7.png", answer: "kigo_jokyu7_ans.png", added: "2026-11", date: "2026-11-25", pre: 1, open: "2026-11-25", v: "1795371923918" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その8", file: "kigo_jokyu8.png", answer: "kigo_jokyu8_ans.png", added: "2026-11", date: "2026-11-25", pre: 1, open: "2026-11-25", v: "1795371923919" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その9", file: "kigo_jokyu9.png", answer: "kigo_jokyu9_ans.png", added: "2026-11", date: "2026-11-25", pre: 1, open: "2026-11-25", v: "1795371923920" },
+  { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その10", file: "kigo_jokyu10.png", answer: "kigo_jokyu10_ans.png", added: "2026-11", date: "2026-11-25", pre: 1, open: "2026-11-25", v: "1795371923921" },
 ];
