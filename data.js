@@ -1607,4 +1607,9 @@ window.NURIE_LIST = [
   { season: "冬", genre: "行事", title: "バレンタインの贈り物", diff: "中級", file: "heart_bara_chu.png", sample: "heart_bara_chu_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "ハート型のチョコの箱とバラの花束。レースの敷物の上の、バレンタインの贈り物です。", req: true, v: "1795311527485" },
   { season: "通年", genre: "人物", title: "ゆりかごの赤ちゃん", diff: "初級", file: "yurikago_aka_sho.png", sample: "yurikago_aka_sho_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "ゆりかごですやすや眠る赤ちゃん。くまのぬいぐるみと月や星のモビールも。", req: true, v: "1795311527486" },
   { season: "通年", genre: "人物", title: "おばあちゃんと赤ちゃん", diff: "中級", file: "obaachan_aka_chu.png", sample: "obaachan_aka_chu_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "ロッキングチェアで赤ちゃんを抱くおばあちゃん。編みかけの毛糸のかごが添えられています。", req: true, v: "1795311527487" },
+  { season: "冬", genre: "行事", title: "クリスマスのオーナメント", diff: "初級", file: "ornament_sho.png", sample: "ornament_sho_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "もみの枝に下がった玉・しずく・星のオーナメント。大きなリボンも塗れます。", v: "1795321557406" },
+  { season: "冬", genre: "行事", title: "お菓子の家", diff: "初級", file: "gingerbread_house_sho.png", sample: "gingerbread_house_sho_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "雪のアイシングの屋根に丸いキャンディ。クッキーを添えたお菓子の家です。", v: "1795321557407" },
+  { season: "冬", genre: "行事", title: "くるみ割り人形", diff: "中級", file: "kurumiwari_chu.png", sample: "kurumiwari_chu_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "くるみ割り人形とクリスマスツリー、くるみの器。レースの敷物の上の飾りです。", v: "1795321557408" },
+  { season: "冬", genre: "風物詩", title: "クリスマスの窓辺", diff: "中級", file: "madobe_xmas_chu.png", sample: "madobe_xmas_chu_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "リースを飾った窓辺にキャンドルとポインセチア。外は雪景色です。", v: "1795321557409" },
+  { season: "冬", genre: "風景", title: "クリスマスマーケット", diff: "上級", file: "xmas_market_jo.png", sample: "xmas_market_jo_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "大きなツリーと回転木馬、屋台の並ぶ雪の広場。温かい飲み物でひと休みする人も。", v: "1795321557410" },
 ];
