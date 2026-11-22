@@ -319,6 +319,17 @@
         m.aw - 1 - m.box[2] <= m.aw * tol, m.ah - 1 - m.box[3] <= m.ah * tol].filter(Boolean).length >= 2;
     }
 
+    // 端まで描いてある絵でも、上下か左右に白い帯があるときは、枠を絵の範囲に合わせる（引き伸ばし・切り落としをしない）
+    if (edge && m.box) {
+      var gl = m.box[0] / m.aw, gr = (m.aw - 1 - m.box[2]) / m.aw, gt = m.box[1] / m.ah, gb = (m.ah - 1 - m.box[3]) / m.ah;
+      if (Math.max(gl, gr, gt, gb) > 0.01) {
+        var s0 = m.s, nx0 = r[0] + m.box[0] / s0, ny0 = r[1] + m.box[1] / s0, nx1 = r[0] + (m.box[2] + 1) / s0, ny1 = r[1] + (m.box[3] + 1) / s0;
+        r = [nx0, ny0, nx1, ny1]; w = nx1 - nx0; h = ny1 - ny0;
+        var ar = w / h, aiw = W - 2 * mg - 2 * L, aih = H - 2 * mg - 2 * L;
+        if (ar < aiw / aih) { ih = aih; iw = Math.round(aih * ar); } else { iw = aiw; ih = Math.round(aiw / ar); }
+        fw = iw + 2 * L; fh = ih + 2 * L; fx = Math.round((W - fw) / 2); fy = Math.round((H - fh) / 2); ix = fx + L; iy = fy + L;
+      }
+    }
     ctx.save();
     roundRect(ctx, fx, fy, fw, fh, CFG.radius);
     ctx.clip();
