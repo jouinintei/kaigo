@@ -73,7 +73,7 @@ jobs:
           .venv/bin/python .github/scripts/make_sim.py 2> serr.log
           code=$?
           if [ $code -eq 3 ]; then
-            .venv/bin/pip install -q torch --index-url https://download.pytorch.org/whl/cpu >> pip2.log 2>&1
+            .venv/bin/pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cpu >> pip2.log 2>&1
             .venv/bin/pip install -q open_clip_torch >> pip2.log 2>&1 || { echo "::error::pip $(tail -c 400 pip2.log | tr '\n' ' ')"; exit 1; }
             .venv/bin/python .github/scripts/make_sim.py 2> serr.log
             code=$?
