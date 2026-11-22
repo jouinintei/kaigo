@@ -21,7 +21,7 @@
 <script src="/frame.js?v=19"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="/rk.css?v=1795308184">
+<link rel="stylesheet" href="/rk.css?v=1795362353">
 <style>
 .ph1 h1,.bar .big b,.mo b,.h2 h2,.md h2,.empty h3,.req h3{font-weight:700}
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
@@ -64,7 +64,7 @@
 <main class="wrap" id="main"></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1795344809"></script>
+<script src="/rk.js?v=1795362353"></script>
 <script src="/hame.js?v=8"></script>
 <script>
 (function(){
@@ -88,7 +88,7 @@
   document.getElementById("ft").innerHTML=RK.footer(K);
   RK.updFavCount();
   const main=document.getElementById("main");
-  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false,ser:qs.get("ser")||"",req:qs.get("req")==="1"?"1":""};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
+  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand","yotei"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false,ser:qs.get("ser")||"",req:qs.get("req")==="1"?"1":""};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
   let pop=[],seed=Math.random()*1e9|0;
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
@@ -137,7 +137,9 @@
   const norm=s=>String(s).normalize("NFKC").toLowerCase().replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).replace(/\s+/g,"");
   const hira=s=>String(s).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
   function dropReq(){try{const u=new URL(location.href);if(u.searchParams.has("req")){u.searchParams.delete("req");history.replaceState(history.state,"",u);}}catch(e){}}
+  const preItems=()=>(RK.PRE||[]).filter(n=>kindOf(n)===KIND);
   function filtered(){
+    if(st.sort==="yotei"){if(preItems().length){window.RK_SORT="yotei";return preItems();}st.sort="new";}
     let a=items();
     if((K==="nurie"||K==="wall")&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
@@ -203,7 +205,7 @@
     let units=K==="noutore"?groupSeries(a).sort((x,y)=>(y[0]==="絵の間違い探し")-(x[0]==="絵の間違い探し")):(K==="nurie"&&!st.q)?groupNurie(a):a.map(n=>[null,[n]]);if(K==="nurie")units=units.filter(u=>u[0]&&NSER[u[0]]).concat(units.filter(u=>!(u[0]&&NSER[u[0]])));
     const pages=Math.max(1,Math.ceil(units.length/PER));if(st.page>pages)st.page=pages;
     const pageItems=units.slice((st.page-1)*PER,st.page*PER);
-    main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、何枚かのA4用紙に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面の大きな作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>分けた塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p><p><b>推奨人数</b>は、分けた紙の枚数と同じです（一人1枚）。</p><p>印刷すると紙のまわりに白いふちが出ます。<b>白いふちは、のりしろに使うか、切り取るかして</b>貼り合わせてください。</p><p class="wtry">壁紙作りはお試し中のコーナーです。使ってみた感想を、ぜひ<a href="/contact.html?type=壁紙作りの感想">お聞かせください</a>。仕上がった作品の写真も大歓迎です。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
+    main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、何枚かのA4用紙に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面の大きな作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>分けた塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p><p><b>推奨人数</b>は、分けた紙の枚数と同じです（一人1枚）。</p><p>印刷すると紙のまわりに白いふちが出ます。<b>白いふちは、のりしろに使うか、切り取るかして</b>貼り合わせてください。</p><p class="wtry">壁紙作りはお試し中のコーナーです。使ってみた感想を、ぜひ<a href="/contact.html?type=壁紙作りの感想">お聞かせください</a>。仕上がった作品の写真も大歓迎です。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].concat((K==="nurie"||K==="noutore")&&preItems().length?[["yotei","予定"]]:[]).map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
       (tot?`<div class="grid">${pageItems.map(([k,g])=>(k&&(g.length>1||NSER[k]))?serCard(k,g):card(g[0])).join("")}</div>${pager(units.length,K==="noutore"?"件":"枚")}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn p" data-reset>条件をリセット</button>${st.q&&st.q.trim()?`<button class="btn o" data-req="${esc(st.q.trim())}" data-reqk="${K==="noutore"?"脳トレ":"塗り絵"}">「${esc(st.q.trim())}」をリクエストする</button>`:""}</div></div>`);
   }

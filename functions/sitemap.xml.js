@@ -15,6 +15,7 @@ async function loadList(origin) {
   let m;
   while ((m = re.exec(text))) {
     const s = m[0];
+    if (/\bpre:\s*1\b/.test(s)) continue;
     items.push({ file: get(s, "file"), added: get(s, "added") });
   }
   const seen = new Set();

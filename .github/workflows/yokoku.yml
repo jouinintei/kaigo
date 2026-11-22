@@ -1,0 +1,53 @@
+name: 予告（作成中）の塗り絵
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "yokoku/**"
+      - ".github/scripts/yokoku.py"
+      - ".github/workflows/yokoku.yml"
+  schedule:
+    - cron: "5 15 * * *"   # 毎日 0:05（日本時間）に公開日を迎えたものを本物に差し替える
+  workflow_dispatch:
+
+concurrency:
+  group: r2-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  yokoku:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      R2_ENDPOINT: https://f2973a9b06bd5d30be681c629f19145e.r2.cloudflarestorage.com
+      R2_BUCKET: rekupuri-img-apac
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -q boto3 pillow cryptography > pip.log 2>&1 || { echo "::error::pip $(tail -c 400 pip.log | tr '\n' ' ')"; exit 1; }
+      - name: Store / release
+        run: .venv/bin/python .github/scripts/yokoku.py
+      - name: Commit
+        run: |
+          if [ -s yokoku_changed.txt ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+            git add -A images yokoku data.js
+            if ! git diff --cached --quiet; then
+              git commit -m "予告の塗り絵を公開（本物に差し替え）"
+              for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+            fi
+            if grep -q '^images/' yokoku_changed.txt; then
+              .venv/bin/python .github/scripts/make_thumbs.py || true
+            fi
+          fi

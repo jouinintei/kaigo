@@ -32,7 +32,7 @@ async function render(context) {
           item[m[1]] = m[2] === "true" ? true : m[2] === "false" ? false : Number(m[2]);
         }
       }
-      if (item.file) out.push(item);
+      if (item.file && item.pre !== 1) out.push(item);
     }
     return out;
   }

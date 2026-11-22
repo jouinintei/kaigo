@@ -33,7 +33,13 @@
     if (t.src.indexOf(TH) === 0) { t.src = IMG + t.src.slice(TH.length).replace(/\.jpg(\?.*)?$/, "$1"); }
   }, true);
   const seen = new Set();
-  const LIST = (window.NURIE_LIST || []).filter(n => n && n.file && !seen.has(n.file) && seen.add(n.file)).reverse();
+  const ALL = (window.NURIE_LIST || []).filter(n => n && n.file && !seen.has(n.file) && seen.add(n.file)).reverse();
+  // 予告（作成中）：pre: 1 の素材は一覧・検索に出さず、トップの「投稿予定」と各一覧の「予定」タブにだけ出す。
+  // 保存・印刷はアンケートに答えたときだけ（端末には覚えない。ページを開き直したらもう一度）
+  const isPre = n => !!n && n.pre === 1;
+  const LIST = ALL.filter(n => !isPre(n)), PRE = ALL.filter(isPre);
+  const PASS = {};
+  const openLabel = n => { const m = String(n.open || "").match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? `${+m[1]}月${+m[2]}日公開予定` : "近日公開予定"; };
 
   const J = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } };
   const S = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
@@ -116,6 +122,12 @@ ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 
     return [n.season, n.genre, n.diff].filter(Boolean).join(" ・ ");
   }
   function card(n, opt = {}) {
+    if (isPre(n) && !PASS[n.file]) {
+      return `<article class="card wk${kindOf(n) !== "塗り絵" ? " v" : ""} pre" data-f="${esc(n.file)}">
+<div style="position:relative"><button class="ph" data-open="${esc(n.file)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" ${srcs(n)} onload="this.classList.remove('sk')"></button><span class="new pretag">予定</span></div>
+<div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
+<div class="prebox"><span class="pday">${ico("cal", 16)}${openLabel(n)}</span><button class="btn p" data-pre="${esc(n.file)}">${ico("pen", 17)}アンケートに答えて先行保存</button></div></article>`;
+    }
     const k = kindOf(n), f = n.file, fav = isFav(f);
     const btn2 = k === "脳トレ" ? (n.answer ? `<button class="btn o" data-save="${esc(n.answer)}" data-of="${esc(f)}">答えを保存</button>` : "")
       : (n.sample ? `<button class="btn o" data-open="${esc(f)}" data-tab="s">${ico("pal", 17)}色見本</button>` : "");
@@ -191,6 +203,10 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
   }
   async function getBlob0(n, file) {
     let r = null;
+    if (isPre(n)) {
+      try { r = await fetch("/api/pre?f=" + encodeURIComponent(file) + "&t=" + encodeURIComponent(PASS[n.file] || ""), { cache: "no-store" }); } catch (e) { r = null; }
+      if (!r || !r.ok) throw new Error("pre"); return await r.blob();
+    }
     try { r = await fetch(full(n, file), { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
     if ((!r || !r.ok) && PROD) { try { r = await fetch("/api/dl?f=" + encodeURIComponent(file), { cache: "no-store" }); } catch (e) { r = null; } }
     if (!r || !r.ok) throw new Error("load");
@@ -198,10 +214,13 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
   }
   async function getBlob(n, file) {
     let r = null;
+    if (isPre(n)) { if (!PASS[n.file]) throw new Error("locked"); return await finish(n, file, await getBlob0(n, file)); }
     try { r = await fetch(full(n, file), { mode: "cors", cache: "no-cache" }); } catch (e) { r = null; }
     if ((!r || !r.ok) && PROD) { try { r = await fetch("/api/dl?f=" + encodeURIComponent(file), { cache: "no-store" }); } catch (e) { r = null; } }
     if (!r || !r.ok) throw new Error("load");
-    const b = await r.blob();
+    return await finish(n, file, await r.blob());
+  }
+  async function finish(n, file, b) {
     if (file === n.file && kindOf(n) === "塗り絵" && window.rekupuriFrame) return await window.rekupuriFrame(b);
     if ((file === n.file || file === n.answer) && kindOf(n) === "脳トレ" && window.rekupuriStamp) return await window.rekupuriStamp(b);
     if (file === n.sample && n.file && kindOf(n) === "塗り絵" && window.rekupuriFrameSample) {
@@ -212,12 +231,13 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
   }
   const busy = new Set();
   async function save(file, src, ctx) {
-    const n = LIST.find(x => x.file === file || x.answer === file || x.sample === file || x.pdf === file); if (!n || busy.has(file)) return;
+    const n = ALL.find(x => x.file === file || x.answer === file || x.sample === file || x.pdf === file); if (!n || busy.has(file)) return;
+    if (isPre(n) && !PASS[n.file]) { openMd(n.file); return; }
     busy.add(file);
     const name = dlName(n, file);
     const go = (url, direct) => { const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); };
     try { const b = await getBlob(n, file), u = URL.createObjectURL(b); go(u); setTimeout(() => URL.revokeObjectURL(u), 30000); }
-    catch (e) { if (PROD) go("/api/dl?f=" + encodeURIComponent(file) + "&n=" + encodeURIComponent(name), true); else window.open(full(n, file), "_blank"); }
+    catch (e) { if (isPre(n)) { busy.delete(file); toast("保存できませんでした", "時間をおいてもう一度お試しください"); return; } if (PROD) go("/api/dl?f=" + encodeURIComponent(file) + "&n=" + encodeURIComponent(name), true); else window.open(full(n, file), "_blank"); }
     busy.delete(file);
     if (file === n.file || file === n.pdf) { markUsed(n.file); logSave(n.file, src || window.RK_SRC, ctx === undefined ? window.RK_CTX : ctx); }
     else logSave(file, src || window.RK_SRC, null);
@@ -234,7 +254,8 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
     return { url: cv.toDataURL("image/jpeg", 0.92), w: bmp.width, h: bmp.height };
   }
   async function printIt(file, btn, src, ctx) {
-    const n = LIST.find(x => x.file === file || x.sample === file); if (!n || busy.has("p:" + file)) return;
+    const n = ALL.find(x => x.file === file || x.sample === file); if (!n || busy.has("p:" + file)) return;
+    if (isPre(n) && !PASS[n.file]) { openMd(n.file); return; }
     const isS = file === n.sample;
     busy.add("p:" + file);
     const win = window.open("", "_blank");
@@ -295,7 +316,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
   }
   let mdSrc = "list", mdCtx = null;
   function openMd(file, tab, src) {
-    const n = LIST.find(x => x.file === file); if (!n) return;
+    const n = ALL.find(x => x.file === file); if (!n) return;
     mdN = n; mdTab = tab || "l"; zoom = 100; mdPg = -1; mdSrc = src || window.RK_SRC; mdCtx = src ? null : window.RK_CTX; renderMd();
     if (kindOf(n) === "塗り絵" || kindOf(n) === "脳トレ" || kindOf(n) === "壁紙作り") logOpen(n.file, "lb", mdSrc); if (mdTab === "s") logOpen(n.sample, "smp", mdSrc);
     const md = document.querySelector(".md"); if (!md.classList.contains("on")) { try { history.pushState({ md: 1 }, ""); } catch (e) {} } md.classList.add("on"); document.body.style.overflow = "hidden";
@@ -324,7 +345,45 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
 ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : k === "壁紙作り" ? "壁紙作り" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : k === "壁紙作り" ? "まとめて保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(pf) ? " pdone" : ""}" data-print="${esc(pf)}">${ico("print", 17)}${isPrinted(pf) ? "もう一度印刷" : mdTab === "s" ? "色見本を印刷" : k === "壁紙作り" ? "まとめて印刷" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "壁紙作り" ? "まとめて保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
 </div>`;
     upgradeMd();
+    if (isPre(n)) {
+      const box = document.querySelector(".md .box"), ttl = box.querySelector(".tt2 .meta");
+      if (ttl) ttl.insertAdjacentHTML("beforeend", ` ・ <b class="pday2">${openLabel(n)}</b>`);
+      if (!PASS[n.file]) { const mf = box.querySelector(".mdf"); if (mf) mf.innerHTML = `<div class="premd"><p>この${kindOf(n)}は作成中です（${openLabel(n)}）。<br>かんたんなアンケート（3問）に答えると、ひと足先に保存・印刷できます。</p><button class="btn p" data-pre="${esc(n.file)}">${ico("pen", 19)}アンケートに答えて先行保存</button></div>`; }
+    }
     if (window.RK_MDHOOK) { try { window.RK_MDHOOK(n, mdTab); } catch (e) {} }
+  }
+
+  /* ---------- 予告：アンケート ---------- */
+  const SV = [
+    ["place", "どちらでお使いですか？", ["デイサービス", "入所施設（特養・老健など）", "グループホーム", "病院", "ご家庭", "その他"]],
+    ["size", "一度に何人くらいで使いますか？", ["1〜5人", "6〜15人", "16人以上", "ひとりで"]]
+  ];
+  function showSurvey(file) {
+    const n = ALL.find(x => x.file === file); if (!n) return;
+    if (!document.querySelector(".md.on") || mdN !== n) openMd(file);
+    const box = document.querySelector(".md .box");
+    box.innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">アンケート</h2><div class="meta">${esc(n.title)}（${openLabel(n)}）</div></div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
+<div class="scr"><form class="svf" data-f="${esc(file)}"><p class="svlead">3問だけお答えください。送信すると、すぐに保存・印刷できるようになります。</p>
+${SV.map(([k, q, opts], i) => `<fieldset><legend>${i + 1}. ${q}</legend><div class="svo">${opts.map(o => `<label><input type="radio" name="${k}" value="${esc(o)}" required><span>${esc(o)}</span></label>`).join("")}</div></fieldset>`).join("")}
+<fieldset><legend>3. 次にほしい${kindOf(n) === "脳トレ" ? "脳トレ" : "塗り絵"}の題材があれば教えてください（任意）</legend><input type="text" name="want" maxlength="100" placeholder="例：お月見、昔のおもちゃ"></fieldset>
+<p class="sverr" role="alert"></p></form></div>
+<div class="mdf"><div class="row2"><button class="btn g" data-svback="${esc(file)}">戻る</button><button class="btn p" data-svsend>送信して先行保存</button></div></div>`;
+  }
+  async function sendSurvey(btn) {
+    const fm = document.querySelector(".md .svf"); if (!fm) return;
+    const er = fm.querySelector(".sverr"), file = fm.dataset.f, a = {};
+    for (const [k] of SV) { const v = fm.querySelector(`input[name="${k}"]:checked`); if (!v) { er.textContent = "1と2を選んでください"; return; } a[k] = v.value; }
+    a.want = (fm.want.value || "").trim().slice(0, 100);
+    btn.disabled = true; btn.textContent = "送信中…"; er.textContent = "";
+    try {
+      const r = await fetch("/api/survey", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ f: file, a }) });
+      const j = await r.json();
+      if (!j || !j.ok || !j.t) throw new Error("x");
+      PASS[file] = j.t;
+      document.querySelectorAll(`article.pre[data-f="${CSS.escape(file)}"]`).forEach(ar => { ar.outerHTML = card(mdN); });
+      renderMd();
+      toast("ありがとうございました", "保存・印刷できるようになりました");
+    } catch (e) { btn.disabled = false; btn.textContent = "送信して先行保存"; er.textContent = "送信できませんでした。時間をおいてもう一度お試しください"; }
   }
 
   /* ---------- 全画面表示（スマホで横長を大きく） ---------- */
@@ -354,6 +413,9 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
       toast(on ? "お気に入りに追加しました" : "お気に入りから外しました", on ? "お気に入りページからまとめて保存できます" : "");
       document.dispatchEvent(new CustomEvent("favchange")); return;
     }
+    if (t.dataset.pre) { showSurvey(t.dataset.pre); return; }
+    if (t.dataset.svback) { renderMd(); return; }
+    if (t.dataset.svsend !== undefined) { sendSurvey(t); return; }
     if (t.dataset.print) { const inMd = !!t.closest(".md"); printIt(t.dataset.print, t, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : window.RK_CTX); return; }
     if (t.dataset.save) { const inMd = !!t.closest(".md"); save(t.dataset.save, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : undefined); return; }
     if (t.dataset.open) { openMd(t.dataset.open, t.dataset.tab, t.dataset.src || (t.closest(".md") ? "nita" : null)); return; }
@@ -479,5 +541,5 @@ ${hasReq ? `<a class="rqlink" href="${L(b.kind === "脳トレ" ? "noutore" : "nu
   document.addEventListener("click", e => { const t = e.target.closest && e.target.closest("[data-req]"); if (!t) return; e.preventDefault(); openReq(t.dataset.req || "", t.dataset.reqk || ""); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && rqEl) rqClose(); });
 
-  window.RK = { logSave, markUsed, markPrinted, refreshCard, loadPdf, PT, resetHist, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, openReq, seasonNow, isNew, metaOf, openMd };
+  window.RK = { ALL, PRE, isPre, openLabel, logSave, markUsed, markPrinted, refreshCard, loadPdf, PT, resetHist, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, openReq, seasonNow, isNew, metaOf, openMd };
 })();

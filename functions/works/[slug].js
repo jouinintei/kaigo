@@ -23,6 +23,7 @@ async function loadList(origin) {
   let m;
   while ((m = re.exec(text))) {
     const s = m[0];
+    if (/\bpre:\s*1\b/.test(s)) continue;
     items.push({
       kind: get(s, "kind"), season: get(s, "season"), genre: get(s, "genre"),
       title: get(s, "title"), diff: get(s, "diff"), file: get(s, "file"),

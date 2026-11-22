@@ -405,3 +405,20 @@ html{font-synthesis-weight:none}
 .rqbtn:hover{background:#F5E4D6;border-color:#D9B9A2}
 .rqbtn .ico{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
 @media (max-width:640px){.rqbtn{height:34px;padding:0 12px;gap:5px;font-size:13px}.rqbtn .ico{width:15px;height:15px}}
+/* 予告（作成中） */
+.wk .pretag{background:#c0392b;border-color:#c0392b;color:#fff}
+.prebox{display:flex;flex-direction:column;gap:8px;padding:0 14px 14px}
+.prebox .pday,.pday2{display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:#c0392b}
+.prebox .btn{height:48px}
+.premd{display:flex;flex-direction:column;gap:10px;width:100%}
+.premd p{margin:0;font-size:15px;line-height:1.7}
+.premd .btn{height:52px}
+.svf{padding:8px 4px 16px;display:flex;flex-direction:column;gap:18px}
+.svf .svlead{margin:0;font-size:15px;line-height:1.7}
+.svf fieldset{border:0;margin:0;padding:0}
+.svf legend{font-weight:700;font-size:16px;margin-bottom:8px}
+.svo{display:flex;flex-wrap:wrap;gap:8px}
+.svo label{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line,#ddd);border-radius:10px;padding:10px 14px;font-size:15px;cursor:pointer;background:#fff}
+.svo label:has(input:checked){border-color:var(--acc,#c0582a);background:#fdf3ec}
+.svf input[type=text]{width:100%;box-sizing:border-box;height:46px;border:1.5px solid var(--line,#ddd);border-radius:10px;padding:0 12px;font-size:16px}
+.sverr{color:#c0392b;font-size:14px;margin:0;min-height:1em}
