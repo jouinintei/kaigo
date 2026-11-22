@@ -382,10 +382,10 @@
 
   <section class="card pop" id="popSv">
     <div class="card-head">
-      <div><h2>アンケート結果</h2><p class="note">予告の素材を先行保存するときのアンケートです。</p></div>
-      <div class="tools"><button class="btn-ghost" id="svReloadBtn">更新</button><a class="btn-ghost" href="survey.html" target="_blank" rel="noopener">別画面で開く</a><button class="btn-ghost pop-close">✕ 閉じる</button></div>
+      <div><h2>アンケート</h2><p class="note" id="svNote">予告の素材を先行保存したときの回答。新しい順。</p></div>
+      <div class="tools"><button class="btn-ghost" id="svReloadBtn">更新</button><button class="btn-ghost pop-close">✕ 閉じる</button></div>
     </div>
-    <iframe id="svFrame" title="アンケート結果" style="width:100%;height:70vh;border:0;border-radius:10px;background:#f7f5f2"></iframe>
+    <div id="svWrap" style="max-height:70vh;overflow:auto"><p class="empty">読み込み中…</p></div>
   </section>
 
   <section class="card pop" id="popInq">
@@ -1564,8 +1564,29 @@
     popOpen = null;
   }
   document.getElementById("icInq").addEventListener("click", function(){ drawInquiries(); openPop("popInq"); });
-  document.getElementById("icSv").addEventListener("click", function(){ var f = document.getElementById("svFrame"); if (!f.src) f.src = "survey.html"; openPop("popSv"); });
-  document.getElementById("svReloadBtn").addEventListener("click", function(){ document.getElementById("svFrame").src = "survey.html?_=" + Date.now(); });
+  function loadSurvey(){
+    var wrap = document.getElementById("svWrap");
+    wrap.innerHTML = '<p class="empty">読み込み中…</p>';
+    fetch("api/survey?key=" + encodeURIComponent(key) + "&_=" + Date.now(), {cache:"no-store"})
+      .then(function(r){ if (!r.ok) throw new Error("読み込みに失敗しました (" + r.status + ")"); return r.json(); })
+      .then(function(j){
+        var it = (j.items || []).slice().reverse();
+        document.getElementById("svNote").textContent = "予告の素材を先行保存したときの回答。新しい順・全" + it.length + "件";
+        if (!it.length) { wrap.innerHTML = '<p class="empty">まだ回答はありません。</p>'; return; }
+        var L = [["place","使う場所"],["state","ご様子"],["from","知ったきっかけ"],["diff","難しさ"],["line","線の太さ"]];
+        var v = function(x, k){ return [].concat(x[k] || []).map(function(o){ return o === "その他" && x[k + "_o"] ? "その他（" + x[k + "_o"] + "）" : o; }).join("、"); };
+        wrap.innerHTML = it.map(function(x){
+          var t = Date.parse(x.t), dv = x.d && x.d !== "unknown" ? shortId(x.d) : "端末不明";
+          var rows = L.map(function(q){ return '<div><small style="color:var(--ink-3)">' + q[1] + '</small> ' + esc(v(x, q[0])) + '</div>'; }).join("") +
+            (x.want ? '<div><small style="color:var(--ink-3)">ほしい題材</small> ' + esc(x.want) + '</div>' : "") +
+            (x.good ? '<div><small style="color:var(--ink-3)">よかった塗り絵</small> ' + esc(x.good) + '</div>' : "");
+          return '<div class="fbi"><div class="body"><div class="ttl">' + esc(dv) + ' <span style="font-weight:400;color:var(--ink-3);font-size:12px">' + fmtMD(dayKey(t)) + ' ' + hhmm(t) + '・「' + esc(x.title || x.f) + '」から</span></div><div style="font-size:13.5px;line-height:1.8">' + rows + '</div></div></div>';
+        }).join("");
+      })
+      .catch(function(e){ wrap.innerHTML = '<p class="empty">' + esc(String(e.message || e)) + '</p>'; });
+  }
+  document.getElementById("icSv").addEventListener("click", function(){ loadSurvey(); openPop("popSv"); });
+  document.getElementById("svReloadBtn").addEventListener("click", loadSurvey);
   document.getElementById("popBg").addEventListener("click", closePop);
   document.querySelectorAll(".pop-close").forEach(function(b){ b.addEventListener("click", closePop); });
   document.addEventListener("keydown", function(e){ if (e.key === "Escape") closePop(); });

@@ -415,7 +415,7 @@ ${SVT.map(([k, q, ph], i) => `<fieldset><legend>${SV.length + i + 1}. ${q}</lege
     for (const [k] of SVT) a[k] = (fm.querySelector(`input[name="${k}"]`).value || "").trim().slice(0, 100);
     btn.disabled = true; btn.textContent = "送信中…"; er.textContent = "";
     try {
-      const r = await fetch("/api/survey", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ f: file, a }) });
+      const r = await fetch("/api/survey", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ f: file, a, did: deviceId() }) });
       const j = await r.json();
       if (!j || !j.ok || !j.t) throw new Error("x");
       const n = ALL.find(x => x.file === file), dest = new URL(L(n && kindOf(n) === "脳トレ" ? "noutore" : "nurie"), location.href);

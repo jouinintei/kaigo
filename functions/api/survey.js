@@ -89,6 +89,7 @@ export async function onRequest({ request, env }) {
   const it = await findPre(request, b.f.slice(0, 200));
   if (!it) return json({ ok: false, error: "not_pre" }, 404);
   rec.f = it.file; rec.title = it.title;
+  rec.d = String(b.did || "").replace(/[^a-z0-9]/gi, "").slice(0, 16) || "unknown";
 
   if (env && env.GITHUB_TOKEN && env.MEMBER_REPO) {
     for (let i = 0; i < 3; i++) {
