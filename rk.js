@@ -125,6 +125,21 @@ ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 
     return [n.season, n.genre, n.diff].filter(Boolean).join(" ・ ");
   }
   function card(n, opt = {}) {
+    if (isPre(n) && PASS[n.file]) return card0(n, opt).replace('<img class="sk"', `<img data-pref="${esc(n.file)}" class="sk"`);
+    return card0(n, opt);
+  }
+  // アンケートに答えた人の画面では、たすき入りの画像を本物に差し替えて見せる
+  const realCache = {};
+  function realUrl(n, f) { return realCache[f] || (realCache[f] = getBlob0(n, f).then(b => URL.createObjectURL(b)).catch(() => { delete realCache[f]; return ""; })); }
+  function swapPre(root) {
+    if (!PASSALL) return;
+    (root || document).querySelectorAll("img[data-pref]:not([data-pdone])").forEach(im => {
+      im.dataset.pdone = "1"; const f = im.dataset.pref, n = ALL.find(x => x.file === f || x.sample === f); if (!n) return;
+      realUrl(n, f).then(u => { if (u && im.isConnected) { im.removeAttribute("srcset"); im.removeAttribute("data-full"); im.src = u; } });
+    });
+  }
+  if (PASSALL) { try { new MutationObserver(() => swapPre()).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {} }
+  function card0(n, opt = {}) {
     if (isPre(n) && !PASS[n.file]) {
       return `<article class="card wk${kindOf(n) !== "塗り絵" ? " v" : ""} pre" data-f="${esc(n.file)}">
 <div style="position:relative"><button class="ph" data-open="${esc(n.file)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" ${srcs(n)} onload="this.classList.remove('sk')"></button><span class="new pretag">予定</span></div>
@@ -348,6 +363,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
 ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : k === "壁紙作り" ? "壁紙作り" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : k === "壁紙作り" ? "まとめて保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(pf) ? " pdone" : ""}" data-print="${esc(pf)}">${ico("print", 17)}${isPrinted(pf) ? "もう一度印刷" : mdTab === "s" ? "色見本を印刷" : k === "壁紙作り" ? "まとめて印刷" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "壁紙作り" ? "まとめて保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
 </div>`;
     upgradeMd();
+    if (isPre(n) && PASS[n.file]) { const vi = document.querySelector(".md .view img"); if (vi) { vi.dataset.pref = vf; swapPre(document.querySelector(".md")); } }
     if (isPre(n)) {
       const box = document.querySelector(".md .box"), ttl = box.querySelector(".tt2 .meta");
       if (ttl) ttl.insertAdjacentHTML("beforeend", ` ・ <b class="pday2">${openLabel(n)}</b>`);
