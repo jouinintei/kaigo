@@ -5,6 +5,9 @@
   const TATE = new Set(["sarusuberi_chu.png","usagi_sho.png","usagi_chu.png","shibainu_neko_jo.png","fukurou_chu.png","inko_chu.png","savanna_jo.png","hamster_sho.png","doubutsuen_sho.png","doubutsuen_jo.png","umi_ikimono_sho_2.png","kuma_sho.png","inu_sho.png","inu_neko_chu.png","neko_sho.png","neko_jo.png","hitsuji_chu.png","cosmos2_sho.png","hakuro2_chu.png","higanbana_sho.png","shogatsu_chu.png","ajisai_kasa_chu.png","koinobori_sho.png","kotatsu_mikan_jo.png","tulip_tentomushi_chu.png","yukidaruma_sho.png","wreath_sho.png","hagoita_chu.png","ame_no_hi_chu.png","kikuningyo_jo.png","tanabata_chu.png","haru_inaka_jo.png","hatsumoude_jo.png","shogatsu_asobi_sho.png","setsubun_chu.png","danro_sho.png","tsuyu_jo.png","ajisai2_chu.png","ichigogari_chu.png","ohanami_jo.png","koinobori_jo.png","stew_sho.png","susuki_usagi_sho.png","snowdome_sho.png","tanpopo_chu.png","hinamatsuri2_sho.png","mogura_tsukushi_chu.png","ame_engawa_chu.png","natsu_basutei_jo.png","hanakanmuri_chu.png","kouyou_sho.png","nanohana_chu.png","shiwasu_chu.png","akinasu_sho.png","aki_kudamono_sho.png","haru_mikaku_sho.png","matsutake_sho.png","seijinshiki_chu.png","akatonbo_sho.png","yukidaruma_zukuri_sho.png","fuyu_engawa_jo.png","fuyu_kinkakuji_chu.png","tsuyu_gassho_sho.png","otsukimi_sho.png","cosmos_batake_jo.png","kodomonohi_chu.png","hiyoko_tanpopo_sho.png","kouyou_taki_chu.png","nanohana_chou_sho.png","sakura_kikagaku_sho.png","tanabata_neko_chu.png","orihime_hikoboshi_chu.png","ice_skate_chu.png","zenzai_sho.png","daruma_sho.png","muffler_amimono_sho.png","mikan_sho.png","kozuchi_chu.png","fuyu_ki_sho.png","tanabata_kazari_jo.png","amanogawa_tanabata_jo.png","ukiwa_koneko_chu.png","yadokari_jo.png","pineapple_chu.png","kamogawa_yuka_jo.png","natsumatsuri_yukata_jo.png","ice_cream_sho.png","bonodori_chu.png","oden2_sho.png","okonomiyaki_sho.png","kayabuki_sho.png","shishiodoshi_sho.png","shishiodoshi_chu.png","takoyaki_sho.png","donut_sho.png","nezumi_chu.png","banana_sho.png","mug_sho.png","retro_kissa_sho.png","natsuyasumi2_sho.png","natsu_yasai2_sho.png","kabuki_chu.png","umi_naka_jo.png","hoshigaki2_sho.png","kissaten_sho.png","sakura_ki2_sho.png","haru_sansai_sho.png","ikebana_sho.png","taisho_roman_chu.png","taisho_roman2_chu.png","tanjobi_sho.png","sado_sho.png","kimono_chu.png","chojugiga_jo.png","tsukemono_sho.png","tsuru_kame_chu.png","inaka_ajisai_jo.png","yatsuhashi_sho.png","bonsai_sho.png","mandala_sho.png","kakashi_tonbo_jo.png","hozuki_ichi_jo.png","fruits_bowl_sho.png","shichifukujin_jo.png","mangekyo_sho.png","wafu_mandala_sho.png","kissaten_pudding_chu.png","sushi_chu.png","origami_chu.png","mukashi_asobi_jo.png","mukashi_asobi_chu.png","katahane_chou_chu.png","neko_hanataba_sho.png","aki_kiyomizudera_jo.png","chikurin_jo.png","ironna_hana_chu.png","tora_jo.png","up_1786433365544_1.png","up_1786699872178_2.png","up_1786709449497_1.png","up_1786710655144_2.png","up_1787280884689_1.png","up_1787281255003_2.png","up_1787281927634_3.png","up_1787282123201_4.png","up_1787282410347_5.png","up_1787283008008_7.png","up_1787305433755_8.png","up_1787323089737_9.png","up_1787370039418_10.png","up_1787370204076_11.png","up_1787370358584_12.png","up_1787370474442_13.png","up_1787371128205_16.png","up_1787371221552_17.png","up_1787371298799_18.png","up_1787372326442_21.png","up_1787372518698_22.png","up_1787372679417_23.png","up_1787372902490_24.png","up_1788526131846_1.png","up_1788526135644_2.png","up_1788526140001_3.png","up_1788526143836_4.png","up_1788526148082_5.png","up_1788526151750_6.png","up_1788526844867_8.png","up_1788526848636_9.png","up_1788526852238_10.png","up_1788526855312_11.png","up_1788527653992_12.png","up_1788527657834_13.png","up_1788527661836_14.png","up_1788528030289_15.png","up_1788528061244_16.png","up_1789380324902_1.png","up_1789380461209_2.png","up_1789380723165_3.png","up_1789380883344_4.png","up_1789383772405_1.png","up_1789390681536_3.png","up_1790911505528_2.png","up_1790911747349_5.png","up_1790912747454_7.png","up_1790925839909_6.png","aki_no_taiboku.png","up_1792755702172_15.png","up_1792755706172_19.png","up_1793105407562_1.png","up_1793105408562_2.png","up_1793105409562_3.png","up_1793105411562_5.png","up_1793105412562_6.png","up_1793105419562_13.png","up_1793105423562_17.png","up_1793105425562_19.png","up_1793105428562_22.png","up_1793105434562_28.png","up_1793123177233_1.png","up_1793123179233_3.png","up_1793123182233_6.png","up_1793123183233_7.png","up_1793123187233_11.png","up_1793123188233_12.png","up_1793123193233_17.png","up_1793128266114_23.png","up_1793128267114_24.png","up_1793128268114_25.png","up_1793128270114_27.png","up_1793128272114_29.png","up_1793128273114_30.png","up_1793128274114_31.png","up_1793128275114_32.png","up_1793128279114_36.png","up_1793128282114_39.png","up_1793128285114_42.png","up_1793128244114_1.png","up_1793128245114_2.png","up_1793128246114_3.png","up_1793128248114_5.png","up_1793128250114_7.png","up_1793128251114_8.png","up_1793128252114_9.png","up_1793128257114_14.png","up_1793128261114_18.png","up_1793128269114_26.png","up_1793128283114_40.png","up_1793154419567_1.png","up_1793154421567_3.png","up_1793154422567_4.png","up_1793154423567_5.png","up_1793154424567_6.png","up_1793154425567_7.png","up_1793154426567_8.png","up_1793154427567_9.png","up_1793154428567_10.png","up_1793154430567_12.png","up_1793154431567_13.png","up_1793154432567_14.png","up_1793154433567_15.png","up_1793154434567_16.png","up_1793154435567_17.png","up_1793154436567_18.png","up_1793154439567_21.png","up_1793154441567_23.png","up_1793154444567_26.png","up_1793154445567_27.png","up_1793154446567_28.png","up_1793154449567_31.png","up_1793154450567_32.png","up_1793157557228_2.png","up_1793160001000_1.png","up_1793160002000_2.png","up_1793160003000_3.png","up_1793160004000_4.png","up_1793160005000_5.png","up_1793159476877_1.png","up_1793160392152_1.png","up_1793160393152_2.png","up_1793160971327_1.png","up_1793161611547_1.png","up_1793163269933_1.png","up_1793165067999_1.png","up_1793167964984_1.png","up_1793428359537_1.png","up_1793428359537_2.png","keiryu_zuri_chu.png","toudai_chu.png","kikyu_sho.png","soba_demae_chu.png","tougei_sho.png","shamisen_sho.png","hashiradokei_sho.png","posuto_sho.png","up_1793449171714_1.png","up_1793449171714_2.png","up_1793449171714_3.png","up_1793449171714_4.png","up_1793449171714_5.png","up_1793449171714_6.png","up_1793449171714_8.png","up_1793449171714_9.png","up_1793449171714_10.png","up_1793449171714_11.png","up_1793449171714_12.png","up_1793449171714_13.png","up_1793449171714_14.png","up_1793449171714_15.png","up_1793449171714_16.png","up_1793449171714_17.png","up_1793449171714_18.png","up_1793449171714_19.png","up_1793456809363_1.png","up_1793456809363_2.png","up_1793456809363_3.png","up_1793456809363_4.png","up_1793456809363_5.png","up_1793456809363_6.png","up_1793456809363_7.png","up_1793456809363_8.png","up_1793456845081_1.png","up_1793458817020_1.png","up_1793458817020_2.png"]);
   const isPaste = n => n && R.kindOf(n) === "カレンダー" && /貼り付け|blank/.test((n.title || "") + n.file);
   const comp = {}; let cur = null, busy = false;
+  const isYoko = n => !!n && /横|_yoko/.test((n.title || "") + n.file);
+  const YOKO = new Set();
+  const yk = () => isYoko(cur);
   const css = document.createElement("style");
   css.textContent = `.hmn{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--sub)}
 .hmn b{color:var(--ink)}.hmn button{border:0;background:none;color:var(--btn);text-decoration:underline;font:inherit;font-size:14px;cursor:pointer;padding:6px}
@@ -57,6 +60,13 @@
     if (best[1] - best[0] < h * .2) best = [Math.round(h * .03), Math.round(h * .46)];
     return { x: 0, y: best[0] / s, w: bmp.width, h: (best[1] - best[0]) / s };
   }
+  function blankLeft(bmp) {
+    const { g, w, h, s } = gray(bmp, 900), y0 = Math.round(h * .03), y1 = Math.round(h * .97);
+    let xe = Math.round(w * .5);
+    for (let x = Math.round(w * .2); x < w; x++) { let dark = 0; for (let y = y0; y < y1; y++) if (g[y * w + x] < 170) dark++; if (dark > 1) { xe = x; break; } }
+    const gap = Math.round(w * .02);
+    return { x: 0, y: 0, w: Math.max(w * .3, xe - gap) / s, h: bmp.height };
+  }
   function trim(bmp) {
     const of = window.rekupuriOwnFrame && window.rekupuriOwnFrame(bmp);
     if (of) { const [x0, y0, x1, y1] = of.box; return { x: x0, y: y0, w: x1 - x0, h: y1 - y0, own: true }; }
@@ -71,9 +81,10 @@
   }
   async function build(cal, nu) {
     const [cb, nb] = await Promise.all([blobOf(cal.file, cal.v), blobOf(nu.file, nu.v)]);
-    if (nb.height >= nb.width) { TATE.add(nu.file); throw new Error("tate"); }
-    const A = blankArea(cb), T = trim(nb), W = cb.width, H = cb.height;
-    const eg = W * .012 + W * .0018, px = eg, ptop = Math.max(0, eg - A.y) || Math.min(W * .012, A.h * .03), pbot = Math.min(W * .014, A.h * .025);
+    if (isYoko(cal)) { if (nb.width > nb.height) { YOKO.add(nu.file); throw new Error("yoko"); } }
+    else if (nb.height >= nb.width) { TATE.add(nu.file); throw new Error("tate"); }
+    const A = isYoko(cal) ? blankLeft(cb) : blankArea(cb), T = trim(nb), W = cb.width, H = cb.height;
+    const eg = W * .012 + W * .0018, Y = isYoko(cal), px = eg, ptop = Y ? H * .036 : (Math.max(0, eg - A.y) || Math.min(W * .012, A.h * .03)), pbot = Y ? H * .036 : Math.min(W * .014, A.h * .025);
     const bw = A.w - px * 2, bh = A.h - ptop - pbot;
     let sc = Math.min(bw / T.w, bh / T.h), cut = T.own ? 1 : 1.06;
     sc = Math.min(sc * cut, Math.max(bw / T.w, bh / T.h));
@@ -107,14 +118,14 @@
       f.innerHTML = `<p class="hmn">はめ込み中：<b>${esc(c.nu.title)}</b><button type="button" data-hoff>外して元に戻す</button></p>
 <div class="row2${R.PT ? " r3" : ""}"><button class="btn o" data-hame>${ico("pen", 18)}別の塗り絵にする</button><button class="btn p" data-hsave>${ico("down", 19)}保存する</button>${R.PT ? `<button class="btn ptb" data-hprint>${ico("print", 17)}直接印刷する</button>` : ""}</div>`;
     } else {
-      f.insertAdjacentHTML("afterbegin", `<button class="btn hmb" data-hame>${ico("pen", 19)}好きな塗り絵をはめ込む</button><p class="note">横向きの塗り絵を、上の空白にぴったり入れて保存・印刷できます</p>`);
+      f.insertAdjacentHTML("afterbegin", `<button class="btn hmb" data-hame>${ico("pen", 19)}好きな塗り絵をはめ込む</button><p class="note">${isYoko(n) ? "縦向きの塗り絵を、左の空白" : "横向きの塗り絵を、上の空白"}にぴったり入れて保存・印刷できます</p>`);
     }
   };
 
   /* ---------- picker ---------- */
   let pk = null, shown = 40;
   const SEAS = ["春", "夏", "秋", "冬", "通年"];
-  const pool = () => R.LIST.filter(x => R.kindOf(x) === "塗り絵" && !TATE.has(x.file));
+  const pool = () => R.LIST.filter(x => R.kindOf(x) === "塗り絵" && (yk() ? !YOKO.has(x.file) : !TATE.has(x.file)));
   function list() {
     const q = (pk.querySelector("[name=q]").value || "").trim(), se = pk.querySelector("[name=se]").value, fv = pk.querySelector("[name=fv]").checked;
     return pool().filter(x => (!se || x.season === se) && (!fv || R.isFav(x.file)) && (!q || ((x.title || "") + " " + (x.genre || "")).indexOf(q) >= 0));
@@ -122,14 +133,15 @@
   function draw() {
     const L = list(), g = pk.querySelector(".hg");
     pk.querySelector(".cnt").textContent = L.length + "枚";
-    g.innerHTML = L.length ? L.slice(0, shown).map(x => `<button class="it" data-hpick="${esc(x.file)}"><img loading="lazy" alt="" src="${R.sthumb(x)}" onload="if(this.naturalHeight>=this.naturalWidth){this.parentNode.style.display='none';window.RK_HTATE&&RK_HTATE('${esc(x.file)}')}">${esc(x.title)}</button>`).join("") + (L.length > shown ? `<button class="btn g more" data-hmore>もっと見る（残り${L.length - shown}枚）</button>` : "")
+    g.innerHTML = L.length ? L.slice(0, shown).map(x => `<button class="it" data-hpick="${esc(x.file)}"><img loading="lazy" alt="" src="${R.sthumb(x)}" onload="${yk() ? `if(this.naturalWidth>this.naturalHeight){this.parentNode.style.display='none';window.RK_HYOKO&&RK_HYOKO('${esc(x.file)}')}` : `if(this.naturalHeight>=this.naturalWidth){this.parentNode.style.display='none';window.RK_HTATE&&RK_HTATE('${esc(x.file)}')}`}">${esc(x.title)}</button>`).join("") + (L.length > shown ? `<button class="btn g more" data-hmore>もっと見る（残り${L.length - shown}枚）</button>` : "")
       : `<p class="emp">見つかりませんでした</p>`;
   }
   window.RK_HTATE = f => TATE.add(f);
+  window.RK_HYOKO = f => YOKO.add(f);
   function openPk() {
     if (pk) pk.remove();
     pk = document.createElement("div"); pk.className = "hm"; pk.setAttribute("role", "dialog"); pk.setAttribute("aria-label", "はめ込む塗り絵を選ぶ");
-    pk.innerHTML = `<div class="hb"><div class="ht"><h2>はめ込む塗り絵を選ぶ<small>横向きの塗り絵だけを表示しています</small></h2><button class="hx" data-hclose aria-label="閉じる">${ico("x", 22)}</button></div>
+    pk.innerHTML = `<div class="hb"><div class="ht"><h2>はめ込む塗り絵を選ぶ<small>${yk() ? "縦" : "横"}向きの塗り絵だけを表示しています</small></h2><button class="hx" data-hclose aria-label="閉じる">${ico("x", 22)}</button></div>
 <div class="hf"><input type="search" name="q" placeholder="塗り絵の名前で探す" enterkeyhint="search"><select name="se" aria-label="季節"><option value="">すべての季節</option>${SEAS.map(s => `<option>${s}</option>`).join("")}</select><label><input type="checkbox" name="fv">お気に入りだけ</label><span class="cnt"></span></div><div class="hg"></div></div>`;
     document.body.appendChild(pk); shown = 40; draw();
     pk.addEventListener("input", () => { shown = 40; draw(); pk.querySelector(".hg").scrollTop = 0; });
@@ -146,7 +158,7 @@
       if (comp[cal.file]) URL.revokeObjectURL(comp[cal.file].url);
       comp[cal.file] = c;
     } catch (e) {
-      R.toast(e.message === "tate" ? "縦向きの塗り絵ははめ込めません" : "はめ込みに失敗しました", e.message === "tate" ? "横向きの塗り絵を選んでください" : "通信状況を確かめて、もう一度お試しください");
+      const m = e.message; R.toast(m === "tate" ? "縦向きの塗り絵ははめ込めません" : m === "yoko" ? "横向きの塗り絵ははめ込めません" : "はめ込みに失敗しました", m === "tate" ? "横向きの塗り絵を選んでください" : m === "yoko" ? "縦向きの塗り絵を選んでください" : "通信状況を確かめて、もう一度お試しください");
     }
     busy = false; if (v) v.classList.remove("hmw");
     if (cur === cal && document.querySelector(".md.on")) R.openMd(cal.file, "l", "hame");
@@ -161,8 +173,8 @@
     const c = comp[cur.file]; if (!c) return;
     const win = window.open("", "_blank"); if (win) win.document.write('<p style="font:16px sans-serif;padding:24px">印刷用のPDFを作成しています…</p>');
     try {
-      const JsPDF = await R.loadPdf(), doc = new JsPDF({ orientation: "p", unit: "mm", format: "a4" });
-      doc.addImage(c.jpg, "JPEG", 0, 0, 210, 297); doc.setProperties({ title: cur.title + "（" + c.nu.title + "）" }); doc.autoPrint();
+      const JsPDF = await R.loadPdf(), doc = new JsPDF({ orientation: yk() ? "l" : "p", unit: "mm", format: "a4" });
+      if (yk()) doc.addImage(c.jpg, "JPEG", 0, 0, 297, 210); else doc.addImage(c.jpg, "JPEG", 0, 0, 210, 297); doc.setProperties({ title: cur.title + "（" + c.nu.title + "）" }); doc.autoPrint();
       const url = URL.createObjectURL(doc.output("blob")); if (win) win.location.href = url; else window.open(url, "_blank");
       R.markPrinted(cur.file); R.logSave(cur.file, "hame", { hm: c.nu.file, pr: "1" }); R.refreshCard(cur.file);
       R.toast("印刷画面を開きました", "A4サイズで印刷してください");

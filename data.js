@@ -1276,6 +1276,7 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー3", file: "calendar_2026_12_3.png", sample: "calendar_2026_12_3_sample.jpg", added: "2026-11", v: "1793672423986" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー4", file: "calendar_2026_12_4.png", sample: "calendar_2026_12_4_sample.jpg", added: "2026-11", v: "1793672423986" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー（貼り付け用）", file: "calendar_2026_12_blank.png", added: "2026-11", v: "1793672423986" },
+  { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー（貼り付け用・横）", file: "calendar_2026_12_blank_yoko.png", added: "2026-11", v: "1795307553293" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー5", file: "calendar_2026_12_5.png", sample: "calendar_2026_12_5_sample.jpg", added: "2026-11", v: "1793672423986" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー6", file: "calendar_2026_12_6.png", sample: "calendar_2026_12_6_sample.jpg", added: "2026-11", v: "1793672423986" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー7", file: "calendar_2026_12_7.png", sample: "calendar_2026_12_7_sample.jpg", added: "2026-11", v: "1793672423986" },
