@@ -1279,6 +1279,7 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー6", file: "calendar_2026_12_6.png", sample: "calendar_2026_12_6_sample.jpg", added: "2026-11", v: "1793672423986" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー7", file: "calendar_2026_12_7.png", sample: "calendar_2026_12_7_sample.jpg", added: "2026-11", v: "1793672423986" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー8", file: "calendar_2026_12_8b.png", sample: "calendar_2026_12_8b_sample.jpg", added: "2026-11", v: "1793704765606" },
+  { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー9（横）", file: "calendar_2026_12_9_yoko.png", added: "2026-11", v: "1795308406096" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー（貼り付け用・横）", file: "calendar_2026_12_blank_yoko.png", added: "2026-11", v: "1795307553293" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー（貼り付け用）", file: "calendar_2026_12_blank.png", added: "2026-11", v: "1793672423986" },
   { season: "冬", genre: "風物詩", title: "火鉢のある冬の部屋", diff: "中級", file: "fuyu_hibachi_heya_chu.png", sample: "fuyu_hibachi_heya_chu_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
