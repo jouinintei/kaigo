@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: r2-sync
+  group: yokoku
   cancel-in-progress: false
 
 permissions:
