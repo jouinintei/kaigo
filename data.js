@@ -1617,4 +1617,6 @@ window.NURIE_LIST = [
   { season: "冬", genre: "人物", title: "ハンドベルの演奏", diff: "中級", file: "handbell_chu.png", sample: "handbell_chu_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "ハンドベルを鳴らす二人。テーブルにはベルが並び、小さなツリーも飾られています。", req: true, v: "1795327256493" },
   { season: "冬", genre: "人物", title: "おばあちゃんとクッキー作り", diff: "中級", file: "cookie_bake_chu.png", sample: "cookie_bake_chu_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "おばあちゃんと孫で、星やツリーの形のクッキーに飾りつけ。", req: true, v: "1795327256494" },
   { season: "冬", genre: "風景", title: "クリスマスイブの居間", diff: "上級", file: "xmas_ibu_ima_jo.png", sample: "xmas_ibu_ima_jo_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "暖炉に靴下、大きなツリーとプレゼント。猫が眠るクリスマスイブの居間です。", req: true, v: "1795327256495" },
+  { season: "冬", genre: "風物詩", title: "湯呑みを包む手", diff: "初級", file: "yunomi_te_sho.png", sample: "yunomi_te_sho_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "温かい湯呑みを両手でそっと包んで。小皿にはみかんが二つ。", v: "1795332291971" },
+  { season: "冬", genre: "風物詩", title: "雪見障子", diff: "中級", file: "yukimi_shoji_chu.png", sample: "yukimi_shoji_chu_sample.jpg", added: "2026-11", date: "2026-11-22", desc: "雪見障子のガラス越しに見る雪の庭。手前には火鉢と鉄瓶、湯呑みが置かれています。", v: "1795332291972" },
 ];
