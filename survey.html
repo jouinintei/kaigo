@@ -7,7 +7,7 @@
 <title>アンケート回答｜介護のレクプリ</title>
 <style>
   body{margin:0;font-family:system-ui,-apple-system,"Hiragino Sans","Yu Gothic UI",sans-serif;background:#f7f5f2;color:#241f1a}
-  .wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+  .wrap{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:22px;margin:0 0 4px}
   .sub{color:#8d8478;font-size:13px;margin:0 0 18px}
   .gate{background:#fff;border:1px solid #e7e2dc;border-radius:12px;padding:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -33,20 +33,26 @@
   <div class="gate" id="gate"><input type="password" id="k" placeholder="保存ログのキー"><button id="go">表示する</button><span class="err" id="err"></span></div>
   <div id="app" hidden>
     <div class="cards" id="sum"></div>
-    <div class="box" style="margin-bottom:12px"><h2>ほしい題材（自由記述）</h2><div id="wants"></div></div>
-    <table><thead><tr><th>日時</th><th>素材</th><th>使う場所</th><th>人数</th><th>ほしい題材</th></tr></thead><tbody id="rows"></tbody></table>
+    <div class="cards" id="texts"></div>
+    <table><thead><tr><th>日時</th><th>素材</th><th>使う場所</th><th>ご様子</th><th>知ったきっかけ</th><th>難しさ</th><th>線の太さ</th><th>ほしい題材</th><th>よかった塗り絵</th></tr></thead><tbody id="rows"></tbody></table>
   </div>
 </div>
 <script>
 (function(){
   var KEY_STORE = "rekupuri_savelog_key";
   var esc = function(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
+  var Q = [["place","使う場所"],["state","使う方のご様子（複数）"],["from","レクプリを知ったきっかけ"],["diff","難しさ"],["line","線の太さ"]];
+  function val(x, k){ var v = [].concat(x[k] || []); return v.map(function(o){ return o === "その他" && x[k + "_o"] ? "その他（" + x[k + "_o"] + "）" : o; }).join("、"); }
   function bars(title, items, k){
-    var c = {}; items.forEach(function(x){ c[x[k]] = (c[x[k]] || 0) + 1; });
+    var c = {}; items.forEach(function(x){ [].concat(x[k] || []).forEach(function(v){ c[v] = (c[v] || 0) + 1; }); });
     var e = Object.keys(c).sort(function(a,b){ return c[b] - c[a]; }), mx = Math.max.apply(null, e.map(function(x){ return c[x]; }).concat([1]));
-    return '<div class="box"><h2>' + title + '</h2>' + e.map(function(x){
-      return '<div class="bar"><span>' + esc(x) + '</span><i style="width:' + Math.round(c[x] / mx * 160) + 'px"></i><b>' + c[x] + '</b></div>';
-    }).join("") + '</div>';
+    return '<div class="box"><h2>' + title + '</h2>' + (e.length ? e.map(function(x){
+      return '<div class="bar"><span>' + esc(x) + '</span><i style="width:' + Math.round(c[x] / mx * 140) + 'px"></i><b>' + c[x] + '</b></div>';
+    }).join("") : '<span style="color:#8d8478">まだありません</span>') + '</div>';
+  }
+  function texts(title, items, f){
+    var w = []; items.forEach(function(x){ var t = f(x); if (t) w.push(t); });
+    return '<div class="box"><h2>' + title + '</h2>' + (w.length ? w.map(function(t){ return '<div style="padding:4px 0;border-bottom:1px solid #f0ebe5">' + esc(t) + '</div>'; }).join("") : '<span style="color:#8d8478">まだありません</span>') + '</div>';
   }
   function load(key){
     document.getElementById("err").textContent = "読み込み中…";
@@ -57,15 +63,14 @@
         var it = (j.items || []).slice().reverse();
         document.getElementById("gate").hidden = true;
         document.getElementById("app").hidden = false;
-        document.getElementById("sum").innerHTML =
-          '<div class="box"><h2>回答数</h2><div style="font-size:32px;font-weight:700">' + it.length + '</div></div>' +
-          bars("使う場所", it, "place") + bars("人数", it, "size") + bars("先行保存された素材", it, "title");
-        var w = it.filter(function(x){ return x.want; });
-        document.getElementById("wants").innerHTML = w.length ? w.map(function(x){ return '<div style="padding:4px 0;border-bottom:1px solid #f0ebe5">' + esc(x.want) + '</div>'; }).join("") : '<span style="color:#8d8478">まだありません</span>';
+        document.getElementById("sum").innerHTML = '<div class="box"><h2>回答数</h2><div style="font-size:32px;font-weight:700">' + it.length + '</div></div>' +
+          Q.map(function(q){ return bars(q[1], it, q[0]); }).join("") + bars("先行保存された素材", it, "title");
+        document.getElementById("texts").innerHTML = texts("次にほしい題材", it, function(x){ return x.want; }) + texts("特によかった塗り絵", it, function(x){ return x.good; }) +
+          texts("「その他」に書かれた内容", it, function(x){ return Q.map(function(q){ return x[q[0] + "_o"] ? q[1] + "：" + x[q[0] + "_o"] : ""; }).filter(Boolean).join(" ／ "); });
         document.getElementById("rows").innerHTML = it.map(function(x){
           var d = new Date(new Date(x.t).getTime() + 9 * 3600e3).toISOString().slice(0, 16).replace("T", " ");
-          return "<tr><td>" + d + "</td><td>" + esc(x.title || x.f) + "</td><td>" + esc(x.place) + "</td><td>" + esc(x.size) + "</td><td>" + esc(x.want || "") + "</td></tr>";
-        }).join("") || '<tr><td colspan="5">まだ回答はありません</td></tr>';
+          return "<tr><td>" + d + "</td><td>" + esc(x.title || x.f) + "</td>" + Q.map(function(q){ return "<td>" + esc(val(x, q[0])) + "</td>"; }).join("") + "<td>" + esc(x.want || "") + "</td><td>" + esc(x.good || "") + "</td></tr>";
+        }).join("") || '<tr><td colspan="9">まだ回答はありません</td></tr>';
       })
       .catch(function(e){ document.getElementById("gate").hidden = false; document.getElementById("err").textContent = e.message; });
   }

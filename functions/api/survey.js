@@ -6,9 +6,13 @@
 const FILE_PATH = "data/survey.json";
 const KEEP = 5000;
 const OPT = {
-  place: ["デイサービス", "入所施設（特養・老健など）", "グループホーム", "病院", "ご家庭", "その他"],
-  size: ["1〜5人", "6〜15人", "16人以上", "ひとりで"]
+  place: ["デイサービス・デイケア", "特養・老健などの入所施設", "グループホーム", "有料老人ホーム・サ高住", "病院", "ご家庭", "その他"],
+  state: ["ほぼご自分で塗れる", "声かけ・見守りがあれば塗れる", "手伝いが必要", "その他"],
+  from: ["Google・Yahoo!などの検索", "Instagram", "note", "職場の人・知り合いから", "職場のパソコンのお気に入りなど", "その他"],
+  diff: ["ちょうどいい", "もっと簡単なものを増やしてほしい", "もっと難しいものを増やしてほしい", "いろいろな難しさがほしい", "その他"],
+  line: ["今くらいでいい", "もっと太い方がいい", "もっと細くていい", "その他"]
 };
+const MULTI = { state: 1 };
 const enc = new TextEncoder();
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
 async function hmac(key, msg) {
@@ -72,11 +76,20 @@ export async function onRequest({ request, env }) {
   try { b = await request.json(); } catch (e) {}
   if (!b || typeof b.f !== "string" || !b.a) return json({ ok: false }, 400);
   const a = b.a || {};
-  if (!OPT.place.includes(a.place) || !OPT.size.includes(a.size)) return json({ ok: false, error: "answer" }, 400);
+  const rec = { t: new Date().toISOString() };
+  for (const k of Object.keys(OPT)) {
+    let v = a[k];
+    if (MULTI[k]) { if (!Array.isArray(v)) return json({ ok: false, error: "answer" }, 400); v = [...new Set(v)].filter(x => OPT[k].includes(x)); if (!v.length) return json({ ok: false, error: "answer" }, 400); }
+    else if (!OPT[k].includes(v)) return json({ ok: false, error: "answer" }, 400);
+    rec[k] = v;
+    if ([].concat(v).includes("その他")) rec[k + "_o"] = String(a[k + "_o"] || "").trim().slice(0, 80);
+  }
+  rec.want = String(a.want || "").trim().slice(0, 100);
+  rec.good = String(a.good || "").trim().slice(0, 100);
   const it = await findPre(request, b.f.slice(0, 200));
   if (!it) return json({ ok: false, error: "not_pre" }, 404);
+  rec.f = it.file; rec.title = it.title;
 
-  const rec = { t: new Date().toISOString(), f: it.file, title: it.title, place: a.place, size: a.size, want: String(a.want || "").trim().slice(0, 100) };
   if (env && env.GITHUB_TOKEN && env.MEMBER_REPO) {
     for (let i = 0; i < 3; i++) {
       try {

@@ -354,26 +354,42 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
   }
 
   /* ---------- 予告：アンケート ---------- */
+  // [キー, 質問, 選択肢, 複数選べるか]。「その他」を選ぶと記述欄が出る
   const SV = [
-    ["place", "どちらでお使いですか？", ["デイサービス", "入所施設（特養・老健など）", "グループホーム", "病院", "ご家庭", "その他"]],
-    ["size", "一度に何人くらいで使いますか？", ["1〜5人", "6〜15人", "16人以上", "ひとりで"]]
+    ["place", "どちらでお使いですか？", ["デイサービス・デイケア", "特養・老健などの入所施設", "グループホーム", "有料老人ホーム・サ高住", "病院", "ご家庭", "その他"], 0],
+    ["state", "使う方はどんなご様子ですか？（あてはまるものを全部）", ["ほぼご自分で塗れる", "声かけ・見守りがあれば塗れる", "手伝いが必要", "その他"], 1],
+    ["from", "レクプリを何で知りましたか？", ["Google・Yahoo!などの検索", "Instagram", "note", "職場の人・知り合いから", "職場のパソコンのお気に入りなど", "その他"], 0],
+    ["diff", "今の塗り絵の難しさはどうですか？", ["ちょうどいい", "もっと簡単なものを増やしてほしい", "もっと難しいものを増やしてほしい", "いろいろな難しさがほしい", "その他"], 0],
+    ["line", "線の太さはどうですか？", ["今くらいでいい", "もっと太い方がいい", "もっと細くていい", "その他"], 0]
   ];
+  const SVT = [["want", "次にほしい題材があれば教えてください（任意）", "例：お月見、昔のおもちゃ"], ["good", "特によかった塗り絵があれば教えてください（任意）", "例：雪見障子、さんまの塩焼き"]];
   function showSurvey(file) {
     const n = ALL.find(x => x.file === file); if (!n) return;
     if (!document.querySelector(".md.on") || mdN !== n) openMd(file);
     const box = document.querySelector(".md .box");
     box.innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">アンケート</h2><div class="meta">${esc(n.title)}（${openLabel(n)}）</div></div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
-<div class="scr"><form class="svf" data-f="${esc(file)}"><p class="svlead">3問だけお答えください。送信すると、すぐに保存・印刷できるようになります。</p>
-${SV.map(([k, q, opts], i) => `<fieldset><legend>${i + 1}. ${q}</legend><div class="svo">${opts.map(o => `<label><input type="radio" name="${k}" value="${esc(o)}" required><span>${esc(o)}</span></label>`).join("")}</div></fieldset>`).join("")}
-<fieldset><legend>3. 次にほしい${kindOf(n) === "脳トレ" ? "脳トレ" : "塗り絵"}の題材があれば教えてください（任意）</legend><input type="text" name="want" maxlength="100" placeholder="例：お月見、昔のおもちゃ"></fieldset>
+<div class="scr"><form class="svf" data-f="${esc(file)}" onsubmit="return false"><p class="svlead">選ぶだけの質問が5つです。送信すると、すぐに保存・印刷できるようになります。</p>
+${SV.map(([k, q, opts, multi], i) => `<fieldset data-k="${k}"><legend>${i + 1}. ${q}</legend><div class="svo">${opts.map(o => `<label><input type="${multi ? "checkbox" : "radio"}" name="${k}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div><input type="text" class="svother" name="${k}_o" maxlength="80" placeholder="その他の内容" hidden></fieldset>`).join("")}
+${SVT.map(([k, q, ph], i) => `<fieldset><legend>${SV.length + i + 1}. ${q}</legend><input type="text" name="${k}" maxlength="100" placeholder="${ph}"></fieldset>`).join("")}
 <p class="sverr" role="alert"></p></form></div>
 <div class="mdf"><div class="row2"><button class="btn g" data-svback="${esc(file)}">戻る</button><button class="btn p" data-svsend>送信して先行保存</button></div></div>`;
+    box.querySelector(".svf").addEventListener("change", e => {
+      const fs = e.target.closest("fieldset[data-k]"); if (!fs) return;
+      const o = fs.querySelector(".svother"), on = !!fs.querySelector('input[value="その他"]:checked');
+      o.hidden = !on; if (on) o.focus();
+    });
   }
   async function sendSurvey(btn) {
     const fm = document.querySelector(".md .svf"); if (!fm) return;
     const er = fm.querySelector(".sverr"), file = fm.dataset.f, a = {};
-    for (const [k] of SV) { const v = fm.querySelector(`input[name="${k}"]:checked`); if (!v) { er.textContent = "1と2を選んでください"; return; } a[k] = v.value; }
-    a.want = (fm.want.value || "").trim().slice(0, 100);
+    for (const [k, q, , multi] of SV) {
+      const v = [...fm.querySelectorAll(`input[name="${k}"]:checked`)].map(x => x.value);
+      if (!v.length) { er.textContent = `「${q.replace(/（.*）/, "")}」を選んでください`; fm.querySelector(`fieldset[data-k="${k}"]`).scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+      const o = (fm.querySelector(`input[name="${k}_o"]`).value || "").trim().slice(0, 80);
+      if (v.includes("その他") && !o) { er.textContent = "「その他」の内容を書いてください"; fm.querySelector(`input[name="${k}_o"]`).focus(); return; }
+      a[k] = multi ? v : v[0]; if (v.includes("その他")) a[k + "_o"] = o;
+    }
+    for (const [k] of SVT) a[k] = (fm.querySelector(`input[name="${k}"]`).value || "").trim().slice(0, 100);
     btn.disabled = true; btn.textContent = "送信中…"; er.textContent = "";
     try {
       const r = await fetch("/api/survey", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ f: file, a }) });

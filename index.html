@@ -40,7 +40,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/rk.css?v=1795362353">
+<link rel="stylesheet" href="/rk.css?v=1795362736">
 <style>
 .hero{padding:72px 0 64px;background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:6px 6px}
 .hero .wrap{display:flex;gap:44px;align-items:stretch}
@@ -320,7 +320,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1795362353"></script>
+<script src="/rk.js?v=1795362736"></script>
 <script src="/frame.js?v=19"></script>
 <script src="/hame.js?v=8"></script>
 <script>
@@ -438,7 +438,7 @@
   const SERP=/^ご当地名産めぐり/,newsU=[];{const seen=new Set();nu.forEach(n=>{if(SERP.test(n.title)){if(seen.has("g"))return;seen.add("g");const g=nu.filter(x=>SERP.test(x.title)),m=g.filter(x=>!/日本地図/.test(x.title)),top=m.find(x=>x.diff==="上級")||m[0]||n,ps=[...new Set(m.filter(x=>RK.isNew(x)).map(x=>String(x.title).replace(SERP,"").replace(/（.*?）/g,"").trim()))],pf=ps.length?ps.slice(0,3).join("・")+(ps.length>3?"など":""):"";newsU.push({ser:"ご当地名産めぐり",n:top,cnt:g.length,pf});}else newsU.push({n});});}
   const serRec=u=>`<a class="rec" href="${gq("ser="+encodeURIComponent(u.ser))}"><div class="card c"><img loading="lazy" alt="" ${RK.srcs(u.n)}><span class="lbl always">シリーズ</span>${u.pf?'<span style="position:absolute;left:16px;top:16px;background:#fff;border:1.5px solid var(--acc);color:var(--btn);font-size:14px;font-weight:700;padding:0 8px;border-radius:6px;line-height:24px">NEW</span>':""}${u.n.sample?`<img class="smp" alt="" loading="lazy" src="${RK.sthumb(u.n,u.n.sample)}">`:""}</div><b>${esc(u.ser)}</b><span class="m">${esc("シリーズ ・ 全"+u.cnt+"枚")}</span></a>`;
   document.getElementById("news").innerHTML=newsU.slice(0,12).map(u=>u.ser?serRec(u):rec(u.n)).join("")+mtile(gq("sort=new"),"新着順で<br>もっと見る");
-  {const pre=(RK.PRE||[]).slice(0,5);if(pre.length){document.getElementById("yoteiList").innerHTML=pre.map(n=>rec(n).replace(/<span class="lbl [^"]*">[^<]*<\/span>/,`<span class="lbl" style="background:#c0392b;color:#fff;border-color:#c0392b">${RK.esc(RK.openLabel(n))}</span>`)).join("");document.getElementById("yotei").hidden=false;}}
+  {const pre=RK.PRE||[];if(pre.length){document.getElementById("yoteiList").innerHTML=pre.map(n=>rec(n).replace(/<span class="lbl [^"]*">[^<]*<\/span>/,`<span class="lbl" style="background:#c0392b;color:#fff;border-color:#c0392b">${RK.esc(RK.openLabel(n))}</span>`)).join("");document.getElementById("yotei").hidden=false;}}
   carInit();
   const deco=()=>document.querySelectorAll(".rec[data-open]").forEach(r=>{if(r.dataset.dc)return;r.dataset.dc=1;const n=LIST.find(x=>x.file===r.dataset.open);if(!n||!n.sample)return;const c=r.querySelector(".card");if(c)c.insertAdjacentHTML("beforeend",`<img class="smp" alt="" loading="lazy" src="${RK.sthumb(n,n.sample)}">`);});
   deco();new MutationObserver(deco).observe(document.querySelector("main"),{childList:true,subtree:true});
