@@ -374,13 +374,17 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
 <div class="scr"><form class="svf" data-f="${esc(file)}" onsubmit="return false"><p class="svlead">選ぶだけの質問が5つです。送信すると「予定」の一覧に移り、予定の素材をすべて保存・印刷できます（3時間）。</p>
 ${SV.map(([k, q, opts, multi], i) => `<fieldset data-k="${k}"><legend>${i + 1}. ${q}</legend><div class="svo">${opts.map(o => `<label><input type="${multi ? "checkbox" : "radio"}" name="${k}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div><input type="text" class="svother" name="${k}_o" maxlength="80" placeholder="その他の内容" hidden></fieldset>`).join("")}
 ${SVT.map(([k, q, ph], i) => `<fieldset><legend>${SV.length + i + 1}. ${q}</legend><input type="text" name="${k}" maxlength="100" placeholder="${ph}"></fieldset>`).join("")}
-<p class="sverr" role="alert"></p></form></div>
-<div class="mdf"><div class="row2"><button class="btn g" data-svback="${esc(file)}">戻る</button><button class="btn p" data-svsend>送信して先行保存</button></div></div>`;
-    box.querySelector(".svf").addEventListener("change", e => {
-      const fs = e.target.closest("fieldset[data-k]"); if (!fs) return;
-      const o = fs.querySelector(".svother"), on = !!fs.querySelector('input[value="その他"]:checked');
-      o.hidden = !on; if (on) o.focus();
+<p class="svhint">1〜5の質問すべてにチェックを入れると、送信できるようになります。</p><p class="sverr" role="alert"></p></form></div>
+<div class="mdf"><div class="row2"><button class="btn g" data-svback="${esc(file)}">戻る</button><button class="btn p" data-svsend disabled>送信して先行保存</button></div></div>`;
+    const fm = box.querySelector(".svf"), sb = box.querySelector("[data-svsend]");
+    const ready = () => SV.every(([k]) => { const fs = fm.querySelector(`fieldset[data-k="${k}"]`); if (!fs.querySelector("input:checked")) return false; return !fs.querySelector('input[value="その他"]:checked') || !!fs.querySelector(".svother").value.trim(); });
+    const upd = () => { sb.disabled = !ready(); const er = fm.querySelector(".sverr"); if (er) er.textContent = sb.disabled ? "" : ""; fm.querySelector(".svhint").hidden = !sb.disabled; };
+    fm.addEventListener("change", e => {
+      const fs = e.target.closest("fieldset[data-k]");
+      if (fs && e.target.type !== "text") { const o = fs.querySelector(".svother"), on = !!fs.querySelector('input[value="その他"]:checked'); o.hidden = !on; if (on) o.focus(); }
+      upd();
     });
+    fm.addEventListener("input", upd);
   }
   async function sendSurvey(btn) {
     const fm = document.querySelector(".md .svf"); if (!fm) return;
