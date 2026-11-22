@@ -335,18 +335,21 @@
         p = Math.round(Math.min(W, H) * CFG.pad);
       }
     }
-    var aiw = W - 2 * mg - 2 * L - 2 * p, aih = H - 2 * mg - 2 * L - 2 * p;
+    var aiw = iw - 2 * p, aih = ih - 2 * p;
     var s3 = Math.min(aiw / sw, aih / sh);
     var mw = Math.round(sw * s3), mh = Math.round(sh * s3);
-    iw = mw + 2 * p; ih = mh + 2 * p;
-    fw = iw + 2 * L; fh = ih + 2 * L;
-    fx = Math.round((W - fw) / 2); fy = Math.round((H - fh) / 2);
-    ix = fx + L; iy = fy + L;
+    var dx = ix + (iw - mw) / 2, dy = iy + (ih - mh) / 2;
+    if (edge) {
+      // 端まで描いた絵：枠を絵の端ぎりぎりに合わせる（中央にまとまった絵はA4いっぱいの枠のまま）
+      iw = mw; ih = mh; fw = iw + 2 * L; fh = ih + 2 * L;
+      fx = Math.round((W - fw) / 2); fy = Math.round((H - fh) / 2);
+      ix = fx + L; iy = fy + L; dx = ix; dy = iy;
+    }
 
     ctx.save();
     roundRect(ctx, fx, fy, fw, fh, CFG.radius);
     ctx.clip();
-    put(ctx, sx, sy, sw, sh, ix + p, iy + p, mw, mh);
+    put(ctx, sx, sy, sw, sh, dx, dy, mw, mh);
     ctx.restore();
 
     ctx.lineWidth = L;
