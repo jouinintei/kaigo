@@ -38,7 +38,10 @@
   // 保存・印刷はアンケートに答えたときだけ（端末には覚えない。ページを開き直したらもう一度）
   const isPre = n => !!n && n.pre === 1;
   const LIST = ALL.filter(n => !isPre(n)), PRE = ALL.filter(isPre);
-  const PASS = {};
+  // アンケートに1回答えると、予定の素材すべてを保存・印刷できる合言葉が #pass= で渡される（3時間有効・端末には残さない）
+  let PASSALL = "";
+  try { const m = location.hash.match(/(?:^#|&)pass=([0-9]+\.[0-9a-f]+)/); if (m && +m[1].split(".")[0] > Date.now()) { PASSALL = m[1]; history.replaceState(history.state, "", location.pathname + location.search); } } catch (e) {}
+  const PASS = new Proxy({}, { get: () => PASSALL });
   const openLabel = n => { const m = String(n.open || "").match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? `${+m[1]}月${+m[2]}日公開予定` : "近日公開予定"; };
 
   const J = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } };
@@ -348,7 +351,7 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     if (isPre(n)) {
       const box = document.querySelector(".md .box"), ttl = box.querySelector(".tt2 .meta");
       if (ttl) ttl.insertAdjacentHTML("beforeend", ` ・ <b class="pday2">${openLabel(n)}</b>`);
-      if (!PASS[n.file]) { const mf = box.querySelector(".mdf"); if (mf) mf.innerHTML = `<div class="premd"><p>この${kindOf(n)}は作成中です（${openLabel(n)}）。<br>かんたんなアンケート（3問）に答えると、ひと足先に保存・印刷できます。</p><button class="btn p" data-pre="${esc(n.file)}">${ico("pen", 19)}アンケートに答えて先行保存</button></div>`; }
+      if (!PASS[n.file]) { const mf = box.querySelector(".mdf"); if (mf) mf.innerHTML = `<div class="premd"><p>この${kindOf(n)}は作成中です（${openLabel(n)}）。<br>かんたんなアンケートに1回答えると、予定の素材をすべてひと足先に保存・印刷できます。</p><button class="btn p" data-pre="${esc(n.file)}">${ico("pen", 19)}アンケートに答えて先行保存</button></div>`; }
     }
     if (window.RK_MDHOOK) { try { window.RK_MDHOOK(n, mdTab); } catch (e) {} }
   }
@@ -368,7 +371,7 @@ ${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="fon
     if (!document.querySelector(".md.on") || mdN !== n) openMd(file);
     const box = document.querySelector(".md .box");
     box.innerHTML = `<div class="top"><div class="tt2"><h2 id="mdT">アンケート</h2><div class="meta">${esc(n.title)}（${openLabel(n)}）</div></div><button class="mdx" data-close aria-label="閉じる">${ico("x", 22)}</button></div>
-<div class="scr"><form class="svf" data-f="${esc(file)}" onsubmit="return false"><p class="svlead">選ぶだけの質問が5つです。送信すると、すぐに保存・印刷できるようになります。</p>
+<div class="scr"><form class="svf" data-f="${esc(file)}" onsubmit="return false"><p class="svlead">選ぶだけの質問が5つです。送信すると「予定」の一覧に移り、予定の素材をすべて保存・印刷できます（3時間）。</p>
 ${SV.map(([k, q, opts, multi], i) => `<fieldset data-k="${k}"><legend>${i + 1}. ${q}</legend><div class="svo">${opts.map(o => `<label><input type="${multi ? "checkbox" : "radio"}" name="${k}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div><input type="text" class="svother" name="${k}_o" maxlength="80" placeholder="その他の内容" hidden></fieldset>`).join("")}
 ${SVT.map(([k, q, ph], i) => `<fieldset><legend>${SV.length + i + 1}. ${q}</legend><input type="text" name="${k}" maxlength="100" placeholder="${ph}"></fieldset>`).join("")}
 <p class="sverr" role="alert"></p></form></div>
@@ -395,10 +398,9 @@ ${SVT.map(([k, q, ph], i) => `<fieldset><legend>${SV.length + i + 1}. ${q}</lege
       const r = await fetch("/api/survey", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ f: file, a }) });
       const j = await r.json();
       if (!j || !j.ok || !j.t) throw new Error("x");
-      PASS[file] = j.t;
-      document.querySelectorAll(`article.pre[data-f="${CSS.escape(file)}"]`).forEach(ar => { ar.outerHTML = card(mdN); });
-      renderMd();
-      toast("ありがとうございました", "保存・印刷できるようになりました");
+      const n = ALL.find(x => x.file === file), dest = new URL(L(n && kindOf(n) === "脳トレ" ? "noutore" : "nurie"), location.href);
+      dest.searchParams.set("sort", "yotei"); dest.hash = "pass=" + j.t;
+      if (dest.pathname + dest.search === location.pathname + location.search) { location.hash = dest.hash; location.reload(); } else location.href = dest.toString();
     } catch (e) { btn.disabled = false; btn.textContent = "送信して先行保存"; er.textContent = "送信できませんでした。時間をおいてもう一度お試しください"; }
   }
 
@@ -557,5 +559,6 @@ ${hasReq ? `<a class="rqlink" href="${L(b.kind === "脳トレ" ? "noutore" : "nu
   document.addEventListener("click", e => { const t = e.target.closest && e.target.closest("[data-req]"); if (!t) return; e.preventDefault(); openReq(t.dataset.req || "", t.dataset.reqk || ""); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && rqEl) rqClose(); });
 
+  if (PASSALL) setTimeout(() => { try { toast("アンケートありがとうございました", "予定の素材を保存・印刷できます（3時間）"); } catch (e) {} }, 800);
   window.RK = { ALL, PRE, isPre, openLabel, logSave, markUsed, markPrinted, refreshCard, loadPdf, PT, resetHist, isUsed, sthumb, srcs, LIST, kindOf, card, skeleton, header, tabs, footer, ico, esc, thumb, full, isFav, favs, save, toast, updFavCount, openReq, seasonNow, isNew, metaOf, openMd };
 })();

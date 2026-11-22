@@ -103,5 +103,5 @@ export async function onRequest({ request, env }) {
     }
   }
   const exp = Date.now() + 3 * 3600e3;
-  return json({ ok: true, t: await signPass(env, it.file, exp) });
+  return json({ ok: true, t: await signPass(env, "all", exp) });
 }

@@ -72,7 +72,7 @@ export async function onRequest({ request, env }) {
   let ok = !!(it.open && it.open <= todayJst());
   if (!ok && t) {
     const exp = Number(t.split(".")[0]);
-    ok = exp > Date.now() && t === await signPass(env, it.file, exp);
+    ok = exp > Date.now() && t === await signPass(env, "all", exp);
   }
   if (!ok) return no(403, "survey");
 
