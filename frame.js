@@ -319,48 +319,34 @@
         m.aw - 1 - m.box[2] <= m.aw * tol, m.ah - 1 - m.box[3] <= m.ah * tol].filter(Boolean).length >= 2;
     }
 
-    // 端まで描いてある絵でも、上下か左右に白い帯があるときは、枠を絵の範囲に合わせる（引き伸ばし・切り落としをしない）
-    if (edge && m.box) {
-      var gl = m.box[0] / m.aw, gr = (m.aw - 1 - m.box[2]) / m.aw, gt = m.box[1] / m.ah, gb = (m.ah - 1 - m.box[3]) / m.ah;
-      if (Math.max(gl, gr, gt, gb) > 0.01) {
-        var s0 = m.s, nx0 = r[0] + m.box[0] / s0, ny0 = r[1] + m.box[1] / s0, nx1 = r[0] + (m.box[2] + 1) / s0, ny1 = r[1] + (m.box[3] + 1) / s0;
-        r = [nx0, ny0, nx1, ny1]; w = nx1 - nx0; h = ny1 - ny0;
-        var ar = w / h, aiw = W - 2 * mg - 2 * L, aih = H - 2 * mg - 2 * L;
-        if (ar < aiw / aih) { ih = aih; iw = Math.round(aih * ar); } else { iw = aiw; ih = Math.round(aiw / ar); }
-        fw = iw + 2 * L; fh = ih + 2 * L; fx = Math.round((W - fw) / 2); fy = Math.round((H - fh) / 2); ix = fx + L; iy = fy + L;
+    // 絵の範囲（白い帯・余白を除いた部分）を求め、枠はその縦横比に合わせてぎりぎりに引く。
+    // 引き伸ばしも切り落としもしない。
+    var sx = r[0], sy = r[1], sw = w, sh = h, p = 0;
+    if (m.box) {
+      var s = m.s;
+      var bx0 = m.box[0] / s, by0 = m.box[1] / s, bx1 = (m.box[2] + 1) / s, by1 = (m.box[3] + 1) / s;
+      if (edge) {
+        sx = r[0] + bx0; sy = r[1] + by0; sw = bx1 - bx0; sh = by1 - by0;
+      } else {
+        var px = w * 0.004, py = h * 0.004;
+        var ox = Math.max(0, bx0 - px), oy = Math.max(0, by0 - py);
+        sw = Math.min(w, bx1 + px) - ox; sh = Math.min(h, by1 + py) - oy;
+        sx = r[0] + ox; sy = r[1] + oy;
+        p = Math.round(Math.min(W, H) * CFG.pad);
       }
     }
+    var aiw = W - 2 * mg - 2 * L - 2 * p, aih = H - 2 * mg - 2 * L - 2 * p;
+    var s3 = Math.min(aiw / sw, aih / sh);
+    var mw = Math.round(sw * s3), mh = Math.round(sh * s3);
+    iw = mw + 2 * p; ih = mh + 2 * p;
+    fw = iw + 2 * L; fh = ih + 2 * L;
+    fx = Math.round((W - fw) / 2); fy = Math.round((H - fh) / 2);
+    ix = fx + L; iy = fy + L;
+
     ctx.save();
     roundRect(ctx, fx, fy, fw, fh, CFG.radius);
     ctx.clip();
-    if (edge) {
-      var stretch = Math.abs((iw / ih) / (w / h) - 1);
-      if (stretch <= CFG.maxStretch) {
-        put(ctx, r[0], r[1], w, h, ix, iy, iw, ih);
-      } else {
-        var sc = Math.max(iw / w, ih / h);
-        var cut = Math.max(1 - iw / (w * sc), 1 - ih / (h * sc));
-        if (cut > CFG.maxCut) sc = Math.min(iw / w, ih / h);
-        var ew = w * sc, eh = h * sc;
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(ix, iy, iw, ih);
-        ctx.clip();
-        put(ctx, r[0], r[1], w, h, ix + (iw - ew) / 2, iy + (ih - eh) / 2, ew, eh);
-        ctx.restore();
-      }
-    } else {
-      var s = m.s;
-      var bx0 = m.box[0] / s, by0 = m.box[1] / s, bx1 = (m.box[2] + 1) / s, by1 = (m.box[3] + 1) / s;
-      var px = w * 0.004, py = h * 0.004;
-      var sx = Math.max(0, bx0 - px), sy = Math.max(0, by0 - py);
-      var sw = Math.min(w, bx1 + px) - sx, sh = Math.min(h, by1 + py) - sy;
-      var p = Math.round(Math.min(W, H) * CFG.pad);
-      var aw = iw - 2 * p, ah = ih - 2 * p;
-      var s3 = Math.min(aw / sw, ah / sh);
-      var mw = sw * s3, mh = sh * s3;
-      put(ctx, r[0] + sx, r[1] + sy, sw, sh, ix + (iw - mw) / 2, iy + (ih - mh) / 2, mw, mh);
-    }
+    put(ctx, sx, sy, sw, sh, ix + p, iy + p, mw, mh);
     ctx.restore();
 
     ctx.lineWidth = L;
