@@ -8,6 +8,7 @@ on:
       - "data.js"
       - ".github/workflows/r2-sync.yml"
       - ".github/scripts/make_thumbs.py"
+      - ".github/scripts/make_sim.py"
   schedule:
     - cron: "23 * * * *"
   workflow_dispatch:
@@ -64,6 +65,20 @@ jobs:
       - name: Make search readings
         run: |
           .venv/bin/python .github/scripts/make_yomi.py 2> yerr.log || { echo "::error::yomi $(tail -c 500 yerr.log | tr '\n' ' ')"; exit 1; }
+      - name: Make similar-picture list
+        continue-on-error: true
+        run: |
+          .venv/bin/pip install -q numpy > pip2.log 2>&1
+          set +e
+          .venv/bin/python .github/scripts/make_sim.py 2> serr.log
+          code=$?
+          if [ $code -eq 3 ]; then
+            .venv/bin/pip install -q torch --index-url https://download.pytorch.org/whl/cpu >> pip2.log 2>&1
+            .venv/bin/pip install -q open_clip_torch >> pip2.log 2>&1 || { echo "::error::pip $(tail -c 400 pip2.log | tr '\n' ' ')"; exit 1; }
+            .venv/bin/python .github/scripts/make_sim.py 2> serr.log
+            code=$?
+          fi
+          [ $code -eq 0 ] || { echo "::error::sim $(tail -c 500 serr.log | tr '\n' ' ')"; exit 1; }
       - name: Count objects
         run: |
           echo "::notice::local $(ls images | wc -l) / r2 $(aws s3 ls "s3://$R2_BUCKET/images/" --endpoint-url "$R2_ENDPOINT" | wc -l)"

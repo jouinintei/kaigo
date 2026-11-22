@@ -269,23 +269,28 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
 
   /* ---------- modal ---------- */
   let mdN = null, mdTab = "l", zoom = 100, mdPg = -1;
+  // 図柄の近さ（R2 の search/sim.json：各絵に図柄が近い順の一覧）
+  let SIM = {};
+  try { fetch("https://img.rekupuri.com/search/sim.json", { mode: "cors" }).then(r => r.ok ? r.json() : null).then(j => { if (j) SIM = j; }).catch(() => {}); } catch (e) {}
   function related(n) {
     const k = kindOf(n), pool = LIST.filter(x => x.file !== n.file && kindOf(x) === k);
-    // 名前が似ているものを最優先（同じ名前・名前の一部が同じ → ジャンル → 季節 → 難しさ）
+    // 1. 名前が近い（同じ名前 → 名前の一部が同じ → 同じ漢字） 2. ジャンルが同じ 3. 図柄が近い
     const nm = t => String(t).replace(/[（(][^）)]*[）)]/g, "").replace(/その[0-9０-９一二三四五六七八九十]+|[0-9０-９]+$/g, "").replace(/[ 　・、。！？!?〜~ーのと]/g, "");
     const bg = t => { const a = new Set(); for (let i = 0; i < t.length - 1; i++) a.add(t.slice(i, i + 2)); return a; };
-    const KJ = /[\u4e00-\u9fff]/, SK = "春夏秋冬";
+    const KJ = /[\u4e00-\u9fff]/, SK = "春夏秋冬一二三四五六七八九十日月";
     const nn = nm(n.title), nb = bg(nn);
     const nameSc = x => {
       const t = nm(x.title); if (!t || !nn) return 0;
-      if (t === nn) return 40;
-      if (t.length >= 2 && nn.length >= 2 && (t.includes(nn) || nn.includes(t))) return 30;
+      if (t === nn) return 100;
+      if (t.length >= 2 && nn.length >= 2 && (t.includes(nn) || nn.includes(t))) return 80;
       let c = 0; bg(t).forEach(b => { if (nb.has(b)) c++; });
-      if (c) return 16 + 3 * c;
-      let k = 0; new Set(t).forEach(ch => { if (KJ.test(ch) && !SK.includes(ch) && nn.includes(ch)) k++; });
-      return Math.min(k, 2) * 3;
+      if (c) return 50 + 5 * c;
+      let kj = 0; new Set(t).forEach(ch => { if (KJ.test(ch) && !SK.includes(ch) && nn.includes(ch)) kj++; });
+      return kj ? 20 + 5 * Math.min(kj, 2) : 0;
     };
-    const sc = x => nameSc(x) + (x.genre && x.genre === n.genre ? 4 : 0) + (x.season === n.season ? 2 : 0) + (x.diff === n.diff ? 1 : 0) + Math.random();
+    const near = SIM[n.file] || [], rank = new Map(near.map((f, i) => [f, i]));
+    const pic = x => { const i = rank.has(x.file) ? rank.get(x.file) : (SIM[x.file] || []).indexOf(n.file); return i >= 0 ? 9 * (1 - i / 30) : 0; };
+    const sc = x => nameSc(x) + (x.genre && x.genre === n.genre ? 10 : 0) + pic(x) + (x.season === n.season ? 0.3 : 0) + (x.diff === n.diff ? 0.2 : 0) + Math.random() * 0.1;
     return pool.map(x => [sc(x), x]).sort((a, b) => b[0] - a[0]).slice(0, 6).map(a => a[1]);
   }
   let mdSrc = "list", mdCtx = null;
