@@ -409,10 +409,10 @@ html{font-synthesis-weight:none}
 .wk .pretag{background:#c0392b;border-color:#c0392b;color:#fff}
 .prebox{display:flex;flex-direction:column;gap:8px;padding:0 14px 14px}
 .prebox .pday,.pday2{display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:#c0392b}
-.prebox .btn{height:48px}
+.prebox .btn{width:100%;height:auto;min-height:48px;white-space:normal;line-height:1.3;padding-top:6px;padding-bottom:6px}
 .premd{display:flex;flex-direction:column;gap:10px;width:100%}
 .premd p{margin:0;font-size:15px;line-height:1.7}
-.premd .btn{height:52px}
+.premd .btn{width:100%;height:auto;min-height:52px;white-space:normal;line-height:1.3}
 .svf{padding:8px 4px 16px;display:flex;flex-direction:column;gap:18px}
 .svf .svlead{margin:0;font-size:15px;line-height:1.7}
 .svf fieldset{border:0;margin:0;padding:0}

@@ -129,7 +129,7 @@ ${cur === "" ? "" : `<a class="favbtn" href="${ROOT}contact.html">${ico("mail", 
       return `<article class="card wk${kindOf(n) !== "塗り絵" ? " v" : ""} pre" data-f="${esc(n.file)}">
 <div style="position:relative"><button class="ph" data-open="${esc(n.file)}" aria-label="${esc(n.title)}を拡大"><img class="sk" loading="lazy" decoding="async" alt="" ${srcs(n)} onload="this.classList.remove('sk')"></button><span class="new pretag">予定</span></div>
 <div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span></div>
-<div class="prebox"><span class="pday">${ico("cal", 16)}${openLabel(n)}</span><button class="btn p" data-pre="${esc(n.file)}">${ico("pen", 17)}アンケートに答えて先行保存</button></div></article>`;
+<div class="prebox"><span class="pday">${ico("cal", 16)}${openLabel(n)}</span><button class="btn p" data-pre="${esc(n.file)}">${ico("pen", 17)}アンケートで先行保存</button></div></article>`;
     }
     const k = kindOf(n), f = n.file, fav = isFav(f);
     const btn2 = k === "脳トレ" ? (n.answer ? `<button class="btn o" data-save="${esc(n.answer)}" data-of="${esc(f)}">答えを保存</button>` : "")
