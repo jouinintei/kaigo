@@ -161,7 +161,7 @@ ${opt.chk ? `<span class="chk" role="checkbox" tabindex="0" aria-checked="${opt.
 <button class="star" data-fav="${esc(f)}" aria-pressed="${fav}" aria-label="お気に入り">${ico("star", 20)}</button>
 ${badges(f)}</div>
 <div class="tt"><b>${esc(n.title)}</b><span>${esc(metaOf(n))}</span>${n.req ? `<span class="rqtag">${ico("pen", 13)}リクエスト</span>` : ""}</div>
-${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""}<div class="acts${btn2 ? " a2" : ""}">${saveBtn}<button class="btn ptb half${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷" : W ? "まとめて印刷" : "直接印刷する"}</button></div>` : `<div class="acts${btn2 ? "" : " one"}">${saveBtn}${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn ptb${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷する" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : ""}`}</article>`;
+${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div>` : ""}<div class="acts${btn2 ? " a2" : ""}">${saveBtn}<button class="btn ptb half${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷" : W ? "まとめて印刷" : "直接印刷する"}</button></div>` : `<div class="acts${btn2 ? "" : " one"}">${saveBtn}${btn2}</div>${PT && k !== "カレンダー" ? `<button class="btn ptb${printed ? " pdone" : ""}" data-print="${esc(f)}">${ico("print", 17)}${printed ? "もう一度印刷する" : "直接印刷する"}</button>` : ""}`}</article>`;
   }
   function skeleton(n) {
     return Array.from({ length: n }, () => `<div class="card wk"><div class="sk" style="aspect-ratio:1.414;border-radius:6px"></div><div class="sk" style="height:16px;width:60%;border-radius:4px;margin:16px 0 8px"></div><div class="sk" style="height:12px;width:40%;border-radius:4px"></div></div>`).join("");
@@ -273,7 +273,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
     const c = cv.getContext("2d"); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(bmp, 0, 0);
     return { url: cv.toDataURL("image/jpeg", 0.92), w: bmp.width, h: bmp.height };
   }
-  async function printIt(file, btn, src, ctx) {
+  async function printIt(file, btn, src, ctx, mode) {
     const n = ALL.find(x => x.file === file || x.sample === file); if (!n || busy.has("p:" + file)) return;
     if (isPre(n) && !PASS[n.file]) { openMd(n.file); return; }
     const isS = file === n.sample;
@@ -290,7 +290,8 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
         busy.delete("p:" + file); return;
       }
       const JsPDF = await loadPdf();
-      const files = isS ? [n.sample] : [n.file].concat(kindOf(n) === "脳トレ" && n.answer ? [n.answer] : []);
+      const hasA = kindOf(n) === "脳トレ" && n.answer, md = hasA ? (mode || "b") : "q";
+      const files = isS ? [n.sample] : md === "a" ? [n.answer] : md === "q" ? [n.file] : [n.file, n.answer];
       let doc = null;
       for (const f of files) {
         const im = await toJpeg(await getBlob(n, f)), land = im.w > im.h, W = land ? 297 : 210, H = land ? 210 : 297;
@@ -298,15 +299,30 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
         const r = Math.min(W / im.w, H / im.h), w = im.w * r, h = im.h * r;
         doc.addImage(im.url, "JPEG", (W - w) / 2, (H - h) / 2, w, h);
       }
-      doc.setProperties({ title: n.title + (isS ? "（見本）" : "") }); doc.autoPrint();
+      doc.setProperties({ title: n.title + (isS ? "（見本）" : md === "a" ? "（答え）" : "") }); doc.autoPrint();
       const url = URL.createObjectURL(doc.output("blob"));
       if (win) win.location.href = url; else window.open(url, "_blank");
-      markPrinted(file); logSave(file, src || window.RK_SRC, Object.assign({}, ctx || {}, { pr: "1" })); if (!isS) refreshCard(n.file);
+      markPrinted(file); logSave(md === "a" ? n.answer : file, src || window.RK_SRC, Object.assign({}, ctx || {}, { pr: "1" }, hasA ? { pm: md } : {})); if (!isS) refreshCard(n.file);
       document.querySelectorAll(`.md [data-print="${CSS.escape(file)}"]`).forEach(b => { b.classList.add("pdone"); });
-      toast(`「${n.title}」${isS ? "の色見本" : ""}の印刷画面を開きました`, "A4サイズで印刷してください");
+      toast(`「${n.title}」${isS ? "の色見本" : md === "a" ? "の答え" : md === "b" ? "（問題と答え）" : ""}の印刷画面を開きました`, "A4サイズで印刷してください");
     } catch (e) { if (win) win.close(); toast("印刷用PDFを作れませんでした", "保存してから印刷してください"); }
     if (btn && btn.textContent === "作成中…") btn.textContent = old; if (!isS) refreshCard(file); busy.delete("p:" + file);
   }
+
+  /* ---------- 印刷の選択（脳トレ：問題・答え・両方） ---------- */
+  function closeChoice() { const c = document.querySelector(".pchoose"); if (c) c.remove(); }
+  function showPrintChoice(btn, n, inMd) {
+    const had = document.querySelector(".pchoose"); closeChoice(); if (had && had.__btn === btn) return;
+    const c = document.createElement("div"); c.className = "pchoose"; c.dataset.md = inMd ? "1" : "0"; c.__btn = btn;
+    const f = esc(n.file);
+    c.innerHTML = `<div class="pct">どれを印刷しますか？</div><button class="btn" data-print="${f}" data-pmode="q">問題だけ</button><button class="btn" data-print="${f}" data-pmode="a">答えだけ</button><button class="btn" data-print="${f}" data-pmode="b">問題と答え</button>`;
+    document.body.appendChild(c);
+    const r = btn.getBoundingClientRect(), w = c.offsetWidth, h = c.offsetHeight;
+    let top = r.bottom + 8; if (top + h > innerHeight - 8) top = Math.max(8, r.top - h - 8);
+    c.style.top = top + "px"; c.style.left = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), innerWidth - w - 8) + "px";
+  }
+  document.addEventListener("click", e => { const c = document.querySelector(".pchoose"); if (c && !c.contains(e.target) && !(e.target.closest && e.target.closest("[data-print]") === c.__btn)) closeChoice(); }, true);
+  addEventListener("scroll", closeChoice, { passive: true }); addEventListener("resize", closeChoice);
 
   /* ---------- modal ---------- */
   let mdN = null, mdTab = "l", zoom = 100, mdPg = -1;
@@ -362,7 +378,7 @@ ${PT && (k === "塗り絵" || W) ? `${btn2 ? `<div class="acts one">${btn2}</div
 <div class="scr">
 <div class="body"><div class="view"><img alt="${esc(n.title)}" src="${thumb(n, vf)}" data-full="${full(n, vf)}" onload="this.closest('.box').classList.toggle('tate',this.naturalHeight>this.naturalWidth)">${k !== "カレンダー" ? `<button class="vstar" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}" aria-label="お気に入り">${ico("star", 24)}</button>` : ""}<button class="fsb" data-fs aria-label="全画面で見る">${ico("full", 18)}全画面</button>${wpages}</div>
 
-${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : k === "壁紙作り" ? "壁紙作り" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : k === "壁紙作り" ? "まとめて保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(pf) ? " pdone" : ""}" data-print="${esc(pf)}">${ico("print", 17)}${isPrinted(pf) ? "もう一度印刷" : mdTab === "s" ? "色見本を印刷" : k === "壁紙作り" ? "まとめて印刷" : "直接印刷する"}${k === "脳トレ" && n.answer ? "(答え付き)" : ""}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "壁紙作り" ? "まとめて保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
+${rel.length ? `<div class="rel"><div class="h2" style="margin:0"><h2 style="font-size:18px">似た${k === "脳トレ" ? "脳トレ" : k === "カレンダー" ? "カレンダー" : k === "壁紙作り" ? "壁紙作り" : "塗り絵"}</h2></div><div class="g">${rel.map(r => `<button data-open="${esc(r.file)}" data-src="nita"><img loading="lazy" alt="" src="${sthumb(r)}">${esc(r.title)}</button>`).join("")}</div></div>` : ""}</div></div><div class="mdf"><div class="row2">${PT && k !== "カレンダー" ? `<button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "脳トレ" ? "問題を保存" : k === "壁紙作り" ? "まとめて保存" : "保存する"}</button><button class="btn ptb mdp${isPrinted(pf) ? " pdone" : ""}" data-print="${esc(pf)}">${ico("print", 17)}${isPrinted(pf) ? "もう一度印刷" : mdTab === "s" ? "色見本を印刷" : k === "壁紙作り" ? "まとめて印刷" : "直接印刷する"}</button>` : `<button class="btn g" data-fav="${esc(n.file)}" aria-pressed="${isFav(n.file)}">${ico("star", 19)}${isFav(n.file) ? "お気に入り済み" : "<span>お気に入り<span class=lg>に追加</span></span>"}</button><button class="btn p" data-save="${esc(f)}">${ico("down", 19)}${mdTab === "s" ? "色見本を保存" : mdTab === "a" ? "答えを保存" : k === "壁紙作り" ? "まとめて保存" : "<span><span class=lg>印刷用画像を</span>保存</span>"}</button>`}</div>
 </div>`;
     upgradeMd();
     if (isPre(n) && PASS[n.file]) { const vi = document.querySelector(".md .view img"); if (vi) { vi.dataset.pref = vf; swapPre(document.querySelector(".md")); } }
@@ -456,7 +472,13 @@ ${SVT.map(([k, q, ph], i) => `<fieldset><legend>${SV.length + i + 1}. ${q}</lege
     if (t.dataset.pre) { showSurvey(t.dataset.pre); return; }
     if (t.dataset.svback) { renderMd(); return; }
     if (t.dataset.svsend !== undefined) { sendSurvey(t); return; }
-    if (t.dataset.print) { const inMd = !!t.closest(".md"); printIt(t.dataset.print, t, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : window.RK_CTX); return; }
+    if (t.dataset.print) {
+      const inMd = !!t.closest(".md") || !!t.closest(".pchoose") && t.closest(".pchoose").dataset.md === "1";
+      const n = ALL.find(x => x.file === t.dataset.print);
+      if (n && kindOf(n) === "脳トレ" && n.answer && !t.dataset.pmode && !(isPre(n) && !PASS[n.file])) { showPrintChoice(t, n, inMd); return; }
+      const pb = t.dataset.pmode ? t.closest(".pchoose").__btn : t; closeChoice();
+      printIt(t.dataset.print, pb, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : window.RK_CTX, t.dataset.pmode); return;
+    }
     if (t.dataset.save) { const inMd = !!t.closest(".md"); save(t.dataset.save, inMd ? mdSrc : (t.dataset.src || window.RK_SRC), inMd ? mdCtx : undefined); return; }
     if (t.dataset.open) { openMd(t.dataset.open, t.dataset.tab, t.dataset.src || (t.closest(".md") ? "nita" : null)); return; }
     if (t.dataset.wpg !== undefined) { const i = +t.dataset.wpg; mdPg = mdPg === i ? -1 : i; if (mdTab === "s") mdTab = "l"; renderMd(); return; }
