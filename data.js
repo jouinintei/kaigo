@@ -1683,4 +1683,9 @@ window.NURIE_LIST = [
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その8", file: "kigo_jokyu8.png", answer: "kigo_jokyu8_ans.png", added: "2026-11", date: "2026-11-25", pre: 1, open: "2026-11-25", v: "1795371923919" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その9", file: "kigo_jokyu9.png", answer: "kigo_jokyu9_ans.png", added: "2026-11", date: "2026-11-25", pre: 1, open: "2026-11-25", v: "1795371923920" },
   { kind: "脳トレ", season: "通年", genre: "クイズ", title: "記号さがし 上級 その10", file: "kigo_jokyu10.png", answer: "kigo_jokyu10_ans.png", added: "2026-11", date: "2026-11-25", pre: 1, open: "2026-11-25", v: "1795371923921" },
+  { season: "冬", genre: "食べ物", title: "湯豆腐", diff: "初級", file: "yudofu_donabe_sho.png", sample: "yudofu_donabe_sho_sample.jpg", added: "2026-11", date: "2026-11-28", desc: "土鍋でことことと煮える湯豆腐。つけだれの小鉢とお箸を添えて。", pre: 1, open: "2026-11-28", v: "1795404520871" },
+  { season: "冬", genre: "風物詩", title: "独楽（こま）", diff: "初級", file: "koma_sho.png", sample: "koma_sho_sample.jpg", added: "2026-11", date: "2026-11-28", desc: "お正月の遊びの定番、木の独楽とまわすためのひも。", pre: 1, open: "2026-11-28", v: "1795404520872" },
+  { season: "冬", genre: "食べ物", title: "すき焼き", diff: "中級", file: "sukiyaki_chu.png", sample: "sukiyaki_chu_sample.jpg", added: "2026-11", date: "2026-11-28", desc: "雪の降る窓辺で囲む、昭和の茶の間のすき焼き鍋。", pre: 1, open: "2026-11-28", v: "1795404520873" },
+  { season: "冬", genre: "風景", title: "冬の朝市", diff: "中級", file: "fuyu_asaichi_chu.png", sample: "fuyu_asaichi_chu_sample.jpg", added: "2026-11", date: "2026-11-28", desc: "雪のちらつく港町の朝市。大根や白菜、干物が並び、行商のおばあさんとお客さんがやりとりしています。", pre: 1, open: "2026-11-28", v: "1795404520874" },
+  { season: "冬", genre: "風景", title: "冬の酒蔵", diff: "上級", file: "sakagura_fuyu_jo.png", sample: "sakagura_fuyu_jo_sample.jpg", added: "2026-11", date: "2026-11-28", desc: "杉玉の下がる白壁の酒蔵。湯気の立つ冬の仕込みで、蔵人たちが桶を運びます。", pre: 1, open: "2026-11-28", v: "1795404520875" },
 ];
