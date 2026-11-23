@@ -21,7 +21,7 @@
 <script src="/frame.js?v=19"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="/rk.css?v=1795440203">
+<link rel="stylesheet" href="/rk.css?v=1795440439">
 <style>
 .ph1 h1,.bar .big b,.mo b,.h2 h2,.md h2,.empty h3,.req h3{font-weight:700}
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
@@ -166,8 +166,9 @@
     const jump=pages>8?`<div class="pgjump"><label>ページを選んで移動 <select class="pgsel" aria-label="ページを選んで移動">${Array.from({length:pages},(_,k)=>`<option value="${k+1}"${k+1===p?" selected":""}>${k+1}ページ</option>`).join("")}</select></label><span> / 全${pages}ページ</span></div>`:"";
     return `<nav class="pg" aria-label="ページ送り"><button data-pg="${p-1}" ${p===1?"disabled":""}>← 前へ</button>${nums.map(i=>i==="…"?'<span class="dots">…</span>':`<button data-pg="${i}"${i===p?' aria-current="page"':""}>${i}</button>`).join("")}<button data-pg="${p+1}" ${p===pages?"disabled":""}>次へ →</button></nav>${jump}<p class="pginfo">${total}${unit}中 ${(p-1)*PER+1}〜${Math.min(p*PER,total)}${unit}目</p>`;
   }
-  const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K==="nurie"?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
+  const head=()=>`<div class="ph1"><div><h1>${title[0]}</h1><p>${title[1]}</p></div>${K==="nurie"&&!(st.sort==="yotei"&&preItems().length)?`<label class="search">${ico("search",18)}<span class="sr">作品名・キーワード</span><input type="search" id="q" placeholder="作品名・キーワード" value="${esc(st.q)}"></label>`:""}</div>`;
   function filters(){
+    if((st.sort==="yotei"&&preItems().length))return `<div class="prenote"><div><b>公開予定の${KIND}</b><span>公開日になると、自動でふつうの一覧に入ります。季節などの絞り込みは、一覧にもどると元のまま使えます。</span></div><button class="chip" data-sort="new">${KIND}の一覧にもどる</button></div>`;
     if(K==="nurie")return `<div class="fl"><div class="chr">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}</div><span class="sp"></span><div class="slr">
 <label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option value="${g}"${st.genre===g?" selected":""}>ジャンル：${g}</option>`).join("")}</select></label>
 <label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option value="${g}"${st.diff===g?" selected":""}>難しさ：${g}</option>`).join("")}</select></label><button class="uchk" data-unused aria-pressed="${st.unused}"><span class="bx">${st.unused?ico("check",15):""}</span>まだ使っていないものだけ</button></div>${subRow()}</div>`;
@@ -183,6 +184,7 @@
     return `<div class="subf"><span class="subl">${st.season}の行事・テーマ</span><button class="chip sm" data-sub="" aria-pressed="${!st.sub}">すべて</button>${cs.map(([n,c])=>`<button class="chip sm" data-sub="${n}" aria-pressed="${st.sub===n}">${n}<span class="sc">${c}</span></button>`).join("")}</div>`;
   }
   function countLine(tot){
+    if((st.sort==="yotei"&&preItems().length))return `<div class="n"><div class="cl"><span class="of">公開予定の${KIND}</span></div><div class="big"><b>${tot}</b><span>枚</span></div></div>`;
     const all=items().length,cond=[];
     if((K==="nurie"||K==="wall")&&st.season!=="すべて")cond.push(["season",st.season]);
     if(K==="nurie"&&st.sub)cond.push(["sub",st.sub]);
@@ -221,7 +223,7 @@
     let units=K==="noutore"?groupSeries(a).sort((x,y)=>(y[0]==="絵の間違い探し")-(x[0]==="絵の間違い探し")):(K==="nurie"&&!st.q)?groupNurie(a):a.map(n=>[null,[n]]);if(K==="nurie")units=units.filter(u=>u[0]&&NSER[u[0]]).concat(units.filter(u=>!(u[0]&&NSER[u[0]])));
     const pages=Math.max(1,Math.ceil(units.length/PER));if(st.page>pages)st.page=pages;
     const pageItems=units.slice((st.page-1)*PER,st.page*PER);
-    main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、何枚かのA4用紙に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面の大きな作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>分けた塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p><p><b>推奨人数</b>は、分けた紙の枚数と同じです（一人1枚）。</p><p>印刷すると紙のまわりに白いふちが出ます。<b>白いふちは、のりしろに使うか、切り取るかして</b>貼り合わせてください。</p><p class="wtry">壁紙作りはお試し中のコーナーです。使ってみた感想を、ぜひ<a href="/contact.html?type=壁紙作りの感想">お聞かせください</a>。仕上がった作品の写真も大歓迎です。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${[["new","新着順"],["pop","人気順"],["rand","ランダム"]].concat((K==="nurie"||K==="noutore")&&preItems().length?[["yotei","予定"]]:[]).map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div></div>`+
+    main.innerHTML=head()+(K==="wall"?`<div class="wabout"><h3>分割塗り絵とは？</h3><p>1枚の大きな絵を、何枚かのA4用紙に分けた塗り絵です。一人1枚ずつ塗って、番号どおりにつなげると、壁一面の大きな作品になります。</p><p>保存・印刷すると、色を相談するための<b>全体図</b>と<b>分けた塗り絵</b>がまとめて出てきます。A4・実際のサイズ（100%）で印刷してください。</p><p><b>推奨人数</b>は、分けた紙の枚数と同じです（一人1枚）。</p><p>印刷すると紙のまわりに白いふちが出ます。<b>白いふちは、のりしろに使うか、切り取るかして</b>貼り合わせてください。</p><p class="wtry">壁紙作りはお試し中のコーナーです。使ってみた感想を、ぜひ<a href="/contact.html?type=壁紙作りの感想">お聞かせください</a>。仕上がった作品の写真も大歓迎です。</p></div>`:"")+filters()+`<div class="bar">${countLine(tot)}<div class="seg" role="group" aria-label="並び順">${(st.sort==="yotei"&&preItems().length)?"":[["new","新着順"],["pop","人気順"],["rand","ランダム"]].map(([v,t])=>`<button data-sort="${v}" aria-pressed="${st.sort===v}">${v==="rand"&&st.sort==="rand"?"もう一度まぜる":t}</button>`).join("")}</div>${(K==="nurie"||K==="noutore")&&preItems().length&&st.sort!=="yotei"?`<button class="prebtn" data-sort="yotei">公開予定<span>${preItems().length}</span></button>`:""}</div>`+
       (tot?`<div class="grid">${pageItems.map(([k,g])=>(k&&(g.length>1||NSER[k]))?serCard(k,g):card(g[0])).join("")}</div>${pager(units.length,K==="noutore"?"件":"枚")}`:
       `<div class="empty"><div class="ic">${ico("search",34)}</div><h3>条件に合う${KIND}は見つかりませんでした</h3><p style="color:var(--sub)">条件を減らすと見つかるかもしれません。</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn p" data-reset>条件をリセット</button>${st.q&&st.q.trim()?`<button class="btn o" data-req="${esc(st.q.trim())}" data-reqk="${K==="noutore"?"脳トレ":"塗り絵"}">「${esc(st.q.trim())}」をリクエストする</button>`:""}</div></div>`);
   }
