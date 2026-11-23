@@ -1709,4 +1709,7 @@ window.NURIE_LIST = [
   { season: "冬", genre: "人物", title: "手紙を読むサンタ", diff: "中級", file: "tegami_santa_chu.png", sample: "tegami_santa_chu_sample.jpg", added: "2026-11", date: "2026-11-30", pre: 1, open: "2026-11-30", v: "1795430000003" },
   { season: "冬", genre: "花", title: "冬の木の実と葉", diff: "中級", file: "fuyu_konomi_chu.png", sample: "fuyu_konomi_chu_sample.jpg", added: "2026-11", date: "2026-11-27", pre: 1, open: "2026-11-27", v: "1795431700000" },
   { season: "冬", genre: "食べ物", title: "柑橘", diff: "中級", file: "kankitsu_zukan_chu.png", sample: "kankitsu_zukan_chu_sample.jpg", added: "2026-11", date: "2026-11-27", pre: 1, open: "2026-11-27", v: "1795431700001" },
+  { season: "通年", genre: "その他", title: "苔と石", diff: "上級", file: "koke_ishi_jo.png", sample: "koke_ishi_jo_sample.jpg", added: "2026-11", date: "2026-11-24", pre: 1, open: "2026-11-24", v: "1795432300000" },
+  { season: "冬", genre: "行事", title: "正月の縁起の植物", diff: "中級", file: "shogatsu_engi_shokubutsu_chu.png", sample: "shogatsu_engi_shokubutsu_chu_sample.jpg", added: "2026-11", date: "2026-11-24", pre: 1, open: "2026-11-24", v: "1795432300001" },
+  { season: "冬", genre: "花", title: "春の七草", diff: "中級", file: "haru_nanakusa_chu.png", sample: "haru_nanakusa_chu_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795432300002" },
 ];
