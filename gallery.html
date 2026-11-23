@@ -21,7 +21,7 @@
 <script src="/frame.js?v=19"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="stylesheet" href="/rk.css?v=1795438488">
+<link rel="stylesheet" href="/rk.css?v=1795440203">
 <style>
 .ph1 h1,.bar .big b,.mo b,.h2 h2,.md h2,.empty h3,.req h3{font-weight:700}
 .ph1{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:32px 0 6px}
@@ -88,12 +88,16 @@
   document.getElementById("ft").innerHTML=RK.footer(K);
   RK.updFavCount();
   const main=document.getElementById("main");
-  const st={season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand","yotei"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false,ser:qs.get("ser")||"",req:qs.get("req")==="1"?"1":""};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
+  const st={sub:qs.get("sub")||"",season:qs.get("s")||qs.get("season")||"すべて",genre:qs.get("genre")||"",diff:"",q:qs.get("q")||"",sort:["new","pop","rand","yotei"].includes(qs.get("sort"))?qs.get("sort"):"new",page:1,month:null,sel:new Set(),unused:false,ser:qs.get("ser")||"",req:qs.get("req")==="1"?"1":""};try{st.unused=localStorage.getItem("rk_unused")==="1";}catch(e){}
   let pop=[],seed=Math.random()*1e9|0;
   fetch((location.pathname.indexOf("/preview/")<0?"/":"../")+"api/popular",{cache:"no-store"}).then(r=>r.json()).then(j=>{pop=(j&&j.files)||[];if(st.sort==="pop")render();}).catch(()=>{});
   const rk=f=>{let h=seed;for(let i=0;i<f.length;i++)h=Math.imul(h^f.charCodeAt(i),2654435761);return (h>>>0);};
   const PER=K==="cal"?12:12;
   const SEASONS=["すべて","春","夏","秋","冬","通年"];
+  // 季節の中の細かい絞り込み（[名前, 含む言葉, 除く言葉]）。作品にはマークを付けず、題名からこちらで振り分ける
+  const SUBS={"春":[["ひな祭り",["雛","ひなまつり","お内裏","ひし餅"]],["お花見・桜",["桜","さくら","花見","花より団子"]],["こどもの日",["こいのぼり","こどもの日","かしわもち","柏餅","菖蒲湯","兜","五月人形"]],["入学・卒業",["入学","卒業","ランドセル"]],["母の日",["母の日","カーネーション"]],["春の味覚",["たけのこ","いちご","山菜","春キャベツ","春の食材","春の味覚","桜餅","さくらもち","かしわもち","春の和菓子"]]],"夏":[["七夕",["七夕","織姫","彦星","天の川","笹飾り"]],["夏祭り・花火",["夏祭り","夏まつり","祇園祭","花火","金魚すくい","よーよー","盆踊り","縁日","ほおずき市","浴衣"]],["お盆",["精霊馬","送り火","お盆","盆踊り"]],["梅雨",["梅雨","あじさい","アジサイ","雨の"]],["海・水辺",["海","ヤドカリ","浮き輪","プール","川床","砂浜","イルカ","サンゴ","カワセミ"]],["夏の味覚",["かき氷","すいか","スイカ","そうめん","アイス","冷やし中華","夏野菜","とうもろこし","メロン","パイナップル","夏の果物","土用の丑","桃"]],["虫とり",["カブトムシ","クワガタ","蝉","セミ","蛍","昆虫","とんぼ"],["カワセミ"]],["夏の涼",["風鈴","すだれ","うちわ","団扇","縁側","朝顔","アサガオ","金魚"]]],"秋":[["お月見",["月見","名月","十三夜","月と","秋の月"]],["紅葉",["紅葉","もみじ","いちょう","銀杏並木","銀杏の木","落ち葉","秋の葉"]],["ハロウィン",["ハロウィン","かぼちゃハウス"]],["敬老の日",["敬老"]],["運動会",["運動会","スポーツの日"]],["七五三",["七五三","千歳飴"]],["秋の味覚",["栗","柿","さんま","秋刀魚","きのこ","キノコ","松茸","芋","ぶどう","梨","りんご","新米","おはぎ","モンブラン","秋鮭","土瓶蒸し","秋の味覚","秋の果物","果物","秋ナス","おでん","さつまいも","亥の子餅"]],["実り・稲刈り",["稲刈り","収穫","かかし","新米","脱穀","千歯こき","実り"]],["秋の虫・すすき",["すずむし","こおろぎ","赤とんぼ","すすき","萩"]]],"冬":[["クリスマス",["クリスマス","サンタ","ツリー","リース","トナカイ","プレゼント","オーナメント","ベルとリボン","くるみ割り","シュトーレン","お菓子の家","キャンドル","天使","ローストチキン","イルミネーション","靴下","ハンドベル","お菓子の長靴","ポインセチア"],["クリスマスローズ"]],["お正月",["正月","鏡餅","鏡もち","鏡開き","門松","羽子板","羽根つき","獅子舞","ししまい","初詣","初日の出","元旦","おせち","雑煮","屠蘇","年賀","お年玉","しめ縄","凧","かるた","独楽","書き初め","七福神","宝船","一富士","福寿草","千両","松竹梅","初売り","七草","正月鯛","未年","羊","餅つき","だるま","小槌","祝"],["春の七草","雪だるま","ゆきだるま"]],["節分",["節分","豆まき","恵方巻","柊鰯","福豆"]],["バレンタイン",["バレンタイン"]],["年末・冬至",["大晦日","年越し","除夜","大掃除","師走","歳末","冬至","ゆず湯","柚子湯","12月"]],["雪景色",["雪","ゆき","かまくら","スキー","スケート","つらら","スノー","氷"]],["冬の暮らし",["こたつ","火鉢","囲炉裏","ストーブ","暖炉","編み物","湯たんぽ","はんてん","毛糸","マフラー","手袋","ミトン","茶の間","縁側"]],["冬の味覚",["鍋","おでん","シチュー","肉まん","焼き芋","ぜんざい","豚汁","すき焼き","湯豆腐","ラーメン","うどん","カニ","冬野菜","白菜","ココア","みかん","餅","七輪"],["鏡餅","鏡もち"]]]};
+  const subRule=(s,n)=>(SUBS[s]||[]).find(r=>r[0]===n);
+  const subHit=(x,r)=>!!r&&r[1].some(w=>x.title.includes(w))&&!(r[2]||[]).some(w=>x.title.includes(w));
   const title={nurie:["塗り絵を探す","季節やジャンルから選べます。画像を押すと拡大し、色見本も見られます。"],noutore:["脳トレを探す","漢字・計算・言葉遊びのプリント。すべて答えつきです。"],cal:["塗り絵カレンダー","その月の絵柄を塗って仕上げる月間カレンダーです。"],wall:["壁紙作り","みんなで塗って、つなげると壁一面の作品になる大きな塗り絵です。"],fav:["お気に入り","選んだ素材をまとめて保存できます。"]}[K];
   const items=()=>LIST.filter(n=>kindOf(n)===KIND);
   const genres=()=>[...new Set(items().map(n=>n.genre).filter(Boolean))];
@@ -145,6 +149,7 @@
     if(st.sort==="yotei"){if(preItems().length){window.RK_SORT="yotei";return preItems();}st.sort="new";}
     let a=items();
     if((K==="nurie"||K==="wall")&&st.season!=="すべて")a=a.filter(n=>n.season===st.season);
+    if(K==="nurie"&&st.sub){const r=subRule(st.season,st.sub);if(r)a=a.filter(n=>subHit(n,r));else st.sub="";}
     if(st.genre)a=a.filter(n=>n.genre===st.genre);
     if(st.diff)a=a.filter(n=>n.diff===st.diff);
     if(st.unused)a=a.filter(n=>!RK.isUsed(n.file));
@@ -165,14 +170,22 @@
   function filters(){
     if(K==="nurie")return `<div class="fl"><div class="chr">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}</div><span class="sp"></span><div class="slr">
 <label><span class="sr">ジャンル</span><select class="sel" id="genre"><option value="">ジャンル：すべて</option>${genres().map(g=>`<option value="${g}"${st.genre===g?" selected":""}>ジャンル：${g}</option>`).join("")}</select></label>
-<label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option value="${g}"${st.diff===g?" selected":""}>難しさ：${g}</option>`).join("")}</select></label><button class="uchk" data-unused aria-pressed="${st.unused}"><span class="bx">${st.unused?ico("check",15):""}</span>まだ使っていないものだけ</button></div></div>`;
+<label><span class="sr">難しさ</span><select class="sel" id="diff"><option value="">難しさ：すべて</option>${["初級","中級","上級"].map(g=>`<option value="${g}"${st.diff===g?" selected":""}>難しさ：${g}</option>`).join("")}</select></label><button class="uchk" data-unused aria-pressed="${st.unused}"><span class="bx">${st.unused?ico("check",15):""}</span>まだ使っていないものだけ</button></div>${subRow()}</div>`;
     if(K==="wall")return `<div class="fl"><div class="chr">${SEASONS.map(s=>`<button class="chip" data-season="${s}" aria-pressed="${st.season===s}">${s}</button>`).join("")}</div></div>`;
     if(K==="noutore")return `<div class="fl"><div class="chr"><button class="chip" data-genre="" aria-pressed="${!st.genre}">すべて</button>${genres().map(g=>`<button class="chip" data-genre="${g}" aria-pressed="${st.genre===g}">${g}</button>`).join("")}</div><span class="sp"></span><div class="slr"><button class="uchk" data-unused aria-pressed="${st.unused}"><span class="bx">${st.unused?ico("check",15):""}</span>まだ使っていないものだけ</button></div></div>`;
     return "";
   }
+  function subRow(){
+    if(K!=="nurie"||!SUBS[st.season])return "";
+    const base=items().filter(n=>n.season===st.season);
+    const cs=SUBS[st.season].map(r=>[r[0],base.filter(n=>subHit(n,r)).length]).filter(c=>c[1]>0);
+    if(!cs.length)return "";
+    return `<div class="subf"><span class="subl">${st.season}の行事・テーマ</span><button class="chip sm" data-sub="" aria-pressed="${!st.sub}">すべて</button>${cs.map(([n,c])=>`<button class="chip sm" data-sub="${n}" aria-pressed="${st.sub===n}">${n}<span class="sc">${c}</span></button>`).join("")}</div>`;
+  }
   function countLine(tot){
     const all=items().length,cond=[];
     if((K==="nurie"||K==="wall")&&st.season!=="すべて")cond.push(["season",st.season]);
+    if(K==="nurie"&&st.sub)cond.push(["sub",st.sub]);
     if(st.genre)cond.push(["genre",st.genre]);
     if(st.diff)cond.push(["diff",st.diff]);
     if(st.q)cond.push(["q","「"+st.q+"」"]);
@@ -185,7 +198,7 @@
   const narrow=()=>matchMedia("(max-width:640px)").matches;
   function ftoggle(){
     const fl=main.querySelector(".fl"),sr=main.querySelector(".ph1 .search");if(!fl&&!sr)return;
-    const bits=[];if((K==="nurie"||K==="wall")&&st.season!=="すべて")bits.push(st.season);if(st.genre)bits.push(st.genre);if(st.diff)bits.push(st.diff);if(st.q)bits.push("「"+st.q+"」");if(st.unused)bits.push("未使用");
+    const bits=[];if((K==="nurie"||K==="wall")&&st.season!=="すべて")bits.push(st.season);if(K==="nurie"&&st.sub)bits.push(st.sub);if(st.genre)bits.push(st.genre);if(st.diff)bits.push(st.diff);if(st.q)bits.push("「"+st.q+"」");if(st.unused)bits.push("未使用");
     const b=document.createElement("button");b.type="button";b.className="ftg";b.dataset.ftg="";b.setAttribute("aria-expanded",String(fopen));
     b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg>'+(fopen?"絞り込みを閉じる":"絞り込み・検索")+' <span class="c">（'+esc(bits.length?bits.join("・"):"すべて")+"）</span>";
     const ph=main.querySelector(".ph1");if(ph)ph.after(b);else fl.before(b);
@@ -197,7 +210,7 @@
     if(K!=="fav"&&K!=="cal"){
       const btn=main.querySelectorAll(".pg button[data-pg]");if(btn.length){const mx=Math.max(...[...btn].map(b=>+b.dataset.pg).filter(n=>n>0));if(st.page>mx&&mx>0){st.page=mx;return render();}}
       try{const u=new URL(location.href);if(st.page>1)u.searchParams.set("p",st.page);else u.searchParams.delete("p");if(u.href!==location.href)history.replaceState(history.state,"",u);}catch(e){}
-      try{sessionStorage.setItem("rk_gal_"+K,JSON.stringify({page:st.page,season:st.season,genre:st.genre,diff:st.diff,q:st.q,sort:st.sort}));}catch(e){}
+      try{sessionStorage.setItem("rk_gal_"+K,JSON.stringify({page:st.page,season:st.season,sub:st.sub,genre:st.genre,diff:st.diff,q:st.q,sort:st.sort}));}catch(e){}
     }
   }
   function render0(){
@@ -233,13 +246,14 @@
     else if(t.dataset.pref!==undefined){st.pref=t.dataset.pref;render();const gr=document.getElementById("sergrid");if(gr){const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+16;scrollTo({top:gr.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}}
     else if(t.dataset.serback!==undefined){if(history.state&&history.state.ser)history.back();else openSer("",true);}
     else if(t.dataset.ftg!==undefined){fopen=!fopen;render();}
-    else if(t.dataset.season){st.season=t.dataset.season;st.page=1;render();}
+    else if(t.dataset.season){if(st.season!==t.dataset.season)st.sub="";st.season=t.dataset.season;st.page=1;render();}
+    else if(t.dataset.sub!==undefined&&K==="nurie"){st.sub=t.dataset.sub;st.page=1;render();}
     else if(t.dataset.genre!==undefined&&K==="noutore"){st.genre=t.dataset.genre;st.page=1;st.ser="";render();}
     else if(t.dataset.pg){const np=+t.dataset.pg;if(np!==st.page){try{const u=new URL(location.href);if(np>1)u.searchParams.set("p",np);else u.searchParams.delete("p");history.pushState(Object.assign({},history.state||{},{pg:np}),"",u);}catch(e){}}st.page=np;render();const el=main.querySelector(".bar")||main.querySelector(".fl")||main;const hd=document.querySelector(".hd");const off=(hd&&getComputedStyle(hd).position==="sticky"?hd.offsetHeight:0)+12;scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:"smooth"});}
-    else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",genre:"",diff:"",q:"",page:1,unused:false,req:""});dropReq();try{localStorage.setItem("rk_unused","0");}catch(e){}render();}
+    else if(t.dataset.reset!==undefined){Object.assign(st,{season:"すべて",sub:"",genre:"",diff:"",q:"",page:1,unused:false,req:""});dropReq();try{localStorage.setItem("rk_unused","0");}catch(e){}render();}
     else if(t.dataset.sort){if(t.dataset.sort==="rand"&&st.sort==="rand")seed=Math.random()*1e9|0;st.sort=t.dataset.sort;st.page=1;render();}
     else if(t.dataset.unused!==undefined){st.unused=!st.unused;try{localStorage.setItem("rk_unused",st.unused?"1":"0");}catch(e){}st.page=1;render();}
-    else if(t.dataset.clr){const k=t.dataset.clr;if(k==="season")st.season="すべて";else if(k==="unused"){st.unused=false;try{localStorage.setItem("rk_unused","0");}catch(e){}}else st[k]="";if(k==="req")dropReq();st.page=1;render();}
+    else if(t.dataset.clr){const k=t.dataset.clr;if(k==="season"){st.season="すべて";st.sub="";}else if(k==="unused"){st.unused=false;try{localStorage.setItem("rk_unused","0");}catch(e){}}else st[k]="";if(k==="req")dropReq();st.page=1;render();}
     else if(t.dataset.month){st.month=t.dataset.month;render();}
     else if(t.dataset.chk){st.sel.has(t.dataset.chk)?st.sel.delete(t.dataset.chk):st.sel.add(t.dataset.chk);render();}
     else if(t.dataset.all!==undefined){const f=favs();st.sel=st.sel.size===f.length?new Set():new Set(f);render();}
@@ -251,8 +265,8 @@
   document.addEventListener("favchange",()=>{if(K==="fav")render();});
   main.innerHTML=head()+filters()+`<div class="grid" style="margin-top:24px">${skeleton(6)}</div>`;
   (function(){const SK="rk_gal_"+K;let sv=null;try{sv=JSON.parse(sessionStorage.getItem(SK)||"null");}catch(e){}
-    const up=+qs.get("p");const explicit=["s","season","genre","q","sort","ser"].some(k=>qs.has(k));
-    if(sv&&!explicit){["season","genre","diff","q","sort"].forEach(k=>{if(sv[k]!==undefined)st[k]=sv[k];});st.page=sv.page||1;}
+    const up=+qs.get("p");const explicit=["s","season","sub","genre","q","sort","ser"].some(k=>qs.has(k));
+    if(sv&&!explicit){["season","sub","genre","diff","q","sort"].forEach(k=>{if(sv[k]!==undefined)st[k]=sv[k];});st.page=sv.page||1;}
     if(up>0)st.page=up;})();
   let rdone=0;const go=()=>{if(!rdone){rdone=1;render();}};requestAnimationFrame(()=>setTimeout(go,50));setTimeout(go,400);
 })();

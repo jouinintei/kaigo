@@ -434,3 +434,5 @@ html{font-synthesis-weight:none}
 .pchoose{position:fixed;z-index:10050;background:#fff;border:1px solid #C9D6E3;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:12px;display:flex;flex-direction:column;gap:8px;min-width:210px}
 .pchoose .pct{font-size:14px;font-weight:700;color:#444;text-align:center;margin-bottom:2px}
 .pchoose .btn{height:44px;font-size:16px;background:#4471A0;color:#fff;border:1px solid #4471A0;border-radius:10px}.pchoose .btn:hover{background:#2F5D8A}
+
+.subf{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:4px;padding:12px 14px;background:#fbf6ef;border-radius:12px}.subf .subl{flex-basis:100%;font-size:14px;color:#6b5a4e;font-weight:700}.subf .chip.sm{padding:6px 14px;font-size:15px}.subf .chip .sc{font-size:12px;opacity:.65;margin-left:6px}@media(max-width:640px){.fl .subf{margin-top:10px}}
