@@ -1707,4 +1707,6 @@ window.NURIE_LIST = [
   { season: "冬", genre: "行事", title: "プレゼントの山", diff: "初級", file: "present_yama_sho.png", sample: "present_yama_sho_sample.jpg", added: "2026-11", date: "2026-11-30", pre: 1, open: "2026-11-30", v: "1795430000001" },
   { season: "冬", genre: "行事", title: "サンタの持ち物", diff: "初級", file: "santa_mochimono_sho.png", sample: "santa_mochimono_sho_sample.jpg", added: "2026-11", date: "2026-11-30", pre: 1, open: "2026-11-30", v: "1795430000002" },
   { season: "冬", genre: "人物", title: "手紙を読むサンタ", diff: "中級", file: "tegami_santa_chu.png", sample: "tegami_santa_chu_sample.jpg", added: "2026-11", date: "2026-11-30", pre: 1, open: "2026-11-30", v: "1795430000003" },
+  { season: "冬", genre: "花", title: "冬の木の実と葉", diff: "中級", file: "fuyu_konomi_chu.png", sample: "fuyu_konomi_chu_sample.jpg", added: "2026-11", date: "2026-11-27", pre: 1, open: "2026-11-27", v: "1795431700000" },
+  { season: "冬", genre: "食べ物", title: "柑橘", diff: "中級", file: "kankitsu_zukan_chu.png", sample: "kankitsu_zukan_chu_sample.jpg", added: "2026-11", date: "2026-11-27", pre: 1, open: "2026-11-27", v: "1795431700001" },
 ];
