@@ -525,7 +525,7 @@ window.NURIE_LIST = [
   { season: "通年", genre: "食べ物", title: "喫茶店のプリン", diff: "中級", file: "kissaten_pudding_chu.png", sample: "kissaten_pudding_chu_sample.jpg", added: "2026-08", v: "1792421908866" },
   { season: "通年", genre: "食べ物", title: "寿司", diff: "中級", file: "sushi_chu.png", sample: "sushi_chu_sample.jpg", added: "2026-08", v: "1792421908866" },
   { season: "通年", genre: "その他", title: "折り紙", diff: "中級", file: "origami_chu.png", sample: "origami_chu_sample.jpg", added: "2026-08", v: "1792421908866" },
-  { season: "通年", genre: "その他", title: "昔の遊び", diff: "上級", file: "mukashi_asobi_jo.png", sample: "mukashi_asobi_jo_sample.jpg", added: "2026-08", v: "1792421908866" },
+  { season: "通年", genre: "その他", title: "昔の遊び", diff: "上級", file: "mukashi_asobi_jo.png", sample: "mukashi_asobi_jo_sample.jpg", added: "2026-08", v: "1795433600000" },
   { season: "通年", genre: "その他", title: "昔の遊び", diff: "中級", file: "mukashi_asobi_chu.png", sample: "mukashi_asobi_chu_sample.jpg", added: "2026-08", v: "1792421908866" },
   { season: "通年", genre: "動物", title: "片羽蝶", diff: "中級", file: "katahane_chou_chu.png", sample: "katahane_chou_chu_sample.jpg", added: "2026-08", v: "1792421908866" },
   { season: "通年", genre: "動物", title: "猫と花束", diff: "初級", file: "neko_hanataba_sho.png", sample: "neko_hanataba_sho_sample.jpg", added: "2026-08", v: "1792421908866" },
