@@ -31,7 +31,7 @@
 <script src="/analytics.js" defer></script>
 <script src="/frame.js?v=19"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="/rk.css?v=1795440439">
+<link rel="stylesheet" href="/rk.css?v=1795440932">
 <style>
 .lp{max-width:1200px;margin:0 auto;padding:0 24px}
 .crumb{font-size:13px;color:var(--mute);padding:18px 0 0}.crumb a{color:var(--mute)}
@@ -75,7 +75,7 @@
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1795438488"></script>
+<script src="/rk.js?v=1795440932"></script>
 <script>
 (function(){
   var F={"kind": "塗り絵", "season": "秋"},MAX=24;
@@ -115,8 +115,24 @@
     chips();draw();
     fetch("/api/popular",{cache:"no-store"}).then(function(r){return r.json();}).then(function(j){pop=(j&&j.files)||[];draw();}).catch(function(){});
   }else{
-  document.getElementById("lpgrid").innerHTML=list.slice(0,MAX).map(function(n){return RK.card(n);}).join("");
-  var m=document.getElementById("lpmore");if(list.length<=MAX)m.parentNode.style.display="none";else m.textContent="残り"+(list.length-MAX)+"枚もすべて見る →";
+  var SB=(F.kind==="塗り絵"&&F.season&&!F.genre&&!F.title_has&&RK.SUBS&&RK.SUBS[F.season])||null,SUB="",m=document.getElementById("lpmore"),grid=document.getElementById("lpgrid");
+  function cur(){if(!SUB)return list;var r=SB.filter(function(x){return x[0]===SUB;})[0];return list.filter(function(n){return RK.subHit(n,r);});}
+  function drawN(){
+    var o=cur();grid.innerHTML=o.slice(0,MAX).map(function(n){return RK.card(n);}).join("");
+    if(SB)m.href="gallery.html?season="+encodeURIComponent(F.season)+(SUB?"&sub="+encodeURIComponent(SUB):"");
+    if(o.length<=MAX){if(SB){m.parentNode.style.display="";m.textContent=(SUB?SUB+"の塗り絵を":"")+"一覧で探す →";}else m.parentNode.style.display="none";}
+    else{m.parentNode.style.display="";m.textContent=(SUB?SUB+"の":"")+"残り"+(o.length-MAX)+"枚もすべて見る →";}
+  }
+  if(SB){
+    var cs=SB.map(function(r){return [r[0],list.filter(function(n){return RK.subHit(n,r);}).length];}).filter(function(c){return c[1]>0;});
+    if(cs.length){
+      var ce=document.createElement("div");ce.className="lpchips";ce.setAttribute("role","group");ce.setAttribute("aria-label","行事で絞り込む");grid.parentNode.insertBefore(ce,grid);
+      var chips=function(){ce.innerHTML=[["","すべて",list.length]].concat(cs.map(function(c){return [c[0],c[0],c[1]];})).map(function(c){return '<button type="button" data-sub="'+c[0]+'" aria-pressed="'+(SUB===c[0])+'">'+c[1]+'<small>'+c[2]+'</small></button>';}).join("");};
+      ce.addEventListener("click",function(e){var b=e.target.closest("button[data-sub]");if(!b)return;SUB=b.dataset.sub;window.RK_CTX.sub=SUB||undefined;chips();drawN();});
+      chips();
+    }
+  }
+  drawN();
   }
 })();
 </script>
