@@ -1703,4 +1703,8 @@ window.NURIE_LIST = [
   { season: "冬", genre: "ステンドグラス", title: "ステンドグラスの天使", diff: "中級", file: "stainedglass_tenshi_chu.png", sample: "stainedglass_tenshi_chu_sample.jpg", added: "2026-11", date: "2026-12-01", desc: "ランタンを持つ天使と、ベツレヘムの星。足もとには白い百合。", pre: 1, open: "2026-12-01", v: "1795416973602" },
   { season: "冬", genre: "曼荼羅", title: "クリスマス曼荼羅", diff: "中級", file: "xmas_mandala_chu.png", sample: "xmas_mandala_chu_sample.jpg", added: "2026-11", date: "2026-12-01", desc: "ポインセチア・柊・ベル・松ぼっくり・雪の結晶を円く並べたクリスマスの曼荼羅。", pre: 1, open: "2026-12-01", v: "1795416973603" },
   { season: "冬", genre: "行事", title: "家族のクリスマスディナー", diff: "上級", file: "xmas_dinner_jo.png", sample: "xmas_dinner_jo_sample.jpg", added: "2026-11", date: "2026-12-01", desc: "ツリーを飾った部屋で、3世代の家族がチキンとショートケーキを囲んで乾杯。", pre: 1, open: "2026-12-01", v: "1795416973604" },
+  { season: "冬", genre: "人物", title: "サンタと枕元のプレゼント", diff: "中級", file: "santa_makura_chu.png", sample: "santa_makura_chu_sample.jpg", added: "2026-11", date: "2026-11-30", pre: 1, open: "2026-11-30", v: "1795430000000" },
+  { season: "冬", genre: "行事", title: "プレゼントの山", diff: "初級", file: "present_yama_sho.png", sample: "present_yama_sho_sample.jpg", added: "2026-11", date: "2026-11-30", pre: 1, open: "2026-11-30", v: "1795430000001" },
+  { season: "冬", genre: "行事", title: "サンタの持ち物", diff: "初級", file: "santa_mochimono_sho.png", sample: "santa_mochimono_sho_sample.jpg", added: "2026-11", date: "2026-11-30", pre: 1, open: "2026-11-30", v: "1795430000002" },
+  { season: "冬", genre: "人物", title: "手紙を読むサンタ", diff: "中級", file: "tegami_santa_chu.png", sample: "tegami_santa_chu_sample.jpg", added: "2026-11", date: "2026-11-30", pre: 1, open: "2026-11-30", v: "1795430000003" },
 ];
