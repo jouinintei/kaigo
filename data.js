@@ -347,7 +347,7 @@ window.NURIE_LIST = [
   { season: "春", genre: "風景", title: "一本桜", diff: "上級", file: "ipponzakura_jo.png", sample: "ipponzakura_jo_sample.jpg", added: "2026-08", v: "1792538413924" },
   { season: "夏", genre: "風景", title: "雨の縁側", diff: "中級", file: "ame_engawa_chu.png", sample: "ame_engawa_chu_sample.jpg", added: "2026-08", v: "1795341524" },
   { season: "夏", genre: "風景", title: "夏のバス停", diff: "上級", file: "natsu_basutei_jo.png", sample: "natsu_basutei_jo_sample.jpg", added: "2026-08", v: "1792507264339" },
-  { season: "夏", genre: "風景", title: "夏の縁側", diff: "上級", file: "natsu_engawa_jo.png", sample: "natsu_engawa_jo_sample.jpg", added: "2026-08", v: "1795394952" },
+  { season: "夏", genre: "風景", title: "夏の縁側", diff: "上級", file: "natsu_engawa_jo.png", sample: "natsu_engawa_jo_sample.jpg", added: "2026-08", v: "1795397266" },
   { season: "夏", genre: "動物", title: "夏の昆虫", diff: "中級", file: "natsu_konchu_sho.png", sample: "natsu_konchu_sho_sample.jpg", added: "2026-08", v: "1792507264339" },
   { season: "夏", genre: "風物詩", title: "夏休み", diff: "初級", file: "natsuyasumi_sho.png", sample: "natsuyasumi_sho_sample.jpg", added: "2026-08", v: "1792507264339" },
   { season: "春", genre: "花", title: "花冠", diff: "中級", file: "hanakanmuri_chu.png", sample: "hanakanmuri_chu_sample.jpg", added: "2026-08", v: "1792491975478" },
