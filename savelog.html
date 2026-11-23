@@ -1077,6 +1077,7 @@
     if (c.di) f.push("難しさ：" + c.di);
     if (c.us) f.push(c.us);
     if (f.length) cp.push(f.join("・") + "に絞って");
+    if (c.so === "yotei") return base + "の「公開予定」から保存";
     if (c.so && SORT_JA[c.so]) cp.push((cp.length ? "、" : "") + SORT_JA[c.so] + "の並びで");
     if (!e.c) return base + "から保存（絞り込みは記録を始める前）";
     return base + "から、" + (cp.length ? cp.join("") : "絞り込みなしで探して") + "保存";
