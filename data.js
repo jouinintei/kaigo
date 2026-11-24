@@ -1757,4 +1757,6 @@ window.NURIE_LIST = [
   { season: "冬", genre: "人物", title: "クリスマスの読み聞かせ", diff: "上級", file: "xmas_yomikikase_jo.png", sample: "xmas_yomikikase_jo_sample.jpg", added: "2026-11", date: "2026-11-25", desc: "暖炉の前で、おばあちゃんが孫に絵本を読む夜。", pre: 1, open: "2026-11-25", ord: 1795521454086, v: "1795521454060" },
   { season: "冬", genre: "行事", title: "サンタの工房", diff: "上級", file: "xmas_santa_kobo_jo.png", sample: "xmas_santa_kobo_jo_sample.jpg", added: "2026-11", date: "2026-11-25", desc: "作りかけの木のおもちゃと道具が並ぶ作業台。", pre: 1, open: "2026-11-25", ord: 1795521454076, v: "1795521454061" },
   { season: "冬", genre: "風景", title: "屋根の上を飛ぶサンタのそり", diff: "上級", file: "xmas_sori_yakei_jo.png", sample: "xmas_sori_yakei_jo_sample.jpg", added: "2026-11", date: "2026-11-25", desc: "満月の夜、雪の町の上を飛ぶそりを見上げる人々。", pre: 1, open: "2026-11-25", ord: 1795521454066, v: "1795521454062" },
+  { season: "冬", genre: "行事", title: "飾りいっぱいのクリスマスツリー", diff: "上級", file: "xmas_tree_kazari_jo.png", sample: "xmas_tree_kazari_jo_sample.jpg", added: "2026-11", date: "2026-11-26", pre: 1, open: "2026-11-26", v: "1795522000000" },
+  { season: "冬", genre: "行事", title: "暖炉の部屋のクリスマスツリー", diff: "上級", file: "xmas_tree_danro_jo.png", sample: "xmas_tree_danro_jo_sample.jpg", added: "2026-11", date: "2026-11-26", pre: 1, open: "2026-11-26", v: "1795522000001" },
 ];
