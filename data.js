@@ -1759,4 +1759,9 @@ window.NURIE_LIST = [
   { season: "冬", genre: "風景", title: "屋根の上を飛ぶサンタのそり", diff: "上級", file: "xmas_sori_yakei_jo.png", sample: "xmas_sori_yakei_jo_sample.jpg", added: "2026-11", date: "2026-11-25", desc: "満月の夜、雪の町の上を飛ぶそりを見上げる人々。", pre: 1, open: "2026-11-25", ord: 1795521454066, v: "1795521454062" },
   { season: "冬", genre: "行事", title: "飾りいっぱいのクリスマスツリー", diff: "上級", file: "xmas_tree_kazari_jo.png", sample: "xmas_tree_kazari_jo_sample.jpg", added: "2026-11", date: "2026-11-26", pre: 1, open: "2026-11-26", v: "1795522000000" },
   { season: "冬", genre: "行事", title: "暖炉の部屋のクリスマスツリー", diff: "上級", file: "xmas_tree_danro_jo.png", sample: "xmas_tree_danro_jo_sample.jpg", added: "2026-11", date: "2026-11-26", pre: 1, open: "2026-11-26", v: "1795522000001" },
+  { season: "冬", genre: "行事", title: "招き羊", diff: "初級", file: "maneki_hitsuji_sho.png", sample: "maneki_hitsuji_sho_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795523900000" },
+  { season: "冬", genre: "行事", title: "羊のだるま", diff: "初級", file: "hitsuji_daruma_sho.png", sample: "hitsuji_daruma_sho_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795523900001" },
+  { season: "冬", genre: "行事", title: "毛糸玉の鏡餅", diff: "中級", file: "keito_kagamimochi_chu.png", sample: "keito_kagamimochi_chu_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795523900002" },
+  { season: "冬", genre: "行事", title: "獅子舞をする羊", diff: "中級", file: "hitsuji_shishimai_chu.png", sample: "hitsuji_shishimai_chu_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795523900003" },
+  { season: "冬", genre: "行事", title: "水引細工の羊", diff: "上級", file: "mizuhiki_hitsuji_jo.png", sample: "mizuhiki_hitsuji_jo_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795523900004" },
 ];
