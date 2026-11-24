@@ -43,6 +43,14 @@
   ALL.forEach(n => { if (n.pre === 1 && n.open && n.open <= TODAY_JST) { delete n.pre; n._rel = 1; if (!n.date || n.date < n.open) n.date = n.open; } });
   const isPre = n => !!n && n.pre === 1;
   const LIST = ALL.filter(n => !isPre(n)), PRE = ALL.filter(isPre).sort((a, b) => String(a.open || "9").localeCompare(String(b.open || "9")));
+  // ord を付けた素材は、同じ公開日の中でいちばん上（新着の先頭）に置く。ord が大きいほど上
+  LIST.filter(n => n.ord).sort((a, b) => a.ord - b.ord).forEach(p => {
+    const i = LIST.indexOf(p); LIST.splice(i, 1);
+    const d = String(p.date || "");
+    let j = LIST.findIndex(q => String(q.date || "") <= d && !(q.ord > p.ord));
+    if (j < 0) j = LIST.length;
+    LIST.splice(j, 0, p);
+  });
   // アンケートに1回答えると、予定の素材すべてを保存・印刷できる合言葉が #pass= で渡される（3時間有効・端末には残さない）
   let PASSALL = "";
   try { const m = location.hash.match(/(?:^#|&)pass=([0-9]+\.[0-9a-f]+)/); if (m && +m[1].split(".")[0] > Date.now()) { PASSALL = m[1]; history.replaceState(history.state, "", location.pathname + location.search); } } catch (e) {}

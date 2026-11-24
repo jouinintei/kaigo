@@ -123,7 +123,7 @@ for name, (ey, glink) in PAGES.items():
 </main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1795491650{V}"></script>
+<script src="/rk.js?v=1795521490{V}"></script>
 <script>
 (function(){{
   var F={json.dumps(F, ensure_ascii=False)},MAX=24;
@@ -203,7 +203,7 @@ for name, ey in [('terms', 'TERMS'), ('privacy', 'PRIVACY')]:
 </div></main>
 <div id="ft"></div>
 <script src="/data.js"></script>
-<script src="/rk.js?v=1795491650{V}"></script>
+<script src="/rk.js?v=1795521490{V}"></script>
 <script>
 document.getElementById("hd").innerHTML=RK.header("doc");
 document.getElementById("ft").innerHTML=RK.footer("doc");
