@@ -1492,12 +1492,12 @@
       }
       var thumb = (imgDir === null)
         ? '<div class="thumb none">🖼</div>'
-        : '<img class="thumb" src="'+imgDir+encodeURIComponent(e.f)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
+        : '<img class="thumb" src="'+imgDir+encodeURIComponent(e.f)+vq(e.f)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
       if (e.c && e.c.hm){
         var hn = info(e.c.hm);
         ttl = (it ? it.title.replace(/[（(]貼り付け用[)）]/, "") : "カレンダー") + "＋" + (hn ? hn.title : e.c.hm);
         thumb = (imgDir === null) ? '<div class="thumb none">🖼</div>'
-          : '<div class="thumb hmt"><span><img src="'+imgDir+encodeURIComponent(e.f)+'" alt="" loading="lazy"><img class="hn" src="'+imgDir+encodeURIComponent(e.c.hm)+'" alt="" loading="lazy"></span></div>';
+          : '<div class="thumb hmt"><span><img src="'+imgDir+encodeURIComponent(e.f)+vq(e.f)+'" alt="" loading="lazy"><img class="hn" src="'+imgDir+encodeURIComponent(e.c.hm)+vq(e.c.hm)+'" alt="" loading="lazy"></span></div>';
       }
       var isPr = e.s === "print" || (e.c && e.c.pr);
       html += '<div class="ev'+(isPr ? " pr" : " sv")+fresh+'">'+
