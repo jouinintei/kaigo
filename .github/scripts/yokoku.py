@@ -65,11 +65,13 @@ for page in s3.get_paginator("list_objects_v2").paginate(Bucket=BUCKET, Prefix="
 src = open("data.js", encoding="utf-8").read()
 today = (datetime.now(timezone.utc) + timedelta(hours=9)).strftime("%Y-%m-%d")
 due = set()
-for blk in re.findall(r"\{[^{}]*?\bpre: 1[^{}]*\}", src):
+# 公開日を過ぎたものは、線画・色見本・答えのすべてを本物にする。
+# すでに pre が外れていても、yokoku/ に残っているもの（取りこぼし）はここで出す。
+for blk in re.findall(r"\{[^{}]*?\bopen: \"\d{4}-\d{2}-\d{2}\"[^{}]*\}", src):
     op = re.search(r'open: "(\d{4}-\d{2}-\d{2})"', blk)
     if op and op.group(1) <= today:
-        for k in ("file", "sample"):
-            m = re.search(k + r': "([^"]+)"', blk)
+        for k in ("file", "sample", "answer"):
+            m = re.search(r"\b" + k + r': "([^"]+)"', blk)
             if m:
                 due.add(m.group(1))
 
@@ -100,15 +102,18 @@ for fn in sorted(os.listdir("yokoku")):
 if any(c.startswith("images/") for c in changed):
     v = str(int(datetime.now(timezone.utc).timestamp() * 1000))
 
+    rel = {c[len("images/"):] for c in changed if c.startswith("images/")}
+
     def fix(m):
         blk = m.group(0)
-        f = re.search(r'file: "([^"]+)"', blk)
-        if not f or f.group(1) not in due:
+        names = [x.group(1) for x in re.finditer(r'\b(?:file|sample|answer): "([^"]+)"', blk)]
+        f = re.search(r'\bfile: "([^"]+)"', blk)
+        if not (f and f.group(1) in due and "pre: 1" in blk) and not any(n in rel for n in names):
             return blk
         blk = re.sub(r",?\s*pre: 1", "", blk)
         return re.sub(r'v: "\d+"', 'v: "' + v + '"', blk)
 
-    src2 = re.sub(r"\{[^{}]*?\bpre: 1[^{}]*\}", fix, src)
+    src2 = re.sub(r"\{[^{}]*?\bopen: \"[^\"]+\"[^{}]*\}", fix, src)
     if src2 != src:
         open("data.js", "w", encoding="utf-8").write(src2)
         changed.append("data.js")
