@@ -22,9 +22,11 @@
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const kindOf = n => n.kind || "塗り絵";
   const ver = n => n.v ? "?v=" + encodeURIComponent(n.v) : "";
-  const full = (n, f) => IMG + (f || n.file) + ver(n);
-  const thumb = (n, f) => TH + (f || n.file) + ".jpg" + ver(n);
-  const sthumb = (n, f) => THS + (f || n.file) + ".jpg" + ver(n);
+  // 公開日を迎えたのに、まだ本物に差し替わっていない予定の素材は、本物をサーバー（/api/pre）から直接出す
+  const relSrc = (n, f) => "/api/pre?f=" + encodeURIComponent(f || n.file) + ver(n).replace("?", "&");
+  const full = (n, f) => n._rel ? relSrc(n, f) : IMG + (f || n.file) + ver(n);
+  const thumb = (n, f) => n._rel ? relSrc(n, f) : TH + (f || n.file) + ".jpg" + ver(n);
+  const sthumb = (n, f) => n._rel ? relSrc(n, f) : THS + (f || n.file) + ".jpg" + ver(n);
   const srcs = n => `src="${sthumb(n)}" srcset="${sthumb(n)} 600w, ${thumb(n)} 1000w" sizes="(max-width:640px) 92vw, (max-width:900px) 46vw, 340px"`;
   addEventListener("error", e => {
     const t = e.target; if (!t || t.tagName !== "IMG") return;
@@ -36,6 +38,9 @@
   const ALL = (window.NURIE_LIST || []).filter(n => n && n.file && !seen.has(n.file) && seen.add(n.file)).reverse();
   // 予告（作成中）：pre: 1 の素材は一覧・検索に出さず、トップの「投稿予定」と各一覧の「予定」タブにだけ出す。
   // 保存・印刷はアンケートに答えたときだけ（端末には覚えない。ページを開き直したらもう一度）
+  // 公開日（日本時間の0時）を過ぎたら、差し替えの自動処理を待たずに、その場で新着の一覧へ移す
+  const TODAY_JST = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  ALL.forEach(n => { if (n.pre === 1 && n.open && n.open <= TODAY_JST) { delete n.pre; n._rel = 1; if (!n.date || n.date < n.open) n.date = n.open; } });
   const isPre = n => !!n && n.pre === 1;
   const LIST = ALL.filter(n => !isPre(n)), PRE = ALL.filter(isPre).sort((a, b) => String(a.open || "9").localeCompare(String(b.open || "9")));
   // アンケートに1回答えると、予定の素材すべてを保存・印刷できる合言葉が #pass= で渡される（3時間有効・端末には残さない）

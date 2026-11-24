@@ -20,7 +20,7 @@ def build(prev,old,out,keep_extra):
     ph=re.sub(r'/rk.css\?v=\d+','/rk.css?v='+V,ph)
     b=body_part(p)
     b=b.replace('src="../data.js"','src="/data.js"')
-    b=re.sub(r'src="app.js\?v=\d+"','src="/rk.js?v=1795441638'+V+'"',b)
+    b=re.sub(r'src="app.js\?v=\d+"','src="/rk.js?v=1795491650'+V+'"',b)
     b=b.replace('</body>',keep_extra+'</body>')
     html='<!DOCTYPE html>\n<html lang="ja">\n<head>\n'+oh.strip()+'\n'+ph.strip()+'\n</head>\n'+b
     open(K+out,'w').write(html)

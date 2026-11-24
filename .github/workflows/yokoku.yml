@@ -9,6 +9,11 @@ on:
       - ".github/workflows/yokoku.yml"
   schedule:
     - cron: "5 15 * * *"   # 毎日 0:05（日本時間）に公開日を迎えたものを本物に差し替える
+    # GitHub の予約実行は遅れたり飛ばされたりするので、念のため何度か走らせる（済んだものは何もしない）
+    - cron: "25 15 * * *"
+    - cron: "0 16 * * *"
+    - cron: "0 18 * * *"
+    - cron: "0 21 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -17,6 +22,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   yokoku:
@@ -46,6 +52,8 @@ jobs:
             if ! git diff --cached --quiet; then
               git commit -m "予告の塗り絵を公開（本物に差し替え）"
               for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+              # ボットの push ではサイトの公開（Pages deploy）が動かないので、ここで呼ぶ
+              GH_TOKEN=${{ github.token }} gh workflow run pages-deploy.yml --ref main -R ${{ github.repository }} || echo "::warning::deploy dispatch failed"
             fi
             if grep -q '^images/' yokoku_changed.txt; then
               .venv/bin/python .github/scripts/make_thumbs.py || true
