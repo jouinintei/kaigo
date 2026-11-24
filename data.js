@@ -384,7 +384,7 @@ window.NURIE_LIST = [
   { season: "冬", genre: "風景", title: "冬のかやぶきの里", diff: "上級", file: "fuyu_kayabuki_jo.png", sample: "fuyu_kayabuki_jo_sample.jpg", added: "2026-08", v: "1795335344574" },
   { season: "冬", genre: "動物", title: "冬のきつね", diff: "中級", file: "fuyu_kitsune_chu.png", sample: "fuyu_kitsune_chu_sample.jpg", added: "2026-08", v: "1792462703778" },
   { season: "冬", genre: "風景", title: "冬の縁側", diff: "上級", file: "fuyu_engawa_jo.png", sample: "fuyu_engawa_jo_sample.jpg", added: "2026-08", v: "1792462703778" },
-  { season: "冬", genre: "風景", title: "冬の金閣寺", diff: "中級", file: "fuyu_kinkakuji_chu.png", sample: "fuyu_kinkakuji_chu_sample.jpg", added: "2026-08", v: "1792462997401" },
+  { season: "冬", genre: "風景", title: "冬の金閣寺", diff: "中級", file: "fuyu_kinkakuji_chu.png", sample: "fuyu_kinkakuji_chu_sample.jpg", added: "2026-08", v: "1795492049563" },
   { season: "冬", genre: "風景", title: "冬の小屋", diff: "初級", file: "fuyu_koya_sho.png", sample: "fuyu_koya_sho_sample.jpg", added: "2026-08", v: "1792462997401" },
   { season: "冬", genre: "動物", title: "冬の動物", diff: "初級", file: "fuyu_doubutsu_sho.png", sample: "fuyu_doubutsu_sho_sample.jpg", added: "2026-08", v: "1792462997401" },
   { season: "秋", genre: "風物詩", title: "読書の秋", diff: "初級", file: "dokusho_aki_sho.png", sample: "dokusho_aki_sho_sample.jpg", added: "2026-08", v: "1792471171903" },
