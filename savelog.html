@@ -496,6 +496,8 @@
 
   /* ---------- data.js から作品情報を引く ---------- */
   var INFO = {};
+  // 画像に版（v）を付けて、公開で本物に差し替わった後も古い「作成中」の画像が出ないようにする
+  function vq(f){ var it = INFO[f]; return it && it.v ? "?v=" + encodeURIComponent(it.v) : ""; }
   (function buildIndex(){
     var list = window.NURIE_LIST;
     if (!Array.isArray(list)) {
@@ -512,6 +514,7 @@
       if (!it || !it.file) return;
       INFO[it.file] = it;
       // 色見本は「(作品名) 色見本」として表示する
+      if (it.answer && !INFO[it.answer]) { var an = {}; for (var k2 in it) an[k2] = it[k2]; an.file = it.answer; an.title = it.title + "（答え）"; an.isAns = true; an.base = it.file; INFO[it.answer] = an; }
       if (it.sample) {
         var sm = {}; for (var k in it) sm[k] = it[k];
         sm.file = it.sample; sm.title = it.title + "（見本）"; sm.isSample = true; sm.base = it.file;
@@ -1035,7 +1038,7 @@
       var pos = i === 0 ? "g" : i === 1 ? "s" : i === 2 ? "b" : "";
       var thumb = (imgDir === null)
         ? '<div class="thumb none">🖼</div>'
-        : '<img class="thumb" src="' + imgDir + encodeURIComponent(f) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
+        : '<img class="thumb" src="' + imgDir + encodeURIComponent(f) + vq(f) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
       var dev = rankPeriod === 0 ? "" : '<span>' + devN(f) + '台</span>';
       html += '<div class="rk">' +
         '<div class="pos ' + pos + '">' + (i + 1) + '</div>' +
@@ -1286,7 +1289,7 @@
       if (it && it.diff) sub.push(it.diff);
       var thumb = (imgDir === null)
         ? '<div class="thumb none">🖼</div>'
-        : '<img class="thumb" src="' + imgDir + encodeURIComponent(x.f) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
+        : '<img class="thumb" src="' + imgDir + encodeURIComponent(x.f) + vq(x.f) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
       var when = x.t ? fmtMD(dayKey(x.t)) : "";
       return '<div class="dfi">' + thumb + '<div class="dft" title="' + esc(ttl) + '">' + esc(ttl) + '</div>' +
         '<div class="dfm">' + esc(sub.join("・")) + (when ? '　' + when : '') + (x.n > 1 ? '　' + x.n + '回' : '') + '</div></div>';
@@ -1915,7 +1918,7 @@
   function fbThumb(f){
     return (imgDir === null)
       ? '<div class="thumb none">🖼</div>'
-      : '<img class="thumb" src="' + imgDir + encodeURIComponent(f) + '" alt="" loading="lazy" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=\'images/' + encodeURIComponent(f) + '\';}else{this.style.visibility=\'hidden\'}">';
+      : '<img class="thumb" src="' + imgDir + encodeURIComponent(f) + vq(f) + '" alt="" loading="lazy" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=\'images/' + encodeURIComponent(f) + '\';}else{this.style.visibility=\'hidden\'}">';
   }
   function drawFeedback(items){
     var wrap = document.getElementById("fbWrap");
