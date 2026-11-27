@@ -176,45 +176,11 @@ async function appendHour(env, now, evs, oevs) {
   return false;
 }
 
-// 今日の分(save-log.json)の数字を書き換える。update(data) で中身を足す
-async function updateLive(env, update, tries) {
-  for (let attempt = 0; attempt < tries; attempt++) {
-    try {
-      const cur = await ghRead(env);
-      update(cur.data);
-      if (await ghWrite(env, cur.sha, cur.data)) return true;
-    } catch (e) {}
-  }
-  return false;
-}
-
 function json(obj, status) {
   return new Response(JSON.stringify(obj, null, 1), {
     status: status || 200,
     headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "X-Robots-Tag": "noindex" }
   });
-}
-
-// 数字だけ残して軽く保つ
-//  - 1枚ずつの保存履歴は今日と昨日(日本時間)の分だけ（念のため上限3000件）
-//  - 絵ごとの日別枚数は直近KEEP_FILE_DAYS日分。それより前はその日の合計枚数(dtot)にまとめる
-//  - 絵ごとの保存端末は直近KEEP_FD_DAYS日分
-//  - 累計・日ごとの端末別件数・保存元の内訳・来た経路は消さない
-function compact(d, day) {
-  const dayStart = Date.parse(day + "T00:00:00+09:00");
-  const keepFrom = dayStart - 24 * 3600 * 1000;
-  d.events = d.events.filter(e => e.t >= keepFrom);
-  if (d.events.length > 3000) d.events = d.events.slice(d.events.length - 3000);
-  const keyAgo = n => new Date(dayStart - n * 24 * 3600 * 1000 + 9 * 3600 * 1000).toISOString().slice(0, 10);
-  const fileFrom = keyAgo(KEEP_FILE_DAYS - 1);
-  Object.keys(d.days).forEach(k => {
-    if (k >= fileFrom) return;
-    const o = d.days[k];
-    d.dtot[k] = (d.dtot[k] || 0) + Object.keys(o).reduce((s, f) => s + o[f], 0);
-    delete d.days[k];
-  });
-  const fdFrom = keyAgo(KEEP_FD_DAYS - 1);
-  Object.keys(d.fd).forEach(k => { if (k < fdFrom) delete d.fd[k]; });
 }
 
 export async function onRequest({ request, env }) {
@@ -288,7 +254,6 @@ export async function onRequest({ request, env }) {
       if (k) oent = k === "other" && h ? "o:" + h : k;
     }
     const onow = Date.now();
-    const oday = new Date(onow + 9 * 3600 * 1000).toISOString().slice(0, 10);
     const oevs = ops.map(([f, k], i) => {
       const oe = { t: onow, f: f, k: k, d: odid };
       const os = String((ops[i] && ops[i][2]) || "").replace(/[^a-z]/g, "").slice(0, 12);
@@ -298,31 +263,14 @@ export async function onRequest({ request, env }) {
       if (oent && i === 0) oe.r = oent;
       return oe;
     });
+    // 1時間ごとの履歴ファイルに足すだけにする（数字の集計は保存ログ画面と毎晩のGitHub Actionsが履歴から行う）
+    // 大きな save-log.json を毎回読み書きすると無料枠のCPU 10msを超えるため
+    oevs.forEach(e => { e.v = 2; });
     const ogeo = geoOf(request);
-    const res = await Promise.all([
-      appendHour(env, onow, [], oevs),
-      updateLive(env, data => {
-        const O = data.opens;
-        if (!O.days[oday]) O.days[oday] = { lb: {}, smp: {} };
-        const D = O.days[oday];
-        ops.forEach(([f, k]) => {
-          D[k][odid] = (D[k][odid] || 0) + 1;
-          if (!O.tot[k]) O.tot[k] = {};
-          O.tot[k][f] = (O.tot[k][f] || 0) + 1;
-        });
-        putGeo(data, odid, ogeo ? Object.assign({}, ogeo) : null);
-        if (oent && openBody.ent.c !== 0) {
-          if (!data.ent[odid]) data.ent[odid] = {};
-          data.ent[odid][oent] = (data.ent[odid][oent] || 0) + 1;
-        }
-        // 以前ここに溜めていた履歴の残り(移行前の分)は、今日と昨日の分だけ残す
-        const keepFrom = Date.parse(oday + "T00:00:00+09:00") - 24 * 3600 * 1000;
-        O.ev = O.ev.filter(e => e.t >= keepFrom);
-        const ok = Object.keys(O.days).sort();
-        while (ok.length > KEEP_DAYS) delete O.days[ok.shift()];
-      }, 3)
-    ]);
-    return res[0] && res[1] ? json({ ok: true }) : json({ ok: false }, 500);
+    if (ogeo && odid !== "unknown") oevs[0].g = ogeo;
+    if (oent && openBody.ent.c === 0) oevs[0].rn = 1;
+    const ook = await appendHour(env, onow, [], oevs);
+    return ook ? json({ ok: true }) : json({ ok: false }, 500);
   }
 
   // ☆の記録 (POST): { favs: [["xxx.png", 1(付けた)|0(外した), "ページ"], ...], did: "端末の符号" }
@@ -395,7 +343,6 @@ export async function onRequest({ request, env }) {
   if (!did) did = "unknown";
 
   const now = Date.now();
-  const day = new Date(now + 9 * 3600 * 1000).toISOString().slice(0, 10);
 
   const evs = items.map(([f, s, c], i) => {
     const ev = { t: now, f: f, d: did, s: s };
@@ -403,29 +350,11 @@ export async function onRequest({ request, env }) {
     if (ent && i === 0) ev.r = ent;
     return ev;
   });
+  // 1時間ごとの履歴ファイルに足すだけにする（数字の集計は保存ログ画面と毎晩のGitHub Actionsが履歴から行う）
+  evs.forEach(e => { e.v = 2; });
   const sgeo = geoOf(request);
-  const res = await Promise.all([
-    appendHour(env, now, evs, []),
-    updateLive(env, d => {
-      if (!d.days[day]) d.days[day] = {};
-      if (!d.devs[day]) d.devs[day] = {};
-      if (!d.src[day]) d.src[day] = {};
-      if (ent && entCount) {
-        if (!d.ent[did]) d.ent[did] = {};
-        d.ent[did][ent] = (d.ent[did][ent] || 0) + 1;
-      }
-      items.forEach(([f, s]) => {
-        d.src[day][s] = (d.src[day][s] || 0) + 1;
-        d.totals[f] = (d.totals[f] || 0) + 1;
-        d.days[day][f] = (d.days[day][f] || 0) + 1;
-        d.devs[day][did] = (d.devs[day][did] || 0) + 1;
-        if (!d.fd[day]) d.fd[day] = {};
-        const fl = d.fd[day][f] || (d.fd[day][f] = []);
-        if (fl.indexOf(did) < 0) fl.push(did);
-      });
-      putGeo(d, did, sgeo ? Object.assign({}, sgeo) : null);
-      compact(d, day);
-    }, 2)
-  ]);
-  return res[0] && res[1] ? json({ ok: true }) : json({ ok: false }, 500);
+  if (sgeo && did !== "unknown") evs[0].g = sgeo;
+  if (ent && !entCount) evs[0].rn = 1;
+  const ok = await appendHour(env, now, evs, []);
+  return ok ? json({ ok: true }) : json({ ok: false }, 500);
 }

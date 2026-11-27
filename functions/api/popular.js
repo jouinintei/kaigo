@@ -31,54 +31,17 @@ async function build({ request, env }) {
     const token = env.GITHUB_TOKEN;
     if (!repo || !token) return new Response(JSON.stringify({ files: [] }), { headers });
 
-    const get = path => fetch("https://api.github.com/repos/" + repo + "/contents/" + path + "?ref=main", {
+    // 順位は毎晩 rekupuri-member の GitHub Actions が data/log/popular.json に作っておく
+    // (ここで日ごとのファイルを読んで数えると無料枠のCPU 10msを超えるため、中身は読み解かずにそのまま返す)
+    const r = await fetch("https://api.github.com/repos/" + repo + "/contents/data/log/popular.json?ref=main", {
       headers: {
         "Authorization": "Bearer " + token,
         "Accept": "application/vnd.github.raw",
         "User-Agent": "rekupuri-popular"
       }
-    }).then(r => r.ok ? r.json() : null).catch(() => null);
-
-    // 直近7日(日本時間・今日を含む)の日付
-    const dayStart = Date.parse(new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10) + "T00:00:00+09:00");
-    const keys = [];
-    for (let i = 0; i < 7; i++) keys.push(new Date(dayStart - i * 24 * 3600 * 1000 + 9 * 3600 * 1000).toISOString().slice(0, 10));
-
-    // 今日の分は save-log.json、昨日より前は日ごとのファイル(data/log/日付.json)にある
-    const parts = await Promise.all([get("data/save-log.json")].concat(keys.slice(1).map(k => get("data/log/" + k + ".json"))));
-    const live = parts[0];
-    if (!live) return new Response(JSON.stringify({ files: [] }), { headers });
-    const log = { fd: Object.assign({}, live.fd || {}), days: Object.assign({}, live.days || {}) };
-    keys.slice(1).forEach((k, i) => {
-      const p = parts[i + 1];
-      if (!p) return;
-      if (!log.fd[k] && p.fd) log.fd[k] = p.fd;
-      if (!log.days[k] && p.days) log.days[k] = p.days;
     });
-
-    // ファイルごとに「保存した端末の集合」と「保存回数」を集める
-    // 端末は fd(日ごと・絵ごとの保存端末)、回数は days(日ごと・絵ごとの枚数)から
-    const devs = {};   // file -> Set(did)
-    const cnt = {};    // file -> 回数
-    const fd = log.fd || {}, days = log.days || {};
-    for (const k of keys) {
-      const o = fd[k] || {};
-      for (const f of Object.keys(o)) {
-        if (!devs[f]) devs[f] = new Set();
-        (o[f] || []).forEach(x => devs[f].add(x));
-      }
-      const c = days[k] || {};
-      for (const f of Object.keys(c)) cnt[f] = (cnt[f] || 0) + c[f];
-    }
-    for (const f of Object.keys(cnt)) if (!devs[f]) devs[f] = new Set();
-
-    // 端末数の多い順 → 同数なら保存回数の多い順
-    const files = Object.keys(devs)
-      .sort((a, b) => (devs[b].size - devs[a].size) || (cnt[b] - cnt[a]))
-      .slice(0, 30);
-
-    // 順位だけ返す(数字は公開しない)
-    return new Response(JSON.stringify({ files }), { headers });
+    if (!r.ok) return new Response(JSON.stringify({ files: [] }), { headers });
+    return new Response(r.body, { headers });
 
   } catch (e) {
     return new Response(JSON.stringify({ files: [] }), { headers });

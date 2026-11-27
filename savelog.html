@@ -670,7 +670,79 @@
       });
     });
     d.geo = geo; d.ent = ent;
+    addFromHours(d, live, A, cur);
     return d;
+  }
+  // サイトは保存・開いた記録を1時間ごとの履歴ファイルに足すだけになった(CPU制限対策)。
+  // まだ毎晩のまとめ前の日の数字は、ここで履歴から数えて足す(今日の分に既に数字があれば多い方)
+  function addFromHours(d, live, A, cur){
+    var evs = [], oevs = [];
+    A.evh.concat(cur ? [cur] : []).forEach(function(x){
+      if (Array.isArray(x.events)) evs = evs.concat(x.events);
+      if (Array.isArray(x.opensEv)) oevs = oevs.concat(x.opensEv);
+    });
+    if (!evs.length && !oevs.length) return;
+    var C = {}, lo = live.opens || {};
+    function day(k){
+      return C[k] || (C[k] = { days: {}, fd: {}, devs: {}, src: {}, od: {} });
+    }
+    function rolled(k){ return !!A.days[k]; }
+    var tot = {}, otot = {}, ent = {}, geo = {};
+    Object.keys(live.totals || {}).forEach(function(f){ tot[f] = live.totals[f]; });
+    var lot = lo.tot || {};
+    Object.keys(lot).forEach(function(k){ otot[k] = {}; Object.keys(lot[k] || {}).forEach(function(f){ otot[k][f] = lot[k][f]; }); });
+    evs.forEach(function(e){
+      if (!e || !e.f) return;
+      var k = dayKey(e.t);
+      if (rolled(k)) return;
+      var c = day(k), id = e.d || "unknown", s = e.s || "unknown";
+      c.days[e.f] = (c.days[e.f] || 0) + 1;
+      var fl = c.fd[e.f] || (c.fd[e.f] = []);
+      if (fl.indexOf(id) < 0) fl.push(id);
+      c.devs[id] = (c.devs[id] || 0) + 1;
+      c.src[s] = (c.src[s] || 0) + 1;
+    });
+    oevs.forEach(function(e){
+      if (!e || !e.f || (e.k !== "lb" && e.k !== "smp")) return;
+      var k = dayKey(e.t);
+      if (rolled(k)) return;
+      var per = day(k).od[e.k] || (day(k).od[e.k] = {}), id = e.d || "unknown";
+      per[id] = (per[id] || 0) + 1;
+      if (e.v === 2) { var o = otot[e.k] || (otot[e.k] = {}); o[e.f] = (o[e.f] || 0) + 1; }
+    });
+    evs.concat(oevs).forEach(function(e){
+      if (!e || e.v !== 2 || !e.d || e.d === "unknown" || rolled(dayKey(e.t))) return;
+      if (e.r && !e.rn) { var m = ent[e.d] || (ent[e.d] = {}); m[e.r] = (m[e.r] || 0) + 1; }
+      if (e.g && (!geo[e.d] || geo[e.d].t <= e.t)) { var g = {}; Object.keys(e.g).forEach(function(x){ g[x] = e.g[x]; }); g.t = e.t; geo[e.d] = g; }
+    });
+    var mx = function(a, b){ var o = {}; Object.keys(a || {}).forEach(function(x){ o[x] = a[x]; }); Object.keys(b).forEach(function(x){ if (!(o[x] >= b[x])) o[x] = b[x]; }); return o; };
+    var ld = live.days || {};
+    Object.keys(C).forEach(function(k){
+      var c = C[k];
+      Object.keys(c.days).forEach(function(f){
+        var diff = c.days[f] - ((ld[k] || {})[f] || 0);
+        if (diff > 0) tot[f] = (tot[f] || 0) + diff;
+      });
+      d.days[k] = mx(d.days[k], c.days);
+      d.devs[k] = mx(d.devs[k], c.devs);
+      d.src[k] = mx(d.src[k], c.src);
+      var f0 = d.fd[k] || {}, nf = {};
+      Object.keys(f0).forEach(function(f){ nf[f] = f0[f].slice(); });
+      Object.keys(c.fd).forEach(function(f){ var a = nf[f] || (nf[f] = []); c.fd[f].forEach(function(id){ if (a.indexOf(id) < 0) a.push(id); }); });
+      d.fd[k] = nf;
+      var od0 = d.opens.days[k] || {}, nod = {};
+      ["lb", "smp"].forEach(function(x){ if (od0[x] || c.od[x]) nod[x] = mx(od0[x], c.od[x] || {}); });
+      d.opens.days[k] = nod;
+    });
+    d.totals = tot;
+    d.opens.tot = otot;
+    Object.keys(geo).forEach(function(id){ if (!d.geo[id] || (d.geo[id].t || 0) <= geo[id].t) d.geo[id] = geo[id]; });
+    Object.keys(ent).forEach(function(id){
+      var o = {}, m0 = d.ent[id] || {};
+      Object.keys(m0).forEach(function(x){ o[x] = m0[x]; });
+      Object.keys(ent[id]).forEach(function(x){ o[x] = (o[x] || 0) + ent[id][x]; });
+      d.ent[id] = o;
+    });
   }
   function load(silent){
     var wrap = document.getElementById("feedWrap");
