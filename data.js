@@ -1280,6 +1280,8 @@ window.NURIE_LIST = [
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー9（横）", file: "calendar_2026_12_9_yoko.png", added: "2026-11", v: "1795308406096" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー（貼り付け用・横）", file: "calendar_2026_12_blank_yoko.png", added: "2026-11", v: "1795307553293" },
   { kind: "カレンダー", year: 2026, month: 12, season: "通年", title: "12月カレンダー（貼り付け用）", file: "calendar_2026_12_blank.png", added: "2026-11", v: "1793672423986" },
+  { kind: "カレンダー", year: 2027, month: 1, season: "通年", title: "1月カレンダー（貼り付け用・横）", file: "calendar_2027_01_blank_yoko.png", added: "2026-11", v: "1795746413998" },
+  { kind: "カレンダー", year: 2027, month: 1, season: "通年", title: "1月カレンダー（貼り付け用）", file: "calendar_2027_01_blank.png", added: "2026-11", v: "1795746413998" },
   { season: "冬", genre: "風物詩", title: "火鉢のある冬の部屋", diff: "中級", file: "fuyu_hibachi_heya_chu.png", sample: "fuyu_hibachi_heya_chu_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
   { season: "冬", genre: "花", title: "椿の枝", diff: "初級", file: "tsubaki_eda_sho.png", sample: "tsubaki_eda_sho_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
   { season: "冬", genre: "花", title: "シクラメンの鉢植え", diff: "初級", file: "cyclamen_hachi_sho.png", sample: "cyclamen_hachi_sho_sample.jpg", added: "2026-11", date: "2026-11-03", v: "1793702323299" },
