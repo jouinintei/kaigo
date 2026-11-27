@@ -1770,4 +1770,5 @@ window.NURIE_LIST = [
   { season: "冬", genre: "行事", title: "羽根つきをする羊", diff: "初級", file: "hitsuji_hanetsuki_sho.png", sample: "hitsuji_hanetsuki_sho_sample.jpg", added: "2026-11", date: "2026-12-10", pre: 1, open: "2026-12-10", v: "1795745800001" },
   { season: "冬", genre: "行事", title: "羊の親子の初詣", diff: "中級", file: "hitsuji_hatsumode_chu.png", sample: "hitsuji_hatsumode_chu_sample.jpg", added: "2026-11", date: "2026-12-10", pre: 1, open: "2026-12-10", v: "1795745800002" },
   { season: "冬", genre: "行事", title: "謹賀新年の羊", diff: "初級", file: "kinga_hitsuji_sho.png", sample: "kinga_hitsuji_sho_sample.jpg", added: "2026-11", date: "2026-12-10", pre: 1, open: "2026-12-10", v: "1795746500000" },
+  { season: "冬", genre: "行事", title: "謹賀新年の羊と初日の出", diff: "中級", file: "kinga_hitsuji_chu.png", sample: "kinga_hitsuji_chu_sample.jpg", added: "2026-11", date: "2026-12-10", pre: 1, open: "2026-12-10", v: "1795746900000" },
 ];
