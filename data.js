@@ -1764,4 +1764,8 @@ window.NURIE_LIST = [
   { season: "冬", genre: "行事", title: "毛糸玉の鏡餅", diff: "中級", file: "keito_kagamimochi_chu.png", sample: "keito_kagamimochi_chu_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795523900002" },
   { season: "冬", genre: "行事", title: "獅子舞をする羊", diff: "中級", file: "hitsuji_shishimai_chu.png", sample: "hitsuji_shishimai_chu_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795523900003" },
   { season: "冬", genre: "行事", title: "水引細工の羊", diff: "上級", file: "mizuhiki_hitsuji_jo.png", sample: "mizuhiki_hitsuji_jo_sample.jpg", added: "2026-11", date: "2026-12-01", pre: 1, open: "2026-12-01", v: "1795523900004" },
+  { season: "冬", genre: "行事", title: "羊の餅つき", diff: "中級", file: "hitsuji_mochitsuki_chu.png", sample: "hitsuji_mochitsuki_chu_sample.jpg", added: "2026-11", date: "2026-12-10", pre: 1, open: "2026-12-10", v: "1795745800000" },
+  { season: "冬", genre: "行事", title: "羽根つきをする羊", diff: "初級", file: "hitsuji_hanetsuki_sho.png", sample: "hitsuji_hanetsuki_sho_sample.jpg", added: "2026-11", date: "2026-12-10", pre: 1, open: "2026-12-10", v: "1795745800001" },
+  { season: "冬", genre: "行事", title: "羊の親子の初詣", diff: "中級", file: "hitsuji_hatsumode_chu.png", sample: "hitsuji_hatsumode_chu_sample.jpg", added: "2026-11", date: "2026-12-10", pre: 1, open: "2026-12-10", v: "1795745800002" },
+  { season: "冬", genre: "行事", title: "謹賀新年の羊", diff: "初級", file: "kinga_hitsuji_sho.png", sample: "kinga_hitsuji_sho_sample.jpg", added: "2026-11", date: "2026-12-10", pre: 1, open: "2026-12-10", v: "1795745800003" },
 ];
