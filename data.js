@@ -1782,4 +1782,5 @@ window.NURIE_LIST = [
   { season: "秋", genre: "人物", title: "秋の夕暮れ、親子で家路", diff: "中級", file: "oyako_aki_chu.png", sample: "oyako_aki_chu_sample.jpg", added: "2026-11", date: "2026-12-03", desc: "いちょうともみじ、柿の実る住宅街を、落ち葉を拾った子と母が歩くうしろ姿。", pre: 1, open: "2026-12-03", v: "1795763145916" },
   { season: "冬", genre: "人物", title: "冬の夕暮れ、親子で家路", diff: "中級", file: "oyako_fuyu_chu.png", sample: "oyako_fuyu_chu_sample.jpg", added: "2026-11", date: "2026-12-03", desc: "雪の積もった住宅街を、買い物帰りに手をつないで歩く母と子のうしろ姿。", pre: 1, open: "2026-12-03", v: "1795763145917" },
   { season: "通年", genre: "花", title: "額縁の舞台で咲くピアノ", diff: "中級", file: "gakubuchi_piano_chu.png", sample: "gakubuchi_piano_chu_sample.jpg", added: "2026-11", date: "2026-12-02", desc: "カーテンの開いた額縁の舞台に、花があふれるグランドピアノ。大きなえんぴつが最後の一筆を描いています。", pre: 1, open: "2026-12-02", v: "1795763227203" },
+  { season: "通年", genre: "その他", title: "美しき思い出", diff: "中級", file: "utsukushiki_omoide_chu.png", sample: "utsukushiki_omoide_chu_sample.jpg", added: "2026-11", date: "2026-12-04", desc: "窓辺のバラ、古いアルバム、束ねた手紙、懐中時計。思い出の品を並べた静物画です。", pre: 1, open: "2026-12-04", v: "1795763823533" },
 ];
